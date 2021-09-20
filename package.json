@@ -1,0 +1,31 @@
+{
+  "name": "ft_transcendence",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blbbyk/ft_transcendence.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blbbyk/ft_transcendence/issues"
+  },
+  "homepage": "https://github.com/blbbyk/ft_transcendence#readme",
+  "dependencies": {
+    "@nestjs/cli": "^8.1.1",
+    "@nestjs/jwt": "^8.0.0",
+    "@nestjs/passport": "^8.0.1",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/passport-jwt": "^3.0.6",
+    "@types/passport-local": "^1.0.34"
+  }
+}
