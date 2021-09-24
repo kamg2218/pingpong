@@ -8,6 +8,6 @@ export const ormconfig : TypeOrmModuleOptions= {
    "password": "12345",
    "database": "my-service",
    "synchronize": true,
-   "logging": true,
+   "logging": false,
    "entities": [ __dirname + "/entity/**/*.entity.{js,ts}" ]
 }
