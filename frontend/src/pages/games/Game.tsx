@@ -1,9 +1,11 @@
 import './Game.css';
-import Menu from '../../components/games/Menu';
-import WaitingRoom from '../../components/games/WaitingRoom';
-import GameRoom from '../../components/games/GameRoom';
-import ChatList from '../../components/games/ChatList';
+import MenuGame from '../../components/games/MenuGame';
+import MenuChat from '../../components/games/MenuChat';
+import ChatRoom from '../../components/games/ChatRoom';
+import WaitingRoom from '../../pages/games/WaitingRoom';
+import GameRoom from '../../pages/games/GameRoom';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { useState } from 'react';
 
 type Friend = {
     nick: string,
@@ -31,6 +33,11 @@ export default function Game(){
         lose: 1
     }
 
+    const [chatIdx, setIdx] = useState(-1);
+    const getIdx = (idx :number) =>{
+        setIdx(idx);
+    }
+
     return (
         <BrowserRouter>
             <h1 id='gameHeader'>PONG CONTEST GAME</h1>
@@ -44,10 +51,10 @@ export default function Game(){
                     </nav>
                     <div className="tab-content" id="nav-tabContent">
                         <div className="tab-pane fade show active" id="nav-game" role="tabpanel" aria-labelledby="nav-game-tab">
-                            <Menu profile={first.profile} id={first.id} nick={first.nick} friendList={first.friendList} newFriendList={first.newFriendList} win={first.win} lose={first.lose}></Menu>
+                            <MenuGame profile={first.profile} id={first.id} nick={first.nick} friendList={first.friendList} newFriendList={first.newFriendList} win={first.win} lose={first.lose} />
                         </div>
                         <div className="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
-                            <ChatList></ChatList>
+                            {chatIdx === -1 ? <MenuChat nick={first.nick} idx={chatIdx} getIdx={getIdx}/> : <ChatRoom nick={first.nick} idx={chatIdx} getIdx={getIdx}/>}
                         </div>
                     </div>
                 </div>

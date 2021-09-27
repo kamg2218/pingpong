@@ -1,4 +1,4 @@
-import './Menu.css';
+import './MenuGame.css';
 import lion from '../../icons/lion.jpg';
 
 type Friend = {
@@ -38,7 +38,7 @@ function OldList(users : Friend): any {
     );
 }
 
-export default function Menu({id, nick, profile, win, lose, friendList, newFriendList}: User){
+export default function MenuGame({id, nick, profile, win, lose, friendList, newFriendList}: User){
     return (
         <div id='menu'>
             {/* <div>{profile ?? 'NONE'}</div> */}

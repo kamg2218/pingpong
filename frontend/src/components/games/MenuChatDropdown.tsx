@@ -1,6 +1,6 @@
 import 'bootstrap/dist/js/bootstrap.bundle';
 
-export default function ChatroomDropdown(){
+export default function MenuChatDropdown(){
     return (
         <div className="dropdown">
 	        <button className="btn float-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -8,6 +8,7 @@ export default function ChatroomDropdown(){
 	        </button>
 	        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 		        <li className="dropdown-item">invite</li>
+				<li className="dropdown-item">title</li>
 		        <li className="dropdown-item">exit</li>
 	        </ul>
 	    </div>
