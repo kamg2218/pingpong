@@ -1,28 +1,27 @@
 import React from 'react';
 import './App.css';
-import Main from './components/Main';
+import Main from './pages/Main';
 import LoginError from './components/errors/LoginError';
-import Login from './components/login/Login';
-import Signup from './components/login/Signup';
-import Game from './components/games/Game';
-import NickAndProfile from './components/login/NickAndProfile';
+import LoginPage from './pages/login/LoginPage';
+import Signup from './pages/login/Signup';
+import Game from './pages/games/Game';
+import NickAndProfile from './pages/login/NickAndProfile';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Switch>
-          <Route exact path='/'><Main /></Route>
-          <Route path='/user/login'><Login/></Route>
-          <Route path='/loginerror'><LoginError/></Route>
-          <Route path='/user/signup'><Signup/></Route>
-          <Route path='/user/nickandprofile'><NickAndProfile/></Route>
-          <Route path='/game'><Game/></Route>
-          <Route><Main/></Route>
-        </Switch>
-      </BrowserRouter> 
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path='/'><Main /></Route>
+        <Route path='/user/login'><LoginPage/></Route>
+        <Route path='/loginerror'><LoginError/></Route>
+        <Route path='/user/signup'><Signup/></Route>
+        <Route path='/user/nickandprofile'><NickAndProfile/></Route>
+        <Route path='/game'><Game/></Route>
+        <Route><Main/></Route>
+      </Switch>
+      <footer id='footer'>@42seoul</footer>
+    </BrowserRouter>
   );
 }
 

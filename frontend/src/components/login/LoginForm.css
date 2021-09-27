@@ -1,0 +1,7 @@
+#loginForm{
+    display: inline-block;
+    text-align: center;
+    margin: 1rem;
+    padding: 2%;
+    border-style: solid;
+}

@@ -1,0 +1,15 @@
+#nickandprofileForm{
+    display: inline-block;
+    text-align: center;
+    /* margin: 10%; */
+    padding: 2rem;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#Profile{
+    width: 180px;
+    height: 180px;
+    padding-top: 5%;
+    display: inline-block;
+}
