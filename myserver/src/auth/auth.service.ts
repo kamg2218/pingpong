@@ -7,6 +7,9 @@ import { JwtService } from '@nestjs/jwt';
 import {HttpStatus, HttpException} from '@nestjs/common';
 import { response } from 'express';
 import { UserRepository } from 'src/repository/User.repository';
+import { createCipheriv, randomBytes, scrypt } from 'crypto';
+import { promisify } from 'util';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -25,8 +28,10 @@ export class AuthService {
     // 2. user에 insert (email, password)
     const repo_account = getCustomRepository(AccountRepository);
     const repo_user = getCustomRepository(UserRepository);
+    // password 암호화
+    const hash = this.hashing(password);
     try{
-      repo_account.createAccount(email, password);
+      repo_account.createAccount(email, await hash);
       repo_user.createUser(email, nickname);
       return {message : "Created"};
     }
@@ -85,5 +90,12 @@ export class AuthService {
 
   async cleanAllToken(at : string, rt : string) {
 
+  }
+
+  async hashing(password: string) {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(password, saltOrRounds);
+    return hash;
+    // return Promise.resolve(hash);
   }
 }
