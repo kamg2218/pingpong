@@ -9,7 +9,6 @@ import { ORIGIN } from 'src/Type/Origin.type';
 import { jwtConstants } from 'src/config/jwt.config';
 import { JWT_PAYLOAD } from 'src/Type/Payload.type';
 import { CreateUserDTO } from 'src/Type/create-user.dto';
-import { refreshTokenDTO } from 'src/Type/refresh_token.dto';
 
 @Injectable()
 export class AuthService {
@@ -113,7 +112,7 @@ export class AuthService {
     }
   }
 
-  async issueAT(access_token : refreshTokenDTO) {
+  async issueAT(access_token : string) {
     //1. rt 확인
     //2. at 재발급 : id 확인 필요
     try {
