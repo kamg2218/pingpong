@@ -1,17 +1,22 @@
 
-import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, CreateDateColumn} from "typeorm";
+import { ORIGIN } from 'src/Type/Origin.type';
 
 @Entity()
 export class User {
 
     @PrimaryGeneratedColumn('uuid')
     id : string;
-   
+
     @Column({unique : true})
     email: string;
 
     @Column({unique : true})
     nickname: string;
 
-    //생성ㅣ자. 
+    @Column({type : 'simple-enum', enum: ORIGIN})
+    origin : ORIGIN;
+
+    @CreateDateColumn()
+    createdate : Date;
 }
