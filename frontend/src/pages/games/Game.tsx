@@ -54,7 +54,7 @@ export default function Game(){
                             <MenuGame profile={first.profile} id={first.id} nick={first.nick} friendList={first.friendList} newFriendList={first.newFriendList} win={first.win} lose={first.lose} />
                         </div>
                         <div className="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
-                            {chatIdx === -1 ? <MenuChat nick={first.nick} idx={chatIdx} getIdx={getIdx}/> : <ChatRoom nick={first.nick} idx={chatIdx} getIdx={getIdx}/>}
+                            {chatIdx === -1 ? <MenuChat nick={first.nick} getIdx={getIdx}/> : <ChatRoom nick={first.nick} idx={chatIdx} getIdx={getIdx}/>}
                         </div>
                     </div>
                 </div>

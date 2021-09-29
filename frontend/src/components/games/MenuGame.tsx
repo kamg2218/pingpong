@@ -17,14 +17,24 @@ type User = {
 }
 
 function NewList(users : Friend): any {
+
+    //accept new friend
+    const handleCheck = () => {
+    
+    }
+    //decline new friend
+    const handleCross = () => {
+
+    }
+
     return (
-        <div className='d-flex mx-3'>
+        <div className='d-flex mx-3 col-8'>
             <div className='col-9 text-start' id='friendNick'>
                 {users.nick}
                 <i className="bi bi-exclamation-lg" id='exclamationMark'></i>
             </div>
-            <i className="bi bi-check-lg" id='checkMark'></i>
-            <i className="bi bi-x-lg" id='crossMark'></i>
+            <i className="bi bi-check-lg" id='checkMark' onClick={handleCheck}/>
+            <i className="bi bi-x-lg" id='crossMark' onClick={handleCross}/>
         </div>
     );
 }
