@@ -6,7 +6,6 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { JWT_PAYLOAD } from 'src/Type/Payload.type';
 import { CreateUserDTO } from 'src/Type/create-user.dto';
 
-
 @Controller('api/auth')
 export class AuthController {
     constructor(private readonly authService : AuthService){ }
