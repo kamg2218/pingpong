@@ -93,59 +93,56 @@ export class AuthService {
     }
   }
 
-  // 1. verify 했을 떄 유효하지 않으면 null return 인지 throw exception인지 확인
-  // 2. refresh token 한번 더 확인 = cash서버와
+  // 1. verify 했을 떄 유효하지 않으면 null return 인지 throw exception인지 확인 ->error 발생
+  // 2. refresh token 한번 더 확인 = cash서버와 ? -> 근데 그러면 value랑 비교했을 때, 만약 그 사이에 유효기간 지나면 판단이 안됨.
+  // 3. 없는거 del할때 error인가? error안나면 get하지 않고 del -> 에러 없이 처리 됨.
   async logout(access_token : string) {
     try {
       const user = await this.jwtService.verify(access_token, {ignoreExpiration: true});
-      const value = await this.cacheManager.get(user.id);
-      // refresh token 한번 더 확인 해야 할까?
-      if (!value)
-        return {message : "OK"}; //throw new BadRequestException(); //유효기간이 그 사이에 지났다는 거. 
-      await this.cacheManager.del(user.id); // 없는거 del할때 error인가? error안나면 get하지 않고 del
-      return { 
+      await this.cacheManager.del(user.id);
+      return {
         message : "Succesfully Logout",
       }
     }
     catch(e){
-      throw new BadRequestException();
+      throw new UnauthorizedException();
     }
   }
 
   async issueAT(access_token : string) {
-    //1. rt 확인
-    //2. at 재발급 : id 확인 필요
     try {
       const user = await this.jwtService.verify(access_token, {ignoreExpiration: true});
-      const value = await this.cacheManager.get(user.id);
-      // refresh token 한번 더 확인 해야 할까?
-      if (!value)
-        throw new BadRequestException();
       const payload = {id : user.id};
       return {
         access_token : this.jwtService.sign(payload),
       };
     }
     catch(e){
-      throw new BadRequestException();
+      throw new UnauthorizedException();
     }
   }
 
-  // 1. DTO  ( email, nickname, password )
+  // 1. DTO  ( email, nickname, password ) -> password만 받는 걸로
   // 2. cascade (local)
-  // 3. oauth 회원탈퇴도 고려. / 회원가입도 고려.
-  async deleteUser(user : JWT_PAYLOAD, userData : CreateUserDTO){
-    const { email, password } = userData;
-    const user_user = await this.validataUser(email, password);
-    if (!user_user)
+  // 3. oauth 회원탈퇴도 고려. / 회원가입도 고려. -> oauth는 따로 분리할 예정
+  async deleteUser( tokenData: JWT_PAYLOAD, password: string){
+    try{
+    const user = await getRepository(User).findOne(tokenData.id);
+    if (!await this.validataUser(user.email, password))
       throw new UnauthorizedException();
-    // user 삭제
-    UserRepository.deleteUser(email);
+    // refersh token 삭제, logout
+    this.cacheManager.del(tokenData.id);
     // account_user 삭제
-    AccountRepository.deleteUser(email);
-    // token 삭제, logout
-    this.cacheManager.del(user.id); //error안나는지, 
-    
+    getCustomRepository(UserRepository).deleteUser(user.email);
+    getCustomRepository(AccountRepository).deleteAccount(user.email);
+    }
+    catch(e)
+    {
+      throw new HttpException({
+        statusCode : HttpStatus.BAD_REQUEST,
+        message : e.detail,
+    }, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async hashing(password: string) {

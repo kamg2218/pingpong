@@ -49,8 +49,9 @@ export class AuthController {
     
     @UseGuards(JwtAuthGuard)
     @Delete('withdrawal')
-    withdrawal(@UserDeco() user : JWT_PAYLOAD, @Body() userData : CreateUserDTO){
-        return this.authService.deleteUser(user, userData);
+    withdrawal(@UserDeco() tokenData : JWT_PAYLOAD, @Body('password') password : string){
+        console.log("withdrawal");
+        return this.authService.deleteUser(tokenData, password);
     }
     /*
     @UseGuards(AuthGuard('local')) //@UseGuards(LocalStrategy)

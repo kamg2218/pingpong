@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryColumn, OneToOne} from "typeorm";
+import {Entity, Column, PrimaryColumn, OneToOne, JoinColumn} from "typeorm";
 import { User } from "./User.entity";
 
 @Entity()
@@ -9,7 +9,5 @@ export class Account {
 
     @Column()
     password : string;
-
-    @OneToOne(()=>User, user => user.email, {onDelete : "CASCADE"})
-    user:User
+    
 }

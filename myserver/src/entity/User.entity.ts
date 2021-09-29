@@ -1,6 +1,7 @@
 
-import {Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, CreateDateColumn} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, CreateDateColumn, JoinColumn, OneToOne } from "typeorm";
 import { ORIGIN } from 'src/Type/Origin.type';
+import { Account } from "./Account.entity";
 
 @Entity()
 export class User {

@@ -17,7 +17,7 @@ export class AccountRepository extends Repository<Account> {
         await this.insert(account);
     }
 
-    async deleteUser(email :string) : Promise<void>{
+    async deleteAccount(email :string) : Promise<void>{
         await this.delete({email : email});
     }
 }
