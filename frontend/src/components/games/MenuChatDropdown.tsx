@@ -28,9 +28,12 @@ export default function MenuChatDropdown(props :any){
 	const handleTitle = () => {
 		props.getTitle(props.info.idx, '#' + props.info.title);
 	}
+	//change password
+	const handlePwd = () => {
+
+	}
 	//exit the chatroom
 	const handleExit = () => {
-
 	}
 
     return (
@@ -40,9 +43,10 @@ export default function MenuChatDropdown(props :any){
 	        </button>
 	        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<button className="btn dropdown-item" onClick={() => handleTitle()}>title</button>
-		        <button className="btn dropdown-item" onClick={() => handleExit()}>exit</button>
+				<button className="btn dropdown-item" onClick={() => handlePwd()}>password</button>
 				<button className="btn dropdown-item" data-toggle='modal' data-target='#friendList'>invite</button>
-
+		        <button className="btn dropdown-item" onClick={() => handleExit()}>exit</button>
+				
 				<div className='modal fade' id='friendList' role='dialog' aria-labelledby='friendList'>
 					<div className='modal-dialog' role='document'>
 						<div className="modal-content">
