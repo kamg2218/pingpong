@@ -1,5 +1,5 @@
 import React from 'react';
-import './WaitingRoom.css';
+import '../../css/WaitingRoom.css';
 
 export default function WaitingRoom(){
     return (

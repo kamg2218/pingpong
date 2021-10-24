@@ -1,5 +1,5 @@
 import React from 'react';
-import './GameRoom.css';
+import '../../css/GameRoom.css';
 
 export default function GameRoom(){
     return (

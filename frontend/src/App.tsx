@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import '../css/App.css';
 import Main from './pages/Main';
 import LoginError from './components/errors/LoginError';
 import LoginPage from './pages/login/LoginPage';

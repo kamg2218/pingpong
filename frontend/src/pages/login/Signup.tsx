@@ -1,4 +1,4 @@
-import './Signup.css';
+import '../../css/Signup.css';
 import SignupForm from "../../components/login/SignupForm"
 
 export default function Signup(){

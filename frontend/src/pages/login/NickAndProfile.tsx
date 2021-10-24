@@ -1,4 +1,4 @@
-import './NickAndProfile.css';
+import '../../css/NickAndProfile.css';
 import NickAndProfileForm from "../../components/login/NickAndProfileForm"
 
 export default function NickAndProfile(){
