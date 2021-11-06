@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './MenuChat.css';
+import '../../css/MenuChat.css';
 import MenuChatBox from './MenuChatBox';
 
 export default function MenuChat(props :any){

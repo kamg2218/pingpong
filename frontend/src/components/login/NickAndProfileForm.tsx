@@ -1,4 +1,4 @@
-import './NickAndProfileForm.css';
+import '../../css/NickAndProfileForm.css';
 
 export default function NickAndProfileForm(){
     let profile_img = <svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" fill="currentColor" className="bi bi-emoji-wink" viewBox="0 0 16 16">

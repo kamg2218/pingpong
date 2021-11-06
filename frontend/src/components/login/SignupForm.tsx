@@ -1,4 +1,4 @@
-import './SignupForm.css';
+import '../../css/SignupForm.css';
 import ProfileCarousel from './ProfileCarousel';
 
 export default function SignupForm(){

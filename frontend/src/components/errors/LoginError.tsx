@@ -1,5 +1,5 @@
 import React from 'react';
-import './LoginError.css';
+import '../../css/LoginError.css';
 
 export default function LoginError(){
     return (

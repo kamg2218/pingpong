@@ -3,7 +3,7 @@ import profileImage2 from '../../icons/profileImage2.png';
 import profileImage3 from '../../icons/profileImage3.png';
 import profileImage4 from '../../icons/profileImage4.png';
 import profileImage5 from '../../icons/profileImage5.png';
-import './ProfileCarousel.css';
+import '../../css/ProfileCarousel.css';
 
 export default function ProfileCarousel(){
     return (

@@ -1,4 +1,4 @@
-import './MenuGame.css';
+import '../../css/MenuGame.css';
 import lion from '../../icons/lion.jpg';
 
 type Friend = {
