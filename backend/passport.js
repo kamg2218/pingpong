@@ -1,27 +1,37 @@
+require("dotenv").config();
 const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const Users = require('./user.js');
+const FortyTwoStrategy = require('passport-42');
+const env = process.env;
+
+passport.serializeUser(function(user, done){
+    console.log('Serialize User', user);
+    return done(null, user);
+});
+passport.deserializeUser(function(user, done){
+    done(null, user);
+});
+
+const FortyTwoOpt = {
+    clientID: env.FORTYTWO_APP_ID,
+    clientSecret: env.FORTYTWO_APP_SECRET,
+    callbackURL: env.CALLBACK_URL,
+    passReqToCallback: true,
+};
+
+FortyTwoVerify = (req, accessToken, refreshToken, profile, cb) =>{
+    const user = {
+        username: profile.username,
+        displayname: profile.displayName,
+        email: profile.emails[0].value,
+        userid: profile.id
+    };
+    console.log(user);
+    console.log(profile);
+    console.log(`accessToken : ${accessToken}`);
+    console.log(`refreshToken: ${refreshToken}`);
+    return cb(null, user);
+}
 
 module.exports = () => {
-    passport.serializeUser((user, done) => {
-        done(null, user);
-    });
-    passport.deserializeUser((user, done) => {
-        done(null, user);
-    });
-    passport.use(new LocalStrategy({
-        usernameField: 'id',
-        passwordField: 'pw',
-        session: true,
-        passReqToCallback: false,
-    }, (id, password, done) => {
-        Users.FindOne({id: id}, (findError, user)=>{
-            if (findError) return done(findError);
-            if (!user) return done(null, false, {message: 'Not found'});
-            return user.comparePassword(password, (passError, isMatch)=>{
-                if (isMatch) return done(null, user);
-                return done(null, false, {message: 'Wrong password'});
-            });
-        });
-    }));
+    passport.use(new FortyTwoStrategy(FortyTwoOpt, FortyTwoVerify));
 }
