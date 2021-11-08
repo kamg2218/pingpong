@@ -1,14 +1,14 @@
 .profile{
     text-align: center;
-    background-color: rgb(219, 205, 205);
-    /* border-style: solid; */
+    background-color: rgba(245, 244, 244, 0.13);
 }
 
 .img{
     width: 150px;
     height: 200px;
-    border-radius: 40%;
+    border-radius: 20%;
     object-fit: cover;
     overflow: hidden;
     margin: 2%;
+    display: inline-block;
 }
