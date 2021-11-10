@@ -1,12 +1,10 @@
 import '../../css/NickAndProfile.css';
-// import NickAndProfileForm from "../../components/login/NickAndProfileForm";
-import Nick from '../../components/login/Nick';
+import NickAndProfileForm from '../../components/login/NickAndProfileForm';
 
 export default function NickAndProfile(){
     return (
         <div id='nickandprofile'>
-            {/* <NickAndProfileForm/> */}
-            <Nick></Nick>
+            <NickAndProfileForm/>
         </div>
     );
 }
