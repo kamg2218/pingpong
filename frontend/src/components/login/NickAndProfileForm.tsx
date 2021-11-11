@@ -19,6 +19,9 @@ export default function Nick(){
     }
     function handleOK(event: any){
         event.preventDefault();
+        if (conditionals() === false)
+            return ;
+        console.log("Pass!");
         axios.post(`${url}/auth/signup`, {
             "nickname": nickname,
             "profile": profile
@@ -30,6 +33,17 @@ export default function Nick(){
         event.preventDefault();
         window.location.href = '/';
     }
+    function conditionals(): Boolean{
+        if (nickname === "")
+            return false;
+        else if (checkModalText !== "사용 가능한 닉네임입니다.")
+            return false;
+        console.log(nickname, checkModalText);
+        const btn = document.querySelector("#okBtn");
+        if (btn.data-toggle)
+        // data-toggle="modal" data-target="#okModal"
+        return true;
+    }
 
     return (
         <form>
@@ -37,30 +51,45 @@ export default function Nick(){
             <div className="d-flex my-2">
                 <label className="nickLabel m-2">Nickname</label>
                 <input className="m-1" placeholder={nicknamePlaceholder} onChange={(event)=>setNickname(event.target.value)} required />
-                <button className="btn btn-outline-dark m-1" type="button" data-toggle="modal" data-target="#checkModal" onClick={handleCheck}>Check</button>
-                
+                <button className="btn btn-outline-dark m-1" data-toggle="modal" data-target="#checkModal" onClick={handleCheck}>Check</button>
                 {/* check modal */}
                 <div className="modal fade" id="checkModal" tabIndex={-1} role="dialog" aria-labelledby="checkModalLabel" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
+                    <div className="modal-dialog modal-dialog-centered modal-sm" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title" id="checkModalLabel">닉네임 중복 확인</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" className="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="false">&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">{checkModalText}</div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">OK</button>
+                                <button type="button" className="btn btn-outline-dark" data-dismiss="modal">OK</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <div>
-                <button className="btn btn-outline-dark m-1" type="submit" onClick={handleOK}>OK</button>
+                <button className="btn btn-outline-dark m-1" id="okBtn" type="submit" data-toggle="modal" data-target="#okModal" onClick={handleOK}>OK</button>
                 <button className="btn btn-outline-dark m-1" type="submit" onClick={handleCancel}>Cancel</button>
+                {/* ok modal */}
+                <div className="modal" id="okModal" tabIndex={-1} role="dialog" aria-labelledby="okModalLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered modal-sm" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="okModalLabel"> </h5>
+                                <button type="button" className="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="false">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">닉네임 중복 확인을 해주세요.</div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-outline-dark" data-dismiss="modal">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     );
