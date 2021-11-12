@@ -1,4 +1,4 @@
-import TitleInput from './TitleInput';
+import TitleInput from '../games/TitleInput';
 import MenuChatDropdown from './MenuChatDropdown';
 
 type Info = {

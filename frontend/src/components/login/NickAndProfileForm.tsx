@@ -10,22 +10,31 @@ export default function Nick(){
     const [nickname, setNickname] = useState<string>("");
     const [checkModalText, setCheckModalText] = useState<string>("ERROR");
     const nicknamePlaceholder:string = "2~12 characters only";
+    const btn = document.querySelector("#okBtn");
 
+    function handleInput(event: any){
+        setNickname(event.target.value);
+        if (btn && !btn.getAttribute("data-toggle")){
+            btn.setAttribute("data-toggle", "modal");
+            btn.setAttribute("data-target", "#okModal");
+            setCheckModalText("중복 확인 해주세요!");
+        }
+    }
     function handleCheck(event : any){
         event.preventDefault();
         axios.get(`${url}/auth/check?nickname=${nickname}`)
         .then(res=>{console.log(res.data); setCheckModalText("사용 가능한 닉네임입니다.")})
         .catch(error=>{console.log(error); setCheckModalText("사용 불가능한 닉네임입니다.")});
+        if (btn){
+            btn.removeAttribute("data-toggle");
+            btn.removeAttribute("data-target");
+        }
     }
     function handleOK(event: any){
         event.preventDefault();
         if (conditionals() === false)
             return ;
-        console.log("Pass!");
-        axios.post(`${url}/auth/signup`, {
-            "nickname": nickname,
-            "profile": profile
-        }
+        axios.post(`${url}/auth/signup`, { nickname, profile }
         ).then(res=>{console.log(res)})
         .catch(err=>{console.error(err)});
     }
@@ -38,10 +47,6 @@ export default function Nick(){
             return false;
         else if (checkModalText !== "사용 가능한 닉네임입니다.")
             return false;
-        console.log(nickname, checkModalText);
-        const btn = document.querySelector("#okBtn");
-        if (btn.data-toggle)
-        // data-toggle="modal" data-target="#okModal"
         return true;
     }
 
@@ -50,7 +55,7 @@ export default function Nick(){
             <Profile profile={profile} setProfile={setProfile}></Profile>
             <div className="d-flex my-2">
                 <label className="nickLabel m-2">Nickname</label>
-                <input className="m-1" placeholder={nicknamePlaceholder} onChange={(event)=>setNickname(event.target.value)} required />
+                <input className="m-1" placeholder={nicknamePlaceholder} onChange={handleInput} required />
                 <button className="btn btn-outline-dark m-1" data-toggle="modal" data-target="#checkModal" onClick={handleCheck}>Check</button>
                 {/* check modal */}
                 <div className="modal fade" id="checkModal" tabIndex={-1} role="dialog" aria-labelledby="checkModalLabel" aria-hidden="true">
@@ -83,7 +88,9 @@ export default function Nick(){
                                     <span aria-hidden="false">&times;</span>
                                 </button>
                             </div>
-                            <div className="modal-body">닉네임 중복 확인을 해주세요.</div>
+                            <div className="modal-body">
+                                <div id="doubleCheck">닉네임 중복 확인을 해주세요.</div>
+                            </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-outline-dark" data-dismiss="modal">OK</button>
                             </div>

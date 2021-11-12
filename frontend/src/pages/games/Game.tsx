@@ -1,7 +1,7 @@
 import '../../css/Game.css';
 import MenuGame from '../../components/games/MenuGame';
-import MenuChat from '../../components/games/MenuChat';
-import ChatRoom from '../../components/games/ChatRoom';
+import MenuChat from '../../components/chat/MenuChat';
+import ChatRoom from '../../components/chat/ChatRoom';
 import WaitingRoom from '../../pages/games/WaitingRoom';
 import GameRoom from '../../pages/games/GameRoom';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
