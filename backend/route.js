@@ -16,7 +16,8 @@ router.get(
         // successRedirect: "/login/success",
         failureMessage: "LOGIN FAILED :(",
         failureRedirect: "http://localhost:3000",
-        // failureRedirect: "/login/failure"
+        // failureRedirect: "/login/failure",
+        successFlash: ""
     })
 );
 

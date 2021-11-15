@@ -4,7 +4,7 @@ import '../../css/NickAndProfileForm.css';
 import Profile from "./ProfileCarousel";
 
 const url = 'http://localhost:4242';
-const frontUrl = 'http://localhost:3000';
+// const frontUrl = 'http://localhost:3000';
 
 export default function Nick(){
     const [profile, setProfile] = useState<number>(0);
