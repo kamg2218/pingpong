@@ -12,9 +12,11 @@ router.get(
     "/auth/login/callback",
     passport.authenticate("42", {
         successMessage: "LOGIN SUCCESS!",
-        successRedirect: "/login/success",
+        successRedirect: "http://localhost:3000/game",
+        // successRedirect: "/login/success",
         failureMessage: "LOGIN FAILED :(",
-        failureRedirect: "/login/failure"
+        failureRedirect: "http://localhost:3000",
+        // failureRedirect: "/login/failure"
     })
 );
 
@@ -28,6 +30,7 @@ router.get('/login/logout');
 router.post('/auth/signup', (req, res, err)=>{
     console.log(req.body);
     res.send('Made signup!');
+    // res.redirect('http://localhost:3000/game', 200);
     //console.log('auth Signup!');
     //console.log(e);
 });

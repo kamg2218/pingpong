@@ -8,6 +8,7 @@ passport.serializeUser(function(user, done){
     return done(null, user);
 });
 passport.deserializeUser(function(user, done){
+    console.log("deserializeUser!");
     done(null, user);
 });
 
@@ -23,10 +24,12 @@ FortyTwoVerify = (req, accessToken, refreshToken, profile, cb) =>{
         username: profile.username,
         displayname: profile.displayName,
         email: profile.emails[0].value,
-        userid: profile.id
+        userid: profile.id,
+        access: accessToken,
+        refresh: refreshToken,
     };
-    console.log(user);
-    console.log(profile);
+    // console.log(user);
+    // console.log(profile);v 
     console.log(`accessToken : ${accessToken}`);
     console.log(`refreshToken: ${refreshToken}`);
     return cb(null, user);
