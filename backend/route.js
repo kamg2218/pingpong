@@ -30,11 +30,15 @@ router.post('/auth/signup', (req, res, next)=>{
     console.log(req.body);
     console.log(req.cookies);
 
+    // res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    // res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE');
+    // res.header('Access-Control-Allow-Headers', 'Origin, X-Requested With, Content-Type, Accept');
+    
     // res.setHeader['Access-Control-Allow-Origin', `http://localhost:4242`];
     res.cookie('accessToken', "hi", { maxAge: 300000 });
-    res.redirect(200, 'http://localhost:3000/game');
-    // res.setHeader('content-type', 'text/plain');
-    // res.send('cookie set');
+    // res.redirect(200, 'http://localhost:3000/game');
+    res.setHeader('content-type', 'text/plain');
+    res.send('cookie set');
 });
 router.get('/auth/check', (req, res, err)=>{
     // console.log(req.query);
