@@ -11,33 +11,35 @@ router.get('/', authCheck, function(req, res, next){
 router.get(
     "/auth/login/callback",
     passport.authenticate("42", {
-        successMessage: "LOGIN SUCCESS!",
-        successRedirect: "http://localhost:3000/game",
-        // successRedirect: "/login/success",
+        // successMessage: "LOGIN SUCCESS!",
+        // successRedirect: "http://localhost:3000/game",
         failureMessage: "LOGIN FAILED :(",
         failureRedirect: "http://localhost:3000",
-        // failureRedirect: "/login/failure",
-        successFlash: ""
-    })
+    }),
+    function(req, res){
+        res.cookie('accessToken', "hi", { maxAge: 300000 });
+        res.redirect('http://localhost:3000/game');
+    }
 );
 
-router.get("/login/success", authCheck, function(req, res, next){
-    res.json({msg: "hi"});
+router.get('/login/logout', (req, res, next)=>{
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
 });
-router.get("/login/failure", authCheck, function(req, res, err){
-    res.json({msg: "TT"});
-});
-router.get('/login/logout');
-router.post('/auth/signup', (req, res, err)=>{
+router.post('/auth/signup', (req, res, next)=>{
     console.log(req.body);
-    res.send('Made signup!');
-    // res.redirect('http://localhost:3000/game', 200);
-    //console.log('auth Signup!');
-    //console.log(e);
+    console.log(req.cookies);
+
+    // res.setHeader['Access-Control-Allow-Origin', `http://localhost:4242`];
+    res.cookie('accessToken', "hi", { maxAge: 300000 });
+    res.redirect(200, 'http://localhost:3000/game');
+    // res.setHeader('content-type', 'text/plain');
+    // res.send('cookie set');
 });
 router.get('/auth/check', (req, res, err)=>{
-    console.log(req.query);
-    console.log(req.query.nickname);
+    // console.log(req.query);
+    // console.log(req.query.nickname);
+    // console.dir(req.cookies);
     if (req.query.nickname === 'hazel')
         res.send('Checked!');
     else
