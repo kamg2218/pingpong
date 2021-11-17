@@ -3,16 +3,18 @@ require("dotenv").config();
 const app = require("./app");
 const debug = require("debug")('test:server');
 const http = require("http");
+// const { Server } = require("socket.io");
 
 const port = normalizePort(process.env.PORT || '4242');
 app.set('port', port);
 
 const server = http.createServer(app);
-
 server.listen(port);
-// console.log(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+const io = require("./socket")(server);
+// io();
 
 function normalizePort(value){
     const port = parseInt(value, 10);
@@ -23,7 +25,6 @@ function normalizePort(value){
         return port;
     return false; 
 }
-
 function onError(error){
     if (error.syscall !== 'listen'){
         throw error;

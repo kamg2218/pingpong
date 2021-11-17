@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const {authCheck} = require('./auth');
+// import {authCheck} from "./auth";
 
 router.get('/auth/login', passport.authenticate('42'));
 router.get('/', authCheck, function(req, res, next){

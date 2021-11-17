@@ -4,12 +4,10 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const cookieSession = require("cookie-session");
-// const logger = require("morgan");
 const passport = require("passport");
 
 const passportConfig = require("./passport.js");
 const indexRouter = require("./route.js");
-// const usersRouter = require("./routes/users");
 
 const app = express();
 const cors = require("cors");
@@ -21,7 +19,6 @@ app.use(
     })
 );
 
-// app.use(logger("dev")); //??
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
@@ -40,6 +37,5 @@ app.use(
 );
 
 app.use("/", indexRouter);
-// app.use("/users", usersRouter);
 
 module.exports = app;
