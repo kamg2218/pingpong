@@ -1,0 +1,19 @@
+#container{
+    /* border: solid; */
+    padding-top: 10%;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+}
+
+#buttons{
+    margin-top: 5%;
+}
+
+body{
+    /* background-color: #5d6d76; */
+    background-color: #93a2a8;
+}
+.h1{
+    color: #eeedeb;
+}
