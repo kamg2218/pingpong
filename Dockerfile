@@ -9,6 +9,6 @@ RUN mkdir -p /app
 WORKDIR /app
 ADD myserver /app
 RUN npm install
-RUN dockersize -wait tcp://db:5432z -timeout 20s
+# RUN dockerize -wait tcp://postgres:5432 -timeout 60s
 CMD ["npm", "start"]
 EXPOSE 4242
