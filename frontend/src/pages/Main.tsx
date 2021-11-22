@@ -12,31 +12,11 @@ const url = "http://localhost:4242/auth/login";
 // };
 
 export default function Main(){
-    function setCookie(access: string, refresh: string){
-        if (access)
-            document.cookie = `accessToken=${access}`;
-        if (refresh)
-            document.cookie = `refreshToken=${refresh}`;
-    }
-    function handleLogin(){
-        axios.get(url)
-        .then((res)=>{
-            console.log(`res = ` + res);
-            // if (res)
-                // setCookie(res.access, res.refresh);
-            // (token: Token)=>{
-            // if (token)
-            //     document.cookie=`${token.accessToken}=${token.refreshToken}`;
-        }).catch((err)=>{ console.log(err); });
-    }
-
     return (
         <div className='container' id="container">
             <div className='container-xxl h1'>PONG CONTEST GAME</div>
             <div className='col mb-5' id="buttons">
-                {/* <a className="btn btn-outline-primary mx-2 btn-lg" href="/user/signup" role="button">SIGN UP</a> */}
                 <a className="btn btn-outline-primary mx-2 btn-lg" href={url} role="button">LOG IN</a>
-                {/* <button className="btn btn-outline-dark m-1" onClick={handleLogin}>Login</button> */}
             </div>
             {/* {fortytwo} */}
             {/* <img src="../icons/42-Final-sigle-seul.svg" alt="42"></img> */}

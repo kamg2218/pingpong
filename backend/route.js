@@ -50,5 +50,9 @@ router.get('/auth/check', (req, res, err)=>{
     else
         res.send('Failed!');
 });
+router.post('/auth/issue', (req, res, err)=>{
+    if (req.Authorization)
+        console.log(req.Authorization);
+});
 
 module.exports = router;

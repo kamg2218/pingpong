@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import '../../css/NickAndProfileForm.css';
 import Profile from "./ProfileCarousel";
+import Cookie from "js-cookie";
+import { Session } from 'inspector';
 
 const url = 'http://localhost:4242';
 const frontUrl = 'http://localhost:3000';
@@ -56,6 +58,45 @@ export default function Nick(){
             return false;
         return true;
     }
+
+    // function setCookie(){
+    //     const now = new Date();
+    //     now.setTime(now.getTime() + 1000 * 1000);
+    //     console.log(now);
+    //     // Cookie.set('access', 'yummyCookie');
+    //     sessionStorage.setItem('refresh', 'Whhhh');
+    //     // Cookie.set('refresh', 'Whhhh', {expires: now, path: '/game'});
+    //     // document.cookie = `accesstoken=yummyCookie; expires=${now.toUTCString()}`;
+    //     // document.cookie = `refreshtoken=WHHHH; expires=${now.toUTCString()}`;
+    // }
+    
+    // function getCookie() {
+    //     const cookie = document.cookie;
+    //     console.log(cookie);
+
+    //     const yummy = Cookie.get('access');
+    //     if (yummy)
+    //         console.log(`yummy = ${yummy}`);
+    //     else{
+    //         console.log(`Yummy is empty!`);
+    //         axios.post('localhost:4242/auth/issue', {}, {
+    //             headers: {
+    //                 'Authorization': sessionStorage.getItem('refresh'),
+    //             }
+    //         });
+    //         //Cookie.set('access', 'NewYummy', {expires: 1});
+    //     }
+    //     axios.post('localhost:4242/auth/issue', {}, {
+    //         headers: {
+    //             'Authorization': sessionStorage.getItem('refresh'),
+    //         }
+    //     });
+    // }
+    
+    // function handleTMP(){
+    //     // setCookie();
+    //     getCookie();
+    // }
 
     return (
         <form>

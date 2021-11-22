@@ -106,8 +106,25 @@ module.exports = function(server){
         socket.on("inviteChatRoom", (msg)=>{
             msg.user.forEach((id)=>{
                 //socket invite user
+                id.join(msg.chatid);
+                id.to(msg.chatid).emit("welcome", id.nickname);
             });
         });
+        socket.on("exitChatRoom", (msg)=>{
+            socket.leave(msg.chatid, ()=>{
+                socket.to(msg.chatid).emit("exitChatRoom", socket.nickname);
+            });
+            console.log(`Exit ${msg.chatid}.`);
+        });
+        socket.on("kickChatRoom", (msg)=>{
+            msg.userid.leave(msg.chatid, ()=>{
+                msg.userid.to(msg.chatid).emit("kickChatRoom", socket.nickname);
+            });
+        });
+        socket.on("chatMessage", (msg)=>{
+            socket.to(msg.chatid).emit("chatMessage", msg.chatid, socket.nickname, msg.content);
+        });
+        
 
         // socket.on("enter_room", (msg, done)=>{
         //     socket.join(msg);
