@@ -76,9 +76,24 @@ socket.on("deleteFriend", (data)=>{
 });
 socket.on("blockFriend", (data)=>{
     user.blacklist.push(data);
-    //deleteFriend
-    if (user.friends)
-        user.friends = user.friends.filter(friend=>friend.userid !== data.userid);
+});
+socket.on("updateProfile", (data)=>{
+    if (data.nickname)
+        user.nickname = data.nickname;
+    if (data.profile)
+        user.profile = data.profile;
+});
+socket.on("opponentProfile", (data)=>{
+    //친구 정보를 popup으로 보여줌!
+});
+//game
+socket.on("matchRequest", (data)=>{
+    //대전 신청 결과를 받음
+    //대기 상태 종료
+});
+socket.on("matchResponse", (data)=>{
+    //대전신청을 받음
+    //popup 띄워서 수락 여부 결정해야 한다.
 });
 
 export default socket;
