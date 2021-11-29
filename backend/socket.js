@@ -1,7 +1,5 @@
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
-// import { Server } from 'socket.io';
-// import { instrument } from '@socket.io/admin-ui';
 
 module.exports = function(server){
     const io = new Server(server, {
