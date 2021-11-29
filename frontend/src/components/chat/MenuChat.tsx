@@ -23,7 +23,7 @@ export default function MenuChat(props :any){
             <div className='d-flex justify-content-end'>
                 <button className='btn addChat' onClick={()=>{handleAddChat()}}><i className="bi bi-chat"/></button>
             </div>
-            <div className='col'>{chatroom.map(info => <MenuChatBox info={info} getIdx={props.getIdx} getTitle={handleTitleChange}/>)}</div>
+            <ul key='chatBoxList' className='col'>{chatroom.map(info => <MenuChatBox info={info} getIdx={props.getIdx} getTitle={handleTitleChange}/>)}</ul>
         </div>
     );
 }

@@ -12,7 +12,7 @@ export default function ChatRoom(props :any){
     }
 
     return (
-        <div>
+        <div key={props.idx}>
             <button className='btn m-2' onClick={()=>handleArrowClick()}><i className="bi bi-arrow-left"></i></button>
             <div className='border chatBox'>{chat}</div>
             <input className='input' onChange={(e)=>handleInputChange(e)}></input>

@@ -1,5 +1,5 @@
 import '../css/Main.css';
-import axios from "axios";
+// import axios from "axios";
 // import fortytwo from '../icons/fortyTwo.svg';
 // import four from '../icons/42-Final-sigle-seul.svg';
 

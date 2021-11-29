@@ -1,18 +1,20 @@
 import {io} from "socket.io-client";
 
-const socket = io();
-type Friend = {
-    userid: string,
+export const socket = io();
+
+export type Friend = {
+    userid?: string,
     nickname: string,
     profile: number,
-    onoff?: boolean,
+    onoff: boolean,
 }
-type History = {
+export type History = {
     nickname: string,
     profile: number,
     winner: string,
 }
-type User = {
+export type User = {
+    id: string,
     nickname: string,
     win: number,
     lose: number,
@@ -23,24 +25,40 @@ type User = {
     friends: Array<Friend>,
     newfriends: Array<Friend>,
     blacklist: Array<Friend>,
-    history: Array<History>,
+    // history?: Array<History>,
 }
 
-let user: User = {
-    nickname: `${socket}`,
-    win: 0,
-    lose: 0,
-    profile: 0,
+// export let user: User = {
+//     nickname: `${socket}`,
+//     win: 0,
+//     lose: 0,
+//     profile: 0,
+//     level: "",
+//     levelpoint: 0,
+//     levelnextpoint: 100,
+//     friends: [],
+//     newfriends: [],
+//     blacklist: [],
+//     history: [],
+// };
+
+export let user: User = {
+    id: `${socket}`,
+    nickname: 'first_user',
+    win: 3,
+    lose: 2,
+    profile: 1,
     level: "",
     levelpoint: 0,
     levelnextpoint: 100,
-    friends: [],
-    newfriends: [],
+    friends: [{nickname: 'first', profile: 1, onoff: true}, {nickname: 'second', profile: 2, onoff: false}, {nickname: 'third', profile: 0, onoff: false},{nickname: 'forth', profile: 3, onoff: false},{nickname: 'fifth', profile: 4, onoff: false}],
+    newfriends: [{nickname: 'newbie', profile: 2, onoff: false}],
     blacklist: [],
-    history: [],
+    // history: [],
 };
 
 socket.on("userInfo", (data)=>{
+    console.log("user Info is changed!");
     if (data.nickname)
         user.nickname = data.nickname;
     if (data.win)
@@ -61,8 +79,8 @@ socket.on("userInfo", (data)=>{
         user.newfriends = data.newfriends;
     if (data.blacklist)
         user.blacklist = data.blacklist;
-    if (data.history)
-        user.history = data.history;
+    // if (data.history)
+        // user.history = data.history;
 });
 socket.on("newFriend", (data)=>{
     user.newfriends.push(data);
@@ -95,5 +113,3 @@ socket.on("matchResponse", (data)=>{
     //대전신청을 받음
     //popup 띄워서 수락 여부 결정해야 한다.
 });
-
-export default socket;

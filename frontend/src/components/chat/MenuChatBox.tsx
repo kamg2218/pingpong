@@ -28,7 +28,7 @@ export default function Chatroom(props :any){
     }
 
     return(
-        <button className='btn btn-light row m-2 col-12' onDoubleClick={() => handleDoubleClick(props.info)}>
+        <li key={props.info.index} className='btn btn-light row m-2 col-12' onDoubleClick={() => handleDoubleClick(props.info)}>
             <div className='d-flex'>
                 <div className='text-left font-weight-bold m-2'>
                     {props.info.title[0] === '#' ? <TitleInput getTitle={props.getTitle} idx={props.info.idx} title={props.info.title} /> : (props.info.title !== '' ? props.info.title : memberlist(props.info.member))}
@@ -36,6 +36,6 @@ export default function Chatroom(props :any){
                 <div className='m-2 font-weight-light member'>{props.info.title[0] === '#' ?? props.info.member.length}</div>
             </div>
             <MenuChatDropdown info={props.info} getTitle={props.getTitle}/>
-        </button>
+        </li>
     );
 }

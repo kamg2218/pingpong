@@ -2,6 +2,8 @@ const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
 
 module.exports = function(server){
+    console.log("socket starts!");
+    
     const io = new Server(server, {
         cors: {
             origin: ["https://admin.socket.io"],
@@ -22,6 +24,7 @@ module.exports = function(server){
             console.log(`Socket Event: ${event}`);
         });
         socket.on("userInfo", ()=>{
+            console.log("User Info is emitted!");
             socket.emit("userInfo", {
                 "nickname": socket.nickname,
                 "win": 3,

@@ -37,7 +37,7 @@ export default function MenuChatDropdown(props :any){
 	}
 
     return (
-        <div className="dropdown">
+        <div key={props.info.idx} className="dropdown">
 	        <button className="btn float-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i className="bi bi-three-dots-vertical"></i>
 	        </button>
