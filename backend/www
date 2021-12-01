@@ -16,7 +16,7 @@ server.on('listening', onListening);
 
 const io = new Server(server, {
     cors: {
-        origin: ["https://admin.socket.io"],
+        origin: ["https://admin.socket.io", "http://localhost:3000"],
         credentials: true,
     },
 });
