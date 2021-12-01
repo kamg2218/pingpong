@@ -2,8 +2,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import '../../css/NickAndProfileForm.css';
 import Profile from "./ProfileCarousel";
-import Cookie from "js-cookie";
-import { Session } from 'inspector';
+// import Cookie from "js-cookie";
+// import { Session } from 'inspector';
 
 const url = 'http://localhost:4242';
 const frontUrl = 'http://localhost:3000';

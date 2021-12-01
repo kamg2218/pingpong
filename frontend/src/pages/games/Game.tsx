@@ -42,7 +42,8 @@ export default function Game(){
     
     function handleBtn(){
         console.log("emit userInfo");
-        socket.emit("userInfo");
+        socket.emit("userInfo", {});
+        console.log('userInfo emitted..');
     }
 
     return (

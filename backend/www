@@ -3,7 +3,8 @@ require("dotenv").config();
 const app = require("./app");
 const debug = require("debug")('test:server');
 const http = require("http");
-// const { Server } = require("socket.io");
+const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 
 const port = normalizePort(process.env.PORT || '4242');
 app.set('port', port);
@@ -13,8 +14,17 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-const io = require("./socket.js");
-io(server);
+const io = new Server(server, {
+    cors: {
+        origin: ["https://admin.socket.io"],
+        credentials: true,
+    },
+});
+instrument(io, {
+    auth: false,
+});
+const socket = require("./socket.js");
+socket(io);
 
 function normalizePort(value){
     const port = parseInt(value, 10);

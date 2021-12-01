@@ -37,15 +37,23 @@ export default function MenuChatDropdown(props :any){
 	}
 
     return (
-        <div key={props.info.idx} className="dropdown">
+        <div id={props.info.idx} className="dropdown">
 	        <button className="btn float-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i className="bi bi-three-dots-vertical"></i>
 	        </button>
 	        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<button className="btn dropdown-item" onClick={() => handleTitle()}>title</button>
-				<button className="btn dropdown-item" onClick={() => handlePwd()}>password</button>
-				<button className="btn dropdown-item" data-toggle='modal' data-target='#friendList'>invite</button>
-		        <button className="btn dropdown-item" onClick={() => handleExit()}>exit</button>
+				<li className='dropdown-item' key='title'>
+					<button className='btn' key='title' onClick={() => handleTitle()}>title</button>
+				</li>
+				<li className='dropdown-item' key='pwd'>
+					<button className='btn' onClick={() => handlePwd()}>password</button>
+				</li>
+				<li className='dropdown-item' key='invite'>
+					<button className='btn' data-toggle='modal' data-target='#friendList'>invite</button>
+				</li>
+				<li className='dropdown-item' key='exit'>
+		        	<button className='btn' onClick={() => handleExit()}>exit</button>
+				</li>
 				
 				<div className='modal fade' id='friendList' role='dialog' aria-labelledby='friendList'>
 					<div className='modal-dialog' role='document'>

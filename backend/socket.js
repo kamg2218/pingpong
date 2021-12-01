@@ -1,18 +1,18 @@
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
 
-module.exports = function(server){
+module.exports = function(io){
     console.log("socket starts!");
     
-    const io = new Server(server, {
-        cors: {
-            origin: ["https://admin.socket.io"],
-            credentials: true,
-        },
-    });
-    instrument(io, {
-        auth: false,
-    });
+    // const io = new Server(server, {
+    //     cors: {
+    //         origin: ["https://admin.socket.io"],
+    //         credentials: true,
+    //     },
+    // });
+    // instrument(io, {
+    //     auth: false,
+    // });
 
     io.on("connection", (socket)=>{
         socket["nickname"] = "anonymous";

@@ -11,7 +11,6 @@ export default function MenuChat(props :any){
         setIndex(index + 1);
         //console.log(chatroom);
     }
-    
     const handleTitleChange = (idx :number, title :string) => {
         //console.log(idx, title);
         chatroom[idx - 1].title = title;
