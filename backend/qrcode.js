@@ -3,21 +3,21 @@ const QRCode = require('qrcode');
 
 let imagedata;
 
+const secret = speakeasy.generateSecret({
+    length: 20,
+    name: 'hyunji Yoon',
+    issuer: 'kamg2218@gmail.com'
+});
+const url = speakeasy.otpauthURL({
+    secret: secret.ascii,
+    issuer: 'OTP TEST',
+    label: 'kamg2218@gmail.com',
+    algorithm: 'SHA1',
+    period: 30
+});
+
 function makeCode(setData){
     console.log('qrcode is starting...');
-
-    const secret = speakeasy.generateSecret({
-        length: 20,
-        name: 'hyunji Yoon',
-        issuer: 'kamg2218@gmail.com'
-    });
-    var url = speakeasy.otpauthURL({
-        secret: secret.ascii,
-        issuer: 'OTP TEST',
-        label: 'kamg2218@gmail.com',
-        algorithm: 'SHA1',
-        period: 30
-    });
 
     QRCode.toDataURL(url, async (err, imageData)=>{
             // const image = document.querySelector(img);
@@ -26,7 +26,7 @@ function makeCode(setData){
             //     // image.innerText = imageData;
             // }
         imagedata = imageData;
-        console.log('img data: ', imagedata);
+        // console.log('img data: ', imagedata);
         setData(imagedata, url, secret.base32);
         // await setData(imagedata).then(console.log('finished!'));
             // console.log('url: ', url);
@@ -37,4 +37,17 @@ function makeCode(setData){
     return imagedata;
 }
 
-module.exports = makeCode;
+function verifiedCode(data, setVerified){
+    let verified = speakeasy.totp.verify({
+        secret: secret.base32,
+        encoding: 'base32',
+        algorithm: 'SHA1',
+        token: data.token,
+    });
+
+    console.log('verified = ' + verified);
+    // data.setVerified(verified);
+    setVerified(verified);
+}
+
+module.exports = { makeCode, verifiedCode };

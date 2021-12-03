@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
-const qrCode = require('./qrcode');
+const {makeCode, verifiedCode} = require('./qrcode');
 
 module.exports = function(io){
     console.log("socket starts!");
@@ -21,7 +21,7 @@ module.exports = function(io){
         socket["onoff"] = true;
 
         socket.onAny((event)=>{
-            console.log(io.sockets.adapter);
+            // console.log(io.sockets.adapter);
             console.log(`Socket Event: ${event}`);
         });
         socket.on("userInfo", ()=>{
@@ -140,9 +140,14 @@ module.exports = function(io){
             console.log('qrcode made!');
             return new Promise(()=>{
                 // code = undefined;
-                qrCode(setCode);
+                makeCode(setCode);
             });
             // .then(socket.emit("qrcode", {"qrcode": code}));
+        });
+        socket.on("verifiedcode", (data, set, done)=>{
+            console.log('verifying code!');
+            verifiedCode(data, set);
+            done();
         });
 
         // socket.on("enter_room", (msg, done)=>{
