@@ -19,7 +19,7 @@ router.get(
     }),
     function(req, res){
         res.cookie('accessToken', "hi", { maxAge: 300000 });
-        res.redirect('http://localhost:3000/game');
+        res.redirect('http://localhost:3000/twofactor');
     }
 );
 

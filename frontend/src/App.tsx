@@ -5,6 +5,7 @@ import LoginError from './components/errors/LoginError';
 import Game from './pages/games/Game';
 import Admin from './pages/Admin';
 import NickAndProfile from './pages/login/NickAndProfile';
+import Qrcode from './pages/login/Qrcode';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route exact path='/'><Main /></Route>
         <Route path='/loginerror'><LoginError/></Route>
         <Route path='/user/nickandprofile'><NickAndProfile/></Route>
+        <Route path='/twofactor'><Qrcode/></Route>
         <Route path='/game'><Game/></Route>
         <Route path='/admin'><Admin/></Route>
         <Route><Main/></Route>

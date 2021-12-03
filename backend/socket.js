@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
+const qrCode = require('./qrcode');
 
 module.exports = function(io){
     console.log("socket starts!");
@@ -125,7 +126,24 @@ module.exports = function(io){
         socket.on("chatMessage", (msg)=>{
             socket.to(msg.chatid).emit("chatMessage", msg.chatid, socket.nickname, msg.content);
         });
-        
+
+        // let code;
+        // async function setData(data){
+        //     console.log('setData is setting..');
+        //     code = data;
+        // }
+        // function doData(){
+        //     // console.log(`data = ${code}`);
+        //     socket.emit("qrcode", {"qrcode": code});
+        // }
+        socket.on("qrcode", (setCode)=>{
+            console.log('qrcode made!');
+            return new Promise(()=>{
+                // code = undefined;
+                qrCode(setCode);
+            });
+            // .then(socket.emit("qrcode", {"qrcode": code}));
+        });
 
         // socket.on("enter_room", (msg, done)=>{
         //     socket.join(msg);

@@ -25,6 +25,7 @@ export type User = {
     friends: Array<Friend>,
     newfriends: Array<Friend>,
     blacklist: Array<Friend>,
+    qrcode: string,
     // history?: Array<History>,
 }
 
@@ -54,6 +55,7 @@ export let user: User = {
     friends: [{nickname: 'first', profile: 1, onoff: true}, {nickname: 'second', profile: 2, onoff: false}, {nickname: 'third', profile: 0, onoff: false},{nickname: 'forth', profile: 3, onoff: false},{nickname: 'fifth', profile: 4, onoff: false}],
     newfriends: [{nickname: 'newbie', profile: 2, onoff: false}],
     blacklist: [],
+    qrcode: '',
     // history: [],
 };
 
@@ -113,3 +115,8 @@ socket.on("matchResponse", (data)=>{
     //대전신청을 받음
     //popup 띄워서 수락 여부 결정해야 한다.
 });
+socket.on("qrcode", (data)=>{
+    console.log('got qrcode!');
+    console.log(data.qrcode);
+    user.qrcode = data.qrcode;
+})
