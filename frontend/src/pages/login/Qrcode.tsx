@@ -13,7 +13,7 @@ export default function Qrcode(){
         if (qrcode === ''){
             console.log('code is doing...');
             makeCode();
-            setTimeout(()=>setQrcode(""), 30000);
+            // setTimeout(()=>setQrcode(""), 300000);
         }
     });
     function setData(qr:string, ur:string, se:string){
@@ -27,42 +27,42 @@ export default function Qrcode(){
     function checkToken():boolean {
         if (token.length !== 6)
             return false;
-        const num = parseInt(token);
-        console.log(num);
-        if (num < 100000)
-            return false;
-        return !isNaN(num);
+        for (let i = 0; i < token.length; i++){
+            const num = parseInt(token[i]);
+            // console.log(`num = ${num}`);
+            if (isNaN(num))
+                return false;
+        }
+        return true;
     }
     function handleChange(event: any){
         setToken(event.target.value);
     }
     function alertResult(){
-        console.log('alert result!');
+        console.log('alert result! ' + verified);
         if (verified === true){
             alert("it's true!");
         }else{
             alert("it's false~");
         }
     }
-    // function handleVerified(result: boolean){
-    //     setVerified(result);
-    // }
+    async function handleVerified(result: boolean){
+        console.log('handle verify! ' + result);
+        setVerified(result);
+    }
     function handleSubmit(event : any){
         console.log(token);
-        console.log(`code1 = ${token}`);
-        // setCode(event.target.value.replace(/(\s*)/g, ""));
-        // console.log(`code2 = ${token}`);
         if (token.length !== 6 || !checkToken()){
             alert('QR 코드를 다시 확인해 주세요!');
         }else{
-            console.log('code3 = ' + token);
-            console.log('setVerified = ' + typeof(setVerified));
-            socket.emit("verifiedcode", {'token': token}, setVerified, alertResult);
+            socket.emit("verifiedcode", { 'token': token }, async (result :boolean)=>{
+                handleVerified(result);
+                alertResult();
+            });
         }
     }
     function handleKeypress(event: any){
-        if (event.keyCode === 13){
-            console.log('handle Key Press 13');
+        if (event.code === 'Enter'){
             handleSubmit(event);
         }
     }

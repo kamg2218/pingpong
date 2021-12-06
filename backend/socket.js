@@ -138,16 +138,15 @@ module.exports = function(io){
         // }
         socket.on("qrcode", (setCode)=>{
             console.log('qrcode made!');
-            return new Promise(()=>{
+            // return new Promise(()=>{
                 // code = undefined;
                 makeCode(setCode);
-            });
+            // });
             // .then(socket.emit("qrcode", {"qrcode": code}));
         });
-        socket.on("verifiedcode", (data, set, done)=>{
-            console.log('verifying code!');
-            verifiedCode(data, set);
-            done();
+        socket.on("verifiedcode", (data, done)=>{
+            console.log('verifying code!', data.token);
+            verifiedCode(data, done);
         });
 
         // socket.on("enter_room", (msg, done)=>{
