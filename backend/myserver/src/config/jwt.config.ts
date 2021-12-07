@@ -1,7 +1,7 @@
 export const jwtConstants = {
     secret : 'secretKey',
-    access_expiresIn : '3m',
-    refresh_expiresIn : '5m',
+    access_expiresIn : '30m',
+    refresh_expiresIn : '50m',
     
     getByms(type : string) : number {
         if (type !== 'at' &&  type !== 'rt')

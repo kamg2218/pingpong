@@ -3,13 +3,32 @@ import { EntityRepository, Repository } from "typeorm";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    async getUserByNick(nickname : string) {
-        //write
+
+    constructor() {
+        super()
+    }
+    
+    createNotRegisteredUser(email : string) : User{
+        const user = this.create();
+        user.email = email;
+        user.nickname = email;
+        user.profile = -1;
+        return user;
     }
 
-    async doesExistNick(nickname : string) : Promise<boolean> {
+    async register(userid : string, nickname : string, profile : number) {
+        await this.update(userid, {nickname : nickname, profile : profile});
+    }
+
+    async getUserByNick(nickname : string) {
         //write
-        return false;
+        const user = await this.findOne({nickname : nickname});
+        return user;
+    }
+
+    async doesNickExist(nickname : string) : Promise<boolean> {
+        const user = await this.findOne({nickname : nickname})
+        return user ? true : false;
     }
     
     // admin으로 부터 밴되었는지 확인
@@ -25,12 +44,11 @@ export class UserRepository extends Repository<User> {
         return false;
     }
     
-    async switchToLogin(user : User) {
-        await this.update(user.userid, {status : "login"});
+    async switchToLogin(user : User, refreshToken : string) {
+        await this.update(user.userid, {status : "login", refreshToken : refreshToken});
     }
     
     async switchToLogout(user : User) {
-
-        await this.update(user.userid, {status : "logout"});
+        await this.update(user.userid, {status : "logout", refreshToken : null});
     }
 }

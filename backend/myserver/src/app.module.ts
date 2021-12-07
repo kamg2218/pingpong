@@ -6,7 +6,7 @@ import { ormconfig } from 'src/config/ormconfig'
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ TypeOrmModule.forRoot(ormconfig), 
+  imports: [ TypeOrmModule.forRoot(ormconfig),
               AuthModule ],
   controllers: [AppController],
   providers: [AppService],
