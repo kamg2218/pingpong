@@ -6,16 +6,21 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from 'src/config/jwt.config';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { FortyTwoStrategy } from './strategy/fortytwo.strategy';
-import { CustomStrategy } from './strategy/custom.strategy';
+import { RefreshStrategy } from './strategy/refresh.strategy';
+import { Logger } from '@nestjs/common';
+import { JwtAuthenticationStrategy } from './strategy/jwt-2fa.strategy';
 
 
 @Module({
-  imports : [PassportModule, JwtModule.register({
-    secret : jwtConstants.secret,
-    signOptions : {expiresIn : jwtConstants.access_expiresIn},
-  }),],
+  imports : [
+    PassportModule, 
+    JwtModule.register({
+      secret : jwtConstants.secret,
+      signOptions : {expiresIn : jwtConstants.access_expiresIn}}),
+  ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, FortyTwoStrategy, CustomStrategy ]
+  providers: [Logger, AuthService, JwtStrategy, JwtAuthenticationStrategy, FortyTwoStrategy, RefreshStrategy]
 })
+
 export class AuthModule {
 }

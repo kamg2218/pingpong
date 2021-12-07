@@ -1,7 +1,8 @@
 const front = "http://localhost:3000"
 
-const loginPage = front + "/login"
-const signupPage = front + "/signup"
-const lobyPage = front + "/loby"
+const fronLoginPage = front + "/login"
+const frontSignupPage = front + "/signup"
+const frontLobyPage = front + "/loby"
+const frontTwoFactorAuthenticationPage = front + "/2fa"
 
-export {loginPage, signupPage, lobyPage}
+export {fronLoginPage, frontSignupPage, frontLobyPage, frontTwoFactorAuthenticationPage}

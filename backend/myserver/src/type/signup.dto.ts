@@ -1,9 +1,12 @@
-import { IsEmail, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNumber, IsString } from "class-validator";
 
 export class SignUpDTO {
+    @ApiProperty({description:'nickname'})
     @IsString()
     readonly nickname : string;
 
-    @IsString()
-    readonly profile : string;
+    @ApiProperty({description:'profile'})
+    @IsNumber()
+    readonly profile : number;
 }

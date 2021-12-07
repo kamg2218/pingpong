@@ -14,6 +14,12 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     userid : string;
 
+    @Column({ nullable : true})
+    twoFactorAuthenticationSecret?: string;
+
+    @Column({ default : false })
+    isTwoFactorAuthenticationEnabled : boolean
+
     @Column({ unique : true })
     email : string;
 
@@ -24,7 +30,7 @@ export class User {
     createDate : Date;
 
     @Column()
-    profile : string;
+    profile : number;
 
     @Column({ default : false })
     banLogin : boolean;
@@ -38,8 +44,11 @@ export class User {
     @Column({ default : "bronze" })
     ladderLevel : LadderLevel;
 
-    @Column({ default : "logout" })
+    @Column({ default : "not_registered" })
     status : UserStatus;
+
+    @Column({ nullable : true })
+    refreshToken : string
 
     @Column({ default : "normal" })
     position : UserPosition;

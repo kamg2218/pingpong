@@ -2,7 +2,7 @@ import {TypeOrmModuleOptions} from '@nestjs/typeorm';
 
 export const ormconfig : TypeOrmModuleOptions= {
    "type": "postgres",
-   "host": "192.168.0.19",
+   "host": "192.168.0.19",    //변경 필요
    "port": 5432,
    "username": "postgres",
    "password": "12345",
