@@ -7,7 +7,8 @@ export default function TitleInput(props :any){
         setTitle(e.target.value);
     }
     const handleTitleClick = () => {
-        props.getTitle(props.idx, title);
+        props.setTitle(props.idx, title);
+        props.setState(title);
     }
     const handleKeyPress = (e :any) => {
         if (e.key === 'Enter')

@@ -2,36 +2,12 @@ import '../../css/MenuGame.css';
 import lion from '../../icons/lion.jpg';
 import {User, Friend} from '../../socket/socket';
 
-// type Friend = {
-//     userid?: string,
-//     nickname: string,
-//     profile: number,
-//     onoff: boolean,
-// }
-// type User = {
-//     id: string,
-//     nickname: string,
-//     win: number,
-//     lose: number,
-//     profile: number,
-//     level: string,
-//     levelpoint: number,
-//     levelnextpoint: number,
-//     friends: Array<Friend>,
-//     newfriends: Array<Friend>,
-//     blacklist: Array<Friend>,
-//     history: Array<History>,
-// }
-
-function NewList(users : Friend): any {
-
+export function NewList(users : Friend): any {
     //accept new friend
     const handleCheck = () => {
-    
     }
     //decline new friend
     const handleCross = () => {
-
     }
 
     return (
@@ -46,7 +22,7 @@ function NewList(users : Friend): any {
     );
 }
 
-function OldList(users : Friend): any {
+export function OldList(users : Friend): any {
     return (
         <div className='d-flex mx-3' key={users.nickname}>
             <div className='col-9 text-start' id='friendNick'>{users.nickname}</div>

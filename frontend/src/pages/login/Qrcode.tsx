@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { socket } from '../../socket/socket';
 import img1 from '../../icons/profileImage1.png';
+import { resolve } from 'dns';
 
 export default function Qrcode(){
     const [qrcode, setQrcode] = useState("");
@@ -38,17 +39,17 @@ export default function Qrcode(){
     function handleChange(event: any){
         setToken(event.target.value);
     }
-    function alertResult(){
+    function alertResult(result: boolean){
         console.log('alert result! ' + verified);
-        if (verified === true){
+        if (result === true){
             alert("it's true!");
         }else{
             alert("it's false~");
         }
     }
-    async function handleVerified(result: boolean){
-        console.log('handle verify! ' + result);
-        setVerified(result);
+    function handleVerified(result: boolean){
+            console.log('handle verify! ' + result);
+            setVerified(result);
     }
     function handleSubmit(event : any){
         console.log(token);
@@ -57,7 +58,7 @@ export default function Qrcode(){
         }else{
             socket.emit("verifiedcode", { 'token': token }, async (result :boolean)=>{
                 handleVerified(result);
-                alertResult();
+                alertResult(result);
             });
         }
     }
@@ -69,15 +70,12 @@ export default function Qrcode(){
 
     return (
         <div id='qrcode' className='d-flex flex-column justify-content-center m-5'>
-            <div className='p-3'>
-                <label>{secret}</label>
-            </div>
             <div className='p-2'>
                 <img alt='qrcodImg' src={qrcode !== '' ? qrcode : img1}></img>
-            </div>
-            <div className='p-2 d-flex'>
-                <input placeholder='OTP Number without space.' onChange={handleChange} onKeyPress={handleKeypress}></input>
-                <div className='btn btn-outline-dark m-1' onClick={handleSubmit}>Submit</div>
+                <div className='p-2 d-flex'>
+                    <input placeholder='OTP Number without space.' onChange={handleChange} onKeyPress={handleKeypress}></input>
+                    <div className='btn btn-outline-dark m-1' onClick={handleSubmit}>Submit</div>
+                </div>
             </div>
         </div>
     );
