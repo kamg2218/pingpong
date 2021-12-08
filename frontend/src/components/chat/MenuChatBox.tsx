@@ -4,6 +4,7 @@ import MenuChatDropdown from './MenuChatDropdown';
 
 type Info = {
     idx: number,
+    chatid: string,
     title: string,
     member: Array<string>
 }

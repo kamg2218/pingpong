@@ -4,10 +4,10 @@ import MenuChatBox from './MenuChatBox';
 
 export default function MenuChat(props :any){
     const [index, setIndex] = useState(3);
-    const [chatroom, setChatroom] = useState([{idx:1, title:'', member:['a', 'b'], owner:'hello', lock: true}, {idx:2, title:'topic', member:['ac', 'bc', 'cd', 'ede'], owner:'u', lock:false}]);
+    const [chatroom, setChatroom] = useState([{idx:1, chatid:'1232', title:'', member:['a', 'b'], owner:'hello', lock: true}, {idx:2, chatid:'1212', title:'topic', member:['ac', 'bc', 'cd', 'ede'], owner:'u', lock:false}]);
    
     const handleAddChat = () => {
-        setChatroom(chatroom => [...chatroom, {idx:index, title:'#', member:[props.nick], owner:'hhh', lock: false}]);
+        setChatroom(chatroom => [...chatroom, {idx:index, chatid:'1213', title:'#', member:[props.nick], owner:'hhh', lock: false}]);
         setIndex(index + 1);
         //console.log(chatroom);
     }

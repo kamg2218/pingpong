@@ -126,16 +126,6 @@ module.exports = function(io){
         socket.on("chatMessage", (msg)=>{
             socket.to(msg.chatid).emit("chatMessage", msg.chatid, socket.nickname, msg.content);
         });
-
-        // let code;
-        // async function setData(data){
-        //     console.log('setData is setting..');
-        //     code = data;
-        // }
-        // function doData(){
-        //     // console.log(`data = ${code}`);
-        //     socket.emit("qrcode", {"qrcode": code});
-        // }
         socket.on("qrcode", (setCode)=>{
             console.log('qrcode made!');
             // return new Promise(()=>{
@@ -147,6 +137,12 @@ module.exports = function(io){
         socket.on("verifiedcode", (data, done)=>{
             console.log('verifying code!', data.token);
             verifiedCode(data, done);
+        });
+        socket.on('myChatRoom', ()=>{
+            socket.emit('myChatRoom', [
+                {idx:1, chatid:'1232', title:'', member:['a', 'b'], owner:'hello', lock: true},
+                {idx:2, chatid:'1212', title:'topic', member:['ac', 'bc', 'cd', 'ede'], owner:'u', lock:false},
+            ]);
         });
 
         // socket.on("enter_room", (msg, done)=>{
