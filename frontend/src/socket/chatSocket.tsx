@@ -1,23 +1,46 @@
 import {socket} from './socket';
 
+export type User = {
+    userid: string,
+    nickname: string,
+    profile: number,
+}
 export type ChatRoom = {
     title: string,
     chatid: string,
     owner: string,
     manager: Array<string>,
-    members: Array<string>,
+    members: Array<User>,
     lock: boolean,
     type: string,
     max: number,
-};
-
+}
+export type InputChatRoom = {
+    chatid: string,
+    title: string,
+    addManager: Array<string>,
+    deleteManager: Array<string>,
+    enterUser: Array<User>,
+    exitUser: Array<string>,
+    lock: boolean,
+    type: string,
+}
 export type ChatData = {
     order: Array<string>,
     chatroom: Array<ChatRoom>,
 }
+export type ChatBlock = {
+    userid: string,
+    content: string,
+}
+export type ChatHistory = {
+    chatid: string,
+    list: Array<ChatBlock>,
+}
 
 export let chatroom:ChatData;
 export let publicchatroom:ChatData;
+export let chathistory:Array<ChatHistory>;
 
 socket.on('myChatRoom', (data:ChatData)=>{
     chatroom = data;
@@ -29,7 +52,7 @@ socket.on('enterChatRoom', (data:ChatRoom)=>{
     chatroom.order.push(data.chatid);
     chatroom.chatroom.push(data);
 });
-socket.on('updateChatRoom', (data)=>{
+socket.on('updateChatRoom', (data:InputChatRoom)=>{
     const idx = chatroom.order.indexOf(data.chatid);
     if (data.title)
         chatroom.chatroom[idx].title = data.title;
@@ -38,5 +61,26 @@ socket.on('updateChatRoom', (data)=>{
     if (data.type)
         chatroom.chatroom[idx].type = data.type;
     if (data.addManager)
-        chatroom.chatroom[idx].manager.push(data.addManager);
+        data.addManager.map(man=>chatroom.chatroom[idx].manager.push(man));
+    if (data.deleteManager)
+        data.deleteManager.map(man=>chatroom.chatroom[idx].manager.filter(person=> man !== person));
+    if (data.enterUser)
+        data.enterUser.map(user=>chatroom.chatroom[idx].members.push(user));
+    if (data.exitUser)
+        data.exitUser.map(user=>chatroom.chatroom[idx].members.filter(person=> user !== person.userid));
+});
+socket.on('chatHistory', (data:ChatHistory)=>{
+    const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
+    if (idx === -1){
+        chathistory.push(data);
+    }else{
+        chathistory[idx].list = data.list;
+    }
+});
+socket.on('chatHistoryUpdate', (data:ChatHistory)=>{
+    const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
+    if (idx === -1)
+        alert(Error!);
+    else
+        data.list.map(lst => chathistory[idx].list.push(lst));
 });
