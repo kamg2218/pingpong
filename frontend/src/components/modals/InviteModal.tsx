@@ -1,7 +1,9 @@
-import {socket, user, Friend} from '../../socket/socket';
+import {socket, user, Friend} from '../../socket/userSocket';
 
 export default function InviteModal(props:any){
     let list:Array<string> = [];
+    const success:string = "초대되었습니다!";
+    const failure:string = "다시 시도해주세요.";
 
     function handleClick(data:Friend){
         if (list.find(idx=> idx === data.userid))
@@ -21,6 +23,11 @@ export default function InviteModal(props:any){
         socket.emit('inviteChatRoom', {
             chatid: props.info.chatid,
             user: list,
+        }, (result:boolean)=>{
+            if (result === true)
+                alert(success);
+            else
+                alert(failure);
         });
     }
     return (
@@ -39,11 +46,11 @@ export default function InviteModal(props:any){
                         </ul>
                     </div>
                     <div className="modal-footer">
-                        <button className="btn btn-outline-dark" onClick={handleInvite}>초대하기</button>
+                        <button className="btn btn-outline-dark" data-dismiss="modal" onClick={handleInvite}>초대하기</button>
                         <button className="btn btn-outline-secondary" data-dismiss="modal">취소</button>
                     </div>
                 </div>
-            </div>					
+            </div>
         </div>
     );
 }

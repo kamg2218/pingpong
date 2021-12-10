@@ -6,7 +6,7 @@ import WaitingRoom from '../../pages/games/WaitingRoom';
 import GameRoom from '../../pages/games/GameRoom';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import { useState } from 'react';
-import { socket, user } from '../../socket/socket';
+import { socket, user } from '../../socket/userSocket';
 
 export default function Game(){
     // const first :User = {

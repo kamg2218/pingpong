@@ -1,4 +1,4 @@
-import {socket} from './socket';
+import {socket} from './userSocket';
 
 export type User = {
     userid: string,
@@ -38,7 +38,10 @@ export type ChatHistory = {
     list: Array<ChatBlock>,
 }
 
-export let chatroom:ChatData;
+export let chatroom:ChatData = {
+    order: ['1232', '1212'],
+    chatroom: [{chatid:'1232', title:'', manager:['123223'], members:[{userid: '123223', nickname:'hello', profile:2}], owner:'123223', lock: false, max:10, type: "private"}]
+};
 export let publicchatroom:ChatData;
 export let chathistory:Array<ChatHistory>;
 

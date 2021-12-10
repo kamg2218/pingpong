@@ -105,18 +105,22 @@ module.exports = function(io){
                 variable.deleteManager = msg.deleteManager;
             socket.emit("updateChatRoom", variable);
         });
-        socket.on("inviteChatRoom", (msg)=>{
+        socket.on("inviteChatRoom", (msg, done)=>{
             msg.user.forEach((id)=>{
                 //socket invite user
-                id.join(msg.chatid);
-                id.to(msg.chatid).emit("welcome", id.nickname);
+                console.log(`id = ${id}`);
+                // socket.join();
+                // socket.to(msg.chatid).emit("welcome", id.nickname);
             });
+            done(true);
         });
-        socket.on("exitChatRoom", (msg)=>{
+        socket.on("exitChatRoom", (msg, done)=>{
             socket.leave(msg.chatid, ()=>{
                 socket.to(msg.chatid).emit("exitChatRoom", socket.nickname);
             });
             console.log(`Exit ${msg.chatid}.`);
+            //삭제해야함!
+            done();
         });
         socket.on("kickChatRoom", (msg)=>{
             msg.userid.leave(msg.chatid, ()=>{

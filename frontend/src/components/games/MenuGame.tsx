@@ -1,6 +1,6 @@
 import '../../css/MenuGame.css';
 import lion from '../../icons/lion.jpg';
-import {User, Friend} from '../../socket/socket';
+import {User, Friend} from '../../socket/userSocket';
 
 export function NewList(users : Friend): any {
     //accept new friend

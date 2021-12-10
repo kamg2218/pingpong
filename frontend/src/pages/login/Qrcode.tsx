@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { socket } from '../../socket/socket';
+import { socket } from '../../socket/userSocket';
 import img1 from '../../icons/profileImage1.png';
 import { resolve } from 'dns';
 

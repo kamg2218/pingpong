@@ -1,12 +1,13 @@
 import { useState } from "react";
 
+//채팅방 입장 시, 히스토리 업데이트 필요함!
+
 export default function ChatRoom(props :any){
     const [chat, setChat] = useState('');
 
     const handleArrowClick = () => {
         props.getIdx(-1);
     }
-
     const handleInputChange = (e :any) => {
         setChat(e.target.value);
     }
