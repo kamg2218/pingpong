@@ -3,6 +3,8 @@ import '../../css/MenuChat.css';
 import MenuChatBox from './MenuChatBox';
 // import {user} from '../../socket/userSocket';
 import { chatroom } from '../../socket/chatSocket';
+import AddChatModal from '../modals/AddChatModal';
+import { user } from '../../socket/userSocket';
 
 //채팅방 추가 팝업으로 새로 만들어야 함!!!!
 
@@ -35,11 +37,15 @@ export default function MenuChat(props :any){
     return (
         <div className='container' id='chatlist'>
             <div className='d-flex justify-content-end'>
-                <button className='btn addChat' onClick={()=>{handleEnterChatRoom()}}><i className="bi bi-chat"/></button>
+                {/* <button className='btn addChat' onClick={()=>{handleEnterChatRoom()}}><i className="bi bi-chat"/></button> */}
+                <button type='button' className='btn' data-toggle='modal' data-target='#AddChatModal'>
+                    <i className="bi bi-chat"/>
+                </button>
             </div>
             <ul key='chatBoxList' className='col'>
                 {chatroomState.map(info => <MenuChatBox info={info} getIdx={props.getIdx} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
             </ul>
+            <AddChatModal></AddChatModal>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import TitleInput from '../games/TitleInput';
+import TitleInput from './TitleInput';
 import MenuChatDropdown from './MenuChatDropdown';
 import { ChatRoom } from '../../socket/chatSocket';
 

@@ -5,13 +5,13 @@ export default function InviteModal(props:any){
     const success:string = "초대되었습니다!";
     const failure:string = "다시 시도해주세요.";
 
-    function handleClick(data:Friend){
-        if (list.find(idx=> idx === data.userid))
-            list.filter(idx=> idx !== data.userid);
-        else
-            list.push(data.userid);
-    }
     function checkbox(data:Friend){
+        const handleClick = (data:Friend) => {
+            if (list.find(idx=> idx === data.userid))
+                list.filter(idx=> idx !== data.userid);
+            else
+                list.push(data.userid);
+        }
         return (
             <li className='form-check m-2' key={data.userid}>
                 <input className='form-check-input' type='checkbox' value='' onClick={()=>handleClick(data)}></input>
