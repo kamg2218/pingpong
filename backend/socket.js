@@ -4,16 +4,6 @@ const {makeCode, verifiedCode} = require('./qrcode');
 
 module.exports = function(io){
     console.log("socket starts!");
-    
-    // const io = new Server(server, {
-    //     cors: {
-    //         origin: ["https://admin.socket.io"],
-    //         credentials: true,
-    //     },
-    // });
-    // instrument(io, {
-    //     auth: false,
-    // });
 
     io.on("connection", (socket)=>{
         socket["nickname"] = "anonymous";
@@ -79,9 +69,10 @@ module.exports = function(io){
         socket.on("myChatRoom", ()=>{
             socket.emit("myChatRoom", {});
         });
-        socket.on("createChatRoom", (msg)=>{
+        socket.on("createChatRoom", (msg, done)=>{
             socket.join(msg.title);
             socket.to(msg.title).emit("welcome", socket.nickname);
+            done(true);
         });
         socket.on("enterChatRoom", (msg)=>{
             socket.join(msg.title);
