@@ -1,6 +1,7 @@
 import {useState} from 'react';
-import {user, socket, Friend} from '../../socket/userSocket';
+import {socket} from '../../socket/userSocket';
 import './AddChatModal.css';
+import InviteList from '../chat/InviteList';
 
 export default function AddChatModal(props: any){
     const formcontrol = "form-control";
@@ -102,19 +103,8 @@ export default function AddChatModal(props: any){
         else
             setOkBtn(true);
     }
-    function checkbox(data:Friend){
-        const handleClick = async (data:Friend) => {
-            if (members.find(idx => idx === data.userid))
-                members.filter(idx => idx !== data.userid);
-            else
-                members.push(data.userid);
-        }
-        return (
-            <li className='form-check m-2' key={data.userid}>
-                <input className='form-check-input' type='checkbox' value='' onClick={()=>handleClick(data)}></input>
-                <label className='form-check-label m-1'>{data.nickname}</label>
-            </li>
-        );
+    function setMembers(member:Array<string>){
+        members = member;
     }
 
     return (
@@ -151,9 +141,7 @@ export default function AddChatModal(props: any){
                         <div className="form-group">
                             <label className="col-form-label">Members</label>
                             <div className="border rounded" id="inviteDiv">
-                                <ul key='inviteBox'>
-                                    {user.friends.map(friend=>checkbox(friend))}
-                                </ul>
+                                <InviteList key="inviteBox" setMembers={setMembers}></InviteList>
                             </div>
                         </div>
 					</div>
