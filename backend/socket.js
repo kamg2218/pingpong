@@ -111,7 +111,7 @@ module.exports = function(io){
             });
             console.log(`Exit ${msg.chatid}.`);
             //삭제해야함!
-            done();
+            // done(true);
         });
         socket.on("kickChatRoom", (msg)=>{
             msg.userid.leave(msg.chatid, ()=>{

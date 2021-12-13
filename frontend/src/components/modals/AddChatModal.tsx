@@ -140,8 +140,8 @@ export default function AddChatModal(props: any){
                         </div>
                         <div className="form-group">
                             <label className="col-form-label">Members</label>
-                            <div className="border rounded" id="inviteDiv">
-                                <InviteList key="inviteBox" setMembers={setMembers}></InviteList>
+                            <div className="border rounded m-1" id="inviteDiv">
+                                <InviteList setMembers={setMembers}></InviteList>
                             </div>
                         </div>
 					</div>

@@ -1,28 +1,22 @@
-import {socket, user, Friend} from '../../socket/userSocket';
+import InviteList from '../chat/InviteList';
+import {socket} from '../../socket/userSocket';
 
 export default function InviteModal(props:any){
-    let list:Array<string> = [];
+    let members:Array<string> = [];
     const success:string = "초대되었습니다!";
     const failure:string = "다시 시도해주세요.";
 
-    function checkbox(data:Friend){
-        const handleClick = (data:Friend) => {
-            if (list.find(idx=> idx === data.userid))
-                list.filter(idx=> idx !== data.userid);
-            else
-                list.push(data.userid);
-        }
-        return (
-            <li className='form-check m-2' key={data.userid}>
-                <input className='form-check-input' type='checkbox' value='' onClick={()=>handleClick(data)}></input>
-                <label className='form-check-label m-1'>{data.nickname}</label>
-            </li>
-        );
+    function setMembers(member:Array<string>){
+        members = member;
     }
     function handleInvite(){
+        if (members.length < 1){
+            alert(failure);
+            return ;
+        }
         socket.emit('inviteChatRoom', {
             chatid: props.info.chatid,
-            user: list,
+            user: members,
         }, (result:boolean)=>{
             if (result === true)
                 alert(success);
@@ -41,9 +35,9 @@ export default function InviteModal(props:any){
                         </button>
                     </div>
                     <div className="modal-body">
-                        <ul key='inviteBox'>
-                            {user.friends.map(friend=>checkbox(friend))}
-                        </ul>
+                        <div className="border rounded m-1" id="inviteDiv">
+                            <InviteList setMembers={setMembers}></InviteList>
+                        </div>
                     </div>
                     <div className="modal-footer">
                         <button className="btn btn-outline-dark" data-dismiss="modal" onClick={handleInvite}>초대하기</button>

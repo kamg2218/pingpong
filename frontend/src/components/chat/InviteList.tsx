@@ -20,7 +20,7 @@ export default function InviteList(props:any){
     }
     
     return (
-        <ul key={props.key}>
+        <ul key="inviteList">
             {user.friends.map(friend=>checkbox(friend))}
         </ul>
     );
