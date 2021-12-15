@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import '../../css/MenuChat.css';
+// import '../../css/MenuChat.css';
 import MenuChatBox from './MenuChatBox';
-import { chatroom, ChatRoom } from '../../socket/chatSocket';
+import { chatroom, ChatRoom, chathistory } from '../../socket/chatSocket';
 import AddChatModal from '../modals/AddChatModal';
 
 export default function MenuChat(props :any){
@@ -10,9 +10,8 @@ export default function MenuChat(props :any){
     const handleTitleChange = (chatid :string, title :string) => {
         let chat:Array<ChatRoom> = chatroomState;
 
-        // console.log(chatid);
         const idx = chat.findIndex(room => room.chatid === chatid);
-        console.log(`idx = ${idx}`);
+        // console.log(`idx = ${idx}`);
         if (idx !== -1){
             chat[idx].title = title;
             setChatroom(chat);
@@ -21,19 +20,22 @@ export default function MenuChat(props :any){
     const exitChatRoom = (chatid :string) =>{
         console.log('exitChatRoom!');
         setChatroom(chatroomState.filter(room=>room.chatid !== chatid));
-        // setChatroom(chatroom.chatroom);
+		chatroom.chatroom.filter(room=> room.chatid !== chatid);
+		chathistory.filter(history=>history.chatid !== chatid);
     }
 
     return (
-        <div className='container' id='chatlist'>
+        <div className='container h-100' id='chatlist'>
             <div className='d-flex justify-content-end'>
                 <button type='button' className='btn' data-toggle='modal' data-target='#AddChatModal'>
                     <i className="bi bi-chat"/>
                 </button>
             </div>
-            <ul key='chatBoxList' className='col'>
-                {chatroomState.map(info => <MenuChatBox info={info} getIdx={props.getIdx} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
-            </ul>
+            <div className="m-1 h-90">
+                <ul key='chatBoxList' className='col list-unstyled'>
+                    {chatroomState.map(info => <MenuChatBox info={info} getIdx={props.getIdx} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
+                </ul>
+            </div>
             <AddChatModal></AddChatModal>
         </div>
     );

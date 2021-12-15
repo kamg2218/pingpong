@@ -30,8 +30,8 @@ export type User = {
 }
 
 export let user: User = {
-    id: `${socket}`,
-    nickname: 'first_user',
+    id: "123223",
+    nickname: "first_user",
     win: 3,
     lose: 2,
     profile: 1,

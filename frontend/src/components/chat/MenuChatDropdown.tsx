@@ -1,10 +1,14 @@
 import 'bootstrap/dist/js/bootstrap';
-import { socket } from '../../socket/userSocket';
-import { chatroom, chathistory } from '../../socket/chatSocket';
+import {useState} from 'react';
+import { user, socket } from '../../socket/userSocket';
 import PwdModal from '../modals/PwdModal';
 import InviteModal from '../modals/InviteModal';
 
 export default function MenuChatDropdown(props :any){
+	const [pwdDisabled] = useState(
+		props.info.owner !== user.id ? true : !props.info.lock
+	);
+
 	//change chatroom title
 	const handleTitle = () => {
 		props.setTitle(props.info.chatid, '#' + props.info.title);
@@ -12,15 +16,10 @@ export default function MenuChatDropdown(props :any){
 	//exit the chatroom
 	const handleExit = () => {
 		socket.emit('exitChatRoom', { chatid: props.info.chatid }, (result:boolean)=>{
-			if (result === true){
-				//update chatRoom
+			if (result === true)
 				props.exitChatRoom(props.info.chatid);
-				chatroom.chatroom.filter(room=> room.chatid !== props.info.chatid);
-				chathistory.filter(history=>history.chatid !== props.info.chatid);
-				props.exitChatRoom(props.info.chatid);
-			}
-		}
-	);}
+		});
+	}
 
     return (
         <div id={props.info.chatid} className="dropdown">
@@ -30,11 +29,10 @@ export default function MenuChatDropdown(props :any){
 	        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<li className='dropdown-item' key='title'>
 					{/* disabled={props.info.owner !== user.id} */}
-					<button className='btn' key='title' onClick={()=>handleTitle()}>title</button>
+					<button className='btn' key='title' onClick={()=>handleTitle()} disabled={props.info.owner !== user.id}>title</button>
 				</li>
 				<li className='dropdown-item' key='pwd'>
-					{/* disabled={props.info.owner !== user.id} */}
-					<button type='button' className='btn' data-toggle='modal' data-target='#pwdModal'>password</button>
+					<button type='button' className='btn' data-toggle='modal' data-target='#pwdModal' disabled={pwdDisabled}>password</button>
 				</li>
 				<li className='dropdown-item' key='invite'>
 					<button className='btn' data-toggle='modal' data-target='#inviteModal'>invite</button>

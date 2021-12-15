@@ -40,10 +40,10 @@ export type ChatHistory = {
 
 export let chatroom:ChatData = {
     order: ['1232'],
-    chatroom: [{chatid:'1232', title:'', manager:['123223'], members:[{userid: '123223', nickname:'hello', profile:2}], owner:'123223', lock: false, max:10, type: "private"}]
+    chatroom: [{chatid:'1232', title:'', manager:['123223'], members:[{userid: '123223', nickname:'first_user', profile:2}], owner:'123223', lock: false, max:10, type: "private"}]
 };
 export let publicchatroom:ChatData;
-export let chathistory:Array<ChatHistory>;
+export let chathistory:Array<ChatHistory> = [];
 
 socket.on('myChatRoom', (data:ChatData)=>{
     chatroom = data;

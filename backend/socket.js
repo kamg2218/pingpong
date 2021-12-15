@@ -110,8 +110,7 @@ module.exports = function(io){
                 socket.to(msg.chatid).emit("exitChatRoom", socket.nickname);
             });
             console.log(`Exit ${msg.chatid}.`);
-            //삭제해야함!
-            // done(true);
+            done(true);
         });
         socket.on("kickChatRoom", (msg)=>{
             msg.userid.leave(msg.chatid, ()=>{

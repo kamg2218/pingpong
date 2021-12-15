@@ -37,19 +37,22 @@ export default function MenuChatBox(props :any){
         if (idx !== -1)
             props.getIdx(idx);
     }
+    const exitChatRoom = (chatid: string) => {
+        props.exitChatRoom(chatid);
+    }
 
     return(
-        <li key={props.info.chatid} className='btn btn-light row col-12 m-1' onDoubleClick={() => handleDoubleClick(props.info.chatid)}>
+        <li key={props.info.chatid} className='btn border rounded row col-12 m-1' onDoubleClick={() => handleDoubleClick(props.info.chatid)}>
             <div className='d-flex' id='box'>
-                <div className='text-left font-weight-bold m-2' id='boxTitle'>
+                <div className='text-left font-weight-bold m-1 overflow-hidden' id='boxTitle'>
                     {props.info.title[0] === '#' ?
                         <TitleInput setTitle={handleTitle} info={props.info}/>
                             : (props.info.title !== "" ? props.info.title : memberlist(props.info.members))
                     }
                 </div>
-                <div className='m-2 font-weight-light member' id='boxMembers'>{props.info.title[0] === '#' ?? props.info.member.length}</div>
+                {/* <div className='font-weight-light member' id='boxMembers'>{props.info.title[0] === '#' ?? props.info.member.length}</div> */}
             </div>
-            <MenuChatDropdown info={props.info} setTitle={handleTitle} exitChatRoom={props.exitChatRoom}/>
+            <MenuChatDropdown info={props.info} setTitle={handleTitle} exitChatRoom={exitChatRoom}/>
         </li>
     );
 }

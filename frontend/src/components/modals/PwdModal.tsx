@@ -30,7 +30,6 @@ export default function PwdModal(props: any){
 			else
 				alert(failure);
 		});
-		setPwd('');
 	}
     return (
         <div className="modal fade" id="pwdModal" role="dialog" tabIndex={0} aria-labelledby="pwdModalLabel" aria-hidden="true">

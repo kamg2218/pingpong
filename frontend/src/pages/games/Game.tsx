@@ -1,4 +1,4 @@
-import '../../css/Game.css';
+// import '../../css/Game.css';
 import MenuGame from '../../components/games/MenuGame';
 import MenuChat from '../../components/chat/MenuChat';
 import ChatRoom from '../../components/chat/ChatRoom';
@@ -9,16 +9,6 @@ import { useState } from 'react';
 import { socket, user } from '../../socket/userSocket';
 
 export default function Game(){
-    // const first :User = {
-    //     id: 'ab',
-    //     nick: 'first',
-    //     profile: '../../icons/emoji-wink.svg',
-    //     friendList: [{nick: 'first', state: true}, {nick: 'second', state: false}, {nick: 'second', state: false},{nick: 'second', state: false},{nick: 'second', state: false},{nick: 'second', state: false},{nick: 'second', state: false}, {nick: 'second', state: false},{nick: 'second', state: false},{nick: 'second', state: false}],
-    //     newFriendList: [{nick: 'third', state: false}],
-    //     win: 3,
-    //     lose: 1
-    // }
-
     let first = user;
     const [chatIdx, setIdx] = useState(-1);
     const getIdx = (idx :number) =>{
@@ -35,30 +25,36 @@ export default function Game(){
 
     return (
         <BrowserRouter>
-            <h1 id='gameHeader'>PONG CONTEST GAME</h1>
-            <div className='d-flex' id='gameContents'>
-                <div id='gameTab'>
-                    <nav>
-                        <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button className="nav-link active" id="nav-game-tab" data-bs-toggle="tab" data-bs-target="#nav-game" type="button" role="tab" aria-controls="nav-game" aria-selected="true">Game</button>
-                            <button className="nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
+            <div className='container m-0 p-0'>
+                <div className='col'>
+                    <h1 className='row justify-content-center' id='gameHeader'>PONG CONTEST GAME</h1>
+                    <div className='row' id='gameContents'>
+                        <div className='col-xs-10 col-sm-4 col-lg-3' id='gameTab'>
+                            <nav>
+                                <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <button className="nav-link active" id="nav-game-tab" data-bs-toggle="tab" data-bs-target="#nav-game" type="button" role="tab" aria-controls="nav-game" aria-selected="true">Game</button>
+                                    <button className="nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
+                                </div>
+                            </nav>
+                            <div className="tab-content" id="nav-tabContent">
+                                <div key='game' className="tab-pane fade show active" id="nav-game" role="tabpanel" aria-labelledby="nav-game-tab">
+                                    <MenuGame profile={first.profile} id={first.id} nickname={first.nickname} friends={first.friends} newfriends={first.newfriends} win={first.win} lose={first.lose} level={first.level} levelpoint={first.levelpoint} levelnextpoint={first.levelnextpoint} blacklist={first.blacklist} qrcode={first.qrcode} />
+                                    <button onClick={handleBtn}>BTN</button>
+                                    {/* <MenuGame info={user} /> */}
+                                </div>
+                                <div key='chat' className="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
+                                    {chatIdx === -1 ? <MenuChat nick={first.nickname} getIdx={getIdx}/> : <ChatRoom nick={first.nickname} idx={chatIdx} getIdx={getIdx}/>}
+                                </div>
+                            </div>
                         </div>
-                    </nav>
-                    <div className="tab-content" id="nav-tabContent">
-                        <div key='game' className="tab-pane fade show active" id="nav-game" role="tabpanel" aria-labelledby="nav-game-tab">
-                            <MenuGame profile={first.profile} id={first.id} nickname={first.nickname} friends={first.friends} newfriends={first.newfriends} win={first.win} lose={first.lose} level={first.level} levelpoint={first.levelpoint} levelnextpoint={first.levelnextpoint} blacklist={first.blacklist} qrcode={first.qrcode} />
-                            <button onClick={handleBtn}>BTN</button>
-                            {/* <MenuGame info={user} /> */}
-                        </div>
-                        <div key='chat' className="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
-                            {chatIdx === -1 ? <MenuChat nick={first.nickname} getIdx={getIdx}/> : <ChatRoom nick={first.nickname} idx={chatIdx} getIdx={getIdx}/>}
+                        <div className='col'>
+                            <Switch>
+                                <Route path='/game/waiting'><WaitingRoom/></Route>
+                                <Route path='/game/:id'><GameRoom/></Route>
+                            </Switch>
                         </div>
                     </div>
                 </div>
-                <Switch>
-                    <Route path='/game/waiting'><WaitingRoom/></Route>
-                    <Route path='/game/:id'><GameRoom/></Route>
-                </Switch>
             </div>
         </BrowserRouter>
     );
