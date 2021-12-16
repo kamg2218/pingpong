@@ -43,7 +43,7 @@ export default function PwdModal(props: any){
                     </div>
                     <div className="modal-body">
 						<div className="input-group p-2">
-							<input className="form-control" type="text" placeholder='ex)1234' onChange={handlePwd}></input>
+							<input className="form-control" type="password" placeholder='ex)1234' onChange={handlePwd}></input>
 							<button className='btn btn-outline-secondary' onClick={handlePwdOK}>확인</button>
 						</div>
 					</div>
