@@ -1,12 +1,17 @@
 import { useState, useRef } from "react";
-import {socket} from '../../socket/userSocket';
-import { chatroom } from '../../socket/chatSocket';
+import {socket, user} from '../../socket/userSocket';
+import { chatroom, chathistory } from '../../socket/chatSocket';
+import ChatBox from "./ChatBox";
+import MyChatBox from "./MyChatBox";
 
 //채팅방 입장 시, 히스토리 업데이트 필요함!
 
 export default function ChatRoom(props :any){
     const [chat, setChat] = useState("");
     const chatInput = useRef(null);
+    const chatid = chatroom.order[props.idx];
+    const history = chathistory.find(data => data.chatid === chatid);
+    // const lastchat = `#${history?.list.length}`;
 
     const handleArrowClick = () => {
         props.getIdx(-1);
@@ -25,8 +30,8 @@ export default function ChatRoom(props :any){
                 alert('mute!!!');
         });
         console.log(chatInput.current);
-        chatInput.current?.reset();
-        setChat("");
+        // chatInput.current?.reset();
+        // setChat("");
         
     }
     const handleInputKeypress = (event:any) => {
@@ -36,9 +41,16 @@ export default function ChatRoom(props :any){
     }
 
     return (
-        <div className='border' id={props.idx}>
-            <button className='btn m-2' onClick={()=>handleArrowClick()}><i className='bi bi-arrow-left'></i></button>
-            <div className='border chatBox'>{chat}</div>
+        <div className='border h-100' key={`chatroom${props.idx}`}>
+            <button className='btn' onClick={()=>handleArrowClick()}><i className='bi bi-arrow-left'></i></button>
+            <div className="border h-75 overflow-scroll">
+                {history?.list.map((data, idx)=>{
+                    if (data.userid === user.id)
+                        return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
+                    else
+                        return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>
+                })}
+            </div>
             <div className='d-flex'>
                 <input className='col-10' onChange={(e)=>handleInputChange(e)} onKeyPress={handleInputKeypress} ref={chatInput}></input>
                 <button className='btn btn-outline-dark col-2 p-1' onClick={handleSendBtn}><i className='bi bi-send'></i></button>

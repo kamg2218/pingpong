@@ -1,25 +1,23 @@
-#gameHeader{
-    text-align: center;
-}
-
-#gameContents{
+/* #gamelobby{
     width: 100vw;
     height: 100vh;
+} */
+#gameContents{
+    /* height: 100vh; */
     /* border-style: solid; */
 }
-
 #gameTab{
-    width: 15rem;
-    height: 100%;
+    /* width: 15rem; */
+    /* height: 100vh; */
     /* border-style: solid; */
 }
-
 #nav-game{
-    height: 100%;
-    background-color: cornsilk;
+    height: 100vh;
+    /* background-color: cornsilk; */
     /* border-style: solid; */
 }
-
 #nav-chat{
-    background-color: ivory;
+    height: 100vh;
+    /* background-color: ivory; */
+    /* border-style: solid; */
 }

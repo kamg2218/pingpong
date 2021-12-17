@@ -39,11 +39,11 @@ export type ChatHistory = {
 }
 
 export let chatroom:ChatData = {
-    order: ['1232'],
-    chatroom: [{chatid:'1232', title:'', manager:['123223'], members:[{userid: '123223', nickname:'first_user', profile:2}], owner:'123223', lock: false, max:10, type: "private"}]
+    order: ['1232', '1233424'],
+    chatroom: [{chatid:'1232', title:'', manager:['123223'], members:[{userid: '2535', nickname:'second_user', profile:2}], owner:'123223', lock: false, max:10, type: "private"}, {chatid:'1233424', title:'', manager:['2535'], members:[{userid: '2535', nickname:'third_user', profile:2}], owner:'2535', lock: false, max:10, type: "private"}]
 };
 export let publicchatroom:ChatData;
-export let chathistory:Array<ChatHistory> = [];
+export let chathistory:Array<ChatHistory> = [{chatid: '1232', list:[{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"}]}, {chatid:'1233424', list:[]}];
 
 socket.on('myChatRoom', (data:ChatData)=>{
     chatroom = data;

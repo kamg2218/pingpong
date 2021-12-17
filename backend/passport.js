@@ -29,7 +29,7 @@ FortyTwoVerify = (req, accessToken, refreshToken, profile, cb) =>{
         refresh: refreshToken,
     };
     // console.log(user);
-    // console.log(profile);
+    console.log(profile);
     console.log(`accessToken : ${accessToken}`);
     console.log(`refreshToken: ${refreshToken}`);
     return cb(null, user);
