@@ -50,6 +50,8 @@ socket.on('myChatRoom', (data:ChatData)=>{
 });
 socket.on('publicChatRoom', (data:ChatData)=>{
     publicchatroom = data;
+    // console.log(data);
+    // console.log(publicchatroom);
 });
 socket.on('enterChatRoom', (data:ChatRoom)=>{
     chatroom.order.push(data.chatid);

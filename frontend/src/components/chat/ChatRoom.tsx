@@ -41,7 +41,7 @@ export default function ChatRoom(props :any){
     }
 
     return (
-        <div className='border h-100' key={`chatroom${props.idx}`}>
+        <div className='h-100' key={`chatroom${props.idx}`}>
             <button className='btn' onClick={()=>handleArrowClick()}><i className='bi bi-arrow-left'></i></button>
             <div className="border h-75 overflow-scroll">
                 {history?.list.map((data, idx)=>{

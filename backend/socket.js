@@ -138,6 +138,18 @@ module.exports = function(io){
                 {idx:2, chatid:'1212', title:'topic', member:['ac', 'bc', 'cd', 'ede'], owner:'u', lock:false},
             ]);
         });
+        socket.on("publicChatRoom", ()=>{
+            socket.emit("publicChatRoom", {
+               order: ['1222', '18473', '18474', '18475', '18476'],
+               chatroom: [
+                    {title: 'first_room', chatid:'1222', owner:'183472', manager:['183472'], members:[{userid: '183472', nickname: 'hihihi', profile: 5}], lock: false, type: 'public', max:10},
+                    {title: 'second_room', chatid:'18473', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
+                    {title: 'second_room', chatid:'18474', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
+                    {title: 'second_room', chatid:'18475', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
+                    {title: 'second_room', chatid:'18476', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100}
+                ]
+            });
+        });
 
         // socket.on("enter_room", (msg, done)=>{
         //     socket.join(msg);

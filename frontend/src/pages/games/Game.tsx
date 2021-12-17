@@ -38,7 +38,7 @@ export default function Game(){
                                     <button className="nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
                                 </div>
                             </nav>
-                            <div className="tab-content border" id="nav-tabContent">
+                            <div className="tab-content" id="nav-tabContent">
                                 <div key='game' className="tab-pane fade show active" id="nav-game" role="tabpanel" aria-labelledby="nav-game-tab">
                                     <MenuGame profile={first.profile} id={first.id} nickname={first.nickname} friends={first.friends} newfriends={first.newfriends} win={first.win} lose={first.lose} level={first.level} levelpoint={first.levelpoint} levelnextpoint={first.levelnextpoint} blacklist={first.blacklist} qrcode={first.qrcode} />
                                     {/* <button onClick={handleBtn}>BTN</button> */}

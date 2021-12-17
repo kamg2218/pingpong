@@ -3,6 +3,7 @@ import { useState } from 'react';
 import MenuChatBox from './MenuChatBox';
 import { chatroom, ChatRoom, chathistory } from '../../socket/chatSocket';
 import AddChatModal from '../modals/AddChatModal';
+import PublicChatModal from '../modals/PublicChatModal'
 
 export default function MenuChat(props :any){
     const [chatroomState, setChatroom] = useState(chatroom.chatroom);
@@ -25,10 +26,13 @@ export default function MenuChat(props :any){
     }
 
     return (
-        <div className='container border' id='chatlist'>
+        <div className='container' id='chatlist'>
             <div className='d-flex justify-content-end'>
                 <button type='button' className='btn' data-toggle='modal' data-target='#AddChatModal'>
                     <i className="bi bi-chat"/>
+                </button>
+                <button type='button' className='btn' data-toggle='modal' data-target='#PublicChatModal'>
+                    <i className="bi bi-unlock"/>
                 </button>
             </div>
             <div className="m-1 h-90">
@@ -37,6 +41,7 @@ export default function MenuChat(props :any){
                 </ul>
             </div>
             <AddChatModal></AddChatModal>
+            <PublicChatModal></PublicChatModal>
         </div>
     );
 }

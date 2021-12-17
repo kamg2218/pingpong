@@ -3,7 +3,7 @@ import {socket} from '../../socket/userSocket';
 import './AddChatModal.css';
 import InviteList from '../chat/InviteList';
 
-export default function AddChatModal(props: any){
+export default function AddChatModal(){
     const formcontrol = "form-control";
     const formcontrolvalid = "form-control is-valid";
     const formcontrolinvalid = "form-control is-invalid";

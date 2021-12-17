@@ -40,7 +40,6 @@ export default function MenuChatBox(props :any){
     const exitChatRoom = (chatid: string) => {
         props.exitChatRoom(chatid);
     }
-    console.log(`chatid = ${props.info.chatid}`);
 
     return(
         <li key={props.info.chatid} className='btn border rounded row col-12 m-1' onDoubleClick={() => handleDoubleClick(props.info.chatid)}>
