@@ -5,10 +5,11 @@ import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 
 //채팅방 입장 시, 히스토리 업데이트 필요함!
+//각 주소 get으로 표시할 필요가 있음!
 
 export default function ChatRoom(props :any){
     const [chat, setChat] = useState("");
-    const chatInput = useRef(null);
+    const chatInput = useRef<any>(null);
     const chatid = chatroom.order[props.idx];
     const history = chathistory.find(data => data.chatid === chatid);
     // const lastchat = `#${history?.list.length}`;
@@ -30,9 +31,7 @@ export default function ChatRoom(props :any){
                 alert('mute!!!');
         });
         console.log(chatInput.current);
-        // chatInput.current?.reset();
-        // setChat("");
-        
+        chatInput.current?.reset();        
     }
     const handleInputKeypress = (event:any) => {
         if (event.key === 'Enter'){
@@ -51,10 +50,10 @@ export default function ChatRoom(props :any){
                         return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>
                 })}
             </div>
-            <div className='d-flex'>
-                <input className='col-10' onChange={(e)=>handleInputChange(e)} onKeyPress={handleInputKeypress} ref={chatInput}></input>
-                <button className='btn btn-outline-dark col-2 p-1' onClick={handleSendBtn}><i className='bi bi-send'></i></button>
-            </div>
+            <form className='d-flex m-0 p-0 border' ref={chatInput}>
+                <input className='col-10' onChange={(e)=>handleInputChange(e)} onKeyPress={handleInputKeypress}></input>
+                <button className='btn btn-outline-dark col-2' onClick={handleSendBtn}><i className='bi bi-send'></i></button>
+            </form>
         </div>
     );
 }

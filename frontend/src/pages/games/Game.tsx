@@ -11,7 +11,6 @@ import { socket, user } from '../../socket/userSocket';
 //최초 1회 - 
 
 export default function Game(){
-    let first = user;
     const [chatIdx, setIdx] = useState(-1);
     const getIdx = (idx :number) =>{
         setIdx(idx);
@@ -40,12 +39,12 @@ export default function Game(){
                             </nav>
                             <div className="tab-content" id="nav-tabContent">
                                 <div key='game' className="tab-pane fade show active" id="nav-game" role="tabpanel" aria-labelledby="nav-game-tab">
-                                    <MenuGame profile={first.profile} id={first.id} nickname={first.nickname} friends={first.friends} newfriends={first.newfriends} win={first.win} lose={first.lose} level={first.level} levelpoint={first.levelpoint} levelnextpoint={first.levelnextpoint} blacklist={first.blacklist} qrcode={first.qrcode} />
+                                    <MenuGame></MenuGame>
                                     {/* <button onClick={handleBtn}>BTN</button> */}
                                     {/* <MenuGame info={user} /> */}
                                 </div>
                                 <div key='chat' className="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
-                                    {chatIdx === -1 ? <MenuChat nick={first.nickname} getIdx={getIdx}/> : <ChatRoom nick={first.nickname} idx={chatIdx} getIdx={getIdx}/>}
+                                    {chatIdx === -1 ? <MenuChat nick={user.nickname} getIdx={getIdx}/> : <ChatRoom nick={user.nickname} idx={chatIdx} getIdx={getIdx}/>}
                                 </div>
                             </div>
                         </div>

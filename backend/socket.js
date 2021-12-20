@@ -27,19 +27,19 @@ module.exports = function(io){
         socket.on("newFriend", (msg)=>{
             if (msg.result === true){
                 //a
-                socket.emit("newFriend", {
+                socket.emit("addFriend", {
                     "userid": msg.userid,
                     "nickname": "NewFriend",
                     "profile": 4,
                     "onoff": false,
                 });
                 //b
-                socket.to(msg.userid).emit("newFriend", {
-                    "userid": socket,
-                    "nickname": socket.nickname,
-                    "profile": socket.profile,
-                    "onoff": socket.onoff,
-                });
+                // socket.to(msg.userid).emit("newFriend", {
+                //     "userid": socket,
+                //     "nickname": socket.nickname,
+                //     "profile": socket.profile,
+                //     "onoff": socket.onoff,
+                // });
             }
         });
         socket.on("addFriend", (msg)=>{

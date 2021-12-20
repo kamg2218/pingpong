@@ -1,54 +1,62 @@
-import '../../css/MenuGame.css';
-import lion from '../../icons/lion.jpg';
-import {User, Friend} from '../../socket/userSocket';
+import { useState } from 'react'
+import '../../css/MenuGame.css'
+import Profile from '../../icons/Profile'
+import {Friend, user, socket} from '../../socket/userSocket'
 
-export function NewList(users : Friend): any {
+export function NewList(person: Friend): any {
+    const [newone, setNewone] = useState(user.newfriends);
+
+    const handleNewFriend = (result: boolean) => {
+        socket.emit("newFriend", {
+            userid: person.userid,
+            result: result
+        });
+        user.newfriends.filter(p => p.userid !== person.userid);
+        setNewone(user.newfriends);
+    }
     //accept new friend
     const handleCheck = () => {
+        handleNewFriend(true);
     }
     //decline new friend
     const handleCross = () => {
+        handleNewFriend(false);
     }
 
     return (
-        <div className='d-flex mx-3 col-8' key={users.nickname}>
-            <div className='col-9 text-start' id='friendNick'>
-                {users.nickname}
+        <div className='d-flex m-0 p-2' id='friendonoff' key={person.nickname}>
+            <div className='col-7 text-start' id='friendNick'>
                 <i className="bi bi-exclamation-lg" id='exclamationMark'></i>
+                {person.nickname}
             </div>
-            <i className="bi bi-check-lg" id='checkMark' onClick={handleCheck}/>
-            <i className="bi bi-x-lg" id='crossMark' onClick={handleCross}/>
+            <i className="bi bi-check-lg mx-1" id='checkMark' onClick={handleCheck}/>
+            <i className="bi bi-x-lg mx-1" id='crossMark' onClick={handleCross}/>
         </div>
     );
 }
 
-export function OldList(users : Friend): any {
+export function OldList(person: Friend): any {
     return (
-        <div className='d-flex mx-3' key={users.nickname}>
-            <div className='col-9 text-start' id='friendNick'>{users.nickname}</div>
-            {users.onoff ? <i className="bi bi-circle-fill"/> : <i className="bi bi-circle"/>}
+        <div className='btn d-flex m-0 p-1' id='friendonoff' key={person.nickname}>
+            <div className='col-8 text-start' id='friendNick'>{person.nickname}</div>
+            {person.onoff ? <i className="bi bi-circle-fill"/> : <i className="bi bi-circle"/>}
         </div>
     );
 }
 
-export default function MenuGame({profile, id, nickname, friends, newfriends, win, lose, level, levelpoint, levelnextpoint, blacklist }: User){
+export default function MenuGame(){
     return (
-        <div id='menu'>
-            {/* <div>{profile ?? 'NONE'}</div> */}
-            {/* <img src={process.env.PUBLIC_URL + '/icons/lion.jpg'} className="img-circle lion" alt="Cinque Terre"/> */}
-            <img src={lion} className="img-circle m-4 lion" alt="Cinque Terre"/>
-            {/* <div>{id}</div> */}
-            <div id='menuNick'>{nickname}</div>
-            <div>
-                <label className='mx-3 my-2' id='menuRecord'>win : lose</label>
-                <div id='winLose'>{win} : {lose}</div>
+        <div className='container m-1 p-2' id='menu'>
+            <div className='col justify-content-center'>
+                <img src={Profile(user.profile)} className="row mx-auto my-4" alt="profile" id="profile"/>
+                <div id='menuNick' className='row justify-content-center'>{user.nickname}</div>
+                <label className='row mx-3 my-2 justify-content-center' id='menuRecord'>WIN : LOSE</label>
+                <div className='row justify-content-center' id='winLose'>{user.win} : {user.lose}</div>
+                <div className='row scroll-box m-1 p-1 border justify-content-center' id='friendList'>
+                    {user.newfriends?.map(people => (NewList(people)))}
+                    {user.friends.map(people => (OldList(people)))}
+                </div>
             </div>
-            <div id='friendList' className='scroll-box m-2'>
-                {newfriends?.map(user => (NewList(user)))}
-                {friends.map(user => (OldList(user)))}
-                {/* <MakeList User={user}/> ))} 왜 오류가 나는 거지??*/}
-            </div>
-            <br/>
         </div>
     );
 }
