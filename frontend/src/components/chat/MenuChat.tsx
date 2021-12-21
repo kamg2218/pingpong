@@ -26,7 +26,7 @@ export default function MenuChat(props :any){
     }
 
     return (
-        <div className='container' id='chatlist'>
+        <div key='menuchat' className='container' id='chatlist'>
             <div className='d-flex justify-content-end'>
                 <button type='button' className='btn' data-toggle='modal' data-target='#AddChatModal'>
                     <i className="bi bi-chat"/>
@@ -37,7 +37,7 @@ export default function MenuChat(props :any){
             </div>
             <div className="m-1 h-90">
                 <ul key='chatBoxList' className='col list-unstyled'>
-                    {chatroomState.map(info => <MenuChatBox info={info} getIdx={props.getIdx} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
+                    {chatroomState.map(info => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} getIdx={props.getIdx} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
                 </ul>
             </div>
             <AddChatModal></AddChatModal>

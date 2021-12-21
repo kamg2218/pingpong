@@ -42,9 +42,9 @@ export default function MenuChatBox(props :any){
     }
 
     return(
-        <li key={props.info.chatid} className='btn border rounded row col-12 m-1' onDoubleClick={() => handleDoubleClick(props.info.chatid)}>
-            <div className='d-flex' id='box'>
-                <div className='text-left font-weight-bold m-1 overflow-hidden' id='boxTitle'>
+        <li key={`menuchatbox_${props.info.chatid}`} className='btn border rounded row col-12 m-1' onDoubleClick={() => handleDoubleClick(props.info.chatid)}>
+            <div key={`box_${props.info.chatid}`} className='d-flex' id='box'>
+                <div key={`title_${props.info.chatid}`} className='text-left font-weight-bold m-1 overflow-hidden' id='boxTitle'>
                     {props.info.title[0] === '#' ?
                         <TitleInput setTitle={handleTitle} info={props.info}/>
                             : (props.info.title !== "" ? props.info.title : memberlist(props.info.members))

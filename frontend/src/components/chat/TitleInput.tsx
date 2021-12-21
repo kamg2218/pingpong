@@ -15,7 +15,7 @@ export default function TitleInput(props :any){
     }
 
     return (
-        <div className='d-flex' id='titleInput'>
+        <div key={`titleInput_${props.info.chatid}`} className='d-flex' id='titleInput'>
             <input className='col-12' value={title} placeholder={title} onChange={e => handleTitleChange(e)} onKeyPress={e=>handleKeyPress(e)}></input>
             <button className='btn' onClick={handleTitleClick}>
                 <i className="bi bi-check-lg"/>
