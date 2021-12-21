@@ -5,7 +5,7 @@ import { chatroom, ChatRoom, chathistory } from '../../socket/chatSocket';
 import AddChatModal from '../modals/AddChatModal';
 import PublicChatModal from '../modals/PublicChatModal'
 
-export default function MenuChat(props :any){
+export default function MenuChat(){
     const [chatroomState, setChatroom] = useState(chatroom.chatroom);
    
     const handleTitleChange = (chatid :string, title :string) => {
@@ -37,7 +37,7 @@ export default function MenuChat(props :any){
             </div>
             <div className="m-1 h-90">
                 <ul key='chatBoxList' className='col list-unstyled'>
-                    {chatroomState.map(info => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} getIdx={props.getIdx} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
+                    {chatroomState.map(info => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
                 </ul>
             </div>
             <AddChatModal></AddChatModal>

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from 'react-router-dom'
 import {socket, user} from '../../socket/userSocket';
 import { chatroom, chathistory } from '../../socket/chatSocket';
 import ChatBox from "./ChatBox";
@@ -14,9 +15,7 @@ export default function ChatRoom(props :any){
     const history = chathistory.find(data => data.chatid === chatid);
     // const lastchat = `#${history?.list.length}`;
 
-    const handleArrowClick = () => {
-        props.getIdx(-1);
-    }
+    console.log(props.idx);
     const handleInputChange = (e :any) => {
         setChat(e.target.value);
     }
@@ -40,8 +39,8 @@ export default function ChatRoom(props :any){
     }
 
     return (
-        <div className='h-100' key={`chatroom${props.idx}`}>
-            <button className='btn' onClick={()=>handleArrowClick()}><i className='bi bi-arrow-left'></i></button>
+        <div className='h-100 p-2' key={`chatroom${props.idx}`}>
+            <Link to='/game/chat' className='text-decoration-none text-reset m-1'><i className='bi bi-arrow-left'></i></Link>
             <div className="border h-75 overflow-scroll">
                 {history?.list.map((data, idx)=>{
                     if (data.userid === user.id)

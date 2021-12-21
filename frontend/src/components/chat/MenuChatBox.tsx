@@ -1,14 +1,8 @@
-import { useState } from 'react';
-import TitleInput from './TitleInput';
-import MenuChatDropdown from './MenuChatDropdown';
-import { chatroom, User } from '../../socket/chatSocket';
-
-// type Info = {
-//     idx: number,
-//     chatid: string,
-//     title: string,
-//     member: Array<string>
-// }
+import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import TitleInput from './TitleInput'
+import MenuChatDropdown from './MenuChatDropdown'
+import { chatroom, User } from '../../socket/chatSocket'
 
 function memberlist(member: Array<User>) : string {
     let list :string = '';
@@ -26,7 +20,8 @@ function memberlist(member: Array<User>) : string {
 }
 
 export default function MenuChatBox(props :any){
-    const [title, setTitle] = useState(props.info.title);
+    const [title, setTitle] = useState(props.info.title)
+    const history = useHistory()
 
     const handleTitle = (chatid:string, newTitle: string) => {
         setTitle(newTitle);
@@ -35,7 +30,7 @@ export default function MenuChatBox(props :any){
     const handleDoubleClick = (chatid: string) => {
         const idx = chatroom.order.indexOf(chatid);
         if (idx !== -1)
-            props.getIdx(idx);
+            history.push(`/game/chat/${idx}`)
     }
     const exitChatRoom = (chatid: string) => {
         props.exitChatRoom(chatid);
