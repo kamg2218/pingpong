@@ -6,21 +6,18 @@ import {Friend, user, socket} from '../../socket/userSocket'
 export function NewList(person: Friend): any {
     const [newone, setNewone] = useState(user.newfriends);
 
+    console.log(person);
     const handleNewFriend = (result: boolean) => {
+        console.log(result);
         socket.emit("newFriend", {
             userid: person.userid,
             result: result
+        }, ()=>{
+            user.newfriends.filter(p => p.userid !== person.userid);
+            // setNewone(newone.filter(p => p.userid !== person.userid));
+            setNewone(user.newfriends);   
         });
-        user.newfriends.filter(p => p.userid !== person.userid);
-        setNewone(user.newfriends);
-    }
-    //accept new friend
-    const handleCheck = () => {
-        handleNewFriend(true);
-    }
-    //decline new friend
-    const handleCross = () => {
-        handleNewFriend(false);
+        console.log(newone);
     }
 
     return (
@@ -29,8 +26,8 @@ export function NewList(person: Friend): any {
                 <i className="bi bi-exclamation-lg" id='exclamationMark'></i>
                 {person.nickname}
             </div>
-            <i className="bi bi-check-lg mx-1" id='checkMark' onClick={handleCheck}/>
-            <i className="bi bi-x-lg mx-1" id='crossMark' onClick={handleCross}/>
+            <i className="bi bi-check-lg mx-1" id='checkMark' onClick={()=>handleNewFriend(true)}/>
+            <i className="bi bi-x-lg mx-1" id='crossMark' onClick={()=>handleNewFriend(false)}/>
         </div>
     );
 }
@@ -48,7 +45,7 @@ export default function MenuGame(){
     return (
         <div className='container m-1 p-2' id='menu'>
             <div className='col justify-content-center'>
-                <img src={Profile(user.profile)} className="row mx-auto my-4" alt="profile" id="profile"/>
+                <img src={Profile(user.profile ?? 1)} className="row mx-auto my-4" alt="profile" id="profile"/>
                 <div id='menuNick' className='row justify-content-center'>{user.nickname}</div>
                 <label className='row mx-3 my-2 justify-content-center' id='menuRecord'>WIN : LOSE</label>
                 <div className='row justify-content-center' id='winLose'>{user.win} : {user.lose}</div>

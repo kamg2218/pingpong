@@ -1,8 +1,8 @@
 import '../../css/Game.css';
-import MenuGame from '../../components/games/MenuGame'
+import MenuGame from './MenuGame'
 import { Link } from 'react-router-dom'
 
-export default function GameMenu(){
+export default function SideMenuGame(){
     return (
         <div id='gameTab'>
             <div className='row'>

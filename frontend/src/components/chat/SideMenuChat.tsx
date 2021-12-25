@@ -1,13 +1,13 @@
 import '../../css/Game.css';
-import MenuChat from '../../components/chat/MenuChat'
-import ChatRoom from '../../components/chat/ChatRoom'
+import MenuChat from './MenuChat'
+import ChatRoom from './ChatRoom'
 import { Switch, Route, Link, useParams } from 'react-router-dom'
 
 type param = {
     id?: String
 }
 
-export default function ChatMenu(){
+export default function SideMenuChat(){
     function ChatRoomIdx(){
         let idx:param = useParams();
         return <ChatRoom idx={idx.id}></ChatRoom>

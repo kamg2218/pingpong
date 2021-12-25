@@ -29,20 +29,35 @@ export type User = {
     // history?: Array<History>,
 }
 
+// export let user: User = {
+//     id: "123223",
+//     nickname: "first_user",
+//     win: 3,
+//     lose: 2,
+//     profile: 1,
+//     level: "",
+//     levelpoint: 0,
+//     levelnextpoint: 100,
+//     friends: [{userid:'121', nickname: 'first', profile: 1, onoff: true}, {userid:'122', nickname: 'second', profile: 2, onoff: false}, {userid:'112', nickname: 'third', profile: 0, onoff: false},{userid:'111', nickname: 'forth', profile: 3, onoff: false},{userid:'101', nickname: 'fifth', profile: 4, onoff: false}, {userid:'2232', nickname: 'se3th', profile: 4, onoff: false}, {userid:'4253', nickname: 'fisdkesh', profile: 1, onoff: false}],
+//     newfriends: [{userid:'1211111', nickname: 'newbie', profile: 2, onoff: false}],
+//     blacklist: [],
+//     qrcode: '',
+//     // history: [],
+// };
+
 export let user: User = {
-    id: "123223",
-    nickname: "first_user",
-    win: 3,
-    lose: 2,
+    id: '',
+    nickname: '',
+    win: 0,
+    lose: 0,
     profile: 1,
     level: "",
     levelpoint: 0,
     levelnextpoint: 100,
-    friends: [{userid:'121', nickname: 'first', profile: 1, onoff: true}, {userid:'122', nickname: 'second', profile: 2, onoff: false}, {userid:'112', nickname: 'third', profile: 0, onoff: false},{userid:'111', nickname: 'forth', profile: 3, onoff: false},{userid:'101', nickname: 'fifth', profile: 4, onoff: false}, {userid:'2232', nickname: 'se3th', profile: 4, onoff: false}, {userid:'4253', nickname: 'fisdkesh', profile: 1, onoff: false}],
-    newfriends: [{userid:'1211111', nickname: 'newbie', profile: 2, onoff: false}],
+    friends: [],
+    newfriends: [],
     blacklist: [],
     qrcode: '',
-    // history: [],
 };
 
 socket.on("userInfo", (data)=>{
@@ -75,6 +90,7 @@ socket.on("newFriend", (data)=>{
 });
 socket.on("addFriend", (data)=>{
     user.friends.push(data);
+    console.log('add friend!');
 });
 socket.on("deleteFriend", (data)=>{
     //userid 가 동일한 친구를 제거한다.

@@ -17,14 +17,23 @@ module.exports = function(io){
         socket.on("userInfo", ()=>{
             console.log("User Info is emitted!");
             socket.emit("userInfo", {
-                "nickname": socket.nickname,
-                "win": 3,
-                "lose": 1,
-                "profile": socket.profile,
+                id: "123223",
+                nickname: "first_user",
+                win: 3,
+                lose: 2,
+                profile: 1,
+                level: "",
+                levelpoint: 0,
+                levelnextpoint: 100,
+                friends: [{userid:'121', nickname: 'first', profile: 1, onoff: true}, {userid:'122', nickname: 'second', profile: 2, onoff: false}, {userid:'112', nickname: 'third', profile: 0, onoff: false},{userid:'111', nickname: 'forth', profile: 3, onoff: false},{userid:'101', nickname: 'fifth', profile: 4, onoff: false}, {userid:'2232', nickname: 'se3th', profile: 4, onoff: false}, {userid:'4253', nickname: 'fisdkesh', profile: 1, onoff: false}],
+                // newfriends: [{userid:'1211111', nickname: 'newbie', profile: 2, onoff: false}],
+                blacklist: [],
+                qrcode: ''
             });
         });
         //Friends
-        socket.on("newFriend", (msg)=>{
+        socket.on("newFriend", (msg, done)=>{
+            console.log(msg.result);
             if (msg.result === true){
                 //a
                 socket.emit("addFriend", {
@@ -33,6 +42,7 @@ module.exports = function(io){
                     "profile": 4,
                     "onoff": false,
                 });
+                done();
                 //b
                 // socket.to(msg.userid).emit("newFriend", {
                 //     "userid": socket,
