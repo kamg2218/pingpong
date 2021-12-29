@@ -2,7 +2,7 @@ import {useState} from 'react'
 import './Modals.css'
 
 export default function InputPwdModal(props: any){
-	const [pwd, setPwd] = useState('');
+	const [pwd, setPwd] = useState<String>("");
 	const failure:string = "비밀번호를 확인해주세요!!";
 
     const handlePwd = (e :any) => {
@@ -20,7 +20,6 @@ export default function InputPwdModal(props: any){
 				return ;
 			}
         }
-        props.checkRoom(props.chatid);
         props.setPwd(pwd);
 	}
     return (

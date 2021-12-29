@@ -2,6 +2,39 @@ const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
 const {makeCode, verifiedCode} = require('./qrcode');
 
+let myChatRoom = {
+    order: ['1232', '1233424'],
+    chatroom: [{chatid:'1232', title:'', manager:['123223'], members:[{userid: '2535', nickname:'second_user', profile:2}], owner:'123223', lock: false, max:10, type: "private"}, {chatid:'1233424', title:'', manager:['2535'], members:[{userid: '2535', nickname:'third_user', profile:2}], owner:'2535', lock: false, max:10, type: "private"}]
+}
+let userInfo = {
+    id: "123223",
+    nickname: "first_user",
+    win: 3,
+    lose: 2,
+    profile: 1,
+    level: "",
+    levelpoint: 0,
+    levelnextpoint: 100,
+    friends: [{userid:'121', nickname: 'first', profile: 1, onoff: true}, {userid:'122', nickname: 'second', profile: 2, onoff: false}, {userid:'112', nickname: 'third', profile: 0, onoff: false},{userid:'111', nickname: 'forth', profile: 3, onoff: false},{userid:'101', nickname: 'fifth', profile: 4, onoff: false}, {userid:'2232', nickname: 'se3th', profile: 4, onoff: false}, {userid:'4253', nickname: 'fisdkesh', profile: 1, onoff: false}],
+    newfriends: [{userid:'1211111', nickname: 'newbie', profile: 2, onoff: false}],
+    blacklist: [],
+    qrcode: ''
+}
+let chatMessage = [
+    {chatid: '1232', list:[{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"}]},
+    {chatid:'1233424', list:[]}
+]
+let publicChatRoom = {
+    order: ['1222', '18473', '18474', '18475', '18476'],
+    chatroom: [
+         {title: 'first_room', chatid:'1222', owner:'183472', manager:['183472'], members:[{userid: '183472', nickname: 'hihihi', profile: 5}], lock: false, type: 'public', max:10},
+         {title: 'second_room', chatid:'18473', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
+         {title: 'second_room', chatid:'18474', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
+         {title: 'second_room', chatid:'18475', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
+         {title: 'second_room', chatid:'18476', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100}
+     ]
+ }
+
 module.exports = function(io){
     console.log("socket starts!");
 
@@ -16,20 +49,7 @@ module.exports = function(io){
         });
         socket.on("userInfo", ()=>{
             console.log("User Info is emitted!");
-            socket.emit("userInfo", {
-                id: "123223",
-                nickname: "first_user",
-                win: 3,
-                lose: 2,
-                profile: 1,
-                level: "",
-                levelpoint: 0,
-                levelnextpoint: 100,
-                friends: [{userid:'121', nickname: 'first', profile: 1, onoff: true}, {userid:'122', nickname: 'second', profile: 2, onoff: false}, {userid:'112', nickname: 'third', profile: 0, onoff: false},{userid:'111', nickname: 'forth', profile: 3, onoff: false},{userid:'101', nickname: 'fifth', profile: 4, onoff: false}, {userid:'2232', nickname: 'se3th', profile: 4, onoff: false}, {userid:'4253', nickname: 'fisdkesh', profile: 1, onoff: false}],
-                // newfriends: [{userid:'1211111', nickname: 'newbie', profile: 2, onoff: false}],
-                blacklist: [],
-                qrcode: ''
-            });
+            socket.emit("userInfo", userInfo);
         });
         //Friends
         socket.on("newFriend", (msg, done)=>{
@@ -41,6 +61,9 @@ module.exports = function(io){
                     "nickname": "NewFriend",
                     "profile": 4,
                     "onoff": false,
+                });
+                userInfo.friends.push({
+                    userid: msg.userid, nickname: 'NewFriend', profile: 4, onoff: false
                 });
                 done();
                 //b
@@ -62,6 +85,7 @@ module.exports = function(io){
         });
         socket.on("deleteFriend", (msg)=>{
             socket.emit("deleteFriend", {"userid": msg.userid});
+            userInfo.friends.filter(p=>p.userid !== msg.userid);
         });
         socket.on("blockFriend", (msg)=>{
             socket.emit("deleteFriend", {"userid": msg.userid});
@@ -70,14 +94,17 @@ module.exports = function(io){
                 "nickname": "blocked",
                 "profile": 2,
             });
+            userInfo.blacklist.push(msg.userid);
         });
         socket.on("unblockFriend", (msg)=>{
             console.log("Unblocked!");
+            userInfo.blacklist.filter(p=>p !== msg.userid);
         });
         
         //Chat
         socket.on("myChatRoom", ()=>{
-            socket.emit("myChatRoom", {});
+            console.log('my chat room!');
+            socket.emit("myChatRoom", myChatRoom);
         });
         socket.on("createChatRoom", (msg, done)=>{
             socket.join(msg.title);
@@ -90,21 +117,34 @@ module.exports = function(io){
         });
         socket.on("updateChatRoom", (msg)=>{
             let variable = {};
+            const idx = myChatRoom.order.findIndex(msg.chatid);
 
             variable.chatid = msg.chatid;
-            if (msg.title)
+            if (msg.title){
                 variable.title = msg.title;
-            if (msg.type)
+                myChatRoom.chatroom[idx].title = msg.title;
+            }
+            if (msg.type){
                 variable.type = msg.type;
-            if (msg.lock)
+                myChatRoom.chatroom[idx].type = msg.type;
+            }
+            if (msg.lock){
                 variable.lock = msg.lock;
-            if (msg.password)
+                myChatRoom.chatroom[idx].lock = msg.lock;
+            }
+            if (msg.password){
                 variable.password = msg.password;
-            if (msg.addManager)
+                myChatRoom.chatroom[idx].password = msg.password;
+            }
+            if (msg.addManager){
                 variable.addManager = msg.addManager;
-            if (msg.deleteManager)
+                myChatRoom.chatroom[idx].addManager = msg.addManager;
+            }
+            if (msg.deleteManager){
                 variable.deleteManager = msg.deleteManager;
-            socket.emit("updateChatRoom", variable);
+                myChatRoom.chatroom[idx].deleteManager = msg.deleteManager;
+            }
+            socket.emit("updateChatRoom", variable);        
         });
         socket.on("inviteChatRoom", (msg, done)=>{
             msg.user.forEach((id)=>{
@@ -113,9 +153,15 @@ module.exports = function(io){
                 // socket.join();
                 // socket.to(msg.chatid).emit("welcome", id.nickname);
             });
+            chatMessage.push({chatid: msg.chatid, list:[]});
             done(true);
         });
         socket.on("exitChatRoom", (msg, done)=>{
+            const idx = myChatRoom.order.findIndex(msg.chatid);
+            myChatRoom.chatroom.splice(idx, 1);
+            myChatRoom.order.splice(idx, 1);
+            chatMessage.filter(message => message.chatid !== msg.chatid);
+
             socket.leave(msg.chatid, ()=>{
                 socket.to(msg.chatid).emit("exitChatRoom", socket.nickname);
             });
@@ -126,9 +172,15 @@ module.exports = function(io){
             msg.userid.leave(msg.chatid, ()=>{
                 msg.userid.to(msg.chatid).emit("kickChatRoom", socket.nickname);
             });
+
+            const idx = myChatRoom.order.findIndex(msg.chatid);
+            myChatRoom.chatroom[idx].members.filter(p => p !== msg.userid);
+            myChatRoom.chatroom[idx].manager.filter(p => p !== msg.userid);
         });
         socket.on("chatMessage", (msg)=>{
             socket.to(msg.chatid).emit("chatMessage", msg.chatid, socket.nickname, msg.content);
+            const chat = chatMessage.find(message => message.chatid === msg.chatid);
+            chat.list.push({userid: userInfo.id, content: msg.content});
         });
         socket.on("qrcode", (setCode)=>{
             console.log('qrcode made!');
@@ -143,22 +195,10 @@ module.exports = function(io){
             verifiedCode(data, done);
         });
         socket.on('myChatRoom', ()=>{
-            socket.emit('myChatRoom', [
-                {idx:1, chatid:'1232', title:'', member:['a', 'b'], owner:'hello', lock: true},
-                {idx:2, chatid:'1212', title:'topic', member:['ac', 'bc', 'cd', 'ede'], owner:'u', lock:false},
-            ]);
+            socket.emit('myChatRoom', myChatRoom);
         });
         socket.on("publicChatRoom", ()=>{
-            socket.emit("publicChatRoom", {
-               order: ['1222', '18473', '18474', '18475', '18476'],
-               chatroom: [
-                    {title: 'first_room', chatid:'1222', owner:'183472', manager:['183472'], members:[{userid: '183472', nickname: 'hihihi', profile: 5}], lock: false, type: 'public', max:10},
-                    {title: 'second_room', chatid:'18473', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
-                    {title: 'second_room', chatid:'18474', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
-                    {title: 'second_room', chatid:'18475', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100},
-                    {title: 'second_room', chatid:'18476', owner:'1899472', manager:['1899472'], members:[{userid: '1899472', nickname: 'hhelllo', profile: 3}], lock: true, type: 'public', max:100}
-                ]
-            });
+            socket.emit("publicChatRoom", publicChatRoom); 
         });
 
         // socket.on("enter_room", (msg, done)=>{

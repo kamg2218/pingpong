@@ -1,6 +1,7 @@
 import '../../css/Game.css';
 import MenuChat from './MenuChat'
 import ChatRoom from './ChatRoom'
+import Lobby from '../../pages/games/Lobby'
 import { Switch, Route, Link, useParams } from 'react-router-dom'
 
 type param = {
@@ -29,6 +30,7 @@ export default function SideMenuChat(){
                     <Route><MenuChat/></Route>
                 </Switch>
             </div>
+            <div className='d-none d-sm-block col'><Lobby/></div>
         </div>
     );
 }

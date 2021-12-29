@@ -4,6 +4,10 @@ export default function PublicChatList(props:any){
     const chatroom = props.chatroom;
     const decidedModal = chatroom.lock ? '#inputPwdModal' : '#checkModal';
 
+    const handlePwd = (pwd: string) => {
+        props.setPwd(pwd);
+        props.checkRoom(chatroom.chatid);
+    }
     return (
         <div key={`publicchat${props.chatroom.chatid}`} className="col-sm-5 col-4 m-2 p-2 rounded border">
             <button type="button" className='btn' data-toggle='modal' data-target={decidedModal}>
@@ -13,7 +17,7 @@ export default function PublicChatList(props:any){
                 </div>
                 <div className="row m-2 px-1 justify-content-end">{chatroom.members.length}/{chatroom.max}</div>
             </button>
-            <InputPwdModal chatid={chatroom.chatid} setPwd={props.setPwd} checkRoom={props.checkRoom}></InputPwdModal>
+            <InputPwdModal id={chatroom.chatid} setPwd={handlePwd}></InputPwdModal>
         </div>
     );
 }
