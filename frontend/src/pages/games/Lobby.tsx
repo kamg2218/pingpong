@@ -1,11 +1,19 @@
 import {useState} from 'react'
 import GameRoomSlide from '../../components/games/GameRoomSlide'
+import AddGameRoomModal from '../../components/modals/AddGameRoomModal';
+import { socket } from '../../socket/userSocket';
 
 export default function Lobby(){
     const [search, setSearch] = useState<String>("");
 
     const handleSearch = (event:any) => {
         setSearch(event.target.value);
+    }
+    const handleMatching = () => {
+        socket.emit("randomMatching", (result: boolean)=>{
+            if (!result)
+                alert('매칭 가능한 게임 방이 없습니다.');
+        })
     }
 
     return (
@@ -22,13 +30,14 @@ export default function Lobby(){
                 </div>
                 <div className="col-2 my-5">
                     <div className="row my-3 mx-1">
-                        <button className="btn btn-outline-dark"><i className="bi bi-plus-circle"></i> 방 만들기</button>
+                        <button className="btn btn-outline-dark" data-toggle='modal' data-target='#addGameRoomModal'><i className="bi bi-plus-circle"></i> 방 만들기</button>
                     </div>
                     <div className="row my-3 mx-1">
-                        <button className="btn btn-outline-dark"><i className="bi bi-controller"></i> 랜덤 매칭</button>
+                        <button className="btn btn-outline-dark" onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
                     </div>
                 </div>
             </div>
+            <AddGameRoomModal></AddGameRoomModal>
         </div>
     );
 }

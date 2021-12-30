@@ -20,7 +20,7 @@ export default function GameRoomSlide(props: any){
         for (;i < list.length; i++){
             if (i >= idx + 6)
                 break ;
-            carousel.push(<GameBox info={list[i]}></GameBox>);
+            carousel.push(<GameBox key={`${list[i].roomid}box`} info={list[i]}></GameBox>);
         }
         return carousel;
     }
