@@ -29,7 +29,8 @@ export default function GameBox(props:any){
         const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;
         const content: string = result ? '게임하기' : '관전하기';
 
-        if (result && props.info.player === 2){
+        if ((result && props.info.player === 2)
+            || (!result && props.info.observer === props.info.maxObserver)){
             return <div key={k} className="btn btn-outline-dark disabled">{content}</div>
         }
         else if (props.info.password){
@@ -50,7 +51,7 @@ export default function GameBox(props:any){
         <div key={`${props.info.roomid}gamebox`} className="col-6 m-0 p-2">
             <div key={`${props.info.roomid}gameBoxBorder`} className="border p-3">
                 <div key={`${props.info.roomid}gameBoxFirstRow`} className="row p-1">
-                    <div key={`${props.info.roomid}BoxInfo`} className="col align-items-start h1">{props.info.title}</div>
+                    <div key={`${props.info.roomid}BoxInfo`} className="col align-items-start h3">{props.info.title}</div>
                     {handleLock()}
                 </div>
                 <div key={`${props.info.roomid}BoxButtonRow`} className="d-flex">

@@ -201,6 +201,19 @@ module.exports = function(io){
             socket.emit("publicChatRoom", publicChatRoom); 
         });
 
+
+        //game
+        socket.on("randomMatching", (done)=>{
+            console.log("randomMatching");
+            if (Math.floor(Math.random() * 2)){
+                console.log('1!!!!');
+                done(false);
+            }
+        });
+        socket.on("randomMatchingCancel", ()=>{
+            console.log("random Matching is Canecled!!!");
+        });
+
         // socket.on("enter_room", (msg, done)=>{
         //     socket.join(msg);
         //     done();
