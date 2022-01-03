@@ -48,6 +48,7 @@ export let publicchatroom:ChatData;
 export let chathistory:Array<ChatHistory>;
 
 socket.on('myChatRoom', (data:ChatData)=>{
+    console.log('my chat room!!');
     chatroom = data;
 });
 socket.on('publicChatRoom', (data:ChatData)=>{

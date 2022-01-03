@@ -1,7 +1,6 @@
 import '../../css/Game.css';
-import MenuChat from './MenuChat'
-import ChatRoom from './ChatRoom'
-import Lobby from '../../pages/games/Lobby'
+import MenuChat from '../../components/chat/MenuChat'
+import ChatRoom from '../../components/chat/ChatRoom'
 import { Switch, Route, Link, useParams } from 'react-router-dom'
 
 type param = {
@@ -24,13 +23,12 @@ export default function SideMenuChat(){
                     <Link to='/game/chat' className='text-decoration-none text-reset'>chat</Link>
                 </div>
             </div>
-            <div className='row border-top h-100' id='nav-chat'>
+            <div className='row border-top' id='nav-chat'>
                 <Switch>
-                    <Route path='/game/chat/:id'><ChatRoomIdx/></Route>
-                    <Route><MenuChat/></Route>
+                    <Route exact path='/game/chat/:id'><ChatRoomIdx/></Route>
+                    <Route path='/game/chat'><MenuChat/></Route>
                 </Switch>
             </div>
-            <div className='d-none d-sm-block col'><Lobby/></div>
         </div>
     );
 }

@@ -20,7 +20,7 @@ export default function GameRoomSlide(props: any){
         for (;i < list.length; i++){
             if (i >= (idx * 6) + 6)
                 break ;
-            carousel.push(<GameBox key={`${list[i].roomid}box`} info={list[i]}></GameBox>);
+            carousel.push(<GameBox key={`${list[i].roomid}box`} info={list[i]} idx={i}></GameBox>);
         }
         return carousel;
     }
@@ -36,7 +36,7 @@ export default function GameRoomSlide(props: any){
                 <div key="slide1Row" className="row mx-1">
                     {props.search === "" ? handleCarouselItem() : handleSearchItem()}
                 </div>
-                <div key="slide2Row" className="row d-flex justify-content-center my-3">
+                <div key="slide2Row" className="row d-flex justify-content-center my-2">
                     <span key="slidePrev" className="carousel-control-prev-icon shadow mx-5 my-2" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
                     <span key="slideNext" className="carousel-control-next-icon shadow mx-5 my-2" aria-hidden="true" onClick={()=>handleButton(1)}></span>
                 </div>

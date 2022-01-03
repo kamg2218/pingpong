@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import {Redirect} from 'react-router-dom'
 import InputPwdModal from '../modals/InputPwdModal'
 import {socket} from '../../socket/userSocket'
 
@@ -23,6 +24,10 @@ export default function GameBox(props:any){
         socket.emit("enterGameRoom", info, (result:boolean)=>{
             if (!result)
                 alert('비밀번호를 확인해주세요!');
+            else{
+                console.log('redirect');
+                window.location.href = `http://localhost:3000/game/play/${props.idx}`;
+            }
         });
     }
     const handlePwd = (result: boolean) => {
@@ -31,12 +36,12 @@ export default function GameBox(props:any){
 
         if ((result && props.info.player === 2)
             || (!result && props.info.observer === props.info.maxObserver)){
-            return <div key={k} className="btn btn-outline-dark disabled">{content}</div>
+            return <div key={k} className="btn btn-sm btn-outline-dark disabled">{content}</div>
         }
         else if (props.info.password){
-            return <div key={k} className="btn btn-outline-dark" data-toggle='modal' data-target='#inputPwdModal' onClick={()=>handleEnterGameRoom(result)}>{content}</div>
+            return <div key={k} className="btn btn-sm btn-outline-dark" data-toggle='modal' data-target='#InputPwdModal' onClick={()=>handleEnterGameRoom(result)}>{content}</div>
         }else{
-            return <div key={k} className="btn btn-outline-dark" onClick={()=>handleEnterGameRoom(result)}>{content}</div>
+            return <div key={k} className="btn btn-sm btn-outline-dark" onClick={()=>handleEnterGameRoom(result)}>{content}</div>
         }
     }
     const handleLock = () => {
@@ -65,7 +70,7 @@ export default function GameBox(props:any){
                     </div>
                 </div>
             </div>
-            <InputPwdModal id={props.info.roomid} setPwd={setPwd}></InputPwdModal>
+            <InputPwdModal key={props.info.roomid} setPwd={setPwd}></InputPwdModal>
         </div>
     );
 }

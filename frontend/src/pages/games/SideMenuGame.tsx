@@ -1,5 +1,5 @@
 import '../../css/Game.css';
-import MenuGame from './MenuGame'
+import MenuGame from '../../components/games/MenuGame'
 import { Link } from 'react-router-dom'
 
 export default function SideMenuGame(){

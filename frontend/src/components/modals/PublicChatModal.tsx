@@ -12,7 +12,7 @@ export default function PublicChatModal(){
         socket.emit("publicChatRoom");
         setPublicChat(publicchatroom);
         console.log(publicChat);
-    }, [publicChat]);
+    }, [pwd, checkedroom, publicChat]);
     function handleSubmit(){
         let data:any = {};
 

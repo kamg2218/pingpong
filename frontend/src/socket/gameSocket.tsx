@@ -44,6 +44,7 @@ socket.on('gameRoomList', (msg)=>{
     gameRoomList = msg;
 });
 socket.on('enterGameRoom', (msg)=>{
+    console.log('enter game room');
     if (msg.message){
         alert('fail to enter the room!');
     }

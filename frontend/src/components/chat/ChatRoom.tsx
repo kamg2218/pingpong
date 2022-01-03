@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom'
 import {socket, user} from '../../socket/userSocket';
 import { chatroom, chathistory } from '../../socket/chatSocket';
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
+import '../../css/ChatRoom.css'
 
 //채팅방 입장 시, 히스토리 업데이트 필요함!
 //chatMessage 업데이트 확인 필요!
@@ -12,10 +13,13 @@ import MyChatBox from "./MyChatBox";
 export default function ChatRoom(props :any){
     const [chat, setChat] = useState("");
     const chatInput = useRef<any>(null);
-    const chatid = chatroom.order[props.idx];
-    const history = chathistory.find(data => data.chatid === chatid);
+    const chatid = chatroom?.order[props.idx];
+    const history = chathistory?.find(data => data.chatid === chatid);
     // const lastchat = `#${history?.list.length}`;
 
+    useEffect(()=>{
+        socket.emit("myChatRoom");
+    }, [chat]);
     // console.log(props.idx);
     const handleInputChange = (e :any) => {
         setChat(e.target.value);
@@ -43,7 +47,7 @@ export default function ChatRoom(props :any){
         <div className='container-fluid p-2' key={`chatroom${props.idx}`}>
             <div className='col'>
                 <Link to='/game/chat' className='row text-decoration-none text-reset m-1'><i className='bi bi-arrow-left'></i></Link>
-                <div className="row-12 border overflow-scroll">
+                <div className="row mx-1 border overflow-scroll" id="chatlist">
                     {history?.list.map((data, idx)=>{
                         if (data.userid === user.id)
                             return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>

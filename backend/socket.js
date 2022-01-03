@@ -157,7 +157,8 @@ module.exports = function(io){
             done(true);
         });
         socket.on("exitChatRoom", (msg, done)=>{
-            const idx = myChatRoom.order.findIndex(msg.chatid);
+            console.log(msg);
+            const idx = myChatRoom.order.findIndex((id)=>id === msg.chatid);
             myChatRoom.chatroom.splice(idx, 1);
             myChatRoom.order.splice(idx, 1);
             chatMessage.filter(message => message.chatid !== msg.chatid);
@@ -213,6 +214,13 @@ module.exports = function(io){
         socket.on("randomMatchingCancel", ()=>{
             console.log("random Matching is Canecled!!!");
         });
+        socket.on("enterGameRoom", (msg, done)=>{
+            if (Math.floor(Math.random() * 2)){
+                done(true);
+            }else{
+                done(false);
+            }
+        })
 
         // socket.on("enter_room", (msg, done)=>{
         //     socket.join(msg);

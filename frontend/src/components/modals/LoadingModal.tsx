@@ -3,7 +3,7 @@ export default function LoadingModal(props: any){
     const state:string = props.content === content ? "" : " d-none";
     
     return (
-        <div className="modal fade" id="loadingModal" role="dialog" tabIndex={-1} aria-labelledby="loadingModalLabel" aria-hidden="true">
+        <div className="modal fade" id="LoadingModal" role="dialog" tabIndex={-1} aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered modal-sm" role="document">
                 <div className="modal-content">
                     <div className="modal-body">

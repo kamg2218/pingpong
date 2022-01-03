@@ -20,14 +20,15 @@ export default function Lobby(){
     const handleCancelMatching = () => {
         socket.emit("randomMatchingCancel");
     }
-    $(LoadingModal).on('hide.bs.modal', function(e){
+    $('#LoadingModal').on('hide.bs.modal', function(e){
+        console.log(e);
         console.log('Loading is over!');
         handleCancelMatching();
         e.stopImmediatePropagation();
     });
 
     return (
-        <div className="container my-4 mx-2 px-2 h-100 border">
+        <div className="container mx-2 p-2">
             <div className="row">
                 <div className="col-10">
                     <div className="row-2 d-flex justify-content-start mx-1 my-2">
@@ -38,12 +39,12 @@ export default function Lobby(){
                         <GameRoomSlide search={search}></GameRoomSlide>
                     </div>
                 </div>
-                <div className="col-2 my-5">
+                <div className="col-2 p-0 my-5">
                     <div className="row my-3 mx-1">
-                        <button className="btn btn-outline-dark" data-toggle='modal' data-target='#addGameRoomModal'><i className="bi bi-plus-circle"></i> 방 만들기</button>
+                        <button className="btn btn-outline-dark" data-toggle='modal' data-target='#AddGameRoomModal'><i className="bi bi-plus-circle"></i> 방 만들기</button>
                     </div>
                     <div className="row my-3 mx-1">
-                        <button className="btn btn-outline-dark" data-toggle='modal' data-target='#loadingModal' onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
+                        <button className="btn btn-outline-dark" data-toggle='modal' data-target='#LoadingModal' onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
                     </div>
                 </div>
             </div>

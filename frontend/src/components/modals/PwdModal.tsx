@@ -32,7 +32,7 @@ export default function PwdModal(props: any){
 		});
 	}
     return (
-        <div className="modal fade" id="pwdModal" role="dialog" tabIndex={-1} aria-labelledby="pwdModalLabel" aria-hidden="true">
+        <div className="modal fade" id="PwdModal" role="dialog" tabIndex={-1} aria-labelledby="pwdModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered modal-sm" role="document">
                 <div className="modal-content">
                     <div className="modal-header">

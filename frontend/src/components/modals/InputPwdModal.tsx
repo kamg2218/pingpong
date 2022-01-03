@@ -23,7 +23,7 @@ export default function InputPwdModal(props: any){
         props.setPwd(pwd);
 	}
     return (
-        <div className="modal fade" id="inputPwdModal" role="dialog" tabIndex={-1} aria-labelledby="inputPwdModalLabel" aria-hidden="true">
+        <div className="modal fade" id="InputPwdModal" role="dialog" tabIndex={-1} aria-labelledby="inputPwdModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered modal-sm" role="document">
                 <div className="modal-content">
                     <div className="modal-header">

@@ -25,7 +25,7 @@ export default function InviteModal(props:any){
         });
     }
     return (
-        <div className='modal fade' id='inviteModal' role='dialog' tabIndex={-1} aria-labelledby='invite' aria-hidden="true">
+        <div className='modal fade' id='InviteModal' role='dialog' tabIndex={-1} aria-labelledby='invite' aria-hidden="true">
             <div className='modal-dialog modal-dialog-centered modal-dialog-scrollable' role='document'>
                 <div className="modal-content">
                     <div className="modal-header">

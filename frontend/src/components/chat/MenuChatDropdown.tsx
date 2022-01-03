@@ -28,14 +28,13 @@ export default function MenuChatDropdown(props :any){
 	        </button>
 	        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<li className='dropdown-item' key='title'>
-					{/* disabled={props.info.owner !== user.id} */}
 					<button className='btn' key='title' onClick={()=>handleTitle()} disabled={props.info.owner !== user.id}>title</button>
 				</li>
 				<li className='dropdown-item' key='pwd'>
-					<button type='button' className='btn' data-toggle='modal' data-target='#pwdModal' disabled={pwdDisabled}>password</button>
+					<button type='button' className='btn' data-toggle='modal' data-target='#PwdModal' disabled={pwdDisabled}>password</button>
 				</li>
 				<li className='dropdown-item' key='invite'>
-					<button className='btn' data-toggle='modal' data-target='#inviteModal'>invite</button>
+					<button className='btn' data-toggle='modal' data-target='#InviteModal'>invite</button>
 				</li>
 				<li className='dropdown-item' key='exit'>
 		        	<button className='btn' onClick={() => handleExit()}>exit</button>

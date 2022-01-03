@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// import '../../css/MenuChat.css';
 import MenuChatBox from './MenuChatBox';
 import { chatroom, ChatRoom, chathistory } from '../../socket/chatSocket';
 import AddChatModal from '../modals/AddChatModal';
@@ -9,7 +8,7 @@ export default function MenuChat(){
     const [chatroomState, setChatroom] = useState(chatroom?.chatroom);
    
     const handleTitleChange = (chatid :string, title :string) => {
-        let chat:Array<ChatRoom> = chatroomState;
+        let chat:Array<ChatRoom> = chatroom.chatroom;
 
         const idx = chat.findIndex(room => room.chatid === chatid);
         // console.log(`idx = ${idx}`);
@@ -21,8 +20,8 @@ export default function MenuChat(){
     const exitChatRoom = (chatid :string) =>{
         console.log('exitChatRoom!');
         setChatroom(chatroomState.filter(room=>room.chatid !== chatid));
-		chatroom.chatroom.filter(room=> room.chatid !== chatid);
-		chathistory.filter(history=>history.chatid !== chatid);
+		chatroom?.chatroom.filter(room=> room.chatid !== chatid);
+		chathistory?.filter(history=>history.chatid !== chatid);
     }
 
     return (
@@ -37,7 +36,7 @@ export default function MenuChat(){
             </div>
             <div className="m-1 h-90">
                 <ul key='chatBoxList' className='col list-unstyled'>
-                    {chatroomState.map(info => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
+                    {chatroom?.chatroom.map(info => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} setTitle={handleTitleChange} exitChatRoom={exitChatRoom}/>)}
                 </ul>
             </div>
             <AddChatModal></AddChatModal>
