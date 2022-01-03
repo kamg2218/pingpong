@@ -1,7 +1,7 @@
 import {useState} from 'react'
-import {Redirect} from 'react-router-dom'
 import InputPwdModal from '../modals/InputPwdModal'
 import {socket} from '../../socket/userSocket'
+import {waitingRoomId} from '../../socket/gameSocket'
 
 type info = {
     roomid: String,
@@ -26,7 +26,8 @@ export default function GameBox(props:any){
                 alert('비밀번호를 확인해주세요!');
             else{
                 console.log('redirect');
-                window.location.href = `http://localhost:3000/game/play/${props.idx}`;
+                // window.location.href = `http://localhost:3000/game/play/${props.idx}`;
+                waitingRoomId = props.info.roomid;
             }
         });
     }

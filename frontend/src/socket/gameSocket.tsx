@@ -6,27 +6,29 @@ export type User = {
     profile: number,
 }
 export type gameRoom = {
-    title: String,
-    roomid: String,
-    map: String,
+    title: string,
+    roomid: string,
+    map: string,
     player: number,
     observer: number,
     maxObserver: number,
-    type: String,
+    type: string,
     password: boolean,
     status: boolean
 }
 export type gameRoomDetail = {
-    title: String,
-    roomid: String,
-    manager: String,
-    map: String,
+    title: string,
+    roomid: string,
+    manager: string,
+    map: string,
     observer: Array<User>,
-    type: String,
+    type: string,
     status: boolean,
     players: Array<User>,
     isPlayer: boolean
 }
+
+export let waitingRoomId:string = "";
 
 export let gameRoomList: Array<gameRoom> = [
     {title: 'hello1', roomid: '12222', map:'1', observer: 2, type: 'Public', password: false, status: false, player:1, maxObserver:3},

@@ -5,7 +5,7 @@ import Game from './pages/games/Game';
 import Admin from './pages/Admin';
 import NickAndProfile from './pages/login/NickAndProfile';
 import Qrcode from './pages/login/Qrcode';
-import GameRoom from './pages/games/GameRoom'
+import PlayRoom from './pages/games/PlayRoom'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
           <Route path='/loginerror'><LoginError/></Route>
           <Route path='/nickandprofile'><NickAndProfile/></Route>
           <Route path='/twofactor'><Qrcode/></Route>
-          <Route path='/game/play/:id'><GameRoom/></Route>
+          <Route path='/game/play/:id'><PlayRoom/></Route>
           <Route path='/game/lobby'><Game/></Route>
           <Route path='/game'><Game/></Route>
           <Route path='/admin'><Admin/></Route>

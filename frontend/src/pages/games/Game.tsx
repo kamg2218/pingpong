@@ -1,13 +1,16 @@
-import '../../css/Game.css';
+import '../../css/Game.css'
 import SideMenuChat from './SideMenuChat'
 import SideMenuGame from './SideMenuGame'
+import WaitingRoom from './WaitingRoom'
 import Lobby from './Lobby'
-import { Route, Switch } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { socket, user } from '../../socket/userSocket';
+import { Route, Switch } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { socket, user } from '../../socket/userSocket'
+import {waitingRoomId} from '../../socket/gameSocket'
 
 export default function Game(){
     const [info, setInfo] = useState(user);
+    // const [id, setId] = useState<string>("");
     
     useEffect(()=>{
         socket.emit("userInfo", ()=>{
@@ -27,7 +30,10 @@ export default function Game(){
                             <Route path='/game'><SideMenuGame/></Route>
                         </Switch>
                     </div>
-                    <div className='d-none d-sm-block col'><Lobby/></div>
+                    <div className='d-none d-sm-block col'>
+                        {/* <Lobby></Lobby> */}
+                        {waitingRoomId === "" ? <Lobby/> : <WaitingRoom/>}
+                    </div>
                 </div>
             </div>
         </div>
