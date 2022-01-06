@@ -1,23 +1,24 @@
 import '../../css/Game.css'
-import SideMenuChat from './SideMenuChat'
+import SideMenuChat from '../../components/chat/SideMenuChat'
 import SideMenuGame from './SideMenuGame'
 import WaitingRoom from './WaitingRoom'
 import Lobby from './Lobby'
 import { Route, Switch } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { socket, user } from '../../socket/userSocket'
-import {waitingRoomId} from '../../socket/gameSocket'
+import { socket, user} from '../../socket/userSocket'
+import {roomId, gameRoomDetail} from '../../socket/gameSocket'
 
 export default function Game(){
     const [info, setInfo] = useState(user);
-    // const [id, setId] = useState<string>("");
     
     useEffect(()=>{
-        socket.emit("userInfo", ()=>{
-            setInfo(info);
-        });
-        console.log('user info !!!');
-        socket.emit("myChatRoom");
+        if (info.id === ''){
+            socket.emit("userInfo", ()=>{
+                setInfo(info);
+            });
+            console.log('user info !!!');
+            socket.emit("myChatRoom");
+        }
     }, [info]);
     return (
         <div className="container-fluid m-0 p-0 h-100 w-100" id="gamelobby">
@@ -31,8 +32,7 @@ export default function Game(){
                         </Switch>
                     </div>
                     <div className='d-none d-sm-block col'>
-                        {/* <Lobby></Lobby> */}
-                        {waitingRoomId === "" ? <Lobby/> : <WaitingRoom/>}
+                        {roomId === "" ? <Lobby/> : <WaitingRoom/>}
                     </div>
                 </div>
             </div>

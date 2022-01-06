@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import InputPwdModal from '../modals/InputPwdModal'
 import {socket} from '../../socket/userSocket'
-import {waitingRoomId} from '../../socket/gameSocket'
+// import {waitingRoomId} from '../../socket/gameSocket'
 
 type info = {
     roomid: String,
@@ -27,7 +27,7 @@ export default function GameBox(props:any){
             else{
                 console.log('redirect');
                 // window.location.href = `http://localhost:3000/game/play/${props.idx}`;
-                waitingRoomId = props.info.roomid;
+                // waitingRoomId = props.info.roomid;
             }
         });
     }

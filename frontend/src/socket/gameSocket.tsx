@@ -28,7 +28,17 @@ export type gameRoomDetail = {
     isPlayer: boolean
 }
 
-export let waitingRoomId:string = "";
+export let roomId:string = "12222";
+export function handleRoomId(id:string){
+    roomId = id;
+    console.log(roomId);
+}
+
+export let myGameRoom: gameRoomDetail;
+export function handleRoomDetail(detail:gameRoomDetail){
+    myGameRoom = detail;
+    console.log(myGameRoom);
+}
 
 export let gameRoomList: Array<gameRoom> = [
     {title: 'hello1', roomid: '12222', map:'1', observer: 2, type: 'Public', password: false, status: false, player:1, maxObserver:3},
@@ -40,7 +50,6 @@ export let gameRoomList: Array<gameRoom> = [
     {title: 'hello7', roomid: '12462', map:'1', observer: 2, type: 'Public', password: false, status: false, player:2, maxObserver:4},
     {title: 'hello8', roomid: '143352', map:'1', observer: 5, type: 'Private', password: true, status: false, player:1, maxObserver:5}
 ]
-export let myGameRoom: gameRoomDetail;
 
 socket.on('gameRoomList', (msg)=>{
     gameRoomList = msg;

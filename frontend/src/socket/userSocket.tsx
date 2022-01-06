@@ -62,6 +62,8 @@ export let user: User = {
 
 socket.on("userInfo", (data)=>{
     console.log("user Info is changed!");
+    if (data.id)
+        user.id = data.id;
     if (data.nickname)
         user.nickname = data.nickname;
     if (data.win)
@@ -82,8 +84,8 @@ socket.on("userInfo", (data)=>{
         user.newfriends = data.newfriends;
     if (data.blacklist)
         user.blacklist = data.blacklist;
-    // if (data.history)
-        // user.history = data.history;
+    if (data.qrcode)
+        user.qrcode = data.qrcode;
 });
 socket.on("newFriend", (data)=>{
     user.newfriends.push(data);

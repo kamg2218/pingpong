@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../../css/MenuGame.css'
 import Profile from '../../icons/Profile'
 import {Friend, user, socket} from '../../socket/userSocket'

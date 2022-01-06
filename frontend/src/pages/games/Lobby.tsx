@@ -4,7 +4,7 @@ import AddGameRoomModal from '../../components/modals/AddGameRoomModal';
 import LoadingModal from '../../components/modals/LoadingModal';
 import { socket } from '../../socket/userSocket';
 
-export default function Lobby(){
+export default function Lobby(props:any){
     const [search, setSearch] = useState<string>("");
     const [content, setContent] = useState<string>("잠시만 기다려 주세요");
 
