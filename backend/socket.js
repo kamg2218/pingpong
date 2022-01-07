@@ -115,6 +115,11 @@ module.exports = function(io){
             socket.join(msg.title);
             socket.to(msg.title).emit("welcome", socket.nickname);
         });
+        socket.on("chatHistory", (msg)=>{
+            let history = chatMessage.find((m)=> m.chatid === msg.chatid);
+            // chatMessage.map((m)=>{console});
+            socket.emit("chatHistory", history);
+        })
         socket.on("updateChatRoom", (msg)=>{
             let variable = {};
             const idx = myChatRoom.order.findIndex(msg.chatid);
@@ -220,6 +225,19 @@ module.exports = function(io){
             }else{
                 done(false);
             }
+        })
+        socket.on("exitGameRoom", (msg)=>{
+            console.log(msg);
+            socket.emit("exitGameRoom");
+        })
+        socket.on("startGame", (msg)=>{
+            console.log(msg);
+            socket.emit("startGame", {
+                roomid: msg.roomid,
+                score: 10,
+                player1: '1212',
+                plater2: '1424'
+            });
         })
 
         // socket.on("enter_room", (msg, done)=>{

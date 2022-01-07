@@ -1,4 +1,4 @@
-import MenuGame from '../../components/games/MenuGame'
+import MenuPlay from '../../components/games/MenuPlay'
 
 export default function SideMenuPlay(){
     return (
@@ -8,8 +8,8 @@ export default function SideMenuPlay(){
                     play
                 </div>
             </div>
-            <div className='row border-top' id='nav-game'>
-                <MenuGame></MenuGame>
+            <div className='row border-top' id='nav-play'>
+                <MenuPlay></MenuPlay>
             </div>
         </div>
     );

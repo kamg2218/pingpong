@@ -6,7 +6,10 @@ import {Friend, user, socket} from '../../socket/userSocket'
 export function NewList(person: Friend): any {
     const [newone, setNewone] = useState(user.newfriends);
 
-    console.log(person);
+    useEffect(()=>{
+        console.log('new list');
+    }, [newone]);
+    // console.log(person);
     const handleNewFriend = (result: boolean) => {
         console.log(result);
         socket.emit("newFriend", {

@@ -27,6 +27,12 @@ export type gameRoomDetail = {
     players: Array<User>,
     isPlayer: boolean
 }
+export type playRoom = {
+    roomid: string,
+    score: number,
+    player1: string,
+    player2: string
+}
 
 export let roomId:string = "12222";
 export function handleRoomId(id:string){
@@ -39,7 +45,7 @@ export let myGameRoom: gameRoomDetail = {
     roomid: '12222',
     manager: "123223",
     map:'1',
-    observer: [],
+    observer: [{userid: "132943", nickname: "oberser1", profile: 3}, {userid: "1292943", nickname: "observer2", profile: 2}],
     type: 'Public',
     status: false,
     players:[{userid: "1232943", nickname: "player1", profile: 1}],
@@ -61,6 +67,13 @@ export let gameRoomList: Array<gameRoom> = [
     {title: 'hello8', roomid: '143352', map:'1', observer: 5, type: 'Private', password: true, status: false, player:1, maxObserver:5}
 ]
 
+export let playroom:playRoom = {
+    roomid: '',
+    score: 0,
+    player1: '',
+    player2: ''
+};
+
 socket.on('gameRoomList', (msg)=>{
     gameRoomList = msg;
 });
@@ -74,3 +87,29 @@ socket.on('enterGameRoom', (msg)=>{
         handleRoomDetail(msg);
     }
 });
+socket.on('exitGameRoom', (msg)=>{
+    console.log('exit game room');
+    myGameRoom.title = '';
+    myGameRoom.roomid = '';
+    myGameRoom.manager = '';
+    myGameRoom.map = '';
+    myGameRoom.observer = [];
+    myGameRoom.type = '';
+    myGameRoom.status = false;
+    myGameRoom.players = [];
+    myGameRoom.isPlayer = false;
+    console.log(myGameRoom);
+    // window.location.reload();
+})
+socket.on('startGame', (msg)=>{
+    console.log('start game!');
+    if (msg.result){
+        alert('failed to play the game!');
+    }else{
+        playroom.roomid = msg.roomid;
+        playroom.score = msg.score;
+        playroom.player1 = msg.player1;
+        playroom.player2 = msg.player2;      
+        window.location.href = `http://localhost:3000/game/play/${playroom.roomid}`;
+    }
+})

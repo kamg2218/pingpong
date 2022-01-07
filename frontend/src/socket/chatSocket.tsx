@@ -5,7 +5,7 @@ export type User = {
     nickname: string,
     profile: number,
 }
-export type ChatRoom = {
+export type chatRoom = {
     title: string,
     chatid: string,
     owner: string,
@@ -27,7 +27,7 @@ export type InputChatRoom = {
 }
 export type ChatData = {
     order: Array<string>,
-    chatroom: Array<ChatRoom>,
+    chatroom: Array<chatRoom>,
 }
 export type ChatBlock = {
     userid: string,
@@ -45,10 +45,11 @@ export type ChatHistory = {
 export let chatroom : ChatData;
 export let publicchatroom:ChatData;
 // export let chathistory:Array<ChatHistory> = [{chatid: '1232', list:[{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"}]}, {chatid:'1233424', list:[]}];
-export let chathistory:Array<ChatHistory>;
+export let chathistory:ChatHistory;
 
 socket.on('myChatRoom', (data:ChatData)=>{
     console.log('my chat room!!');
+    console.log(`mychatroom - ${data}`);
     chatroom = data;
 });
 socket.on('publicChatRoom', (data:ChatData)=>{
@@ -56,7 +57,7 @@ socket.on('publicChatRoom', (data:ChatData)=>{
     // console.log(data);
     // console.log(publicchatroom);
 });
-socket.on('enterChatRoom', (data:ChatRoom)=>{
+socket.on('enterChatRoom', (data:chatRoom)=>{
     chatroom.order.push(data.chatid);
     chatroom.chatroom.push(data);
 });
@@ -78,17 +79,19 @@ socket.on('updateChatRoom', (data:InputChatRoom)=>{
         data.exitUser.map(user=>chatroom.chatroom[idx].members.filter(person=> user !== person.userid));
 });
 socket.on('chatHistory', (data:ChatHistory)=>{
-    const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
-    if (idx === -1){
-        chathistory.push(data);
-    }else{
-        chathistory[idx].list = data.list;
-    }
+    // const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
+    // if (idx === -1){
+    //     chathistory.push(data);
+    // }else{
+    //     chathistory[idx].list = data.list;
+    // }
+    console.log('chat history is updated!');
+    chathistory = data;
 });
-socket.on('chatHistoryUpdate', (data:ChatHistory)=>{
-    const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
-    if (idx === -1)
-        alert(Error!);
-    else
-        data.list.map(lst => chathistory[idx].list.push(lst));
-});
+// socket.on('chatHistoryUpdate', (data:ChatHistory)=>{
+//     const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
+//     if (idx === -1)
+//         alert(Error!);
+//     else
+//         data.list.map(lst => chathistory[idx].list.push(lst));
+// });

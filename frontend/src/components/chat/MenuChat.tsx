@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import MenuChatBox from './MenuChatBox';
-import { chatroom, ChatRoom, chathistory } from '../../socket/chatSocket';
+import { chatroom, chatRoom } from '../../socket/chatSocket';
 import AddChatModal from '../modals/AddChatModal';
 import PublicChatModal from '../modals/PublicChatModal'
 
@@ -8,7 +8,7 @@ export default function MenuChat(){
     const [chatroomState, setChatroom] = useState(chatroom?.chatroom);
    
     const handleTitleChange = (chatid :string, title :string) => {
-        let chat:Array<ChatRoom> = chatroom.chatroom;
+        let chat:Array<chatRoom> = chatroom.chatroom;
 
         const idx = chat.findIndex(room => room.chatid === chatid);
         // console.log(`idx = ${idx}`);
@@ -21,7 +21,7 @@ export default function MenuChat(){
         console.log('exitChatRoom!');
         setChatroom(chatroomState.filter(room=>room.chatid !== chatid));
 		chatroom?.chatroom.filter(room=> room.chatid !== chatid);
-		chathistory?.filter(history=>history.chatid !== chatid);
+		// chathistory?.filter(history=>history.chatid !== chatid);
     }
 
     return (

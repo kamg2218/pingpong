@@ -2,12 +2,21 @@ import '../../css/Game.css';
 import MenuChat from '../../components/chat/MenuChat'
 import ChatRoom from '../../components/chat/ChatRoom'
 import { Switch, Route, Link, useParams } from 'react-router-dom'
+import {useState, useEffect} from 'react'
+import {chatroom, chatRoom} from '../../socket/chatSocket'
+import { socket } from '../../socket/userSocket';
 
 type param = {
     id?: String
 }
 
 export default function SideMenuChat(){
+    const [info, setInfo] = useState<chatRoom>();
+    
+    useEffect(()=>{
+        console.log('side menu chat');
+        socket.emit("myChatRoom");
+    }, [info]);
     function ChatRoomIdx(){
         let idx:param = useParams();
         return <ChatRoom idx={idx.id}></ChatRoom>

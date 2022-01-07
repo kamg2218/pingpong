@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom'
 import {socket, user} from '../../socket/userSocket';
-import { chatroom, chathistory } from '../../socket/chatSocket';
+import { chatroom, chathistory, ChatHistory } from '../../socket/chatSocket';
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import '../../css/ChatRoom.css'
@@ -14,12 +14,13 @@ export default function ChatRoom(props :any){
     const [chat, setChat] = useState("");
     const chatInput = useRef<any>(null);
     const chatid = chatroom?.order[props.idx];
-    const history = chathistory?.find(data => data.chatid === chatid);
+    // const history = chathistory?.find(data => data.chatid === chatid);
+    const [history, setHistory] = useState<ChatHistory>(chathistory);
     // const lastchat = `#${history?.list.length}`;
 
     useEffect(()=>{
-        socket.emit("myChatRoom");
-    }, [chat]);
+        console.log('chat room!');
+    }, [chat, history]);
     // console.log(props.idx);
     const handleInputChange = (e :any) => {
         setChat(e.target.value);

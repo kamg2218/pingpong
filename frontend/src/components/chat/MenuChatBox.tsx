@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TitleInput from './TitleInput'
 import MenuChatDropdown from './MenuChatDropdown'
 import { chatroom, User } from '../../socket/chatSocket'
+import { socket } from '../../socket/userSocket'
 
 function memberlist(member: Array<User>) : string {
     let list :string = '';
@@ -23,14 +24,22 @@ export default function MenuChatBox(props :any){
     const [title, setTitle] = useState(props.info.title)
     const history = useHistory()
 
+    useEffect(()=>{
+        console.log(`menu chat box - ${props.info.title}`);
+        console.log(props.info);
+    }, [props.info, title]);
     const handleTitle = (chatid:string, newTitle: string) => {
         setTitle(newTitle);
         props.setTitle(chatid, newTitle);
     }
     const handleDoubleClick = (chatid: string) => {
         const idx = chatroom.order.indexOf(chatid);
-        if (idx !== -1)
+        if (idx !== -1){
+            socket.emit("chatHistory", {
+                chatid: chatid
+            });
             history.push(`/game/chat/${idx}`)
+        }
     }
     const exitChatRoom = (chatid: string) => {
         props.exitChatRoom(chatid);
