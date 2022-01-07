@@ -34,7 +34,17 @@ export function handleRoomId(id:string){
     console.log(roomId);
 }
 
-export let myGameRoom: gameRoomDetail;
+export let myGameRoom: gameRoomDetail = {
+    title: 'hello1',
+    roomid: '12222',
+    manager: "123223",
+    map:'1',
+    observer: [],
+    type: 'Public',
+    status: false,
+    players:[{userid: "1232943", nickname: "player1", profile: 1}],
+    isPlayer: true
+};
 export function handleRoomDetail(detail:gameRoomDetail){
     myGameRoom = detail;
     console.log(myGameRoom);
@@ -60,6 +70,7 @@ socket.on('enterGameRoom', (msg)=>{
         alert('fail to enter the room!');
     }
     else{
-        myGameRoom = msg;
+        // myGameRoom = msg;
+        handleRoomDetail(msg);
     }
 });

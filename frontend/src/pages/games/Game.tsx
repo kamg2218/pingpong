@@ -21,7 +21,7 @@ export default function Game(){
         }
     }, [info]);
     return (
-        <div className="container-fluid m-0 p-0 h-100 w-100" id="gamelobby">
+        <div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
             <div className='col'>
                 <h1 className='row justify-content-center' id='gameHeader'>PONG CONTEST GAME</h1>
                 <div className='mx-1 row'>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { gameRoom, gameRoomList } from '../../socket/gameSocket'
 import GameBox from './GameBox'
 
