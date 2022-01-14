@@ -1,41 +1,57 @@
-import {socket} from './userSocket';
+import {socket} from './userSocket'
+import {useState, createContext} from 'react'
+
+export const ChatContext = createContext<any>(null);
+
+export function ChatVariables(){
+	const [chatroom, setChatRoom] = useState<ChatData>();
+	const [publicroom, setPublicRoom] = useState<ChatData>();
+	const [history, setHistory] = useState<ChatHistory>();
+
+	const variable = {
+		chatroom: [chatroom, setChatRoom],
+		publicroom: [publicroom, setPublicRoom],
+		history: [history, setHistory]
+	};
+	return variable;
+}
 
 export type User = {
-    userid: string,
-    nickname: string,
-    profile: number,
+	userid: string,
+	nickname: string,
+	profile: number,
 }
 export type chatRoom = {
-    title: string,
-    chatid: string,
-    owner: string,
-    manager: Array<string>,
-    members: Array<User>,
-    lock: boolean,
-    type: string,
-    max: number,
+	title: string,
+	chatid: string,
+	owner: string,
+	manager: Array<string>,
+	members: Array<User>,
+	lock: boolean,
+	type: string,
+	max: number,
 }
 export type InputChatRoom = {
-    chatid: string,
-    title: string,
-    addManager: Array<string>,
-    deleteManager: Array<string>,
-    enterUser: Array<User>,
-    exitUser: Array<string>,
-    lock: boolean,
-    type: string,
+	chatid: string,
+	title: string,
+	addManager: Array<string>,
+	deleteManager: Array<string>,
+	enterUser: Array<User>,
+	exitUser: Array<string>,
+	lock: boolean,
+	type: string,
 }
 export type ChatData = {
-    order: Array<string>,
-    chatroom: Array<chatRoom>,
+	order: Array<string>,
+	chatroom: Array<chatRoom>,
 }
 export type ChatBlock = {
-    userid: string,
-    content: string,
+	userid: string,
+	content: string,
 }
 export type ChatHistory = {
-    chatid: string,
-    list: Array<ChatBlock>,
+	chatid: string,
+	list: Array<ChatBlock>,
 }
 
 // export let chatroom:ChatData = {
@@ -48,45 +64,45 @@ export let publicchatroom:ChatData;
 export let chathistory:ChatHistory;
 
 socket.on('myChatRoom', (data:ChatData)=>{
-    console.log('my chat room!!');
-    console.log(`mychatroom - ${data}`);
-    chatroom = data;
+	console.log('my chat room!!');
+	console.log(`mychatroom - ${data}`);
+	chatroom = data;
 });
 socket.on('publicChatRoom', (data:ChatData)=>{
-    publicchatroom = data;
-    // console.log(data);
-    // console.log(publicchatroom);
+	publicchatroom = data;
+	// console.log(data);
+	// console.log(publicchatroom);
 });
 socket.on('enterChatRoom', (data:chatRoom)=>{
-    chatroom.order.push(data.chatid);
-    chatroom.chatroom.push(data);
+	chatroom.order.push(data.chatid);
+	chatroom.chatroom.push(data);
 });
 socket.on('updateChatRoom', (data:InputChatRoom)=>{
-    const idx = chatroom.order.indexOf(data.chatid);
-    if (data.title)
-        chatroom.chatroom[idx].title = data.title;
-    if (data.lock)
-        chatroom.chatroom[idx].lock = data.lock;
-    if (data.type)
-        chatroom.chatroom[idx].type = data.type;
-    if (data.addManager)
-        data.addManager.map(man=>chatroom.chatroom[idx].manager.push(man));
-    if (data.deleteManager)
-        data.deleteManager.map(man=>chatroom.chatroom[idx].manager.filter(person=> man !== person));
-    if (data.enterUser)
-        data.enterUser.map(user=>chatroom.chatroom[idx].members.push(user));
-    if (data.exitUser)
-        data.exitUser.map(user=>chatroom.chatroom[idx].members.filter(person=> user !== person.userid));
+	const idx = chatroom.order.indexOf(data.chatid);
+	if (data.title)
+		chatroom.chatroom[idx].title = data.title;
+	if (data.lock)
+		chatroom.chatroom[idx].lock = data.lock;
+	if (data.type)
+		chatroom.chatroom[idx].type = data.type;
+	if (data.addManager)
+		data.addManager.map(man=>chatroom.chatroom[idx].manager.push(man));
+	if (data.deleteManager)
+		data.deleteManager.map(man=>chatroom.chatroom[idx].manager.filter(person=> man !== person));
+	if (data.enterUser)
+		data.enterUser.map(user=>chatroom.chatroom[idx].members.push(user));
+	if (data.exitUser)
+		data.exitUser.map(user=>chatroom.chatroom[idx].members.filter(person=> user !== person.userid));
 });
 socket.on('chatHistory', (data:ChatHistory)=>{
-    // const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
-    // if (idx === -1){
-    //     chathistory.push(data);
-    // }else{
-    //     chathistory[idx].list = data.list;
-    // }
-    console.log('chat history is updated!');
-    chathistory = data;
+	// const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);
+	// if (idx === -1){
+	//     chathistory.push(data);
+	// }else{
+	//     chathistory[idx].list = data.list;
+	// }
+	console.log('chat history is updated!');
+	chathistory = data;
 });
 // socket.on('chatHistoryUpdate', (data:ChatHistory)=>{
 //     const idx = chathistory.findIndex((id)=> id.chatid === data.chatid);

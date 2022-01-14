@@ -221,9 +221,20 @@ module.exports = function(io){
         });
         socket.on("enterGameRoom", (msg, done)=>{
             if (Math.floor(Math.random() * 2)){
-                done(true);
+                socket.emit("enterGameRoom", {
+                    title: 'hello1',
+	                roomid: '12222',
+	                manager: "123223",
+	                map:'1',
+	                observer: [{userid: "132943", nickname: "oberser1", profile: 3}, {userid: "1292943", nickname: "observer2", profile: 2}],
+	                type: 'Public',
+	                status: false,
+	                players:[{userid: "1232943", nickname: "player1", profile: 1}],
+	                isPlayer: true
+                });
+                // done(true);
             }else{
-                done(false);
+                // done(false);
             }
         })
         socket.on("exitGameRoom", (msg)=>{
@@ -238,6 +249,19 @@ module.exports = function(io){
                 player1: '1212',
                 plater2: '1424'
             });
+        })
+        socket.on("gameRoomList", ()=>{
+            console.log('gameRoomList');
+            socket.emit("gameRoomList", [
+            	{title: 'hello1', roomid: '12222', map:'1', observer: 2, type: 'Public', password: false, status: false, player:1, maxObserver:3},
+            	{title: 'hello2', roomid: '12272', map:'1', observer: 2, type: 'Public', password: false, status: false, player:2, maxObserver:5},
+            	{title: 'hello3', roomid: '12262', map:'1', observer: 2, type: 'Public', password: false, status: false, player:2, maxObserver:4},
+            	{title: 'hello4', roomid: '1252', map:'1', observer: 3, type: 'Private', password: true, status: false, player:1, maxObserver:5},
+            	{title: 'hello5', roomid: '17262', map:'1', observer: 2, type: 'Public', password: false, status: false, player:2, maxObserver:4},
+            	{title: 'hello6', roomid: '15752', map:'1', observer: 3, type: 'Private', password: true, status: false, player:1, maxObserver:5},
+            	{title: 'hello7', roomid: '12462', map:'1', observer: 2, type: 'Public', password: false, status: false, player:2, maxObserver:4},
+        	    {title: 'hello8', roomid: '143352', map:'1', observer: 5, type: 'Private', password: true, status: false, player:1, maxObserver:5}
+            ]);
         })
 
         // socket.on("enter_room", (msg, done)=>{

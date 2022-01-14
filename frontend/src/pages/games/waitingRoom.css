@@ -1,18 +1,18 @@
 #waitingroomtitle{
-    height: 1.5em;
+	height: 1.5em;
 }
 #waitingroombox{
-    height: 11em;
+	height: 11em;
 }
 #waitingroomobserver{
-    height: 10em;
+	height: 10em;
 }
 #waitingroombtn{
-    height: 4em;
+	height: 4em;
 }
 .player > img {
-    height: 8em;
+	height: 8em;
 }
 .observer > img {
-    height: 8em;
+	height: 8em;
 }

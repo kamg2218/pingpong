@@ -9,23 +9,23 @@ import Profile8 from './profileImage8.png'
 import Profile9 from './profileImage9.png'
 
 export default function Profile(num: number){
-    if (num === 1)
-        return Profile1;
-    else if (num === 2)
-        return Profile2;
-    else if (num === 3)
-        return Profile3;
-    else if (num === 4)
-        return Profile4;
-    else if (num === 5)
-        return Profile5;
-    else if (num === 6)
-        return Profile6;
-    else if (num === 7)
-        return Profile7;
-    else if (num === 8)
-        return Profile8;
-    else if (num === 9)
-        return Profile9;
-    return Profile1;
+	if (num === 1)
+		return Profile1;
+	else if (num === 2)
+		return Profile2;
+	else if (num === 3)
+		return Profile3;
+	else if (num === 4)
+		return Profile4;
+	else if (num === 5)
+		return Profile5;
+	else if (num === 6)
+		return Profile6;
+	else if (num === 7)
+		return Profile7;
+	else if (num === 8)
+		return Profile8;
+	else if (num === 9)
+		return Profile9;
+	return Profile1;
 }
