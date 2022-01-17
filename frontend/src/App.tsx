@@ -9,6 +9,7 @@ import PlayRoom from './pages/games/PlayRoom'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { GameContext, GameVariables } from './socket/gameSocket';
 import { UserContext, UserVariables } from './socket/userSocket';
+import { ChatContext, ChatVariables } from './socket/chatSocket';
 
 function App() {
   return (
@@ -19,10 +20,12 @@ function App() {
           <Route path='/loginerror'><LoginError/></Route>
           <Route path='/nickandprofile'><NickAndProfile/></Route>
           <Route path='/twofactor'><Qrcode/></Route>
-          <GameContext.Provider value={GameVariables()}>
-            <Route path='/game/play/:id'><PlayRoom/></Route>
-            <Route path='/game'><Game/></Route>
-          </GameContext.Provider>
+          <ChatContext.Provider value={ChatVariables()}>
+            <GameContext.Provider value={GameVariables()}>
+              <Route path='/game/play/:id'><PlayRoom/></Route>
+              <Route path='/game'><Game/></Route>
+            </GameContext.Provider>
+          </ChatContext.Provider>
           <Route path='/admin'><Admin/></Route>
           <Route><Main/></Route>
         </UserContext.Provider>
