@@ -11,14 +11,16 @@ type param = {
 }
 
 export default function SideMenuChat(){
-	const userContext = useContext(UserContext);
+	// const userContext = useContext(UserContext);
 	const chatContext = useContext(ChatContext);
-	const [info, setInfo] = useState<chatRoom>();
+	// const [info, setInfo] = useState<ChatData>(chatContext.chatroom[0]);
 	
 	useEffect(()=>{
 		console.log('side menu chat');
-		socket.emit("myChatRoom");
-	}, [info, userContext, chatContext]);
+		console.log(chatContext.chatroom[0]);
+		if (!chatContext.chatroom[0])
+			socket.emit("myChatRoom");
+	}, [chatContext.chatroom]);
 	function ChatRoomIdx(){
 		let idx:param = useParams();
 		return <ChatRoom idx={idx.id}></ChatRoom>
@@ -26,6 +28,7 @@ export default function SideMenuChat(){
 	socket.on('myChatRoom', (data:ChatData)=>{
 		console.log('my chat room!!');
 		chatContext.chatroom[1](data);
+		// setInfo(data);
 	});
 	socket.on('publicChatRoom', (data:ChatData)=>{
 		console.log('public chat room');

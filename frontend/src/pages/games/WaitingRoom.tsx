@@ -6,12 +6,12 @@ import { socket } from '../../socket/userSocket';
 import './waitingRoom.css'
 
 export default function WaitingRoom(){
-	const context = useContext(GameContext);
-	const [gameRoom] = useState<gameRoomDetail>(context.gameRoom[0]);
+	const gameContext = useContext(GameContext);
+	const [gameRoom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
 
 	useEffect(()=>{
 		console.log('useEffect');
-	}, [context, gameRoom]);
+	}, [gameContext, gameRoom]);
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
 			<div className={`m-1 ${player ? 'player':'observer'}`} id={id}>
@@ -25,7 +25,7 @@ export default function WaitingRoom(){
 		if (msg.result){
 			alert('failed to play the game!');
 		}else{
-			context.playroom[1]({
+			gameContext.playroom[1]({
 				roomid: msg.roomid,
 				score: msg.score,
 				player1: msg.player1,

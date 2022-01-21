@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 import {socket} from '../../socket/userSocket'
 import {GameContext, gameRoomDetail} from '../../socket/gameSocket'
-import MenuPlay from '../../components/games/MenuPlay'
+import MenuPlay from '../../components/play/MenuPlay'
 
 export default function SideMenuPlay(){
-	const context = useContext(GameContext);
-	const [gameRoom, setRoom] = useState<gameRoomDetail>(context.room[0]);
+	const gameContext = useContext(GameContext);
+	const [gameRoom, setRoom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
 
 	useEffect(()=>{
 		//조건이 필요한가?

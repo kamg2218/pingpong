@@ -1,6 +1,7 @@
 import SideMenuPlay from './SideMenuPlay'
+import PlayRoom from '../../components/play/PlayRoom'
 
-export default function PlayRoom(){
+export default function Play(){
 	return (
 		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
 			<div className='col'>
@@ -10,7 +11,7 @@ export default function PlayRoom(){
 						<SideMenuPlay></SideMenuPlay>
 					</div>
 					<div className='col'>
-						play
+						<PlayRoom></PlayRoom>
 					</div>
 				</div>
 			</div>

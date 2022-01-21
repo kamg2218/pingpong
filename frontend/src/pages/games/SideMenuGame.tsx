@@ -1,34 +1,43 @@
 import '../../css/Game.css';
 import MenuGame from '../../components/games/MenuGame'
 import { Link } from 'react-router-dom'
-import {useContext, useEffect} from 'react'
-import {socket, UserContext, Friend} from '../../socket/userSocket';
+import {useState, useContext, useEffect} from 'react'
+import {User, socket, UserContext, Friend} from '../../socket/userSocket';
 
 export default function SideMenuGame(){
 	const userContext = useContext(UserContext);
+	const [info, setInfo] = useState<User>(userContext.user[0]);
 
 	useEffect(()=>{
 
-	}, [userContext]);
+	}, [userContext, info]);
 	socket.on("newFriend", (data)=>{
 		userContext.user[0].newfriends.push(data);
+		info.newfriends.push(data);
 	});
 	socket.on("addFriend", (data)=>{
 		userContext.user[0].friends.push(data);
+		info.friends.push(data);
 		console.log('add friend!');
 	});
 	socket.on("deleteFriend", (data)=>{
 		//userid 가 동일한 친구를 제거한다.
 		userContext.user[0].friends = userContext.user[0].friends.filter((friend:Friend)=>friend.userid !== data.userid);
+		info.friends = info.friends.filter((one:Friend)=>one.userid !== data.userid);
 	});
 	socket.on("blockFriend", (data)=>{
 		userContext.user[0].blacklist.push(data);
+		info.blacklist.push(data);
 	});
 	socket.on("updateProfile", (data)=>{
-		if (data.nickname)
+		if (data.nickname){
 			userContext.user[0].nickname = data.nickname;
-		if (data.profile)
+			info.nickname = data.nickname;
+		}
+		if (data.profile){
 			userContext.user[0].profile = data.profile;
+			info.profile = data.profile;
+		}
 	});
 	return (
 		<div id='gameTab'>

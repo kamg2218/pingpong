@@ -8,8 +8,8 @@ export function GameVariables(){
 	const [playRoom, setPlayRoom] = useState<playRoom>();
 
 	const variable = {
-		room: [gameRoom, setGameRoom],
-		roomlist: [roomList, setList],
+		gameroom: [gameRoom, setGameRoom],
+		gameroomlist: [roomList, setList],
 		playroom: [playRoom, setPlayRoom],
 	}
 	return variable;

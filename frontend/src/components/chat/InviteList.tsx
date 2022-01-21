@@ -23,7 +23,7 @@ export default function InviteList(props:any){
 	
 	return (
 		<ul key="inviteList">
-			{userContext.user[0].friends.map((friend:Friend)=>checkbox(friend))}
+			{userContext.user[0]?.friends?.map((friend:Friend)=>checkbox(friend))}
 		</ul>
 	);
 }

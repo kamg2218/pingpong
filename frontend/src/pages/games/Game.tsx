@@ -1,5 +1,5 @@
 import '../../css/Game.css'
-import SideMenuChat from '../../components/chat/SideMenuChat'
+import SideMenuChat from './SideMenuChat'
 import SideMenuGame from './SideMenuGame'
 import WaitingRoom from './WaitingRoom'
 import Lobby from './Lobby'
@@ -19,7 +19,7 @@ export default function Game(){
 			console.log('user info !!!');
 			socket.emit("myChatRoom");
 		}
-	}, [user, gameContext]);
+	}, [user, userContext, gameContext]);
 	socket.on("userInfo", (data)=>{
 		console.log("user Info is changed!");
 		if (!user){
@@ -52,16 +52,16 @@ export default function Game(){
 	socket.on("enterGameRoom", (msg)=>{
 		console.log('enter game room');
 		if (msg.message){
+			console.log(msg.message);
 			alert('fail to enter the room!');
 		}
 		else{
-			gameContext.room[1](msg);
-			//gameRoom State가 필요한가?
+			gameContext.gameroom[1](msg);
 		}
 	});
 	socket.on("exitGameRoom", (msg)=>{
 		console.log(msg);
-		gameContext.room[1](undefined);
+		gameContext.gameroom[1](undefined);
 	});
 	return (
 		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
@@ -75,7 +75,7 @@ export default function Game(){
 						</Switch>
 					</div>
 					<div className='d-none d-sm-block col'>
-						{!gameContext.room[0]?.roomid ? <Lobby/> : <WaitingRoom/>}
+						{!gameContext.gameroom[0]?.roomid ? <Lobby/> : <WaitingRoom/>}
 					</div>
 				</div>
 			</div>

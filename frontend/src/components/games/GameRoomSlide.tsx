@@ -4,22 +4,22 @@ import { gameRoom, GameContext } from '../../socket/gameSocket'
 import GameBox from './GameBox'
 
 export default function GameRoomSlide(props: any){
-	const context = useContext(GameContext);
+	const gameContext = useContext(GameContext);
 	const [idx, setIdx] = useState<number>(0);
-	const [gameRoomList, setList] = useState<Array<gameRoom>>(context.roomlist[0] || []);
+	const [gameRoomList, setList] = useState<Array<gameRoom>>(gameContext.gameroomlist[0] || []);
 	let list: Array<gameRoom> = gameRoomList;
 
 	useEffect(()=>{
 		//조건이 필요한가?
-		console.log(context.roomlist[0])
-		if (!context.roomlist[0]){
+		console.log(gameContext.gameroomlist[0])
+		if (!gameContext.gameroomlist[0]){
 			console.log('game room list!')
 			socket.emit("gameRoomList");
 		}
-	}, [idx, gameRoomList, context]);
+	}, [idx, gameRoomList, gameContext]);
 	socket.on("gameRoomList", (msg)=>{
 		console.log('socket on! gameRoomList in gmaeRoomSlide!')
-		context.roomlist[1](msg);
+		gameContext.gameroomlist[1](msg);
 		setList(msg);
 	});
 	const handleButton = (num: number) => {

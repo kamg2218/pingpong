@@ -232,9 +232,9 @@ module.exports = function(io){
 	                players:[{userid: "1232943", nickname: "player1", profile: 1}],
 	                isPlayer: true
                 });
-                // done(true);
+                done(true);
             }else{
-                // done(false);
+                done(false);
             }
         })
         socket.on("exitGameRoom", (msg)=>{
