@@ -2,18 +2,18 @@ import '../../css/Game.css';
 import MenuChat from '../../components/chat/MenuChat'
 import ChatRoom from '../../components/chat/ChatRoom'
 import { Switch, Route, Link, useParams } from 'react-router-dom'
-import {useState, useEffect, useContext} from 'react'
+import {useEffect, useContext} from 'react'
 import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from '../../socket/chatSocket'
-import { socket, UserContext } from '../../socket/userSocket';
+import { socket } from '../../socket/userSocket';
+import { GameContext } from '../../socket/gameSocket';
 
 type param = {
 	id?: String
 }
 
 export default function SideMenuChat(){
-	// const userContext = useContext(UserContext);
 	const chatContext = useContext(ChatContext);
-	// const [info, setInfo] = useState<ChatData>(chatContext.chatroom[0]);
+	const gameContext = useContext(GameContext);
 	
 	useEffect(()=>{
 		console.log('side menu chat');
@@ -62,10 +62,10 @@ export default function SideMenuChat(){
 		<div id='chatTab'>
 			<div className='row'>
 				<div className='col-3 btn border border-bottom-0 rounded-top' id='tab-game'>
-					<Link to='/game' className='text-decoration-none text-reset'>game</Link>
+					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>game</Link>
 				</div>
 				<div className='col-3 btn border border-bottom-0 rounded-top bg-light' id='tab-chat'>
-					<Link to='/game/chat' className='text-decoration-none text-reset'>chat</Link>
+					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>chat</Link>
 				</div>
 			</div>
 			<div className='row border-top' id='nav-chat'>

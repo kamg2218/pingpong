@@ -3,13 +3,14 @@ import MenuGame from '../../components/games/MenuGame'
 import { Link } from 'react-router-dom'
 import {useState, useContext, useEffect} from 'react'
 import {User, socket, UserContext, Friend} from '../../socket/userSocket';
+import { GameContext } from '../../socket/gameSocket';
 
 export default function SideMenuGame(){
+	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
 	const [info, setInfo] = useState<User>(userContext.user[0]);
 
 	useEffect(()=>{
-
 	}, [userContext, info]);
 	socket.on("newFriend", (data)=>{
 		userContext.user[0].newfriends.push(data);
@@ -43,10 +44,10 @@ export default function SideMenuGame(){
 		<div id='gameTab'>
 			<div className='row'>
 				<div className='col-3 btn border border-bottom-0 rounded-top bg-light' id='tab-game'>
-					<Link to='/game' className='text-decoration-none text-reset'>game</Link>
+					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>game</Link>
 				</div>
 				<div className='col-3 btn border border-bottom-0 rounded-top' id='tab-chat'>
-					<Link to='/game/chat' className='text-decoration-none text-reset'>chat</Link>
+					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>chat</Link>
 				</div>
 			</div>
 			<div className='row border-top' id='nav-game'>

@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import {socket} from '../../socket/userSocket'
 import {GameContext, gameRoomDetail} from '../../socket/gameSocket'
 import MenuPlay from '../../components/play/MenuPlay'
 

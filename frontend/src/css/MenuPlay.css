@@ -6,6 +6,7 @@
 	overflow: hidden;
 }
 #observer{
-    min-height: 5em;
+	min-height: 5em;
+	max-height: 6em;
     background-color: antiquewhite;
 }

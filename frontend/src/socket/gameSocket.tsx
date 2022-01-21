@@ -15,7 +15,7 @@ export function GameVariables(){
 	return variable;
 }
 
-export type User = {
+export type GameUser = {
 	userid: string,
 	nickname: string,
 	profile: number,
@@ -36,10 +36,10 @@ export type gameRoomDetail = {
 	roomid: string,
 	manager: string,
 	map: string,
-	observer: Array<User>,
+	observer: Array<GameUser>,
 	type: string,
 	status: boolean,
-	players: Array<User>,
+	players: Array<GameUser>,
 	isPlayer: boolean
 }
 export type playRoom = {

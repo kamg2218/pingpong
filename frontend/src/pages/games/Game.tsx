@@ -5,10 +5,12 @@ import WaitingRoom from './WaitingRoom'
 import Lobby from './Lobby'
 import { Route, Switch } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
-import { socket, User, UserContext} from '../../socket/userSocket'
-import {GameContext} from '../../socket/gameSocket'
+import {useHistory} from 'react-router-dom';
+import { socket, UserContext, User} from '../../socket/userSocket'
+import {GameContext, GameUser} from '../../socket/gameSocket'
 
 export default function Game(){
+	const history = useHistory();
 	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
 	const [user, setUser] = useState<User>(userContext.user[0]);
@@ -51,17 +53,57 @@ export default function Game(){
 	});
 	socket.on("enterGameRoom", (msg)=>{
 		console.log('enter game room');
+		console.log(msg);
 		if (msg.message){
 			console.log(msg.message);
 			alert('fail to enter the room!');
 		}
 		else{
+			console.log('entered!')
 			gameContext.gameroom[1](msg);
 		}
 	});
 	socket.on("exitGameRoom", (msg)=>{
 		console.log(msg);
 		gameContext.gameroom[1](undefined);
+	});
+	socket.on('startGame', (msg)=>{
+		console.log('start game!');
+		if (msg.result){
+			alert('failed to play the game!');
+		}else{
+			gameContext.playroom[1](msg);
+			history.push(`/game/play/${msg.roomid}`);
+		}
+	});
+	socket.on('updateGameRoom', (msg)=>{
+		if (msg.manager){
+			gameContext.gameroom[0].manager = msg.manager;
+		}
+		if (msg.title){
+			gameContext.gameroom[0].title = msg.title;
+		}
+		if (msg.speed){
+			gameContext.gameroom[0].speed = msg.speed;
+		}
+		if (msg.status){
+			gameContext.gameroom[0].status = msg.status;
+		}
+		if (msg.type){
+			gameContext.gameroom[0].type = msg.type;
+		}
+		if (msg.addObserver){
+			msg.addObserver.forEach((observer:GameUser)=>gameContext.gameroom[0].oberserver.push(observer))
+		}
+		if (msg.deleteObserver){
+			msg.deleteObserver.forEach((observer:GameUser)=>gameContext.gameroom[0].observer.filter((ob:GameUser)=> ob.userid === observer.userid))
+		}
+		if (msg.addPlayers){
+			msg.addPlayers.forEach((player:GameUser)=>gameContext.gameroom[0].players.push(player))
+		}
+		if (msg.deletePlayers){
+			msg.deletePlayers.forEach((player:GameUser)=>gameContext.gameroom[0].players.filter((person:GameUser)=> person.userid === player.userid))
+		}
 	});
 	return (
 		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
@@ -75,7 +117,12 @@ export default function Game(){
 						</Switch>
 					</div>
 					<div className='d-none d-sm-block col'>
-						{!gameContext.gameroom[0]?.roomid ? <Lobby/> : <WaitingRoom/>}
+						<Switch>
+							<Route path='/game/waiting/:id' component={WaitingRoom}></Route>
+							<Route path='/game/chat/waiting/:id' component={WaitingRoom}></Route>
+							<Route path='/game' component={Lobby}></Route>
+						</Switch>
+						{/* {!gameContext.gameroom[0] ? <Lobby/> : <WaitingRoom/>} */}
 					</div>
 				</div>
 			</div>
