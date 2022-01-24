@@ -6,11 +6,13 @@ export function GameVariables(){
 	const [gameRoom, setGameRoom] = useState<gameRoomDetail>();
 	const [roomList, setList] = useState<Array<gameRoom>>();
 	const [playRoom, setPlayRoom] = useState<playRoom>();
+	const [draw, setDraw] = useState<draw>();
 
 	const variable = {
 		gameroom: [gameRoom, setGameRoom],
 		gameroomlist: [roomList, setList],
 		playroom: [playRoom, setPlayRoom],
+		draw: [draw, setDraw],
 	}
 	return variable;
 }
@@ -48,46 +50,32 @@ export type playRoom = {
 	player1: string,
 	player2: string
 }
-
-	// socket.on('gameRoomList', (msg)=>{
-	// 	context.roomList[1](msg);
-	// });
-	// socket.on('enterGameRoom', (msg)=>{
-	// 	console.log('enter game room');
-	// 	if (msg.message){
-	// 		alert('fail to enter the room!');
-	// 	}
-	// 	else{
-	// 		context.gameRoom[1](msg);
-	// 	}
-	// });
-	// socket.on('exitGameRoom', (msg)=>{
-	// 	console.log('exit game room');
-	// 	//or
-	// 	// context.gameRoom[1](undefined);
-	// 	context.gameRoom[1]({
-	// 		title: '',
-	// 		roomid: '',
-	// 		manager: '',
-	// 		map: '',
-	// 		observer: [],
-	// 		type: '',
-	// 		status: false,
-	// 		players: [],
-	// 		isPlayer: false,
-	// 	});
-	// })
-	// socket.on('startGame', (msg)=>{
-	// 	console.log('start game!');
-	// 	if (msg.result){
-	// 		alert('failed to play the game!');
-	// 	}else{
-	// 		context.playroom[1]({
-	// 			roomid: msg.roomid,
-	// 			score: msg.score,
-	// 			player1: msg.player1,
-	// 			player2: msg.player2      
-	// 		});
-	// 		window.location.href = `http://localhost:3000/game/play/${msg.roomid}`;
-	// 	}
-	// })	
+export type move = {
+	roomid: string,
+	direction: string
+}
+export type draw = {
+	background: {
+		width: number,
+		height: number
+	},
+	ball: {
+		x: number,
+		y: number,
+		z: number,
+	},
+	right: {
+		x: number,
+		y: number,
+		width: number,
+		height: number,
+		score: number
+	},
+	left: {
+		x: number,
+		y: number,
+		width: number,
+		height: number,
+		score: number
+	}
+}

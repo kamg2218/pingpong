@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import {useHistory} from 'react-router-dom'
 import Profile from '../../icons/Profile';
-import LoadingModal from '../../components/modals/LoadingModal'
 import { gameRoomDetail, GameContext } from '../../socket/gameSocket'
 import { socket } from '../../socket/userSocket';
 import './waitingRoom.css'
@@ -54,10 +53,9 @@ export default function WaitingRoom(){
 				<div className="col mx-1 border">{gameRoom?.observer[4] ? profileBox(gameRoom?.observer[4].userid, Profile(gameRoom?.observer[4].profile), gameRoom?.observer[4].nickname, false):''}</div>
 			</div>
 			<div className="row mx-3 my-2" id="waitingroombtn">
-				<button className="col mx-5 my-2 btn btn-outline-dark" onClick={handleStart} data-toggle='modal' data-target='#LoadingModal' data-backdrop="static" data-keyboard="false">Start</button>
+				<button className="col mx-5 my-2 btn btn-outline-dark" onClick={handleStart}>Start</button>
 				<button className="col mx-5 my-2 btn btn-outline-dark" onClick={handleExit}>Exit</button>
 			</div>
-			<LoadingModal content='잠시만 기다려 주세요'></LoadingModal>
 		</div>
 	);
 }
