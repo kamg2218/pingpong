@@ -6,7 +6,31 @@ export function GameVariables(){
 	const [gameRoom, setGameRoom] = useState<gameRoomDetail>();
 	const [roomList, setList] = useState<Array<gameRoom>>();
 	const [playRoom, setPlayRoom] = useState<playRoom>();
-	const [draw, setDraw] = useState<draw>();
+	const [draw, setDraw] = useState<draw>({
+		background: {
+			width: 480,
+			height: 320
+		},
+		ball: {
+			x: 100,
+			y: 100,
+			z: 50,
+		},
+		right: {
+			x: 10,
+			y: 5,
+			width: 2,
+			height: 3,
+			score: 2
+		},
+		left: {
+			x: 1,
+			y: 5,
+			width: 2,
+			height: 3,
+			score: 1
+		}
+	});
 
 	const variable = {
 		gameroom: [gameRoom, setGameRoom],

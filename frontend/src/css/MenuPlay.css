@@ -1,12 +1,17 @@
 #player1, #player2{
 	width: 100%;
-	height: 60%;
+	height: 50%;
 	border-radius: 50%;
 	object-fit: cover;
 	overflow: hidden;
 }
 #observer{
+	max-width: 6em;
 	min-height: 5em;
 	max-height: 6em;
     background-color: antiquewhite;
+	overflow: hidden;
+}
+#observerImg{
+
 }

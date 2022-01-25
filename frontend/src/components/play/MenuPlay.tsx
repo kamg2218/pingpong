@@ -19,8 +19,8 @@ export default function MenuPlay(props:any){
 	}, [s1, s2, gameContext, gameroom]);
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
-			<div className={"m-1 observer"} id={id}>
-				<img className="row mx-auto img-fluid img-thumbnail" src={profile} alt={id}></img>
+			<div className={"m-1 h-100"} id={id}>
+				<img className="row mx-auto img-fluid img-thumbnail h-75" id="observerImg" src={profile} alt={id}></img>
 				<label className={`row justify-content-center my-1 ${player ? 'h4':'h6'}`}>{nick}</label>
 			</div>
 		);
@@ -45,14 +45,14 @@ export default function MenuPlay(props:any){
 						<label className="h4">{p2?.nickname}</label>
 					</div>
 				</div>
-				<label className="row mx-3 my-2 justify-content-center" id="menuScore">{gameContext.playroom[0]?.score}</label>
-				<div className="row justify-content-center" id="winLose">{s1} : {s2}</div>
-				<div className="row mt-5 justify-content-center">
+				<label className="row mx-3 my-2 justify-content-center h1" id="menuScore">{gameContext.playroom[0]?.score}</label>
+				<div className="row justify-content-center h4" id="winLose">{s1} : {s2}</div>
+				<div className="row mt-4 justify-content-center">
 					<div className="col mx-1" id="observer">{gameroom?.observer[0] ? profileBox(gameroom.observer[0].userid, Profile(gameroom.observer[0].profile), gameroom.observer[0].nickname, false):''}</div>
 					<div className="col mx-1" id="observer">{gameroom?.observer[1] ? profileBox(gameroom.observer[1].userid, Profile(gameroom.observer[1].profile), gameroom.observer[1].nickname, false):''}</div>
 					<div className="col mx-1" id="observer">{gameroom?.observer[2] ? profileBox(gameroom.observer[2].userid, Profile(gameroom.observer[2].profile), gameroom.observer[2].nickname, false):''}</div>
 				</div>
-				<div className="row mt-5 mb-3 justify-content-center">
+				<div className="row mt-4 mb-3 justify-content-center">
 					<div className="col mx-3" id="observer">{gameroom?.observer[3] ? profileBox(gameroom.observer[3].userid, Profile(gameroom.observer[3].profile), gameroom.observer[3].nickname, false):''}</div>
 					<div className="col mx-3" id="observer">{gameroom?.observer[4] ? profileBox(gameroom.observer[4].userid, Profile(gameroom.observer[4].profile), gameroom.observer[4].nickname, false):''}</div>
 				</div>
