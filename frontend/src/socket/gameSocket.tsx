@@ -6,6 +6,7 @@ export function GameVariables(){
 	const [gameRoom, setGameRoom] = useState<gameRoomDetail>();
 	const [roomList, setList] = useState<Array<gameRoom>>();
 	const [playRoom, setPlayRoom] = useState<playRoom>();
+	const [winner, setWinner] = useState<string>();
 	const [draw, setDraw] = useState<draw>({
 		background: {
 			width: 480,
@@ -14,20 +15,20 @@ export function GameVariables(){
 		ball: {
 			x: 100,
 			y: 100,
-			z: 50,
+			r: 10,
 		},
 		right: {
-			x: 10,
-			y: 5,
-			width: 2,
-			height: 3,
+			x: 20,
+			y: 200,
+			width: 10,
+			height: 100,
 			score: 2
 		},
 		left: {
-			x: 1,
-			y: 5,
-			width: 2,
-			height: 3,
+			x: 300,
+			y: 200,
+			width: 10,
+			height: 100,
 			score: 1
 		}
 	});
@@ -37,6 +38,7 @@ export function GameVariables(){
 		gameroomlist: [roomList, setList],
 		playroom: [playRoom, setPlayRoom],
 		draw: [draw, setDraw],
+		winner: [winner, setWinner],
 	}
 	return variable;
 }
@@ -86,7 +88,7 @@ export type draw = {
 	ball: {
 		x: number,
 		y: number,
-		z: number,
+		r: number,
 	},
 	right: {
 		x: number,

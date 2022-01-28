@@ -11,8 +11,8 @@ export default function MenuPlay(props:any){
 	const [gameroom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
 	const p1 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player1);
 	const p2 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player2);
-	const [s1, setS1] = useState<number>(5);
-	const [s2, setS2] = useState<number>(0);
+	const [s1, setS1] = useState<number>(gameContext ? gameContext.draw[0].left.score : 0);
+	const [s2, setS2] = useState<number>(gameContext ? gameContext.draw[0].right.score : 0);
 	
 	useEffect(()=>{
 		console.log('menu play');
@@ -45,7 +45,7 @@ export default function MenuPlay(props:any){
 						<label className="h4">{p2?.nickname}</label>
 					</div>
 				</div>
-				<label className="row mx-3 my-2 justify-content-center h1" id="menuScore">{gameContext.playroom[0]?.score}</label>
+				<label className="row mx-3 my-2 justify-content-center h1" id="menuScore">{gameContext.playroom[0] ? gameContext.playroom[0].score : 0}</label>
 				<div className="row justify-content-center h4" id="winLose">{s1} : {s2}</div>
 				<div className="row mt-4 justify-content-center">
 					<div className="col mx-1" id="observer">{gameroom?.observer[0] ? profileBox(gameroom.observer[0].userid, Profile(gameroom.observer[0].profile), gameroom.observer[0].nickname, false):''}</div>

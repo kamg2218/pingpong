@@ -37,7 +37,6 @@ export type User = {
 	newfriends: Array<Friend>,
 	blacklist: Array<Friend>,
 	qrcode?: string,
-	// history?: Array<History>,
 }
 
 // export let user: User = {

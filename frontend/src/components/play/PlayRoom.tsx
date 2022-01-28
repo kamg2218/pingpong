@@ -1,10 +1,11 @@
 import { useEffect, useContext, useState, useRef } from "react";
-import { socket } from "../../socket/userSocket";
-import {draw, GameContext} from "../../socket/gameSocket";
+import { socket, UserContext } from "../../socket/userSocket";
+import {draw, GameContext, GameUser} from "../../socket/gameSocket";
 
 export default function PlayRoom(){
     const gameDoing = useRef<null | HTMLElement>(null);
     const gameContext = useContext(GameContext);
+    const userContext = useContext(UserContext);
     const start = useState<boolean>(true);
     const [drawState] = useState<draw>(gameContext.draw[0]);
     const canvas = useRef<null | HTMLCanvasElement>(null);
@@ -17,40 +18,78 @@ export default function PlayRoom(){
             gameContext.draw[1](data);
         });
         socket.on("gameResult", (data:any)=>{
-            
+            gameContext.winner[1](data.winner);
         })
-        
-    }, [gameContext.draw, start]);
+    }, [gameContext.draw, start, canvas, drawState, gameContext.winner]);
 
     function drawCanvas() {
-        let ctx = canvas?.current?.getContext("2d");
+        const ctx = canvas?.current?.getContext("2d");
 
-        //ball
         if (ctx){
+            //center
             ctx.beginPath();
-            ctx.arc(drawState.ball.x, drawState.ball.y, drawState.ball.z, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.fillStyle = "red";
+            ctx.moveTo(drawState.background.width / 2, drawState.background.height);
+            ctx.lineTo(drawState.background.width / 2, 0);
+            ctx.lineWidth = 1;
+            // ctx.stroke();
+            
+            if (ctx && gameContext.winner[0]){
+                drawWinner(ctx)
+            }else{
+                drawPlay(ctx)
+            }
         }
 
         return (
             <div className="border row h-100 w-100 p-1">
-                <canvas id="canvas" ref={canvas} width={drawState?.background?.width} height={drawState?.background?.height}>
-                </canvas>
+                <canvas id="canvas" ref={canvas} width={drawState?.background?.width} height={drawState?.background?.height}></canvas>
             </div>
         );
+    }
+    const drawWinner = (ctx: CanvasRenderingContext2D) => {
+        const winner:string = gameContext.winner[0];
+        const width:number = drawState.background.width / 2;
+        const height:number = drawState.background.height / 2;
+        const player = gameContext.gameroom[0]?.players.find((user:GameUser)=>user.userid === winner)
+
+        ctx.textAlign = "center";
+        ctx.font = "80px verdana bold";
+        ctx.fillStyle = "steelblue";
+        if (userContext.user[0]?.id === winner){
+            ctx.fillText("WIN", width, height);
+        }else if (player){
+            ctx.fillText("LOSE", width, height);
+        }else{
+            ctx.fillText(player?.nickname, width, height);
+        }
+    }
+    const drawPlay = (ctx: CanvasRenderingContext2D) => {
+        //ball
+        ctx.beginPath();
+        ctx.arc(drawState.ball.x, drawState.ball.y, drawState.ball.r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fill();
+        //left
+        const left = drawState.left
+        ctx.fillStyle = "blue";
+        ctx.fillRect(left.x, left.y, left.width, left.height);
+        //right
+        const right = drawState.right
+        ctx.fillStyle = "red";
+        ctx.fillRect(right.x, right.y, right.width, right.height);   
     }
     const handleKeyDown = (e:any) => {
         if (e.key === "ArrowDown"){
             console.log('down');
             socket.emit("move", {
-                roomid: gameContext.playroom[0].roomid,
+                roomid: gameContext.playroom[0]?.roomid,
                 direction: "down"
             })
         }else if (e.key === "ArrowUp"){
             console.log('up')
             socket.emit("move", {
-                roomid: gameContext.playroom[0].roomid,
+                roomid: gameContext.playroom[0]?.roomid,
                 direction: "up"
             })
         }
@@ -67,7 +106,7 @@ export default function PlayRoom(){
     return (
         <div className="container col h-75 w-100 my-2 px-3" onClick={()=>{gameDoing?.current?.focus()}}>
             <input className="row-1" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
-            { drawState && drawCanvas()}
+            {drawState && drawCanvas()}
         </div>
     );
 }
