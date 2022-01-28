@@ -38,6 +38,17 @@ export type User = {
 	blacklist: Array<Friend>,
 	qrcode?: string,
 }
+export type ProfileUser = {
+	userid: string,
+	nickname: string,
+	win: number,
+	lose: number,
+	profile: number,
+	level: string,
+	history: Array<History>,
+	block: boolean,
+	friend: boolean
+}
 
 // export let user: User = {
 //     id: "123223",

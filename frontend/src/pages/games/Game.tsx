@@ -119,6 +119,7 @@ export default function Game() {
 					<div className='d-none d-sm-block col'>
 						<Switch>
 							<Route path='/game/waiting/:id'><WaitingRoom /></Route>
+							<Route path='/game/chat/:idx/waiting/:id'><WaitingRoom /></Route>
 							<Route path='/game/chat/waiting/:id'><WaitingRoom /></Route>
 							<Route path='/game' component={Lobby}></Route>
 						</Switch>

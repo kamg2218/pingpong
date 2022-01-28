@@ -4,21 +4,23 @@ import { Link } from 'react-router-dom'
 import {useState, useContext, useEffect} from 'react'
 import {User, socket, UserContext, Friend} from '../../socket/userSocket';
 import { GameContext } from '../../socket/gameSocket';
+import ProfileModal from '../../components/modals/ProfileModal';
 
 export default function SideMenuGame(){
 	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
 	const [info, setInfo] = useState<User>(userContext.user[0]);
+	const [clicked, setClicked] = useState<string>('');
 
 	useEffect(()=>{
 	}, [userContext, info]);
 	socket.on("newFriend", (data)=>{
-		userContext.user[0].newfriends.push(data);
+		userContext.user[0]?.newfriends?.push(data);
 		info.newfriends.push(data);
 	});
 	socket.on("addFriend", (data)=>{
-		userContext.user[0].friends.push(data);
-		info.friends.push(data);
+		userContext.user[0]?.friends?.push(data);
+		info.friends?.push(data);
 		console.log('add friend!');
 	});
 	socket.on("deleteFriend", (data)=>{
@@ -51,8 +53,9 @@ export default function SideMenuGame(){
 				</div>
 			</div>
 			<div className='row border-top' id='nav-game'>
-				<MenuGame></MenuGame>
+				<MenuGame setClicked={setClicked}></MenuGame>
 			</div>
+			<ProfileModal userid={clicked}></ProfileModal>
 		</div>
 	);
 }

@@ -70,7 +70,7 @@ export default function SideMenuChat(){
 			</div>
 			<div className='row border-top' id='nav-chat'>
 				<Switch>
-					<Route exact path='/game/chat/:id'><ChatRoomIdx/></Route>
+					<Route path='/game/chat/:id'><ChatRoomIdx/></Route>
 					<Route path='/game/chat'><MenuChat/></Route>
 				</Switch>
 			</div>

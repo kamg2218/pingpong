@@ -52,7 +52,7 @@ module.exports = function(io){
             socket.emit("userInfo", userInfo);
         });
         //Friends
-        socket.on("newFriend", (msg, done)=>{
+        socket.on("newFriend", (msg)=>{
             console.log(msg.result);
             if (msg.result === true){
                 //a
@@ -65,7 +65,7 @@ module.exports = function(io){
                 userInfo.friends.push({
                     userid: msg.userid, nickname: 'NewFriend', profile: 4, onoff: false
                 });
-                done();
+                // done();
                 //b
                 // socket.to(msg.userid).emit("newFriend", {
                 //     "userid": socket,

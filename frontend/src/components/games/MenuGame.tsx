@@ -16,10 +16,10 @@ export function NewList(person: Friend): any {
 		socket.emit("newFriend", {
 			userid: person.userid,
 			result: result
-		}, async ()=>{
-			await user.newfriends.filter((p:Friend) => p.userid !== person.userid);
-			// setNewone(newone.filter(p => p.userid !== person.userid));
-			userContext.user[1](user);
+		// }, async ()=>{
+		// 	await user.newfriends.filter((p:Friend) => p.userid !== person.userid);
+		// 	// setNewone(newone.filter(p => p.userid !== person.userid));
+		// 	userContext.user[1](user);
 		});
 		console.log(user);
 	}
@@ -36,16 +36,19 @@ export function NewList(person: Friend): any {
 	);
 }
 
-export function OldList(person: Friend): any {
+export function OldList(person: Friend, setClicked: Function): any {
+	const handleClick = () => {
+		setClicked(person.userid);
+	}
 	return (
-		<div className='btn d-flex m-0 p-1' id='friendonoff' key={person.nickname}>
+		<div className='btn d-flex m-0 p-1' id='friendonoff' key={person.nickname} onClick={handleClick} data-toggle='modal' data-target='#ProfileModal'>
 			<div className='col-8 text-start' id='friendNick'>{person.nickname}</div>
 			{person.onoff ? <i className="bi bi-circle-fill"/> : <i className="bi bi-circle"/>}
 		</div>
 	);
 }
 
-export default function MenuGame(){
+export default function MenuGame(props:any){
 	const userContext = useContext(UserContext);
 	const [user] = useState(userContext.user[0]);
 
@@ -59,7 +62,7 @@ export default function MenuGame(){
 				<div className='row justify-content-center' id='winLose'>{user?.win} : {user?.lose}</div>
 				<div className='row scroll-box m-1 p-1 border justify-content-center' id='friendList'>
 					{user?.newfriends?.map((people:Friend) => (NewList(people)))}
-					{user?.friends.map((people:Friend) => (OldList(people)))}
+					{user?.friends.map((people:Friend) => (OldList(people, props.setClicked)))}
 				</div>
 			</div>
 		</div>
