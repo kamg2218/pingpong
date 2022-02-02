@@ -100,7 +100,20 @@ module.exports = function(io){
             console.log("Unblocked!");
             userInfo.blacklist.filter(p=>p !== msg.userid);
         });
-        
+        socket.on("opponentProfile", (msg)=>{
+            console.log("opponent profile");
+            socket.emit("opponentProfile", {
+                userid: msg.userid,
+                nickname: "first friend",
+                win: 1,
+                lose: 3,
+                profile: 3,
+                level: "hi",
+                history: [{nick: "first", profile:2, winner:"1212"}, {nick: "second", profile:2, winner:"2948"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}],
+                block: false,
+                friend: true
+            });
+        })
         //Chat
         socket.on("myChatRoom", ()=>{
             console.log('my chat room!');

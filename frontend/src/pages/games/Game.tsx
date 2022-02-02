@@ -1,5 +1,5 @@
 import '../../css/Game.css'
-import SideMenuChat from './SideMenuChat'
+import SideMenuChat from '../../components/chat/SideMenuChat'
 import SideMenuGame from './SideMenuGame'
 import WaitingRoom from './WaitingRoom'
 import Lobby from './Lobby'
@@ -27,7 +27,7 @@ export default function Game() {
 		if (!user) {
 			setUser(data);
 		} else if (data.id) {
-			user.id = data.id;
+			user.userid = data.id;
 		} else if (data.nickname) {
 			user.nickname = data.nickname;
 		} else if (data.win) {

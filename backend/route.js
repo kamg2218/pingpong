@@ -55,5 +55,11 @@ router.post('/auth/issue', (req, res, err)=>{
     if (req.Authorization)
         console.log(req.Authorization);
 });
+router.post('/2fa/turn-on', (req, res, err)=>{
+    console.log("turn-on");
+})
+router.post('/2fa/turn-off', (req, res, err)=>{
+    console.log("turn-off");
+})
 
 module.exports = router;

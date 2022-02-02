@@ -25,7 +25,7 @@ export type History = {
 	winner: string,
 }
 export type User = {
-	id: string,
+	userid: string,
 	nickname: string,
 	win: number,
 	lose: number,
@@ -37,6 +37,7 @@ export type User = {
 	newfriends: Array<Friend>,
 	blacklist: Array<Friend>,
 	qrcode?: string,
+	history?: Array<History>
 }
 export type ProfileUser = {
 	userid: string,

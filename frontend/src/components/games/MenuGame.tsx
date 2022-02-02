@@ -25,13 +25,13 @@ export function NewList(person: Friend): any {
 	}
 
 	return (
-		<div className='d-flex m-0 p-2' id='friendonoff' key={person.nickname}>
+		<div className='d-flex m-0 p-2 h6' id='friendonoff' key={person.nickname}>
 			<div className='col-7 text-start' id='friendNick'>
 				<i className="bi bi-exclamation-lg" id='exclamationMark'></i>
 				{person.nickname}
 			</div>
-			<i className="bi bi-check-lg mx-1" id='checkMark' onClick={()=>handleNewFriend(true)}/>
-			<i className="bi bi-x-lg mx-1" id='crossMark' onClick={()=>handleNewFriend(false)}/>
+			<i className="bi bi-check-lg px-2 Mark" id='checkMark' onClick={()=>handleNewFriend(true)}/>
+			<i className="bi bi-x-lg px-2 Mark" id='crossMark' onClick={()=>handleNewFriend(false)}/>
 		</div>
 	);
 }
@@ -41,9 +41,9 @@ export function OldList(person: Friend, setClicked: Function): any {
 		setClicked(person.userid);
 	}
 	return (
-		<div className='btn d-flex m-0 p-1' id='friendonoff' key={person.nickname} onClick={handleClick} data-toggle='modal' data-target='#ProfileModal'>
-			<div className='col-8 text-start' id='friendNick'>{person.nickname}</div>
-			{person.onoff ? <i className="bi bi-circle-fill"/> : <i className="bi bi-circle"/>}
+		<div className='btn d-flex m-0 p-1 align-items-center' id='friendonoff' key={person.nickname} onClick={handleClick} data-toggle='modal' data-target='#ProfileModal'>
+			<div className='col-8 text-start px-1 h6' id='friendNick'>{person.nickname}</div>
+			{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}
 		</div>
 	);
 }
@@ -57,7 +57,7 @@ export default function MenuGame(props:any){
 		<div className='container m-1 p-2' id='menu'>
 			<div className='col justify-content-center'>
 				<img src={Profile(user?.profile ? user.profile : 1)} className="row mx-auto my-4" alt="profile" id="profile"/>
-				<div id='menuNick' className='row justify-content-center'>{user?.nickname}</div>
+				<div id='menuNick' className='row mx-2 justify-content-center' data-toggle='modal' data-target='#MyProfileModal'>{user?.nickname}</div>
 				<label className='row mx-3 my-2 justify-content-center' id='menuRecord'>WIN : LOSE</label>
 				<div className='row justify-content-center' id='winLose'>{user?.win} : {user?.lose}</div>
 				<div className='row scroll-box m-1 p-1 border justify-content-center' id='friendList'>
