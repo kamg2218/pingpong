@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import {GameContext, gameRoomDetail} from '../../socket/gameSocket'
-import MenuPlay from '../../components/play/MenuPlay'
+import MenuPlay from '../../components/games/MenuPlay'
 
 export default function SideMenuPlay(){
 	const gameContext = useContext(GameContext);

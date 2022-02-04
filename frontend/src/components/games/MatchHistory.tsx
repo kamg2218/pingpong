@@ -10,7 +10,6 @@ export default function MatchHistory(props: any){
                 <div className="row">
                     <div className="col"><img src={Profile(history.profile)} alt="profile" id="matchProfile"/></div>
                     <div className="col">{history.nick}</div>
-                    <div className="col">{history.score}</div>
                     <div className="col">{history.winner === props.userid ? "승" : "패"}</div>
                 </div>
             );
@@ -23,7 +22,6 @@ export default function MatchHistory(props: any){
             <div className="row border-bottom mb-2">
                 <div className="col">프로필</div>
                 <div className="col">닉네임</div>
-                <div className="col">점수</div>
                 <div className="col">승/패</div>
             </div>
             {props.matchHistory && createHistory()}

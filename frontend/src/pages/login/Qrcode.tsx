@@ -1,65 +1,42 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { socket } from '../../socket/userSocket';
-import img1 from '../../icons/profileImage1.png';
-import { resolve } from 'dns';
+import {useHistory} from 'react-router-dom';
 
 export default function Qrcode(){
-	const [qrcode, setQrcode] = useState("");
-	const [url, setUrl] = useState("");
-	const [secret, setSecret] = useState("");
-	const [token, setToken] = useState("");
-	const [verified, setVerified] = useState(false);
-	
+	const history = useHistory();
+	const [token, setToken] = useState<string>("");
+	const [alertState, setAlert] = useState<boolean>(false);
+	const alertInfo:string = "alert alert-light";
+	const alertDanger:string = "alert alert-danger";
+
 	useEffect(()=>{
-		if (qrcode === ''){
-			console.log('code is doing...');
-			makeCode();
-			// setTimeout(()=>setQrcode(""), 300000);
-		}
 	});
-	function setData(qr:string, ur:string, se:string){
-		setQrcode(qr);
-		setUrl(ur);
-		setSecret(se);
-	}
-	function makeCode(){
-		socket.emit("qrcode", setData);
-	}
 	function checkToken():boolean {
 		if (token.length !== 6)
 			return false;
 		for (let i = 0; i < token.length; i++){
 			const num = parseInt(token[i]);
-			// console.log(`num = ${num}`);
 			if (isNaN(num))
 				return false;
 		}
 		return true;
 	}
-	function handleChange(event: any){
+	const handleChange = (event:any) => {
 		setToken(event.target.value);
 	}
-	function alertResult(result: boolean){
-		console.log('alert result! ' + verified);
-		if (result === true){
-			alert("it's true!");
-		}else{
-			alert("it's false~");
-		}
-	}
-	function handleVerified(result: boolean){
-			console.log('handle verify! ' + result);
-			setVerified(result);
-	}
 	function handleSubmit(event : any){
-		console.log(token);
-		if (token.length !== 6 || !checkToken()){
-			alert('QR 코드를 다시 확인해 주세요!');
-		}else{
-			socket.emit("verifiedcode", { 'token': token }, async (result :boolean)=>{
-				handleVerified(result);
-				alertResult(result);
-			});
+		if (!checkToken()){
+			setAlert(true);
+		}else {
+			const url = "http://localhost:4242/2fa/authenticate"
+			axios.post(url, {
+				token: token
+			}).then((res:any)=>{
+				console.log(res);
+				history.push("/game");
+			}).catch((err:any)=>{
+				setAlert(true);
+			})
 		}
 	}
 	function handleKeypress(event: any){
@@ -69,12 +46,18 @@ export default function Qrcode(){
 	}
 
 	return (
-		<div id='qrcode' className='d-flex flex-column justify-content-center m-5'>
-			<div className='p-2'>
-				<img alt='qrcodImg' src={qrcode !== '' ? qrcode : img1}></img>
-				<div className='p-2 d-flex'>
-					<input placeholder='OTP Number without space.' onChange={handleChange} onKeyPress={handleKeypress}></input>
-					<div className='btn btn-outline-dark m-1' onClick={handleSubmit}>Submit</div>
+		<div id="qrcode" className="container w-100 h-100 border">
+			<div className="col-10 col-md-8 col-lg-4 border">
+				<h2 className="row justify-content-center">2중 인증</h2>
+				<div className="row">
+					<input className="col-8" placeholder='OTP Number without space.' onChange={handleChange} onKeyPress={handleKeypress}></input>	
+					<div className="col btn btn-outline-dark m-1" onClick={handleSubmit}>Submit</div>
+				</div>
+				<div className="row mt-1">
+					{ !alertState ? 
+						<div className={alertInfo} role="alert" id="alert">ex) 123456, ...</div>
+						: <div className={alertDanger} role="alert" id="alert">OTP 숫자를 다시 확인해주세요! ex) 123456, ...</div>
+					}	
 				</div>
 			</div>
 		</div>

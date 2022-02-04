@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import {useHistory} from "react-router-dom";
 import { socket, UserContext, User, Friend } from "../../socket/userSocket";
 import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
@@ -21,7 +20,7 @@ export default function MyProfileModal(props: any) {
 		setNum(event.target.value);
 	}
 	const handleSubmit = () => {
-		const url:string = "http://localhost:4242/2fa/authenticate";
+		const url:string = "http://localhost:4242/2fa/turn-on";
 		if (num.length !== 4){
 			return ;
 		}
@@ -35,8 +34,9 @@ export default function MyProfileModal(props: any) {
 		const url:string = "http://localhost:4242/2fa";
 		if (!code){
 			setState(true);
-			axios.post(url + "/turn-on").then((res:any)=>{
+			axios.post(url + "/generate").then((res:any)=>{
 				console.log(res.data);
+				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});
 		}else {
 			setState(false);
