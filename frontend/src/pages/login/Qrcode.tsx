@@ -46,9 +46,10 @@ export default function Qrcode(){
 	}
 
 	return (
-		<div id="qrcode" className="container w-100 h-100 border">
-			<div className="col-10 col-md-8 col-lg-4 border">
-				<h2 className="row justify-content-center">2중 인증</h2>
+		<div id="qrcode" className="container vw-100 vh-100 d-flex justify-content-center align-items-center">
+			<div className="col-10 col-md-8 col-lg-4 border p-2 px-4">
+				<h1 className="row m-1 p-1 justify-content-center">2중 인증</h1>
+				<h5 className="row justify-content-center">Google OTP 숫자를 입력해주세요.</h5>
 				<div className="row">
 					<input className="col-8" placeholder='OTP Number without space.' onChange={handleChange} onKeyPress={handleKeypress}></input>	
 					<div className="col btn btn-outline-dark m-1" onClick={handleSubmit}>Submit</div>

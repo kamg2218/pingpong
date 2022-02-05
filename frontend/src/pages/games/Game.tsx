@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import { socket, UserContext, User } from '../../socket/userSocket'
 import { GameContext, GameUser } from '../../socket/gameSocket'
+import logo from '../../icons/logo_brown_profile.png'
 
 export default function Game() {
 	const history = useHistory();
@@ -107,10 +108,10 @@ export default function Game() {
 	});
 	return (
 		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
-			<div className='col'>
-				<h1 className='row justify-content-center' id='gameHeader'>PONG CONTEST GAME</h1>
-				<div className='mx-1 row'>
-					<div className='col-xs-10 col-md-4 col-lg-3 d-sm-none d-md-block h-75'>
+			<div className="col">
+				<img className="row" id="gameLogo" src={logo} alt="header"/>
+				<div className="row px-1 border" id="gamePad">
+					<div className='col-xs-10 col-md-4 col-lg-3 d-sm-none d-md-block'>
 						<Switch>
 							<Route path='/game/chat'><SideMenuChat /></Route>
 							<Route path='/game'><SideMenuGame /></Route>

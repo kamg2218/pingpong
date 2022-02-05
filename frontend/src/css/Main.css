@@ -1,20 +1,21 @@
-#container{
-	/* border: solid; */
-	padding-top: 10%;
+body{
+	background-color: #6D6162;
+}
+#loginButton{
+	border-color: ivory;
+	color: ivory;
+}
+#loginButton:hover{
+	background-color: #C9A641;
+}
+#main{
 	width: 100vw;
 	height: 100vh;
-	text-align: center;
+	display: block;
+	margin: 0px auto;
 }
-
-#buttons{
-	margin-top: 5%;
-}
-
-body{
-	/* background-color: #5d6d76; */
-	background-color: #93a2a8;
-	/* background-color: rgb(132, 142, 185); */
-}
-.h1{
-	color: #eeedeb;
+#logo{
+	width: 60%;
+	display: block;
+	margin: auto;
 }
