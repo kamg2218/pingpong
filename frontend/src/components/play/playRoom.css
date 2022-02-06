@@ -1,0 +1,20 @@
+#playRoom{
+    border: 1px solid #C9A641;
+    border-radius: 25px;
+    height: 100%;
+}
+#canvasInput{
+    background-color: #6D6162;
+    border: 0px;
+    height: 1%;
+}
+#canvasInput:focus{
+    color: transparent;
+    outline: none;
+}
+#canvasBorder{
+    width: auto;
+    height: auto;
+    border: 1px solid #C9A641;
+    border-radius: 25px;
+}

@@ -2,7 +2,7 @@ import {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import InputPwdModal from '../modals/InputPwdModal'
 import {socket} from '../../socket/userSocket'
-// import {waitingRoomId} from '../../socket/gameSocket'
+import "../../css/GameBox.css"
 
 type info = {
 	roomid: String,
@@ -29,8 +29,6 @@ export default function GameBox(props:any){
 			else{
 				console.log('redirect');
 				history.push(`/game/waiting/${props.info.roomid}`);
-				// window.location.href = `http://localhost:3000/game/play/${props.idx}`;
-				// waitingRoomId = props.info.roomid;
 			}
 		});
 	}
@@ -40,12 +38,12 @@ export default function GameBox(props:any){
 
 		if ((result && props.info.player === 2)
 			|| (!result && props.info.observer === props.info.maxObserver)){
-			return <div key={k} className="btn btn-sm btn-outline-dark disabled">{content}</div>
+			return <div key={k} className="btn btn-sm disabled" id="gameBoxButton">{content}</div>
 		}
 		else if (props.info.password){
-			return <div key={k} className="btn btn-sm btn-outline-dark" data-toggle='modal' data-target='#InputPwdModal' onClick={()=>handleEnterGameRoom(result)}>{content}</div>
+			return <div key={k} className="btn btn-sm" id="gameBoxButton" data-toggle='modal' data-target='#InputPwdModal' onClick={()=>handleEnterGameRoom(result)}>{content}</div>
 		}else{
-			return <div key={k} className="btn btn-sm btn-outline-dark" onClick={()=>handleEnterGameRoom(result)}>{content}</div>
+			return <div key={k} className="btn btn-sm" id="gameBoxButton" onClick={()=>handleEnterGameRoom(result)}>{content}</div>
 		}
 	}
 	const handleLock = () => {
@@ -58,7 +56,7 @@ export default function GameBox(props:any){
 
 	return (
 		<div key={`${props.info.roomid}gamebox`} className="col-6 m-0 p-2">
-			<div key={`${props.info.roomid}gameBoxBorder`} className="border p-3">
+			<div key={`${props.info.roomid}gameBoxBorder`} className="p-3" id="gameBox">
 				<div key={`${props.info.roomid}gameBoxFirstRow`} className="row p-1">
 					<div key={`${props.info.roomid}BoxInfo`} className="col align-items-start h3">{props.info.title}</div>
 					{handleLock()}

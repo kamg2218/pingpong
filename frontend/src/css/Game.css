@@ -3,18 +3,43 @@
 	width: 100vw;
 	border: 1px solid yellow;
 }
-#tab-game:hover, #tab-chat:hover{
-	background-color: ivory;
+#tab-game, #tab-chat{
+	border: 1px solid whitesmoke;
+	border-bottom: 0px;
+	border-radius: 5px 5px 0px 0px;
+	background-color: #6D6162;
+	
 }
-/* #chatTab{
-	height: 75%;
-} */
+#tab-play{
+	border-radius: 5px 5px 0px 0px;
+}
+#tab-game:hover, #tab-chat:hover{
+	background-color: whitesmoke;
+}
+#tab-game-active, #tab-chat-active, #tab-play{
+	border: 2px solid #C9A641;
+	border-bottom: 0px;
+	background-color: whitesmoke;
+}
 #gameLogo{
-	width: 25%;
+	width: 35%;
+	min-width: 200px;
+	max-width: 350px;
 	display: block;
 	margin: auto;
 	margin-top: 0%;
 }
-#gamePad{
-	height: auto;
+#nav-game, #nav-chat, #nav-play{
+	background-color: whitesmoke;
+	border: 2px solid #C9A641;
+	border-top: none;
+	border-radius: 0px 25px 25px 25px;
+}
+#lobbyButton{
+	border: 1px solid #C9A641;
+	border-radius: 5px;
+	background-color: whitesmoke;
+}
+#lobbyButton:hover{
+	background-color: #C9A641;
 }

@@ -1,51 +1,37 @@
 #menu{
 	text-align: center;
 	border-style: none;
-	height: 90vh;
+	height: 100%;
 }
-
 #friendList{
-	border-style: solid;
-	border-width: 1px;
-	padding: 3%;
+	border: 1px solid #C9A641;
+	border-radius: 25px;
 	margin-bottom: 5%;
 	height: 10rem;
+	justify-content: center;
 	overflow-y: auto;
 }
 #friendonoff:hover{
 	background-color: ivory;
 }
-#crossMark{
-	color: red;
-	/* padding-left: 8px; */
-}
-
-#exclamationMark{
+#crossMark, #exclamationMark{
 	color: red;
 }
-
-#menuNick{
-	font-size: 2rem;
-	margin-bottom: 1rem;
+#menuNick, #menuRecord{
+	justify-content: center;
 }
 #menuNick:hover{
-	/* border: 1px solid; */
-	box-shadow: 1px 2px 3px 1px gray inset;
+	box-shadow: 1px 1px 1px 1px #C9A641 inset;
+	border-radius: 25px;
 }
-
-#profile{
-	width: 150px;
-	height: 150px;
+#menuGameProfile{
+	width: 8em;
+	height: 8em;
+	border: .5px solid #C9A641;
 	border-radius: 50%;
 	object-fit: cover;
 	overflow: hidden;
 }
-
-#menuRecord{
-	font-size: x-large;
-}
-
 #winLose{
-	font-size: 3rem;
-	margin-bottom: 2rem;
+	justify-content: center;
 }

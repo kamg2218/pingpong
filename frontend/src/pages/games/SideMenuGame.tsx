@@ -46,16 +46,16 @@ export default function SideMenuGame(){
 		});
 	}, [userContext, info]);
 	return (
-		<div id='gameTab'>
-			<div className='row'>
-				<div className='col-3 btn border border-bottom-0 rounded-top bg-light' id='tab-game'>
-					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>game</Link>
+		<div id="gameTab">
+			<div className="row">
+				<div className="col-3 btn" id="tab-game-active">
+					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className="text-decoration-none text-reset">game</Link>
 				</div>
-				<div className='col-3 btn border border-bottom-0 rounded-top' id='tab-chat'>
-					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>chat</Link>
+				<div className="col-3 btn" id="tab-chat">
+					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className="text-decoration-none text-reset">chat</Link>
 				</div>
 			</div>
-			<div className='row border-top' id='nav-game'>
+			<div className="row" id="nav-game">
 				<MenuGame setClicked={setClicked}></MenuGame>
 			</div>
 			<MyProfileModal setClicked={setClicked}/>

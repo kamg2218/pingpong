@@ -59,16 +59,16 @@ export default function SideMenuChat(){
 	});
 
 	return (
-		<div id='chatTab'>
-			<div className='row'>
-				<div className='col-3 btn border border-bottom-0 rounded-top' id='tab-game'>
+		<div id="chatTab">
+			<div className="row">
+				<div className="col-3 btn" id="tab-game">
 					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>game</Link>
 				</div>
-				<div className='col-3 btn border border-bottom-0 rounded-top bg-light' id='tab-chat'>
+				<div className="col-3 btn" id="tab-chat-active">
 					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>chat</Link>
 				</div>
 			</div>
-			<div className='row border-top' id='nav-chat'>
+			<div className="row" id="nav-chat">
 				<Switch>
 					<Route path='/game/chat/:id'><ChatRoomIdx/></Route>
 					<Route path='/game/chat'><MenuChat/></Route>

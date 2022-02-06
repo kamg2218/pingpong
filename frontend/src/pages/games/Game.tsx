@@ -107,21 +107,21 @@ export default function Game() {
 		}
 	});
 	return (
-		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
-			<div className="col">
+		<div className="container-fluid m-0 px-2" id="gamelobby">
+			<div className="col h-100">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
-				<div className="row px-1 border" id="gamePad">
-					<div className='col-xs-10 col-md-4 col-lg-3 d-sm-none d-md-block'>
+				<div className="row" id="gamePad">
+					<div className="col-xs-10 col-md-4 col-lg-3 d-sm-none d-md-block">
 						<Switch>
-							<Route path='/game/chat'><SideMenuChat /></Route>
-							<Route path='/game'><SideMenuGame /></Route>
+							<Route path='/game/chat' component={SideMenuChat}></Route>
+							<Route path='/game' component={SideMenuGame}></Route>
 						</Switch>
 					</div>
-					<div className='d-none d-sm-block col'>
+					<div className="col d-none d-sm-block">
 						<Switch>
-							<Route path='/game/waiting/:id'><WaitingRoom /></Route>
-							<Route path='/game/chat/:idx/waiting/:id'><WaitingRoom /></Route>
-							<Route path='/game/chat/waiting/:id'><WaitingRoom /></Route>
+							<Route path='/game/waiting/:id' component={WaitingRoom}></Route>
+							<Route path='/game/chat/:idx/waiting/:id' component={WaitingRoom}></Route>
+							<Route path='/game/chat/waiting/:id' component={WaitingRoom}></Route>
 							<Route path='/game' component={Lobby}></Route>
 						</Switch>
 					</div>

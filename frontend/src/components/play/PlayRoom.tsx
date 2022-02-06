@@ -1,6 +1,7 @@
 import { useEffect, useContext, useState, useRef } from "react";
 import { socket, UserContext } from "../../socket/userSocket";
 import {draw, GameContext, GameUser} from "../../socket/gameSocket";
+import "./playRoom.css"
 
 export default function PlayRoom(){
     const gameDoing = useRef<null | HTMLElement>(null);
@@ -41,7 +42,7 @@ export default function PlayRoom(){
         }
 
         return (
-            <div className="border row h-100 w-100 p-1">
+            <div className="row p-1" id="canvasBorder">
                 <canvas id="canvas" ref={canvas} width={drawState?.background?.width} height={drawState?.background?.height}></canvas>
             </div>
         );
@@ -104,8 +105,8 @@ export default function PlayRoom(){
         }
     }
     return (
-        <div className="container col h-75 w-100 my-2 px-3" onClick={()=>{gameDoing?.current?.focus()}}>
-            <input className="row-1" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
+        <div className="container col my-2 px-3" id="playRoom" onClick={()=>{gameDoing?.current?.focus()}}>
+            <input className="row-1" id="canvasInput" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
             {drawState && drawCanvas()}
         </div>
     );

@@ -28,7 +28,7 @@ export default function Lobby(props:any){
 	});
 
 	return (
-		<div className="container mx-2 p-2">
+		<div className="container mx-1 p-2">
 			<div className="row">
 				<div className="col-10">
 					<div className="row-2 d-flex justify-content-start mx-1 my-2">
@@ -41,10 +41,10 @@ export default function Lobby(props:any){
 				</div>
 				<div className="col-2 p-0 my-5">
 				 	<div className="row my-3 mx-1">
-						<button className="btn btn-outline-dark" data-toggle='modal' data-target='#AddGameRoomModal'><i className="bi bi-plus-circle"></i> 방 만들기</button>
+						<button className="btn" id="lobbyButton" data-toggle='modal' data-target='#AddGameRoomModal'><i className="bi bi-plus-circle"></i> 방 만들기</button>
 					</div>
 					<div className="row my-3 mx-1">
-						<button className="btn btn-outline-dark" data-toggle='modal' data-target='#LoadingModal' onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
+						<button className="btn" id="lobbyButton" data-toggle='modal' data-target='#LoadingModal' onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
 					</div>
 				</div>
 			</div>
