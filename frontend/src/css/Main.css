@@ -1,19 +1,23 @@
-#container{
-    /* border: solid; */
-    padding-top: 10%;
-    width: 100vw;
-    height: 100vh;
-    text-align: center;
-}
-
-#buttons{
-    margin-top: 5%;
-}
-
 body{
-    /* background-color: #5d6d76; */
-    background-color: #93a2a8;
+	background-color: #6D6162;
 }
-.h1{
-    color: #eeedeb;
+#loginButton{
+	border-color: ivory;
+	color: ivory;
+}
+#loginButton:hover{
+	background-color: #C9A641;
+}
+#main{
+	width: 100vw;
+	height: 100vh;
+	display: block;
+	margin: 0px auto;
+}
+#logo{
+	width: 60%;
+	min-width: 500px;
+	max-width: 700px;
+	display: block;
+	margin: auto;
 }

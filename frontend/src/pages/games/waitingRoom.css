@@ -1,0 +1,42 @@
+#waitingRoom{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+}
+#waitingRoomTitle{
+	background-color: #C9A641;
+	border-radius: 25px 25px 0px 0px;
+	text-align: center;
+	color: whitesmoke;
+}
+#waitingroombox{
+	border-radius: 25px;
+	display: flex;
+	height: 11em;
+	justify-content: center;
+}
+#waitingRoomProfile{
+	border: 3px solid #C9A641;
+	border-radius: 25px;
+	color: whitesmoke;
+}
+#waitingRoomObserver{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	color: whitesmoke;
+	height: 10em;
+}
+#waitingRoomBtn{
+	border: 1px solid #C9A641;
+	border-radius: 15px;
+	color: whitesmoke;
+	height: 4em;
+}
+#waitingRoomBtn:hover{
+	background-color: #C9A641;
+}
+.player > img {
+	height: 8em;
+}
+.observer > img {
+	height: 8em;
+}

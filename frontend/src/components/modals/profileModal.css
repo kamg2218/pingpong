@@ -1,0 +1,37 @@
+.matchHistory{
+    height: 240px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: solid 1px gray;
+}
+#myProfile{
+    width: 150px;
+    height: 150px;
+}
+#friendProfile{
+    width: 40px;
+    height: 40px;
+}
+.circle{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+#friendContent:hover{
+    background-color: burlywood;
+}
+.Mark:hover{
+    background-color: rgba(240, 150, 32, 0.699);
+}
+#myProfileNav{
+    height: 16em;
+}
+#myprofile-nav-tabContent{
+    overflow: scroll;
+    height: 80%;
+}
+#qrcode{
+    height: 7em;
+    width: 7em;
+    justify-content: center;
+}

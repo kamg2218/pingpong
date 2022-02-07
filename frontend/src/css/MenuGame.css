@@ -1,0 +1,37 @@
+#menu{
+	text-align: center;
+	border-style: none;
+	height: 100%;
+}
+#friendList{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	margin-bottom: 5%;
+	height: 10rem;
+	justify-content: center;
+	overflow-y: auto;
+}
+#friendonoff:hover{
+	background-color: ivory;
+}
+#crossMark, #exclamationMark{
+	color: red;
+}
+#menuNick, #menuRecord{
+	justify-content: center;
+}
+#menuNick:hover{
+	box-shadow: 1px 1px 1px 1px #C9A641 inset;
+	border-radius: 25px;
+}
+#menuGameProfile{
+	width: 8em;
+	height: 8em;
+	border: .5px solid #C9A641;
+	border-radius: 50%;
+	object-fit: cover;
+	overflow: hidden;
+}
+#winLose{
+	justify-content: center;
+}
