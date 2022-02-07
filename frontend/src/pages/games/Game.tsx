@@ -111,13 +111,13 @@ export default function Game() {
 			<div className="col h-100">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
 				<div className="row" id="gamePad">
-					<div className="col-xs-10 col-md-4 col-lg-3 d-sm-none d-md-block">
+					<div className="col-xs-12 col-md-4 col-lg-3 d-sm-none d-md-block">
 						<Switch>
 							<Route path='/game/chat' component={SideMenuChat}></Route>
 							<Route path='/game' component={SideMenuGame}></Route>
 						</Switch>
 					</div>
-					<div className="col d-none d-sm-block">
+					<div className="col d-none d-sm-block px-1" id="lobbyPad">
 						<Switch>
 							<Route path='/game/waiting/:id' component={WaitingRoom}></Route>
 							<Route path='/game/chat/:idx/waiting/:id' component={WaitingRoom}></Route>

@@ -9,7 +9,7 @@ export default function Main(){
 		<div className="container text-center" id="main">
 			<div className="col">
 				<img className="row mt-4" id="logo" src={logo_brown} alt="logo"/>
-				<a className="row btn btn-outline-primary mx-2 btn-lg" id="loginButton" href={url} role="button">LOG IN</a>
+				<a className="row btn btn-outline-primary mx-2" id="loginButton" href={url} role="button">LOG IN</a>
 			</div>
 		</div>
 	);

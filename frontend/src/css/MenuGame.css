@@ -12,7 +12,8 @@
 	overflow-y: auto;
 }
 #friendonoff:hover{
-	background-color: ivory;
+	box-shadow: 1px 1px 2px 1px #C9A641 inset;
+	border-radius: 15px;
 }
 #crossMark, #exclamationMark{
 	color: red;
