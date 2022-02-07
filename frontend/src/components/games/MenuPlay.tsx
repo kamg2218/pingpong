@@ -32,7 +32,7 @@ export default function MenuPlay(props:any){
 		history.push("/game");
 	}
 	return (
-		<div className="container m-1 p-2" id="menu">
+		<div className="container m-1 p-2" id="menuPlay">
 			<div className="col">
 				<div className="row align-items-center">
 					<div className="col">

@@ -4,6 +4,8 @@ body{
 #loginButton{
 	border-color: ivory;
 	color: ivory;
+	width: 25%;
+	font-size: 1.5em;
 }
 #loginButton:hover{
 	background-color: #C9A641;

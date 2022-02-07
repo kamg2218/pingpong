@@ -1,7 +1,6 @@
 #gamelobby{
 	height: 100vh;
 	width: 100vw;
-	border: 1px solid yellow;
 }
 #tab-game, #tab-chat{
 	border: 1px solid whitesmoke;
@@ -42,4 +41,8 @@
 }
 #lobbyButton:hover{
 	background-color: #C9A641;
+}
+#lobbyPad{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
 }

@@ -31,8 +31,8 @@ export default function PlayRoom(){
             ctx.beginPath();
             ctx.moveTo(drawState.background.width / 2, drawState.background.height);
             ctx.lineTo(drawState.background.width / 2, 0);
-            ctx.lineWidth = 1;
-            // ctx.stroke();
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
             
             if (ctx && gameContext.winner[0]){
                 drawWinner(ctx)
@@ -105,7 +105,7 @@ export default function PlayRoom(){
         }
     }
     return (
-        <div className="container col my-2 px-3" id="playRoom" onClick={()=>{gameDoing?.current?.focus()}}>
+        <div className="container my-2 px-3" id="playRoom" onClick={()=>{gameDoing?.current?.focus()}}>
             <input className="row-1" id="canvasInput" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
             {drawState && drawCanvas()}
         </div>

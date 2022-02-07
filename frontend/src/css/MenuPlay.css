@@ -1,6 +1,6 @@
 #player1, #player2{
-	width: 6em;
-	height: 6em;
+	width: 5em;
+	height: 5.5em;
 	border: 1px solid #C9A641;
 	border-radius: 50%;
 	object-fit: cover;
@@ -14,6 +14,9 @@
 	display: flex;
 	justify-content: center;
 	overflow: hidden;
+}
+#menuPlay{
+	text-align: center;
 }
 #menuScore{
 	color: #C9A641;

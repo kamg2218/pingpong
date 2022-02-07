@@ -1,4 +1,4 @@
-import profileImage1 from '../../icons/profileImage1.png';
+import profileImage1 from "../../icons/profileImage1.png";
 import profileImage2 from '../../icons/profileImage2.png';
 import profileImage3 from '../../icons/profileImage3.png';
 import profileImage4 from '../../icons/profileImage4.png';
