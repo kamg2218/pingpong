@@ -21,6 +21,7 @@ export default function InputPwdModal(props: any){
 			}
 		}
 		props.setPwd(pwd);
+		props.handleSubmit(props.state);
 	}
 	return (
 		<div className="modal fade" id="InputPwdModal" role="dialog" tabIndex={-1} aria-labelledby="inputPwdModalLabel" aria-hidden="true">
@@ -28,14 +29,14 @@ export default function InputPwdModal(props: any){
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="inputPwdModalLabel" className="modal-title">비밀번호 확인</h5>
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div className="modal-body">
 						<div className="input-group p-2">
 							<input className="form-control" type="password" placeholder='ex)1234' onChange={handlePwd}></input>
-							<button className='btn btn-outline-secondary' data-dismiss="modal" onClick={handlePwdOK}>확인</button>
+							<button className="btn modal-button" data-dismiss="modal" onClick={handlePwdOK}>확인</button>
 						</div>
 					</div>
 				</div>

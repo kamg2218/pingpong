@@ -1,11 +1,11 @@
-import {useEffect, useState} from 'react'
-import {socket} from '../../socket/userSocket'
-import {ChatData, publicchatroom} from '../../socket/chatSocket'
-import PublicChatList from './PublicChatList'
+import {useEffect, useState} from "react"
+import {socket} from "../../socket/userSocket"
+import {ChatData, publicchatroom} from "../../socket/chatSocket"
+import PublicChatList from "./PublicChatList"
 
 export default function PublicChatModal(){
-	const [pwd, setPwd] = useState<String>('');
-	const [checkedroom, checkRoom] = useState<String>('');
+	const [pwd, setPwd] = useState<String>("");
+	const [checkedroom, checkRoom] = useState<String>("");
 	const [publicChat, setPublicChat] = useState<ChatData>(publicchatroom);
 
 	useEffect(() => {
@@ -34,7 +34,7 @@ export default function PublicChatModal(){
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="PublicChatModalLabel" className="modal-title">공개 채팅방</h5>
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -46,8 +46,8 @@ export default function PublicChatModal(){
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal" onClick={handleSubmit}>확인</button>
-						<button type="button" className="close btn btn-outline-secondary" data-dismiss="modal">취소</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" onClick={handleSubmit}>확인</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>

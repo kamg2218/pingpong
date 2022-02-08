@@ -28,7 +28,7 @@ export default function Lobby(props:any){
 	});
 
 	return (
-		<div className="container mx-1 p-2">
+		<div className="container mx-1 p-2" id="lobbyPad">
 			<div className="row">
 				<div className="col-10">
 					<div className="row-2 d-flex justify-content-start mx-1 my-2">

@@ -2,7 +2,7 @@ import InputPwdModal from "./InputPwdModal";
 
 export default function PublicChatList(props:any){
 	const chatroom = props.chatroom;
-	const decidedModal = chatroom.lock ? '#inputPwdModal' : '#checkModal';
+	const decidedModal = chatroom.lock ? "#inputPwdModal" : "#checkModal";
 
 	const handlePwd = (pwd: string) => {
 		props.setPwd(pwd);
@@ -10,7 +10,7 @@ export default function PublicChatList(props:any){
 	}
 	return (
 		<div key={`publicchat${props.chatroom.chatid}`} className="col-sm-5 col-4 m-2 p-2 rounded border">
-			<button type="button" className='btn' data-toggle='modal' data-target={decidedModal}>
+			<button type="button" className="btn modal-button" data-toggle="modal" data-target={decidedModal}>
 				<div className="row">
 					<div className="col-8 mx-2">{chatroom.title}</div>
 					{chatroom.lock ? <i className="col-2 m-1 px-2 bi bi-lock"/> : <i className="col-2 m-1 px-2 bi bi-unlock"/>}

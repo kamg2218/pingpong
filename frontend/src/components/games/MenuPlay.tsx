@@ -11,8 +11,8 @@ export default function MenuPlay(props:any){
 	const [gameroom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
 	const p1 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player1);
 	const p2 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player2);
-	const [s1, setS1] = useState<number>(gameContext ? gameContext.draw[0].left.score : 0);
-	const [s2, setS2] = useState<number>(gameContext ? gameContext.draw[0].right.score : 0);
+	const s1 = useState<number>(gameContext ? gameContext.draw[0].left.score : 0);
+	const s2 = useState<number>(gameContext ? gameContext.draw[0].right.score : 0);
 	
 	useEffect(()=>{
 		console.log("menu play");

@@ -1,7 +1,7 @@
-import {useState} from 'react'
-import {useHistory} from 'react-router-dom'
-import InputPwdModal from '../modals/InputPwdModal'
-import {socket} from '../../socket/userSocket'
+import {useState} from "react"
+import {useHistory} from "react-router-dom"
+import InputPwdModal from "../modals/InputPwdModal"
+import {socket} from "../../socket/userSocket"
 import "../../css/GameBox.css"
 
 type info = {
@@ -25,23 +25,22 @@ export default function GameBox(props:any){
 			info.password = pwd;
 		socket.emit("enterGameRoom", info, (result:boolean)=>{
 			if (!result)
-				alert('비밀번호를 확인해주세요!');
+				alert("비밀번호를 확인해주세요!");
 			else{
-				console.log('redirect');
 				history.push(`/game/waiting/${props.info.roomid}`);
 			}
 		});
 	}
 	const handlePwd = (result: boolean) => {
 		const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;
-		const content: string = result ? '게임하기' : '관전하기';
+		const content: string = result ? "게임하기" : "관전하기";
 
 		if ((result && props.info.player === 2)
 			|| (!result && props.info.observer === props.info.maxObserver)){
 			return <div key={k} className="btn btn-sm disabled" id="gameBoxButton">{content}</div>
 		}
 		else if (props.info.password){
-			return <div key={k} className="btn btn-sm" id="gameBoxButton" data-toggle='modal' data-target='#InputPwdModal' onClick={()=>handleEnterGameRoom(result)}>{content}</div>
+			return <div key={k} className="btn btn-sm" id="gameBoxButton" data-toggle="modal" data-target="#InputPwdModal" onClick={()=>setState(result)}>{content}</div>
 		}else{
 			return <div key={k} className="btn btn-sm" id="gameBoxButton" onClick={()=>handleEnterGameRoom(result)}>{content}</div>
 		}
@@ -72,7 +71,7 @@ export default function GameBox(props:any){
 					</div>
 				</div>
 			</div>
-			<InputPwdModal key={props.info.roomid} setPwd={setPwd}></InputPwdModal>
+			<InputPwdModal key={props.info.roomid} state={state} setPwd={setPwd} handleSubmit={handleEnterGameRoom}></InputPwdModal>
 		</div>
 	);
 }

@@ -1,12 +1,22 @@
-.matchHistory{
-    height: 240px;
+#matchHistory{
+    height: 14em;
     overflow-y: scroll;
     overflow-x: hidden;
-    border: solid 1px gray;
+}
+#myMatchHistory{
+    height: 16em;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 #myProfile{
-    width: 150px;
-    height: 150px;
+    width: 9em;
+    height: 9em;
+    justify-content: center;
+    align-items: flex-start;
+}
+#modalProfile{
+    width: 8em;
+    height: 8em;
 }
 #friendProfile{
     width: 40px;
@@ -30,8 +40,23 @@
     overflow: scroll;
     height: 80%;
 }
-#qrcode{
-    height: 7em;
-    width: 7em;
+#myProfileQrcode{
+    height: 100%;
+    width: 100%;
     justify-content: center;
+}
+#nav-friend-tab, #nav-block-tab{
+    color: black;
+}
+#modalProfile, #profileNickname, #profileLevel, #matchHistory, #myMatchHistory, #myProfileNav, #myProfile{
+    border: 1px solid #C9A641;
+    border-radius: 15px;
+}
+#profileBorder{
+    border: 1px solid #C9A641;
+    border-radius: 10px;
+    justify-content: center;
+}
+#modalInput2fa{
+    min-width: 6.5em;
 }

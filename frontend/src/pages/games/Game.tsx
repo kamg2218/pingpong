@@ -117,7 +117,7 @@ export default function Game() {
 							<Route path='/game' component={SideMenuGame}></Route>
 						</Switch>
 					</div>
-					<div className="col d-none d-sm-block px-1" id="lobbyPad">
+					<div className="col d-none d-sm-block px-1">
 						<Switch>
 							<Route path='/game/waiting/:id' component={WaitingRoom}></Route>
 							<Route path='/game/chat/:idx/waiting/:id' component={WaitingRoom}></Route>

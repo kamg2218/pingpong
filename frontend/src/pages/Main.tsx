@@ -1,6 +1,6 @@
 import '../css/Main.css';
-import logo_sky from "../icons/logo_sky.png"
-import logo_earth from "../icons/logo_earth.png"
+// import logo_sky from "../icons/logo_sky.png"
+// import logo_earth from "../icons/logo_earth.png"
 import logo_brown from "../icons/logo_brown.png"
 
 export default function Main(){
