@@ -66,11 +66,11 @@ export default function MyProfileModal(props: any) {
 		}
 		profile?.newfriends.forEach((friend:Friend)=>{
 			list.push(
-				<div className="row text-center align-items-center" id="friendContent" onClick={()=>handleClick(friend.userid)}>
-					<div className="col m-0"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
+				<div className="row mx-0 px-2" id="newFriendContent" onClick={()=>handleClick(friend.userid)}>
+					<div className="col p-0"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
 					<div className="col">{friend.nickname}</div>
-					<div className="col Mark"><i className="bi bi-check-lg" onClick={()=>acceptNewFriend(friend.userid)}/></div>
-					<div className="col Mark"><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
+					<div className="col-2"><i className="bi bi-check-lg" id="checkMark" onClick={()=>acceptNewFriend(friend.userid)}/></div>
+					<div className="col-2"><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
 				</div>
 			)
 		})
@@ -118,8 +118,8 @@ export default function MyProfileModal(props: any) {
 										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.level}</div>
 										<div className="row-4 my-1 p-2 h5" id="profileBorder">{profile?.win + profile?.lose}전 {profile?.win} 승 {profile?.lose}패</div>
 									</div>
-									<div className="col border">
-										<div className="row pt-2 border">
+									<div className="col" id="modalTwofactor">
+										<div className="row pt-2" id="modalTwofactorTitle">
 											<div className="col h5 text-center">2중 인증</div>
 											<div className="col-3 form-check form-switch">
 												<input className="form-check-input" type="checkbox" onClick={handleQrcode}/>

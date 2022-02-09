@@ -11,6 +11,11 @@
 	justify-content: center;
 	overflow-y: auto;
 }
+#friendonoff{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 #friendonoff:hover{
 	box-shadow: 1px 1px 2px 1px #C9A641 inset;
 	border-radius: 15px;
@@ -35,4 +40,10 @@
 }
 #winLose{
 	justify-content: center;
+}
+#friendNick{
+	text-align: start;
+}
+.circle{
+	box-shadow: .5px 1px 1px .2px gray;
 }

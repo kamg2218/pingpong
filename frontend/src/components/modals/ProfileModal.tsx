@@ -80,7 +80,7 @@ export default function ProfileModal(props: any) {
 						<div className="container p-1">
 							<div className="row text-center">
 								<div className="col-4">
-									<div className="row mb-2 justify-content-center"><img src={Profile(profile ? profile.profile : 1)} alt="profile" id="modalProfile"/></div>
+									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 1)} alt="profile" id="modalProfile"/></div>
 									<div className={button} onClick={handleChat} data-dismiss="modal"> 1 : 1 채팅</div>
 									<div className={button} onClick={handleMatch}>대전 신청</div>
 									<div className={buttonFriend} onClick={handleFriend}>{profile?.friend ? "친구 삭제" : "친구 추가"}</div>

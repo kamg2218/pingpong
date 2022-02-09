@@ -10,15 +10,14 @@ export function NewList(person: Friend): any {
 			result: result
 		});
 	}
-
 	return (
-		<div className="d-flex m-0 p-2 h6" id="friendonoff" key={person.nickname}>
-			<div className="col-7 text-start" id="friendNick">
+		<div className="m-0 p-2 h6" id="friendonoff" key={person.nickname}>
+			<div className="col-7" id="friendNick">
 				<i className="bi bi-exclamation-lg" id="exclamationMark"></i>
 				{person.nickname}
 			</div>
-			<i className="bi bi-check-lg px-2 Mark" id="checkMark" onClick={()=>handleNewFriend(true)}/>
-			<i className="bi bi-x-lg px-2 Mark" id="crossMark" onClick={()=>handleNewFriend(false)}/>
+			<i className="bi bi-check-lg px-2" id="checkMark" onClick={()=>handleNewFriend(true)}/>
+			<i className="bi bi-x-lg px-2" id="crossMark" onClick={()=>handleNewFriend(false)}/>
 		</div>
 	);
 }
@@ -28,9 +27,11 @@ export function OldList(person: Friend, setClicked: Function): any {
 		setClicked(person.userid);
 	}
 	return (
-		<div className="btn d-flex m-0 p-1 align-items-center" id="friendonoff" key={person.nickname} onClick={handleClick} data-toggle="modal" data-target="#ProfileModal">
-			<div className="col-8 text-start px-1 h6" id="friendNick">{person.nickname}</div>
-			{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}
+		<div className="m-0 p-2" id="friendonoff" key={person.nickname} onClick={handleClick} data-toggle="modal" data-target="#ProfileModal">
+			<div className="col-8 m-0 mx-1 px-2 h6" id="friendNick">{person.nickname}</div>
+			<div className="col">
+				{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light" id="light-circle"/>}
+			</div>
 		</div>
 	);
 }

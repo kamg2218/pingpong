@@ -10,6 +10,9 @@ body{
 #loginButton:hover{
 	background-color: #C9A641;
 }
+#loginButton:focus{
+	box-shadow: none;
+}
 #main{
 	width: 100vw;
 	height: 100vh;

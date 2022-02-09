@@ -19,19 +19,25 @@
     height: 8em;
 }
 #friendProfile{
-    width: 40px;
-    height: 40px;
+    width: 2.5em;
+    height: 2.5em;
+    border: .5px solid #C9A641;
+    border-radius: 50px;
 }
 .circle{
     width: 10px;
     height: 10px;
     border-radius: 50%;
 }
-#friendContent:hover{
-    background-color: burlywood;
+#newFriendContent{
+    align-items: center;
 }
-.Mark:hover{
-    background-color: rgba(240, 150, 32, 0.699);
+#friendContent:hover, #newFriendContent:hover{
+    background-color: #C9A641;
+}
+#checkMark:hover, #crossMark:hover{
+    border-radius: 5px;
+	box-shadow: .5px .5px 2px 1px #6D6162;   
 }
 #myProfileNav{
     height: 16em;
@@ -59,4 +65,11 @@
 }
 #modalInput2fa{
     min-width: 6.5em;
+}
+#modalTwofactor{
+    border: .5px solid #C9A641;
+    border-radius: 15px;
+}
+#modalTwofactorTitle{
+    border-bottom: .5px solid #C9A641;
 }

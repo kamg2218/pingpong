@@ -41,7 +41,19 @@
 #lobbyButton:hover{
 	background-color: #C9A641;
 }
+#lobbyButton:focus{
+	box-shadow: none;
+}
 #lobbyPad{
 	border: 1px solid #C9A641;
 	border-radius: 25px;
+}
+#lobbySearch{
+	border: 1px solid #C9A641;
+	border-radius: 7px;
+}
+#lobbySearch:focus{
+	border-bottom: 3px solid #C9A641;
+	box-shadow: none;
+	outline: none;
 }

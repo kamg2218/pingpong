@@ -1,8 +1,8 @@
-import {useState} from 'react'
-import GameRoomSlide from '../../components/games/GameRoomSlide'
-import AddGameRoomModal from '../../components/modals/AddGameRoomModal';
-import LoadingModal from '../../components/modals/LoadingModal';
-import { socket } from '../../socket/userSocket';
+import {useState} from "react"
+import GameRoomSlide from "../../components/games/GameRoomSlide"
+import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
+import LoadingModal from "../../components/modals/LoadingModal";
+import { socket } from "../../socket/userSocket";
 
 export default function Lobby(props:any){
 	const [search, setSearch] = useState<string>("");
@@ -14,15 +14,15 @@ export default function Lobby(props:any){
 	const handleMatching = () => {
 		socket.emit("randomMatching", (result: boolean)=>{
 			if (!result)
-				setContent('매칭 가능한 게임 방이 없습니다.');
+				setContent("매칭 가능한 게임 방이 없습니다.");
 		})
 	}
 	const handleCancelMatching = () => {
 		socket.emit("randomMatchingCancel");
 	}
-	$('#LoadingModal').on('hide.bs.modal', function(e){
+	$("#LoadingModal").on("hide.bs.modal", function(e){
 		console.log(e);
-		console.log('Loading is over!');
+		console.log("Loading is over!");
 		handleCancelMatching();
 		e.stopImmediatePropagation();
 	});
@@ -33,7 +33,7 @@ export default function Lobby(props:any){
 				<div className="col-10">
 					<div className="row-2 d-flex justify-content-start mx-1 my-2">
 						<i className="bi bi-search mx-3"></i>
-						<input className="w-50" onChange={handleSearch}></input>
+						<input className="w-50" id="lobbySearch" onChange={handleSearch}></input>
 					</div>
 					<div className="row">
 						<GameRoomSlide search={search}></GameRoomSlide>
@@ -41,10 +41,10 @@ export default function Lobby(props:any){
 				</div>
 				<div className="col-2 p-0 my-5">
 				 	<div className="row my-3 mx-1 px-1">
-						<button className="btn" id="lobbyButton" data-toggle='modal' data-target='#AddGameRoomModal'><i className="bi bi-plus-circle"></i> 방 만들기</button>
+						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#AddGameRoomModal"><i className="bi bi-plus-circle"></i> 방 만들기</button>
 					</div>
 					<div className="row my-3 mx-1 px-1">
-						<button className="btn" id="lobbyButton" data-toggle='modal' data-target='#LoadingModal' onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
+						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#LoadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
 					</div>
 				</div>
 			</div>
