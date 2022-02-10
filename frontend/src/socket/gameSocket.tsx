@@ -105,3 +105,8 @@ export type draw = {
 		score: number
 	}
 }
+export type match = {
+	userid : string,
+	nickname : string,
+	requestid : string
+}

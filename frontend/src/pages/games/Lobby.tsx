@@ -29,7 +29,7 @@ export default function Lobby(props:any){
 
 	return (
 		<div className="container mx-1 p-2" id="lobbyPad">
-			<div className="row">
+			<div className="row m-0">
 				<div className="col-10">
 					<div className="row-2 d-flex justify-content-start mx-1 my-2">
 						<i className="bi bi-search mx-3"></i>
@@ -39,7 +39,7 @@ export default function Lobby(props:any){
 						<GameRoomSlide search={search}></GameRoomSlide>
 					</div>
 				</div>
-				<div className="col-2 p-0 my-5">
+				<div className="col-2 p-0 mx-0 my-5">
 				 	<div className="row my-3 mx-1 px-1">
 						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#AddGameRoomModal"><i className="bi bi-plus-circle"></i> 방 만들기</button>
 					</div>

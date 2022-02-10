@@ -53,7 +53,7 @@
 	border-radius: 7px;
 }
 #lobbySearch:focus{
-	border-bottom: 3px solid #C9A641;
+	border-bottom: 2px solid #C9A641;
 	box-shadow: none;
 	outline: none;
 }
