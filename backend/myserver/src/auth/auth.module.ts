@@ -9,7 +9,7 @@ import { FortyTwoStrategy } from './strategy/fortytwo.strategy';
 import { RefreshStrategy } from './strategy/refresh.strategy';
 import { Logger } from '@nestjs/common';
 import { JwtAuthenticationStrategy } from './strategy/jwt-2fa.strategy';
-
+import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFilter';
 
 @Module({
   imports : [
@@ -19,7 +19,8 @@ import { JwtAuthenticationStrategy } from './strategy/jwt-2fa.strategy';
       signOptions : {expiresIn : jwtConstants.access_expiresIn}}),
   ],
   controllers: [AuthController],
-  providers: [Logger, AuthService, JwtStrategy, JwtAuthenticationStrategy, FortyTwoStrategy, RefreshStrategy]
+  providers: [UnauthorizedExceptionFilter, Logger, AuthService, JwtStrategy, JwtAuthenticationStrategy, FortyTwoStrategy, RefreshStrategy],
+  exports : [AuthService, Logger, JwtStrategy]
 })
 
 export class AuthModule {

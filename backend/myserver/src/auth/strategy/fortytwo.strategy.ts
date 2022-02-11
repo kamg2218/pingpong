@@ -18,5 +18,23 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     async validate (...raw) {
         const email = raw[2]._json.email;
         return email;
+        // const repo_user = getCustomRepository(UserRepository);
+        // const repo_rest = getRepository(RestrictedList)
+        // const email = raw[2]._json.email;
+        // const restricted_email = await repo_rest.findOne({email : email});
+        // if (restricted_email)
+        //     throw new BadRequestException();
+        //     console.log("here1")
+        // const user = await repo_user.findOne({email : email});
+        // console.log("here2")
+        // if (user === undefined)               // db에 있는지 확인
+        //     console.log("here3")
+        //     throw new NotFoundUserException(email);
+        // if (await repo_user.didBanLogin(user))
+        // console.log("here4")
+        //     throw new BadRequestException();
+        // if (user.status === "login")      // 로그인이 되어있는데 요청을 했을 경우
+        //     throw new BadRequestException();
+        // return user;
     }
 }

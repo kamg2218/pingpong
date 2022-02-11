@@ -1,4 +1,4 @@
 type Position = "owner" | "normal";
-type AdvPosition = Position | "manager";
-
-export {Position, AdvPosition};
+type ChatPosition = Position | "manager";
+type GamePosition = Position | "observer"
+export {GamePosition, ChatPosition};

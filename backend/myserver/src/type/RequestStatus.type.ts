@@ -1,1 +1,1 @@
-export type RequestStatus = "wating" | "friend";
+export type RequestStatus = "waiting" | "friend";

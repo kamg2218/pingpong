@@ -1,19 +1,26 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser'
-import AdminBro from 'admin-bro';
-import AdminBroExpress from '@admin-bro/express';
+import cookieParser from 'cookie-parser'
 import { setupSwagger } from 'src/util/SetupSwagger'
+import AdminJS from 'adminjs';
+import AdminJSExpress from '@adminjs/express';
+import {Database, Resource} from '@adminjs/typeorm';
+import { User } from './db/entity/User/UserEntity';
 
+AdminJS.registerAdapter({Database, Resource});
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // const adminBro = new AdminBro({
-  //   rootPath : '/admin'
-  // })
+  const adminJs = new AdminJS({
+    
+    resources : [{
+      resource : User
+    }],
+    rootPath : '/admin',
+  });
+  const router = AdminJSExpress.buildRouter(adminJs);
+  app.use(adminJs.options.rootPath, router);
   setupSwagger(app);
-  // const router = AdminBroExpress.buildRouter(adminBro)
-  // app.use(adminBro.options.rootPath, router);
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -23,13 +30,12 @@ async function bootstrap() {
     })
   )
   app.enableCors({
-    origin : "http://localhost:3000",
+    origin : ["http://localhost:3000", "https://admin.socket.io"],
     credentials : true,
   });
  
+
   await app.listen(4242);
-
-
 
 }
 bootstrap();

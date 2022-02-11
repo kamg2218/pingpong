@@ -1,5 +1,5 @@
 import { GameHistory } from "./GameHistory.entity";
 import { GameRoom } from "./GameRoom.entity";
-import { GameRoomMembership } from "./GameRoomMembership.entity";
+import { GameMembership } from "./GameMembership.entity";
 
-export { GameHistory, GameRoom, GameRoomMembership }
+export { GameHistory, GameRoom, GameMembership }
