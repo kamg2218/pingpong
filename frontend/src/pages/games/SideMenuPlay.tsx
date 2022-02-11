@@ -4,7 +4,7 @@ import MenuPlay from "../../components/games/MenuPlay"
 
 export default function SideMenuPlay(){
 	const gameContext = useContext(GameContext);
-	const [gameRoom, setRoom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
+	const gameRoom = useState<gameRoomDetail>(gameContext.gameroom[0]);
 
 	useEffect(()=>{
 		//조건이 필요한가?

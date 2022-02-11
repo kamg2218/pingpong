@@ -76,7 +76,7 @@ export default function AddGameRoomModal(props: any){
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="addGameRoomLabel" className="modal-title">방 만들기</h5>
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -84,13 +84,15 @@ export default function AddGameRoomModal(props: any){
 						<div className="form-group">
 							<label className="col-form-label">Title</label>
 							<input type="text" className="form-control" onChange={handleTitle} required></input>
-							<div className="form-check form-check-inline">
-								<input className="form-check-input" type="radio" name="privateRadio" value="private" checked={radio === "private"} onChange={handleRadio}></input>
-								<label className="form-check-label">Private</label>
-							</div>
-							<div className="form-check form-check-inline">
-								<input className="form-check-input" type="radio" name="publicRadio" value="public" checked={radio === "public"} onChange={handleRadio}></input>
-								<label className="form-check-label">Public</label>
+							<div className="form-group d-flex">
+								<div className="form-check form-check-inline">
+									<input className="form-check-input" type="radio" name="privateRadio" value="private" checked={radio === "private"} onChange={handleRadio}></input>
+									<label className="form-check-label mx-1">Private</label>
+								</div>
+								<div className="form-check form-check-inline">
+									<input className="form-check-input" type="radio" name="publicRadio" value="public" checked={radio === "public"} onChange={handleRadio}></input>
+									<label className="form-check-label mx-1">Public</label>
+								</div>
 							</div>
 							<div id="password">
 								<label className="col-form-label">Password</label>
@@ -116,8 +118,8 @@ export default function AddGameRoomModal(props: any){
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal" disabled={!okBtn} onClick={handleSubmit}>확인</button>
-						<button type="button" className="close btn btn-outline-secondary" data-dismiss="modal">취소</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" disabled={!okBtn} onClick={handleSubmit}>확인</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>

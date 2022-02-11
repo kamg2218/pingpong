@@ -66,11 +66,11 @@ export default function MyProfileModal(props: any) {
 		}
 		profile?.newfriends.forEach((friend:Friend)=>{
 			list.push(
-				<div className="row text-center align-items-center" id="friendContent" onClick={()=>handleClick(friend.userid)}>
-					<div className="col m-0"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
+				<div className="row mx-0 px-2" id="newFriendContent" onClick={()=>handleClick(friend.userid)}>
+					<div className="col p-0"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
 					<div className="col">{friend.nickname}</div>
-					<div className="col Mark"><i className="bi bi-check-lg" onClick={()=>acceptNewFriend(friend.userid)}/></div>
-					<div className="col Mark"><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
+					<div className="col-2"><i className="bi bi-check-lg" id="checkMark" onClick={()=>acceptNewFriend(friend.userid)}/></div>
+					<div className="col-2"><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
 				</div>
 			)
 		})
@@ -104,7 +104,7 @@ export default function MyProfileModal(props: any) {
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title">내 프로필</h5>
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -112,32 +112,32 @@ export default function MyProfileModal(props: any) {
 						<div className="container p-1">
 							<div className="col">
 								<div className="row mb-2">
-									<div className="col justify-content-center"><img src={Profile(profile ? profile.profile : 1)} alt="profile" id="myProfile"/></div>
-									<div className="col">
-										<div className="row mx-2 h4">{profile?.nickname}</div>
-										<div className="row mx-2 h4">{profile?.level}</div>
-										<div className="row mx-2 h5">{profile?.win + profile?.lose}전 {profile?.win} 승 {profile?.lose}패</div>
+									<div className="col m-0 p-0"><img src={Profile(profile ? profile.profile : 1)} alt="profile" id="myProfile"/></div>
+									<div className="col p-1 mx-0">
+										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.nickname}</div>
+										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.level}</div>
+										<div className="row-4 my-1 p-2 h5" id="profileBorder">{profile?.win + profile?.lose}전 {profile?.win} 승 {profile?.lose}패</div>
 									</div>
-									<div className="col">
-										<div className="row">
-											<div className="h5">2중 인증</div>
-											<div className="form-check form-switch">
+									<div className="col" id="modalTwofactor">
+										<div className="row pt-2" id="modalTwofactorTitle">
+											<div className="col h5 text-center">2중 인증</div>
+											<div className="col-3 form-check form-switch">
 												<input className="form-check-input" type="checkbox" onClick={handleQrcode}/>
 											</div>
 										</div>
 										{ state && 
 											<div className="text-center">
-												<div className="row border" id="qrcode"><img src={qrcode} alt="qrcode"></img></div>
-												<div className="row input-group mb-3">
-												  <input type="number" className="col form-control" placeholder="ex)1234" maxLength={4} onChange={handleInput}/>
-												  <button className="col btn btn-outline-secondary" type="button" onClick={handleSubmit}>확인</button>
+												<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  Profile(1): qrcode} alt="qrcode"></img></div>
+												<div className="row my-1 input-group">
+												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>
+												  <button className="col btn modal-button px-0" type="button" onClick={handleSubmit}>확인</button>
 												</div>
 											</div>
 										}
 									</div>
 								</div>
 								<div className="row">
-									<div className="col" id="myProfileNav">
+									<div className="col p-1 mx-1" id="myProfileNav">
 										<nav>
 											<div className="nav nav-tabs" id="myprofile-nav-tab" role="tablist">
 												<button className="nav-link active" id="nav-friend-tab" data-bs-toggle="tab" data-bs-target="#nav-friend" type="button" role="tab" aria-controls="nav-friend" aria-selected="true">친구목록</button>
@@ -149,7 +149,7 @@ export default function MyProfileModal(props: any) {
 											<div className="tab-pane fade" id="nav-block" role="tabpanel" aria-labelledby="nav-block-tab">{blockList()}</div>
 										</div>
 									</div>
-									<div className="col" id="historyColumn">
+									<div className="col" id="myMatchHistory">
 										<MatchHistory userid={profile?.userid} matchHistory={profile?.history}/>
 									</div>
 								</div>
@@ -157,9 +157,7 @@ export default function MyProfileModal(props: any) {
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="close btn btn-outline-dark" data-dismiss="modal">
-							닫기
-						</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal">닫기</button>
 					</div>
 				</div>
 			</div>

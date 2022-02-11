@@ -1,5 +1,5 @@
-import InviteList from '../chat/InviteList';
-import {socket} from '../../socket/userSocket';
+import InviteList from "../chat/InviteList";
+import {socket} from "../../socket/userSocket";
 
 export default function InviteModal(props:any){
 	let members:Array<string> = [];
@@ -14,7 +14,7 @@ export default function InviteModal(props:any){
 			alert(failure);
 			return ;
 		}
-		socket.emit('inviteChatRoom', {
+		socket.emit("inviteChatRoom", {
 			chatid: props.info.chatid,
 			user: members,
 		}, (result:boolean)=>{
@@ -25,13 +25,13 @@ export default function InviteModal(props:any){
 		});
 	}
 	return (
-		<div className='modal fade' id='InviteModal' role='dialog' tabIndex={-1} aria-labelledby='invite' aria-hidden="true">
-			<div className='modal-dialog modal-dialog-centered modal-dialog-scrollable' role='document'>
+		<div className="modal fade" id="InviteModal" role="dialog" tabIndex={-1} aria-labelledby="invite" aria-hidden="true">
+			<div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 				<div className="modal-content">
 					<div className="modal-header">
-						<h5 id='invite' className="modal-title" aria-hidden='true'>친구 초대</h5>
-						<button type='button' className='close btn' data-dismiss='modal'>
-							<span aria-hidden='true'>&times;</span>
+						<h5 id="invite" className="modal-title" aria-hidden="true">친구 초대</h5>
+						<button type="button" className="btn modal-button" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div className="modal-body">
@@ -40,8 +40,8 @@ export default function InviteModal(props:any){
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button className="btn btn-outline-dark" data-dismiss="modal" onClick={handleInvite}>초대하기</button>
-						<button className="btn btn-outline-secondary" data-dismiss="modal">취소</button>
+						<button className="btn modal-button" data-dismiss="modal" onClick={handleInvite}>초대하기</button>
+						<button className="btn modal-button" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>

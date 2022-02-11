@@ -1,6 +1,4 @@
-// import './css/App.css';
 import Main from './pages/Main';
-import LoginError from './components/errors/LoginError';
 import Game from './pages/games/Game';
 import Admin from './pages/Admin';
 import NickAndProfile from './pages/login/NickAndProfile';
@@ -19,7 +17,6 @@ function App() {
           <GameContext.Provider value={GameVariables()}>
             <Switch>
               <Route exact path='/'><Main /></Route>
-              <Route path='/loginerror'><LoginError/></Route>
               <Route path='/nickandprofile'><NickAndProfile/></Route>
               <Route path='/twofactor'><Qrcode/></Route>
               <Route path='/game/play/:id'><Play/></Route>

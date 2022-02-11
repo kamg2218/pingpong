@@ -16,7 +16,7 @@ export default function InviteList(props:any){
 		return (
 			<li className='form-check m-2' key={data.userid}>
 				<input className='form-check-input' type='checkbox' value='' onClick={()=>handleClick(data)}></input>
-				<label className='form-check-label m-1'>{data.nickname}</label>
+				<label className='form-check-label mx-1'>{data.nickname}</label>
 			</li>
 		);
 	}
