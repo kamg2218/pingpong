@@ -2,7 +2,7 @@ import { RoomMode } from "src/type/RoomMode.type";
 import { AfterInsert, AfterLoad, AfterUpdate, Column, Connection, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ChatBanList } from "./ChatBanList.entity";
 import { ChatHistory } from "./ChatHistory.entity";
-import { ChatMemberShip } from "./ChatMembership.entity";
+import { ChatMembership } from "./ChatMembership.entity";
 
 @Entity()
 export class ChatRoom {
@@ -14,7 +14,7 @@ export class ChatRoom {
     title : string;
 
     @Column()
-    mode : RoomMode;
+    type : RoomMode;
 
     @Column({ nullable : true })
     password : string;
@@ -28,6 +28,6 @@ export class ChatRoom {
     @OneToMany(type => ChatHistory, chathistory => chathistory.chatid)
     history : ChatHistory[];
 
-    @OneToMany(type => ChatMemberShip, chatmembership => chatmembership.chatroom, { cascade : true })
-    membership : ChatMemberShip[];
+    @OneToMany(type => ChatMembership, ChatMembership => ChatMembership.chatroom, { cascade : true })
+    membership : ChatMembership[];
 }

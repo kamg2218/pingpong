@@ -4,7 +4,7 @@ import { jwtConstants } from 'src/config/jwt.config';
 import { JwtService } from '@nestjs/jwt';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { SignUpDTO } from 'src/type/signup.dto';
-import { RestrictedListReopsitory, UserRepository } from 'src/db/repository/CustomRepository';
+import { RestrictedListReopsitory, UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { User } from 'src/db/entity/User/UserEntity';
 import { Response } from 'express';
 import { authenticator } from 'otplib'
@@ -40,7 +40,7 @@ export class AuthService {
     const {accessToken, ...accessOptions} = this.getCookieWithJwtAccessToken(user.userid);
     const {refreshToken, ...refreshOptions} = this.getCookieWithJwtRefreshToken();
     const repo_user = getCustomRepository(UserRepository);
-    repo_user.switchToLogin(user, refreshToken);
+    repo_user.login(user, refreshToken);
     return {
       accessToken : accessToken,
       accessOptions : accessOptions,
@@ -53,9 +53,9 @@ export class AuthService {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     const repoUser = getCustomRepository(UserRepository);
-    repoUser.switchToLogout(user);
+    repoUser.logout(user);
   }
-
+  
   async isDuplicate(nickname : string) : Promise<boolean> {
     const repoUser = getCustomRepository(UserRepository)
     const res = await repoUser.doesNickExist(nickname);
@@ -74,9 +74,51 @@ export class AuthService {
     await repoList.insert(list);
   }
 
-//hmm?
-  public getCookieWithJwtAccessToken(userId : string, isSecondFactorAuthenticated = false) {
-    const payload : TokenPayload = {userId, isSecondFactorAuthenticated};
+
+
+  async hashing(password: string) {
+    const saltOrRounds = 10; //env
+    const encodedPassword = await hash(password, saltOrRounds);
+    return encodedPassword;
+  }
+
+  // Two Factor 
+
+//   async setTwoFactorAthenticationSecret(secret : string, userid : string) {
+//     const repoUser = getCustomRepository(UserRepository);
+//     await repoUser.update(userid, {twoFactorAuthenticationSecret : secret})
+//   }
+
+//   public async generateTwoFactorAuthnticateSecret(user : User) {
+//     const TWO_FACTOR_AUTHENTICATION_APP_NAME = 'pong game'  //config
+//     const secret = authenticator.generateSecret();
+//     const otpauthUrl = authenticator.keyuri(user.email, 
+//         TWO_FACTOR_AUTHENTICATION_APP_NAME, secret);
+//     await this.setTwoFactorAthenticationSecret(secret, user.userid)
+//     return {
+//         secret, 
+//         otpauthUrl
+//     }
+//   }
+
+// async turnOnTwoFactorAuthentication(userId : string) {
+//     const repo_user = getCustomRepository(UserRepository);
+//     return repo_user.update(userId, {isTwoFactorAuthenticationEnabled : true})
+// }
+
+//   public async pipeQrCodeStream(res : Response, otpauthUrl : string) {
+//     return toFileStream(res, otpauthUrl);
+//   }
+
+//   public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode : string, user : User) {
+//     return authenticator.verify({
+//         token : twoFactorAuthenticationCode,
+//         secret : user.twoFactorAuthenticationSecret
+//     })
+//   }
+
+  public getCookieWithJwtAccessToken(userid : string, isSecondFactorAuthenticated = false) {
+    const payload : TokenPayload = {userid, isSecondFactorAuthenticated};
     const atExpireIn = jwtConstants.getByms('at');
     const token = this.jwtService.sign(payload, {
         secret : jwtConstants.secret,
@@ -106,23 +148,27 @@ export class AuthService {
     }
   }
 
-async validateJwt(payload : TokenPayload) {
+// public async setCurrentRefreshToken(refreshToken : string, userId : string) { 
+//   const repo_user = getCustomRepository(UserRepository);
+//   await repo_user.update(userId, {refreshToken : refreshToken});
+// }
+
+  async validateJwt(payload : TokenPayload) {
     const repoUser = getCustomRepository(UserRepository);
-    const user = await repoUser.findOne({userid : payload.userId});
+    const user = await repoUser.findOne({userid : payload.userid});
     if (!user)
       throw new BadRequestException("No such user");
     if (!user.isTwoFactorAuthenticationEnabled)
       return user;
-    if (payload.isSecondFactorAuthenticated) {
+    if (payload.isSecondFactorAuthenticated)
       return user;
-    }
     else
       throw new UnauthorizedException("2fa");
   }
 
   async validate2FAJwt(payload : TokenPayload) {
     const repoUser = getCustomRepository(UserRepository);
-    const user = await repoUser.findOne({userid : payload.userId});
+    const user = await repoUser.findOne({userid : payload.userid});
     if (user === undefined)
       throw new BadRequestException("No such user");
     return user;

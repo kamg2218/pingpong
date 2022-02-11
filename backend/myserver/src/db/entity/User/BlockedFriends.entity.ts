@@ -7,11 +7,11 @@ export class BlockedFriends{
     @PrimaryGeneratedColumn()
     index : number;
 
-    @ManyToOne((type)=>User, (user)=>user.blockFrom, { onDelete : "CASCADE" })
+    @ManyToOne((type)=>User, (user)=>user.blockFrom, { onDelete : "CASCADE", eager : true })
     @JoinColumn({name : "useridMy"})
-    useridMy : User;
+    me : User;
 
-    @ManyToOne((type)=>User, (user)=>user.blockTo, { onDelete : "CASCADE" })
+    @ManyToOne((type)=>User, (user)=>user.blockTo, { onDelete : "CASCADE", eager : true })
     @JoinColumn({name : "useridFriend"})
-    useridBlock : User;
+    block : User;
 }

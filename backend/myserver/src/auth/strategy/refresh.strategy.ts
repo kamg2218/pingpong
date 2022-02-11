@@ -5,7 +5,7 @@ import { Request } from 'express'
 import { JwtService } from '@nestjs/jwt';
 import { getCustomRepository } from "typeorm";
 import { jwtConstants } from "src/config/jwt.config";
-import { UserRepository } from "src/db/repository/CustomRepository";
+import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 
 const AUTH_HEADER = 'authorization';
 const BEARER_AUTH_SCHEME = 'bearer';

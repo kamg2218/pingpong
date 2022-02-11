@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToMany, ManyToOne, JoinColumn } from "typeorm";
-import { User } from "../User/User.entity";
+import { User } from "../User/UserEntity";
 
 @Entity()
 export class GameHistory {
@@ -7,20 +7,20 @@ export class GameHistory {
     @PrimaryGeneratedColumn('uuid')
     gameid : string;
 
-    @Column()
-    map : string;
+    // @Column()
+    // map : string;
 
-    @ManyToOne(type => User, user => user.playWith1, { onDelete : "SET NULL" })
+    @ManyToOne(type => User, user => user.playWith1, { onDelete : "SET NULL", eager : true })
     @JoinColumn({ name : "player1" })
-    player1 : string;
+    player1 : User;
 
-    @ManyToOne(type => User, user => user.playWith2, { onDelete : "SET NULL" })
+    @ManyToOne(type => User, user => user.playWith2, { onDelete : "SET NULL", eager : true })
     @JoinColumn({ name : "player2" })
-    player2 : string;
+    player2 : User;
 
-    @ManyToOne(type => User, user => user.win, { onDelete : "SET NULL" })
+    @ManyToOne(type => User, user => user.win, { onDelete : "SET NULL", eager : true})
     @JoinColumn({ name : "winner" })
-    winner : string;
+    winner : User;
 
     @Column()
     scoreP1 : number;
@@ -28,9 +28,9 @@ export class GameHistory {
     @Column()
     scoreP2 : number;
 
-    @CreateDateColumn() // 흠.. 자동생성해야할까.
+    @CreateDateColumn()
     startTime : Date;
 
-    @Column()
+    @Column({type : "float4"})
     playTimeSec : number;
 }

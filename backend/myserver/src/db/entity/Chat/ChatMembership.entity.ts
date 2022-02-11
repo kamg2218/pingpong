@@ -1,16 +1,16 @@
 import { BeforeRemove, CreateDateColumn,Column, Entity, getRepository, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
-import { AdvPosition } from "src/type/MemberPosition.type";
+import { ChatPosition } from "src/type/MemberPosition.type";
 import { ChatRoom } from "./ChatRoom.entity";
 import { User } from "../User/User.entity";
 
 @Entity()
-export class ChatMemberShip {
+export class ChatMembership {
 
     @PrimaryGeneratedColumn()
     index : number;
 
     @Column({ default : "normal" })
-    position : AdvPosition;
+    position : ChatPosition;
 
     @Column({ type: "timestamp", nullable : true })
     muteUntil : Date;
@@ -22,7 +22,7 @@ export class ChatMemberShip {
     @JoinColumn({ name : "chatid" })
     chatroom: ChatRoom;
 
-    @ManyToOne(type => User, user => user.member, { onDelete : "CASCADE" })
+    @ManyToOne(type => User, user => user.member, { onDelete : "CASCADE", eager : true })
     @JoinColumn({ name : "userid" })
-    userid : User;
+    member : User;
 }

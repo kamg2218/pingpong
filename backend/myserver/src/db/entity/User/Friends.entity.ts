@@ -8,11 +8,11 @@ export class Friends{
     @PrimaryGeneratedColumn()
     index : number;
 
-    @ManyToOne((type)=>User, (user)=>user.friendsFrom, { onDelete : "CASCADE" })
+    @ManyToOne((type)=>User, (user)=>user.friendsFrom, { onDelete : "CASCADE", eager : true})
     @JoinColumn({name : "requestFrom"})
     requestFrom : User;
 
-    @ManyToOne((type)=>User, (user)=>user.friendsTo, { onDelete : "CASCADE" })
+    @ManyToOne((type)=>User, (user)=>user.friendsTo, { onDelete : "CASCADE", eager : true })
     @JoinColumn({name : "requestTo"})
     requestTo : User;
 
