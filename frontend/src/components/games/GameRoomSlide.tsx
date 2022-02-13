@@ -11,7 +11,7 @@ export default function GameRoomSlide(props: any){
 
 	useEffect(()=>{
 		//조건이 필요한가?
-		console.log(gameContext.gameroomlist[0])
+		// console.log(gameContext.gameroomlist[0])
 		if (!gameContext.gameroomlist[0]){
 			console.log('game room list!')
 			socket.emit("gameRoomList");

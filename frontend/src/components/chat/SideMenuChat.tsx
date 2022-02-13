@@ -1,11 +1,11 @@
-import '../../css/Game.css';
-import MenuChat from '../../components/chat/MenuChat'
-import ChatRoom from '../../components/chat/ChatRoom'
-import { Switch, Route, Link, useParams } from 'react-router-dom'
-import {useEffect, useContext} from 'react'
-import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from '../../socket/chatSocket'
-import { socket } from '../../socket/userSocket';
-import { GameContext } from '../../socket/gameSocket';
+import "./chat.css";
+import MenuChat from "../../components/chat/MenuChat"
+import ChatRoom from "../../components/chat/ChatRoom"
+import { Switch, Route, Link, useParams } from "react-router-dom"
+import {useEffect, useContext} from "react"
+import { socket } from "../../socket/userSocket";
+import { GameContext } from "../../socket/gameSocket";
+import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from "../../socket/chatSocket"
 
 type param = {
 	id?: String
@@ -16,31 +16,32 @@ export default function SideMenuChat(){
 	const gameContext = useContext(GameContext);
 	
 	useEffect(()=>{
-		console.log('side menu chat');
-		console.log(chatContext.chatroom[0]);
-		if (!chatContext.chatroom[0])
-			socket.emit("myChatRoom");
-	}, [chatContext.chatroom]);
+		// console.log("side menu chat");
+		// console.log(chatContext.chatroom[0]);
+		// if (!chatContext.chatroom[0])
+		// 	socket.emit("myChatRoom");
+	}, [chatContext]);
+
 	function ChatRoomIdx(){
 		let idx:param = useParams();
 		return <ChatRoom idx={idx.id}></ChatRoom>
 	}
-	socket.on('myChatRoom', (data:ChatData)=>{
-		console.log('my chat room!!');
+	socket.on("myChatRoom", (data:ChatData)=>{
+		console.log("my chat room!!");
 		chatContext.chatroom[1](data);
 		// setInfo(data);
 	});
-	socket.on('publicChatRoom', (data:ChatData)=>{
-		console.log('public chat room');
+	socket.on("publicChatRoom", (data:ChatData)=>{
+		console.log("public chat room");
 		chatContext.publicroom[1](data);
 	});
-	socket.on('enterChatRoom', (data:chatRoom)=>{
+	socket.on("enterChatRoom", (data:chatRoom)=>{
 		const tmp:ChatData = chatContext.chatroom[0];
 		tmp.order.push(data.chatid);
 		tmp.chatroom.push(data);
 		chatContext.chatroom[1](tmp);
 	});
-	socket.on('updateChatRoom', (data:InputChatRoom)=>{
+	socket.on("updateChatRoom", (data:InputChatRoom)=>{
 		const idx = chatContext.chatroom[0].order.indexOf(data.chatid);
 		if (data.title)
 			chatContext.chatroom[0].chatroom[idx].title = data.title;
@@ -62,16 +63,17 @@ export default function SideMenuChat(){
 		<div id="chatTab">
 			<div className="row">
 				<div className="col-3 btn" id="tab-game">
-					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>game</Link>
+					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ""}`} className="text-decoration-none text-reset">game</Link>
 				</div>
 				<div className="col-3 btn" id="tab-chat-active">
-					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ''}`} className='text-decoration-none text-reset'>chat</Link>
+					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ""}`} className="text-decoration-none text-reset">chat</Link>
 				</div>
 			</div>
 			<div className="row" id="nav-chat">
 				<Switch>
-					<Route path='/game/chat/:id'><ChatRoomIdx/></Route>
-					<Route path='/game/chat'><MenuChat/></Route>
+					<Route path="/game/chat/waiting/:id"><MenuChat/></Route>
+					<Route path="/game/chat/:id"><ChatRoomIdx/></Route>
+					<Route path="/game/chat"><MenuChat/></Route>
 				</Switch>
 			</div>
 		</div>

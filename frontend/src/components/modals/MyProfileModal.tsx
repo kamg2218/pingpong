@@ -64,7 +64,7 @@ export default function MyProfileModal(props: any) {
 				result: false
 			})
 		}
-		profile?.newfriends.forEach((friend:Friend)=>{
+		profile?.newfriends?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row mx-0 px-2" id="newFriendContent" onClick={()=>handleClick(friend.userid)}>
 					<div className="col p-0"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
@@ -73,8 +73,8 @@ export default function MyProfileModal(props: any) {
 					<div className="col-2"><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
 				</div>
 			)
-		})
-		profile?.friends.forEach((friend:Friend)=>{
+		});
+		profile?.friends?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row text-center align-items-center" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#ProfileModal" onClick={()=>handleClick(friend.userid)}>
 					<div className="col"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
@@ -82,12 +82,12 @@ export default function MyProfileModal(props: any) {
 					<div className="col">{friend.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}</div>
 				</div>
 			);
-		})
+		});
 		return list;
 	}
 	const blockList = () => {
 		let list:any = [];
-		profile?.blacklist.forEach((friend:Friend)=>{
+		profile?.blacklist?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row text-center align-items-center" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#ProfileModal" onClick={()=>handleClick(friend.userid)}>
 					<div className="col"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
@@ -95,7 +95,7 @@ export default function MyProfileModal(props: any) {
 					<div className="col">{friend.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}</div>
 				</div>
 			)
-		})
+		});
 		return list;
 	}
 	return (

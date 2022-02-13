@@ -1,31 +1,30 @@
-import {useEffect, useState} from "react"
+import {useContext, useEffect, useState} from "react"
 import {socket} from "../../socket/userSocket"
-import {ChatData, publicchatroom} from "../../socket/chatSocket"
-import PublicChatList from "./PublicChatList"
+import {ChatContext, chatRoom} from "../../socket/chatSocket"
+import PublicChatList from "../chat/PublicChatList"
 
 export default function PublicChatModal(){
-	const [pwd, setPwd] = useState<String>("");
-	const [checkedroom, checkRoom] = useState<String>("");
-	const [publicChat, setPublicChat] = useState<ChatData>(publicchatroom);
+	const [pwd, setPwd] = useState<string>("");
+	const [checkedroom, checkRoom] = useState<string>("");
+	const chatContext = useContext(ChatContext);
+	const publicRoom = chatContext.publicroom;
 
 	useEffect(() => {
-		socket.emit("publicChatRoom");
-		setPublicChat(publicchatroom);
-		console.log(publicChat);
-	}, [pwd, checkedroom, publicChat]);
+		if (!publicRoom[0]){
+			console.log("publicChatRoom");
+			socket.emit("publicChatRoom");
+		}
+		socket.on("publicChatRoom", (data)=>{
+			publicRoom[1](data);
+		});
+	}, [pwd, checkedroom, publicRoom]);
+
 	function handleSubmit(){
 		let data:any = {};
-
 		data.chatid = checkedroom;
 		if (pwd)
 			data.password = pwd;
-		socket.emit("enterChatRoom", data
-		// , (result: boolean)=>{
-		//     if (result === true)
-		//         console.log("초대되었습니다.");
-		//     else
-		//         console.log("try again!");}
-		);
+		socket.emit("enterChatRoom", data);
 	}
 
 	return (
@@ -41,7 +40,7 @@ export default function PublicChatModal(){
 					<div className="modal-body">
 						<div className="container p-0">
 							<div className="row overflow-scroll justify-content-center">
-								{publicchatroom?.chatroom.map(room=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom}/>)}
+								{publicRoom[0] &&  publicRoom[0].chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom}/>)}
 							</div>
 						</div>
 					</div>

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
 import { socket, ProfileUser } from "../../socket/userSocket";
+import {GameContext} from "../../socket/gameSocket";
 import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"
@@ -10,6 +11,7 @@ export default function ProfileModal(props: any) {
 	const [profile, setProfile] = useState<ProfileUser>();
 	const button:string = "row w-75 my-1 btn modal-button";
 	let buttonFriend:string = button;
+	const game = useContext(GameContext).gameroom;
 
 	useEffect(() => {
 		if (!profile) {
@@ -27,10 +29,9 @@ export default function ProfileModal(props: any) {
 			type: "private",
 			member: [profile?.userid]
 		}, (chatid: string)=>{
+			console.log(chatid);
 			if (chatid !== ''){
-				history.push(`/game/chat/${chatid}`);
-				//or
-				// history.push(`/game/chat/${chatid}/waiting/:id`);
+				history.push(`/game/chat/${chatid}${game[0] ? `/waiting/${game[0].roomid}`: ''}`);
 			}
 		})
 	}
@@ -82,7 +83,7 @@ export default function ProfileModal(props: any) {
 								<div className="col-4">
 									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 1)} alt="profile" id="modalProfile"/></div>
 									<div className={button} onClick={handleChat} data-dismiss="modal"> 1 : 1 채팅</div>
-									<div className={button} onClick={handleMatch}>대전 신청</div>
+									<div className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#LoadingModal">대전 신청</div>
 									<div className={buttonFriend} onClick={handleFriend}>{profile?.friend ? "친구 삭제" : "친구 추가"}</div>
 									<div className={button} onClick={handleBlock}>{profile?.block ? "차단 해제" : "차단"}</div>
 								</div>

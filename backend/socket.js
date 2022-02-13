@@ -199,7 +199,7 @@ module.exports = function(io){
         socket.on("chatMessage", (msg)=>{
             socket.to(msg.chatid).emit("chatMessage", msg.chatid, socket.nickname, msg.content);
             const chat = chatMessage.find(message => message.chatid === msg.chatid);
-            chat.list.push({userid: userInfo.id, content: msg.content});
+            chat?.list?.push({userid: userInfo.id, content: msg.content});
         });
         socket.on("qrcode", (setCode)=>{
             console.log('qrcode made!');

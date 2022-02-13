@@ -51,14 +51,6 @@ export type ProfileUser = {
 	friend: boolean
 }
 //game
-socket.on("matchRequest", (data)=>{
-	//대전 신청 결과를 받음
-	//대기 상태 종료
-});
-socket.on("matchResponse", (data)=>{
-	//대전신청을 받음
-	//popup 띄워서 수락 여부 결정해야 한다.
-});
 socket.on("qrcode", (data)=>{
 	console.log('got qrcode!');
 	console.log(data.qrcode);

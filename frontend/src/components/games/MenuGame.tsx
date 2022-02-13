@@ -4,14 +4,17 @@ import Profile from "../../icons/Profile"
 import {Friend, socket, UserContext} from "../../socket/userSocket"
 
 export function NewList(person: Friend): any {
+	const userContext = useContext(UserContext);
 	const handleNewFriend = (result: boolean) => {
 		socket.emit("newFriend", {
 			userid: person.userid,
 			result: result
 		});
+		const user = userContext.user;
+		user[1](user[0].newfriends?.filter((friend:Friend)=>friend.userid !== person.userid));
 	}
 	return (
-		<div className="m-0 p-2 h6" id="friendonoff" key={person.nickname}>
+		<div className="m-0 p-2 h6" id="friendonoff" key={person.userid}>
 			<div className="col-7" id="friendNick">
 				<i className="bi bi-exclamation-lg" id="exclamationMark"></i>
 				{person.nickname}
@@ -27,7 +30,7 @@ export function OldList(person: Friend, setClicked: Function): any {
 		setClicked(person.userid);
 	}
 	return (
-		<div className="m-0 p-2" id="friendonoff" key={person.nickname} onClick={handleClick} data-toggle="modal" data-target="#ProfileModal">
+		<div className="m-0 p-2" id="friendonoff" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#ProfileModal">
 			<div className="col-8 m-0 mx-1 px-2 h6" id="friendNick">{person.nickname}</div>
 			<div className="col">
 				{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light" id="light-circle"/>}
@@ -49,8 +52,8 @@ export default function MenuGame(props:any){
 				<label className="row mt-3" id="menuRecord">WIN : LOSE</label>
 				<div className="row h1 mb-4" id="winLose">{user?.win} : {user?.lose}</div>
 				<div className="row m-1 p-1" id="friendList">
-					{user?.newfriends?.map((people:Friend) => (NewList(people)))}
-					{user?.friends.map((people:Friend) => (OldList(people, props.setClicked)))}
+					{user && user.newfriends?.map((people:Friend) => (NewList(people)))}
+					{user && user.friends?.map((people:Friend) => (OldList(people, props.setClicked)))}
 				</div>
 			</div>
 		</div>

@@ -1,8 +1,11 @@
-import {chatroom} from '../../socket/chatSocket'
-import Profile from '../../icons/Profile'
+import { ChatContext, ChatData } from "../../socket/chatSocket"
+import Profile from "../../icons/Profile"
+import {useContext} from "react";
 
 export default function ChatBox(props:any){
-	const room = chatroom.chatroom.find(data => data.chatid === props.chatid);
+	const chatContext = useContext(ChatContext);
+	const chatRoom:ChatData = chatContext.chatroom[0];  
+	const room = chatRoom?.chatroom.find(data => data.chatid === props.chatid);
 	const member = room?.members.find(person => person.userid === props.userid);
 	let profile = Profile(member?.profile ?? 1);
 
@@ -19,7 +22,7 @@ export default function ChatBox(props:any){
 			<div className="row align-items-start">
 				<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
 				<div className="col">
-					<div className="row col-12">{member ? member.nickname : 'unknown'}</div>
+					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
 					<div className="row col-12 border rounded bg-light p-2">{props.content}</div>
 					<div className="row col-12 small text-muted my-1 justify-content-end">{makeTime()}</div>
 				</div>

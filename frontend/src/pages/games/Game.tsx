@@ -18,7 +18,7 @@ export default function Game() {
 	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
 	const [user, setUser] = useState<User>(userContext.user[0]);
-	const [isOpen, setIsOpen] = useState<boolean>(true);
+	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [matchData, setMatch] = useState<match>();
 
 	useEffect(() => {

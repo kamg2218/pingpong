@@ -2,10 +2,10 @@ body{
 	background-color: #6D6162;
 }
 #loginButton{
-	border-color: ivory;
-	color: ivory;
-	width: 25%;
+	border: 1px solid #C9A641;
+	color: whitesmoke;
 	font-size: 1.5em;
+	width: 25%;
 }
 #loginButton:hover{
 	background-color: #C9A641;

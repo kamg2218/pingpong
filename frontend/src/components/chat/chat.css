@@ -1,0 +1,41 @@
+#chatBox, .dropdown-menu{
+    border: 1px solid #C9A641;
+    border-radius: 15px;
+}
+.dropdown-item:hover{
+    background-color: #C9A641;
+}
+#chatBox:hover{
+    background-color: #C9A641;
+}
+#dropdownMenuButton:focus, #dropdownMenuButton:active, #chatButton:focus, #publicChatBtn:focus{
+    outline: none !important;
+    box-shadow: none;
+}
+#dropdownMenuButton:hover{
+    box-shadow: 1px .5px .5px .5px inset #6D6162;
+}
+#leftArrow{
+    color: #6D6162;
+}
+#chatForm{
+    border: none;
+}
+#chatlist{
+    overflow-y: scroll;
+}
+#chatInput:focus{
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #C9A641;
+}
+#chatSend{
+    color: #6D6162;
+}
+#chatSend:hover{
+    background-color: #C9A641;
+}
+#chatlist, #chatInput, #chatSend{
+    border: 0.5px solid #C9A641;
+    border-radius: 5px;
+}
