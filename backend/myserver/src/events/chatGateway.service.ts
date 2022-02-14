@@ -60,7 +60,6 @@ export class ChatGatewayService {
         const repo_chatroom = getCustomRepository(ChatRoomRepository);
         this.createmember(user, chatroom);
         repo_chatroom.update(chatroom.chatid, {memberCount: chatroom.memberCount + 1});
-        console.log("2222222222222")
         return ;
     }
 

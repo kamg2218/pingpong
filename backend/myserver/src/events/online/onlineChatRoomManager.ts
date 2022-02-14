@@ -1,9 +1,9 @@
 
-import { ChatRoom } from "./chatRoom";
+import { onlineChatRoom } from "./onlineChatRoom";
 
-const chatRooms : ChatRoom[] = [];
+const chatRooms : onlineChatRoom[] = [];
 
-export const chatRoomManager = {
+export const onlineChatRoomManager = {
 
     getRoomByid(roomid : string) {
         const res = chatRooms.find(room=>room.id === roomid);
@@ -11,7 +11,7 @@ export const chatRoomManager = {
     },
 
     create(roomid : string) {
-        const newRoom = new ChatRoom(roomid);
+        const newRoom = new onlineChatRoom(roomid);
         chatRooms.push(newRoom);
         return newRoom;
     },

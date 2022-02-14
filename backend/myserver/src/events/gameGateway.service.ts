@@ -259,16 +259,6 @@ export class GameGatewayService {
         return resultlist;
     }
 
-    public async getGameRoomIncluding(value : string) {
-        const repo_gameRoom = getCustomRepository(GameRoomRepository);
-        const resultlist = [];
-        const rawList = await repo_gameRoom.find({title : Like(`%${value}%`)});
-        rawList.map(function(elem) {
-            resultlist.push(repo_gameRoom.getRoomInfo(elem));
-        })
-        return resultlist;
-    }
-
     public async getMyGameRoomList(user : User) {
         const repo_gameMembership = getCustomRepository(GameMembershipRepository);
         const gameMembership = await repo_gameMembership.getMyRoom(user);

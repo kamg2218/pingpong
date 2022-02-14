@@ -4,7 +4,7 @@ import { BlockedFriendsRepository } from "src/db/repository/User/UserCustomRepos
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
 
-export class ChatRoom {
+export class onlineChatRoom {
     static server : Server = null;
     private roomid : string; 
     private members : string[];
@@ -14,8 +14,8 @@ export class ChatRoom {
     }
 
     static init(server : Server) {
-        if (!ChatRoom.server)
-            ChatRoom.server = server;
+        if (!onlineChatRoom.server)
+            onlineChatRoom.server = server;
     }
 
     constructor(roomid : string) {
@@ -26,14 +26,14 @@ export class ChatRoom {
         const repo_blockList = getCustomRepository(BlockedFriendsRepository);
         this.members.map(async (socketid) => {
             if (!await repo_blockList.amIBlockedByid(user, socketid))
-                ChatRoom.server.to(socketid).emit("chatMessage", payload);
+                onlineChatRoom.server.to(socketid).emit("chatMessage", payload);
         });
     }
 
     public announceExceptMe(socket : AuthSocket, event : string, payload : any) {
         this.members.map(async (socketid)=>{
             if (socketid !== socket.user.userid)
-                ChatRoom.server.to(socketid).emit(event, payload)
+                onlineChatRoom.server.to(socketid).emit(event, payload)
         })
     }
 

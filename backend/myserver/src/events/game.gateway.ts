@@ -1,11 +1,12 @@
 import { Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
+import { User } from "src/db/entity/User/UserEntity";
 import { GameRoomRepository } from "src/db/repository/Game/GameRoom.repository";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
-import { LevelManager } from "./gameElement/levelManager";
 import { GameGatewayService } from "./gameGateway.service";
 import { MatchingManager } from "./online/matchingManager";
 import { onlineGameMap } from "./online/onlineGameMap";
@@ -23,14 +24,15 @@ const options = {
 export class GameGateway {
     constructor(
         private readonly gameGatewayService : GameGatewayService,
-        private readonly logger : Logger
+        private readonly logger : Logger,
+        private readonly configService : ConfigService,
     ){}
 
     @WebSocketServer() public server: Server;
   
     private async afterInit(server: Server) {
         this.logger.log('Gamegateway init');
-      }
+    }
 
     private log(msg : String) {
         this.logger.log(msg, "GameGateway");
@@ -39,15 +41,23 @@ export class GameGateway {
     //test
     @SubscribeMessage('onlineGame')
     async print(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-        console.log(onlineGameMap);
+        if (process.env.NODE_ENV === "dev") {
+            console.log('dev');
+        }
+        else
+            console.log('else')
     }
 
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
-        /* ------- */
+        let user : User;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+        }
         if (await this.gameGatewayService.amIinGameRoom(user))
         	return this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
         if (!this.gameGatewayService.validateOptions(payload)) {
@@ -60,16 +70,21 @@ export class GameGateway {
 
     @SubscribeMessage('enterGameRoom')
     async enterGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
-        const payload = {
-        	roomid : roomid,
-        	isPlayer : payload1.isPlayer,
-        	password : payload1.password
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : roomid,
+                isPlayer : payload1.isPlayer,
+                password : payload1.password}
         }
-        /* ------- */
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
         if (await this.gameGatewayService.amIinGameRoom(user))
         	return this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
         const validateResult = await this.gameGatewayService.checkIfItIsAvailableToJoinAs(payload);
@@ -81,15 +96,20 @@ export class GameGateway {
 
     @SubscribeMessage('exitGameRoom')
     async exitGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
-        const payload = {
-        	roomid : roomid,
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+        	    roomid : roomid}
         }
-        /* ------- */
-		if (! (await this.gameGatewayService.isThisMyGameRoom(user, roomid))) {
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
+		if (! (await this.gameGatewayService.isThisMyGameRoom(user, payload.roomid))) {
 			this.log(`${user.nickname} isn't in the GameRoom ${payload1.title}`);
 			throw new WsException(`You are not in the GameRoom ${payload1.title}`);
 		}
@@ -99,18 +119,23 @@ export class GameGateway {
 
     @SubscribeMessage('changeGameRoom')
     async changeGameRoomOptions(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
-        const payload = {
-          roomid : roomid,
-          title : payload1.title,
-          password : payload1.password,
-          speed : payload1.speed,
-          type : payload1.type
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : roomid,
+                title : payload1.title,
+                password : payload1.password,
+                speed : payload1.speed,
+                type : payload1.type}
         }
-        /* ------- */
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
         if (!await this.gameGatewayService.validationAuthority(user, payload.roomid))
         	return this.gameGatewayService.respondToUser(socket, "changeGameRoom", {result : false});
         if (!await this.gameGatewayService.checkIfItIsAvailableChangeOptions(payload.roomid))
@@ -124,28 +149,35 @@ export class GameGateway {
         this.gameGatewayService.respondToUser(socket, "gameRoomList", result);
     }
 
-    @SubscribeMessage('gameRoomListIncluding') 
-    async getGameroomListIncluding(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-        const result = await this.gameGatewayService.getGameRoomIncluding(payload.title);
-        this.gameGatewayService.respondToUser(socket, "gameRoomListIncluding", result);
-    }
-
     //방장인지 확인 필요
     @SubscribeMessage('startGame')
     async start(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-            title : payload1.title
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : payload1.roomid}
         }
-        /* ------- */
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
         this.log(`${user.nickname} pressed the start button`);
-        const gameRoom = await getCustomRepository(GameRoomRepository).findOne({title : payload.title});
-        const game = onlineGameMap[gameRoom.roomid];
+        const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
+        }
+        if (!await this.gameGatewayService.validationAuthority(user, game.id)) {
+            this.log(`${user.nickname} has no authority to start game.`);
+            throw new WsException("Not authorized")
+        }
+        if (!game.checkIfItCanStart()) {
+            this.log("This room can't start the game")
+            throw new WsException("This room can't start the game");
         }
         let proxy = new Proxy(game, {
         	set : (target, prop, value) => {
@@ -156,24 +188,25 @@ export class GameGateway {
           	}
         });
         game.proxy = proxy;
-        if (!game.checkIfItCanStart()) {
-            this.log("This room can't start the game")
-            throw new WsException("This room can't start the game");
-        }
         await game.start();
     }
 
     @SubscribeMessage('pauseGame')
     async pause(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-            title : payload1.title
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : payload1.roomid}
         }
-        /* ------- */
-        const gameRoom = await getCustomRepository(GameRoomRepository).findOne({title : payload.title});
-        const game = onlineGameMap[gameRoom.roomid];
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
+        const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
@@ -183,15 +216,20 @@ export class GameGateway {
 
     @SubscribeMessage('restartGame')
     async restart(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-            title : payload1.title
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : payload1.roomid}
         }
-        /* ------- */
-        const gameRoom = await getCustomRepository(GameRoomRepository).findOne({title : payload.title});
-        const game = onlineGameMap[gameRoom.roomid];
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
+        const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
@@ -201,15 +239,20 @@ export class GameGateway {
 
     @SubscribeMessage('speedUp')
     async speedUp(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-            title : payload1.title
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : payload1.roomid}
         }
-        /* ------- */
-        const gameRoom = await getCustomRepository(GameRoomRepository).findOne({title : payload.title});
-        const game = onlineGameMap[gameRoom.roomid];
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
+        const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
@@ -219,15 +262,20 @@ export class GameGateway {
 
     @SubscribeMessage('speedDown')
     async speedDown(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-            title : payload1.title
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : payload1.roomid}
         }
-        /* ------- */
-        const gameRoom = await getCustomRepository(GameRoomRepository).findOne({title : payload.title});
-        const game = onlineGameMap[gameRoom.roomid];
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
+        const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
@@ -237,28 +285,40 @@ export class GameGateway {
 
 
     @SubscribeMessage('move')
-    async move(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        // const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
-        const userid = onlineManager.userIdOf(socket.id);
-        const gameRoom = await getCustomRepository(GameRoomRepository).findOne({title : "durian"});
-        /* ------- */
-        const game = onlineGameMap[gameRoom.roomid];
+    async move(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            const {roomid} = await getCustomRepository(GameRoomRepository).findOne({title : payload1.title});
+            payload = {
+                roomid : payload1.roomid}
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
+        
+        const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
         }
-        game.chagnePlayersDirection(userid, payload.direction);
+        game.chagnePlayersDirection(user.userid, payload.direction);
     }
 
 
 	@SubscribeMessage('randomMatching')
-	async requestRandomMatching(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-	    /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
-        /* ------- */
+	async requestRandomMatching(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+	    let user : User;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+        }
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const lists = await repo_gameRoom.getWaitingGameRoom();
 		if (!lists.length) {
@@ -297,24 +357,31 @@ export class GameGateway {
 	}
 
 	@SubscribeMessage('randomMatchingCancel')
-	async cancleRandomMatching(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-		/* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
-        /* ------- */
+	async cancleRandomMatching(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		let user : User;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+        }
 		MatchingManager.cancle(user.userid);
 	}
 
 	@SubscribeMessage('matchResponse')
 	async matchResponse(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-			reuqestid : payload1.requestid,
-			result : payload1.result,
-		};
-		/* ------- */
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            payload = payload1;
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
 		const request = await this.gameGatewayService.validateRequestStatus(payload.reuqestid);
     	if (!onlineManager.isOnline(request.owner.userid))
 			throw new WsException("Bad Request");
@@ -333,13 +400,19 @@ export class GameGateway {
 	
 	@SubscribeMessage('matchRequest')
 	async matchRequest(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-			userid : (await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname})).userid,
-		};
-		/* ------- */
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            payload = {
+                userid : (await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname})).userid,
+            }
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
     	if (!await this.gameGatewayService.validateMatchRequest(user, payload.userid)) {
             this.log("Bad request")
             throw new WsException("Bad Reqeust");
@@ -357,22 +430,21 @@ export class GameGateway {
 		}, 30000);
 	}
 
-    @SubscribeMessage('test')
-	async test(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        console.log("Received test");
-        socket.emit("test", {data : "success"});
-        console.log("payload : ", payload1);
-    }
-
     @SubscribeMessage('backToGameRoom')
     async backToGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-        /* temp */
-        /* change : user = onlinemap[socket.nsp.name][socket.id] */
-        const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-        const payload = {
-			roomid : (await getCustomRepository(GameRoomRepository).findOne({title : payload1.title})).roomid,
-		};
-		/* ------- */
+        let user : User;
+        let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+            payload = {
+                roomid : (await getCustomRepository(GameRoomRepository).findOne({title : payload1.title})).roomid,
+            }
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+            payload = payload1;
+        }
         const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such game Room");

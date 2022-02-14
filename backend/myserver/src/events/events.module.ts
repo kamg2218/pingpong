@@ -9,6 +9,7 @@ import { GameGatewayService } from './gameGateway.service';
 import { UserGateway } from './user.gateway';
 import { UserGatewayService } from './userGateway.service';
 import { ChatGatewayService } from './chatGateway.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports : [AuthModule],
