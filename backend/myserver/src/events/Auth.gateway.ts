@@ -43,24 +43,24 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 
 		/**/
-		// if (ormconfig.dropSchema) {
-		// 	const connection = getConnection();
-		// 	await connection
-		// 		.createQueryBuilder()
-		// 		.insert()
-		// 		.into(User)
-		// 		.values([
-		// 		{email : "jikwon@student.42seoul.kr", nickname : "jikwon", status : "logout", profile : 1},
-		// 		{email : "nahkim@student.42seoul.kr", nickname : "nahkim", status : "logout", profile : 2},
-		// 		{email : "hyoon@student.42seoul.kr", nickname : "hyoon", status : "logout", profile : 3},
-		// 		{email : "hyeyoo@student.42seoul.kr", nickname : "hyeyoo", status : "logout", profile : 4},
-		// 		{email : "dong@student.42seoul.kr", nickname : "dong", status : "logout", profile : 5},
-		// 		{email : "pangpang@student.42seoul.kr", nickname : "pangpang", status : "logout", profile : 6},
-		// 		{email : "cat@student.42seoul.kr", nickname : "cat", status : "logout", profile : 7},
-		// 		{email : "dog@student.42seoul.kr", nickname : "dog", status : "logout", profile : 8},
-		// 		])
-		// 		.execute();
-		// }
+		if (process.env.NODE_ENV === "dev" && ormconfig.dropSchema) {
+			const connection = getConnection();
+			await connection
+				.createQueryBuilder()
+				.insert()
+				.into(User)
+				.values([
+				{email : "jikwon@student.42seoul.kr", nickname : "jikwon", status : "logout", profile : 1},
+				{email : "nahkim@student.42seoul.kr", nickname : "nahkim", status : "logout", profile : 2},
+				{email : "hyoon@student.42seoul.kr", nickname : "hyoon", status : "logout", profile : 3},
+				{email : "hyeyoo@student.42seoul.kr", nickname : "hyeyoo", status : "logout", profile : 4},
+				{email : "dong@student.42seoul.kr", nickname : "dong", status : "logout", profile : 5},
+				{email : "pangpang@student.42seoul.kr", nickname : "pangpang", status : "logout", profile : 6},
+				{email : "cat@student.42seoul.kr", nickname : "cat", status : "logout", profile : 7},
+				{email : "dog@student.42seoul.kr", nickname : "dog", status : "logout", profile : 8},
+				])
+				.execute();
+		}
 	}
 
 	handleConnection(@ConnectedSocket() socket: AuthSocket) : any {
@@ -71,6 +71,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.logger.log(`${socket.id} socket disconnected`, "AuthGateway");
 		const userid = onlineManager.userIdOf(socket.id);
 		const user = await getCustomRepository(UserRepository).findOne(userid);
+		if (!user)
+			return ; //test
 		/* ----- */
 		/* game : Exit game room*/
 		MatchingManager.cancle(userid);
