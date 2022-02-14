@@ -7,8 +7,8 @@ export default function MatchRequestModal(props:any){
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const handleSubmit = (result:boolean) => {
     socket.emit("matchResponse", {
-      requestid: props.matchData?.requestid,
-      result: result
+    	requestid: props.matchData?.requestid,
+    	result: result
 		});
 		props.setIsOpen(false);
 	};

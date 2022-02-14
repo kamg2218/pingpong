@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect, useContext } from "react";
-import { Link } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import {socket, UserContext} from "../../socket/userSocket";
 import { ChatContext, ChatBlock } from "../../socket/chatSocket";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "../../css/ChatRoom.css"
-import { GameContext } from "../../socket/gameSocket";
 
 //채팅방 입장 시, 히스토리 업데이트 필요함!
 //chatMessage 업데이트 확인 필요!
@@ -14,29 +13,27 @@ import { GameContext } from "../../socket/gameSocket";
 export default function ChatRoom(props :any){
 	const userContext = useContext(UserContext);
 	const chatContext = useContext(ChatContext);
-	const history = chatContext.history;
-	const game = useContext(GameContext).gameroom;
-	const path:string = `/game/chat${game[0] ? `/waiting/${game[0].roomid}`: ""}`;
+	const chatHistory = chatContext.history;
+	const history = useHistory();
 	const [chat, setChat] = useState("");
 	const chatInput = useRef<any>(null);
 	const chatid = chatContext.chatroom[0]?.order[props.idx];
 
 	useEffect(()=>{
-		if (!history[0] || history[0].chatid !== props.idx){
+		if (!chatHistory[0] || chatHistory[0].chatid !== props.idx){
 			socket.emit("chatHistory", {
 				chatid: props.idx,
 			});
 		}
 		socket.on("chatHistory", (data)=>{
-			history[1](data);
+			chatHistory[1](data);
 		})
-	}, [chat, history, props.idx]);
+	}, [chat, chatHistory, props.idx]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
 	}
 	const handleSendBtn = (event:any) => {
-		// const idx = props.idx;
 		socket.emit("chatMessage", {
 			chatid: props.idx,
 			content: chat,
@@ -55,9 +52,9 @@ export default function ChatRoom(props :any){
 	return (
 		<div className="container-fluid p-2" key={`chatroom${props.idx}`}>
 			<div className="col">
-				<Link to={path} className="row m-1"><i className="bi bi-arrow-left" id="leftArrow"></i></Link>
+				<div className="row m-1" onClick={()=>{history.goBack()}}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0" id="chatlist">
-					{history[0] && history[0].list?.map((data:ChatBlock, idx:number)=>{
+					{chatHistory[0] && chatHistory[0].list?.map((data:ChatBlock, idx:number)=>{
 						if (data.userid === userContext.user[0].id)
 							return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
 						else

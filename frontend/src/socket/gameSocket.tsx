@@ -51,7 +51,7 @@ export type GameUser = {
 export type gameRoom = {
 	title: string,
 	roomid: string,
-	map: string,
+	speed: number,
 	player: number,
 	observer: number,
 	maxObserver: number,
@@ -63,7 +63,7 @@ export type gameRoomDetail = {
 	title: string,
 	roomid: string,
 	manager: string,
-	map: string,
+	speed: number,
 	observer: Array<GameUser>,
 	type: string,
 	status: boolean,
