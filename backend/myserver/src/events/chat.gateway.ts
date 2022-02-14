@@ -117,6 +117,16 @@ export class ChatGateway {
     const repo_user = getCustomRepository(UserRepository);
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
     const notJoinedChat : ChatMembership[] = await repo_chatmember.find({member: {userid : Not(user.userid)}, chatroom : {type : "public"}});
+
+
+    const notJoinedList = await notJoinedChat.map(async (allList : ChatMembership) => {
+      const {chatid} = allList.chatroom;
+      const roomInfo = await repo_chatmember.findOne({chatroom: allList.chatroom});
+      let resList;
+      if (resList.findOne({chatroom: roomInfo.chatroom}) === undefined) {
+        resList.insert(roomInfo);
+      }
+    })
     // const userInfo = repo_user.getSimpleInfo(user);
     // 지금은 중복됨
 
@@ -124,6 +134,7 @@ export class ChatGateway {
     let chatroom = [];
 
     const chatList = await Promise.all(notJoinedChat.map(async (element : ChatMembership) => {
+      // const chatList = await notJoinedChat.map(async (element : ChatMembership) => {
       const {chatid, title, type, password} = element.chatroom;
       let members = [];
       let managers = [];
@@ -146,6 +157,7 @@ export class ChatGateway {
       order.push(element.chatroom.chatid);
       chatroom.push({title, chatid, owner, managers, members, lock, type, max});
     }));
+      // }));
     socket.emit("publicChatRoom", {order, chatroom});
   }
 

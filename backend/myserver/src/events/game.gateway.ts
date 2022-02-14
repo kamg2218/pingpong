@@ -1,5 +1,4 @@
 import { Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { User } from "src/db/entity/User/UserEntity";
@@ -25,7 +24,6 @@ export class GameGateway {
     constructor(
         private readonly gameGatewayService : GameGatewayService,
         private readonly logger : Logger,
-        private readonly configService : ConfigService,
     ){}
 
     @WebSocketServer() public server: Server;
@@ -41,6 +39,7 @@ export class GameGateway {
     //test
     @SubscribeMessage('onlineGame')
     async print(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
+        this.log({gate : "onlineGame", ...payload});
         if (process.env.NODE_ENV === "dev") {
             console.log('dev');
         }
@@ -50,6 +49,7 @@ export class GameGateway {
 
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
+        this.log({gate : "createGameRoom", ...payload});
         let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
