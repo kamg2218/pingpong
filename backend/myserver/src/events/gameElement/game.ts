@@ -263,6 +263,9 @@ export class Game {
         if (!this.right.onoff() || !this.left.onoff() || !this.right.ready || !this.left.ready) {
             return false;
         }
+        if (this.running) {
+            return false;
+        }
         return true;
         //방장 확인 필요
     }
