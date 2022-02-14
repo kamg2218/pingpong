@@ -2,6 +2,7 @@
 import { Logger } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException, WsResponse } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { User } from 'src/db/entity/User/UserEntity';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
 import { getCustomRepository } from 'typeorm';
@@ -37,12 +38,15 @@ export class UserGateway{
   }
 
     @SubscribeMessage('userInfo') 
-    async sendUserInfo(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		/* ? or userid = onlineMap[socket.nsp.name][socket.id]; */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
-		/* ------- */
+    async sendUserInfo(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		let user : User;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+        }
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+        }
 		const all = Promise.all([
 			this.userGatewayService.getUserInfo(user),
 			this.userGatewayService.getFriendsInfo(user),
@@ -57,12 +61,19 @@ export class UserGateway{
 
     @SubscribeMessage('opponentProfile')
     async sendOpponentInfo(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const theOther = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
-		const payload = {userid : theOther.userid};
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {userid : theOtherX.userid};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
+		const theOther = await getCustomRepository(UserRepository).findOne(payload.userid);
 		const all = Promise.all([
 			this.userGatewayService.getTheOtherUSerInfo(user, theOther),
 			this.userGatewayService.getGamehistory(theOther)
@@ -74,11 +85,18 @@ export class UserGateway{
 
     @SubscribeMessage('addFriend')
     async requestFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const payload = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {userid : theOtherX.userid};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
 		if (!payload?.userid) {
 			this.log("No such user");
 			throw new WsException("Bad Request");
@@ -90,11 +108,18 @@ export class UserGateway{
 
     @SubscribeMessage('deleteFriend')
     async deleteFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const payload = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname})
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {userid : theOtherX.userid};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
 		if (!payload.userid)
 			throw new WsException("Bad Request");
 		await this.userGatewayService.deleteFriend(user, payload.userid);
@@ -102,11 +127,18 @@ export class UserGateway{
 
     @SubscribeMessage('block')
     async blockFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const payload = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname})
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {userid : theOtherX.userid};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
 		if (!payload.userid)
 			throw new WsException("Bad Request");
 		await this.userGatewayService.block(user, payload.userid);
@@ -114,11 +146,18 @@ export class UserGateway{
 
     @SubscribeMessage('unblock')
     async unblockFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const payload = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname})
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {userid : theOtherX.userid};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
 		if (!payload.userid)
 			throw new WsException("Bad Request");
 		await this.userGatewayService.unblock(user, payload.userid);
@@ -128,13 +167,18 @@ export class UserGateway{
     // "respond" : false
     @SubscribeMessage('newFriend')
     async respondToFriendRequest(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		// userid, respond 필수
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const x = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
-		const payload = {userid : x?.userid, respond : payload1.respond};
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {userid : theOtherX.userid, respond : payload1.respond};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
 		if (!payload.userid) {
 			this.log("No such user")
 			throw new WsException("No such user");
@@ -149,11 +193,18 @@ export class UserGateway{
 
     @SubscribeMessage('updateProfile')
     async update(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) : Promise<WsResponse<object>> {
-		/* temp */
-		/* change : user = onlinemap[socket.nsp.name][socket.id] */
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
-		const payload = {nickname : payload1?.nickname, profile : payload1?.profile};
-		/* ------- */
+		let user : User;
+		let payload;
+        if (process.env.NODE_ENV === "dev") {
+            user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
+			const theOtherX = await getCustomRepository(UserRepository).findOne({nickname : payload1.theOtherNickname});
+			payload = {nickname : payload1?.nickname, profile : payload1?.profile};
+		}
+        else { //else if (process.env.NODE_ENV === "test") {
+            //socket.user 접근
+            user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+			payload = payload1
+		}
 		return { 
 			event : "updateProfile", 
 			data : await this.userGatewayService.update(user, payload)

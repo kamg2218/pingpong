@@ -48,7 +48,7 @@ export class AuthController {
     @ApiOperation({ summary: '회원 가입', description: 'nickname, profile 추가 정보 입력'})
     @ApiCreatedResponse({description: '회원정보 등록 성공 여부', type : Boolean})
     @ApiBadRequestResponse({description : "nickname"})
-    async signup(@UserDeco() user : User, @Body() data : SignUpDTO) {
+    async signup(@Res({passthrough : true}) res : Response, @UserDeco() user : User, @Body() data : SignUpDTO) {
         await this.authService.register(user.userid, data);
         this.logger.log("[Signup] New user has signed up.");
         return true;

@@ -58,11 +58,14 @@ export class ChatGateway {
     onlineChatRoom.init(server);
   }
 
+  //user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+
   // 유저가 참여한 채팅방 조회 : 현재 유저가 참여한 채팅방만 조회
   @SubscribeMessage('myChatRoom')
   async getAllChatByUser(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     // const user = onlineChat[socket.nsp.name][socket.id]
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     // const payload = {userid : user.userid, respond: payload1.respond};
 
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
@@ -106,7 +109,8 @@ export class ChatGateway {
   @SubscribeMessage('publicChatRoom')
   async getAllChat(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     // userid로 내가 없는 채팅방 가져오기
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     // const payload = {userid : user.userid, respond: payload1.respond};
 
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
@@ -150,7 +154,9 @@ export class ChatGateway {
   // chatroom, ChatMembership 추가
   @SubscribeMessage('createChatRoom')
   async createchat(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+    // const user = await getCustomRepository(UserRepository).findOne({userid: payload1.userid});
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, member : payload1.member, type:payload1.type, title:payload1.title, password:payload1.password};
 
     let member =[];
@@ -211,7 +217,8 @@ export class ChatGateway {
   @SubscribeMessage('enterChatRoom')
   async enterChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     // user = onlineChat[socket.nsp.name][socket.id]
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, chatid: payload1.chatid, password:payload1.password};
     // public일 경우 admin이 나를 banPublicChat에 등록했나?
 
@@ -310,7 +317,8 @@ export class ChatGateway {
   // 채팅방 정보 변경 :
   @SubscribeMessage('updateChatRoom')
   async updateChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, chatid: payload1.chatid, addManager:payload1.addManager, deleteManager:payload1.deleteManager, 
       title : payload1.title, type : payload1.type, lock : payload1.lock, password : payload1.password };
 
@@ -386,7 +394,8 @@ export class ChatGateway {
   // 채팅방 유저 초대 : 
   @SubscribeMessage('inviteChatRoom') 
   async inviteChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-  const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+  // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+  const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
   const chatRoomx = await getCustomRepository(ChatRoomRepository).findOne({title : payload1.title})
   const payload = {userid : user.userid, respond: payload1.respond, user : [], chatid: chatRoomx.chatid};
   await Promise.all(payload1.user.map(async (nickname : string) => {
@@ -459,7 +468,8 @@ console.log("error3")
   // 채팅방 나가기 :
   @SubscribeMessage('exitChatRoom')
   async leaveChat(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, chatid: payload1.chatid};
 
     // 이미 로그인 되어있나?
@@ -515,7 +525,8 @@ console.log("error3")
   // 채팅방 강퇴 :
   @SubscribeMessage('kickChatRoom') 
   async kickChatMember(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, chatid: payload1.chatid};
 
     // 오너가 아닌 경우
@@ -543,7 +554,8 @@ console.log("error3")
   // 채팅방 내부 :
   @SubscribeMessage('chatHistory')
   async chatHistory(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, chatid: payload1.chatid};
 
     let list = [];
@@ -562,7 +574,8 @@ console.log("error3")
   // 채팅 히스토리 업데이트 : 얼마나 어떻게 보내줄지 보류
   @SubscribeMessage('chatHistoryUpdate')
   async chatHistoryUpdate(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, chatid: payload1.chatid};
 
     let list = []; //{userid, contents, date}
@@ -581,7 +594,8 @@ console.log("error3")
   // 채팅 메세지 :
   @SubscribeMessage('chatMessage')
   async chatMessage(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {respond: payload1.respond, contents: payload1.contents, chatid: payload1.chatid};
 
     const chatRoom = await getCustomRepository(ChatRoomRepository).findOne({chatid : payload.chatid});
@@ -625,7 +639,8 @@ console.log("error3")
   // 채팅 음소거 :
   @SubscribeMessage('chatMute')
   async chatMute(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
-    const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
+    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
     const payload = {userid : user.userid, respond: payload1.respond, contents: payload1.contents, chatid: payload1.chatid, time: payload1.time};
 
     // 관리자가 아닌 경우, owner에게 했을 경우, 관리자가 관리자에게 했을 경우

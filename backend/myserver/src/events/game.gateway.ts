@@ -383,11 +383,11 @@ export class GameGateway {
             payload = payload1;
         }
 		const request = await this.gameGatewayService.validateRequestStatus(payload.reuqestid);
-    	if (!onlineManager.isOnline(request.owner.userid))
+    	if (!request)
+			throw new WsException("Bad request");
+        if (!onlineManager.isOnline(request.owner.userid))
 			throw new WsException("Bad Request");
     	const theOtherSocketId = onlineManager.socketIdOf(request.owner.userid);
-		if (!request)
-			throw new WsException("Bad request");
 		if (this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
 			this.gameGatewayService.deleteMatch(request);
 			this.server.to(theOtherSocketId).emit("matchResponse",  {result : false});
