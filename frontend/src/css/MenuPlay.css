@@ -1,0 +1,37 @@
+#player1, #player2{
+	width: 5em;
+	height: 5.5em;
+	border: 1px solid #C9A641;
+	border-radius: 50%;
+	object-fit: cover;
+	overflow: hidden;
+}
+#observer{
+	width: 5em;
+	height: 5em;
+	border: 1px solid #C9A641;
+	border-radius: 15px;
+	display: flex;
+	justify-content: center;
+	overflow: hidden;
+}
+#menuPlay{
+	text-align: center;
+}
+#menuScore{
+	color: #C9A641;
+	justify-content: center;
+}
+#observerImg{
+	height: 60%;
+}
+#exitButton{
+	background-color: #6D6162;
+	border: 1px solid #C9A641;
+	border-radius: 15px;
+	color: whitesmoke;
+	justify-content: center;
+}
+#exitButton:hover{
+	background-color: #C9A641;
+}
