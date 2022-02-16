@@ -1,5 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Logger } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { UserRepository } from 'src/db/repository/User/User.repository';
@@ -14,6 +13,8 @@ import { Game } from 'src/events/gameElement/game';
 import { ormconfig } from 'src/config/ormconfig';
 import { MatchingManager } from './online/matchingManager';
 import { UserGatewayService } from './userGateway.service';
+import { JwtService } from '@nestjs/jwt';
+import { AuthService } from 'src/auth/auth.service';
 
 const options = {
 	cors : {
@@ -24,11 +25,12 @@ const options = {
 
 
 @WebSocketGateway(options)
-// @UseGuards(AuthGuard('ws-jwt'))
 export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   
 	constructor(
 		private readonly logger : Logger,
+		private readonly jwtService : JwtService,
+		private readonly authService : AuthService,
 		private readonly userGatewayService : UserGatewayService,
 		private readonly gameGatewayService : GameGatewayService) {  
 	}
@@ -63,8 +65,50 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 	}
 
-	handleConnection(@ConnectedSocket() socket: AuthSocket) : any {
+	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
     	this.logger.log(`${socket.id} socket connected`, "AuthGateway");
+		const x = socket?.handshake?.headers["authorization"];
+		if (process.env.NODE_ENV === "dev") {
+			return ;
+		}
+		if (!x)
+			socket.disconnect();
+		else {
+			let tokenName = "accessToken=";
+			let tokenValue = x.slice(tokenName.length);
+			try {
+				let inform = true;
+				console.log(`verify : ${tokenValue}`);
+				let res = await this.jwtService.verify(tokenValue);
+				let user = await this.authService.validateJwt(res);
+				socket['userid'] = res.userid;
+				if (onlineManager.isOnline(res.userid))
+					inform = false;
+				onlineManager.online(socket);
+				onlineManager.print();
+				socket.historyIndex = 0;
+				if (!inform)
+					return ;
+				const list = await onlineManager.onlineFriends(socket, user);
+				for (let sokId in list) {
+					let friend = list[sokId];
+					const all = Promise.all([
+						this.userGatewayService.getUserInfo(friend),
+						this.userGatewayService.getFriendsInfo(friend),
+						this.userGatewayService.getFriendRequest(friend),
+						this.userGatewayService.getGamehistory(friend),
+						this.userGatewayService.getBlocklist(friend),
+					]);
+					all.then((values)=>{
+						this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
+					});
+			}}
+			catch(err) {
+				console.log("Invalid Token");
+				console.log(err)
+				socket.disconnect();
+			}
+		}
   	}
 
 	async handleDisconnect(@ConnectedSocket() socket: AuthSocket) {
@@ -81,6 +125,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (gameRoom) {
 		gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
 		}
+		await getCustomRepository(UserRepository).logout(user);
 		onlineManager.offline(socket);
 		onlineManager.print();
 		console.log("[disconnected] online game : ", onlineGameMap);
@@ -102,10 +147,10 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('connecting')
 	async saveSocket(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload : any) {
-		await onlineManager.online(socket, payload);
+		const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname})
+		socket.userid = user.userid;
+		onlineManager.online(socket);
 		onlineManager.print();
-		const repo_user = getCustomRepository(UserRepository);
-        const user = await repo_user.findOne({nickname : payload.myNickname}); //temp
 		const list = await onlineManager.onlineFriends(socket, user);
 		for (let sokId in list) {
 			let friend = list[sokId];

@@ -18,6 +18,6 @@ export class ChatHistory {
 
     @ManyToOne(type => ChatRoom, chatroom => chatroom.history)
     @JoinColumn({ name : "chatid" })
-    chatid: ChatRoom;
+    chatRoom: ChatRoom;
 
 }

@@ -22,4 +22,22 @@ export class ChatMembershipRepository extends Repository<ChatMembership> {
         member.position = "owner";
         return member;
     }
+
+    async setAsNormal(userid : string) {
+        const membership = await this.findOne({member : {userid : userid}});
+        if (membership.position === "manager") {
+            await this.update(membership.index, {position : "normal"});
+            return true;
+        }
+        return false;
+    }
+
+    async setAsManager(userid : string) {
+        const chatuser = await this.findOne({member : {userid : userid}});
+        if (chatuser.position === "normal") {
+            await this.update(chatuser.index, {position: "manager"});
+            return true;
+        }
+        return false;
+    }
 }

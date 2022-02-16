@@ -22,7 +22,6 @@ export class WSJwtStrategy extends PassportStrategy(Strategy, 'ws-jwt') {
     }
     
     async validate(payload) : Promise<User> {
-        return null;
         console.log("HEHELEOEL HEHE HE HE HEH ")
         const repo_user = getCustomRepository(UserRepository);
         const user = await repo_user.findOne({userid : payload.userid});

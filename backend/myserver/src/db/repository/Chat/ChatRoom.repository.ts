@@ -3,6 +3,7 @@ import { AfterUpdate, EntityRepository, getCustomRepository, getRepository, Repo
 import { User } from "src/db/entity/User/UserEntity";
 import { RoomMode } from "src/type/RoomMode.type";
 import { ChatMembershipRepository } from "./ChatCustomRepository";
+import { UserRepository } from "../User/UserCustomRepository";
 
 @EntityRepository(ChatRoom)
 export class ChatRoomRepository extends Repository<ChatRoom> {
@@ -64,11 +65,29 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
             chatRoom.password = payload.password;
         else
             chatRoom.password = null;
-        chatRoom.memberCount = 1;
+        chatRoom.memberCount = 0;
         // if (payload.member === undefined)
         //     chatRoom.memberCount = 1;
         // else
         //     chatRoom.memberCount = payload.member.length + 1;
         return chatRoom;
+    }
+
+    async getRoomInfo(chatroom : ChatRoom) {
+        const repo_chatMember = getCustomRepository(ChatMembershipRepository);
+        const repo_user = getCustomRepository(UserRepository);
+        let manager = [];
+        let members = [];
+        let owner;
+        let lock = chatroom.password ? true : false;
+        const chatMember = await repo_chatMember.find({chatroom : chatroom});
+        chatMember.map(membership=>{
+        members.push(repo_user.getSimpleInfo(membership.member));
+        if (membership.position === "owner")
+            owner = membership.member.userid;
+        else if (membership.position === "manager")
+            manager.push(membership.member.userid);
+        });
+        return {chatid : chatroom.chatid, title: chatroom.title, members: members, lock : lock, owner:owner, manager: manager, type: chatroom.type}
     }
 }

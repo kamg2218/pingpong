@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import { ChatRoom, ChatMembership } from "src/db/entity/Chat/ChatEntity";
 import { User } from "src/db/entity/User/UserEntity";
 import { ChatMembershipRepository, ChatRoomRepository } from "src/db/repository/Chat/ChatCustomRepository";
+import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
 // import { onlineChatMap } from "./online/chatRoom"
@@ -18,27 +19,27 @@ export class ChatGatewayService {
         return {chatid, userid, position};
     }
 
-    async createChatRoom(payload: any, user: User) : Promise<ChatRoom> {
+    async createChatRoom(payload: any, user: User) : Promise<string> {
       const repo_chatRoom = getCustomRepository(ChatRoomRepository);
       const chatRoom = repo_chatRoom.createChatRoomInfo(payload);
-      await repo_chatRoom.insert(chatRoom);
-      return chatRoom;
+      const res = await repo_chatRoom.insert(chatRoom);
+      return res.generatedMaps[0].chatid;
     }
 
-    async createmember(user: User, chatroom: ChatRoom) {
+    private async createmember(user: User, chatroom: ChatRoom) {
         const repo_chatmember = getCustomRepository(ChatMembershipRepository);
-        const repo_chatroom = getCustomRepository(ChatRoomRepository);
-        const chatmember = await repo_chatmember.createChatMemberInfo(user, chatroom);
-        await repo_chatmember.insert(chatmember);
-        return chatmember;
+        const chatmember = repo_chatmember.createChatMemberInfo(user, chatroom);
+        const res = await repo_chatmember.insert(chatmember);
+        return res;
     }
 
-    async createowner(payload: any, user: User, chatroom: ChatRoom) {
-        const repo_chatmember = getCustomRepository(ChatMembershipRepository);
+    async createowner(user: User, chatroom: ChatRoom) {
         const repo_chatroom = getCustomRepository(ChatRoomRepository);
-        const chatmember = await repo_chatmember.createChatOwnerInfo(user, chatroom);
-        await repo_chatmember.insert(chatmember);
-        return chatmember;
+        const repo_chatmember = getCustomRepository(ChatMembershipRepository);
+        const chatmember = repo_chatmember.createChatOwnerInfo(user, chatroom);
+        const res = await repo_chatmember.insert(chatmember);
+        await repo_chatroom.update(chatroom.chatid, {memberCount: chatroom.memberCount + 1});
+        return res;
     }
 
     async managerList(element : ChatMembership) {
@@ -54,18 +55,17 @@ export class ChatGatewayService {
         return managers;
     }
 
-    async enterChatRoom(socket : AuthSocket, user : User, chatroom: ChatRoom) {
+    async enterChatRoom(user : User, chatroom: ChatRoom) {
         // onlineChatMap[];
         // chatmembership insert하기
+        console.log("count : ", chatroom.memberCount);
+        if (chatroom.memberCount === 100)
+            return false;
         const repo_chatroom = getCustomRepository(ChatRoomRepository);
-        this.createmember(user, chatroom);
-        repo_chatroom.update(chatroom.chatid, {memberCount: chatroom.memberCount + 1});
-        return ;
+        await this.createmember(user, chatroom);
+        await repo_chatroom.update(chatroom.chatid, {memberCount: chatroom.memberCount + 1});
+        console.log("entered");
+        return true;
     }
 
-    async isLogin(user: User) {
-        if (user.status === "login")
-            return true;
-        return false;
-    }
 }

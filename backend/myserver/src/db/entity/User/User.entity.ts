@@ -74,7 +74,7 @@ export class User extends BaseEntity {
     @OneToMany(type=>GameHistory, gamehistory=>gamehistory.winner, { cascade : true })
     win : GameHistory[];
 
-    @OneToMany(type=>ChatBanList, banlists=>banlists.userid, { cascade : true })
+    @OneToMany(type=>ChatBanList, banlists=>banlists.user, { cascade : true })
     banUser : ChatBanList[];
 
     @OneToMany(type=>ChatMembership, member=>member.member, { cascade : true })

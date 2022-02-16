@@ -22,10 +22,10 @@ export class ChatRoom {
     @Column({ default : 0 })
     memberCount : number;
 
-    @OneToMany(type => ChatBanList, chatbanlist => chatbanlist.chatid, { cascade : true })
+    @OneToMany(type => ChatBanList, chatbanlist => chatbanlist.chatRoom, { cascade : true })
     banlists : ChatBanList[];
 
-    @OneToMany(type => ChatHistory, chathistory => chathistory.chatid)
+    @OneToMany(type => ChatHistory, chathistory => chathistory.chatRoom)
     history : ChatHistory[];
 
     @OneToMany(type => ChatMembership, ChatMembership => ChatMembership.chatroom, { cascade : true })
