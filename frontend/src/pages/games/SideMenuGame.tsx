@@ -11,7 +11,6 @@ export default function SideMenuGame(){
 	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
 	const user = userContext.user;
-	// const [info, setInfo] = useState<User>(userContext.user[0]);
 	const [clicked, setClicked] = useState<string>("");
 
 	useEffect(()=>{

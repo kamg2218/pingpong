@@ -1,19 +1,18 @@
-import axios from 'axios';
-import { useState } from 'react';
-import '../../css/NickAndProfileForm.css';
+import axios from "axios";
+import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import "../../css/NickAndProfileForm.css";
 import Profile from "./ProfileCarousel";
-// import Cookie from "js-cookie";
-// import { Session } from 'inspector';
 
-const url = 'http://localhost:4242';
-const frontUrl = 'http://localhost:3000';
 
 export default function Nick(){
+	const history = useHistory();
 	const [profile, setProfile] = useState<number>(0);
 	const [nickname, setNickname] = useState<string>("");
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
+	const url = "http://localhost:4242";
 
 	function handleInput(event: any){
 		setNickname(event.target.value);
@@ -41,15 +40,16 @@ export default function Nick(){
 		).then(res=>{
 			console.log(res);
 			console.log(res.data);
-			if (res.data === 'cookie set')
-				window.location.href = `${frontUrl}/game`;
+			if (res.data === "cookie set"){
+				history.push("/game");
+			}
 		}).catch(err=>{
 			console.error(err);
 		});
 	}
 	function handleCancel(event: any){
 		event.preventDefault();
-		window.location.href = '/';
+		window.location.href = "/";
 	}
 	function conditionals(): Boolean{
 		if (nickname === "")

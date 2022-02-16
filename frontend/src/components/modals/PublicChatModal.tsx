@@ -1,23 +1,23 @@
-import {useContext, useEffect, useState} from "react"
+import { useEffect, useState } from "react"
 import {socket} from "../../socket/userSocket"
-import {ChatContext, chatRoom} from "../../socket/chatSocket"
+import { ChatData, chatRoom } from "../../socket/chatSocket"
 import PublicChatList from "../chat/PublicChatList"
 
 export default function PublicChatModal(){
 	const [pwd, setPwd] = useState<string>("");
 	const [checkedroom, checkRoom] = useState<string>("");
-	const chatContext = useContext(ChatContext);
-	const publicRoom = chatContext.publicroom;
+	const [publicroom, setPublic] = useState<ChatData>();
 
 	useEffect(() => {
-		if (!publicRoom[0]){
-			console.log("publicChatRoom");
+		if (!publicroom){
+			console.log("public chat room emit!")
 			socket.emit("publicChatRoom");
 		}
 		socket.on("publicChatRoom", (data)=>{
-			publicRoom[1](data);
-		});
-	}, [pwd, checkedroom, publicRoom]);
+			console.log("public chat room on!");
+			setPublic(data);
+		})
+	}, [pwd, checkedroom, publicroom]);
 
 	function handleSubmit(){
 		let data:any = {};
@@ -40,7 +40,7 @@ export default function PublicChatModal(){
 					<div className="modal-body">
 						<div className="container p-0">
 							<div className="row overflow-scroll justify-content-center">
-								{publicRoom[0] &&  publicRoom[0].chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} key={`publicChatList_${room.chatid}`}/>)}
+								{publicroom &&  publicroom.chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} key={`publicChatList_${room.chatid}`}/>)}
 							</div>
 						</div>
 					</div>

@@ -34,17 +34,20 @@ export default function Game() {
 		socket.on("enterGameRoom", (msg) => {
 			console.log("enter game room");
 			if (msg.message) {
-				// console.log(msg.message);
 				alert("fail to enter the room!");
+				history.push(history.location.pathname);
 			}
 			else {
 				game[1](msg);
+				console.log("path = ", history.location.pathname);
+				if (history.location.pathname.indexOf("waiting") === -1){
+					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
+				}
 			}
 		});
 		socket.on("exitGameRoom", (msg) => {
-			// console.log(msg);
 			game[1](undefined)
-			// gameContext.gameroom[1](undefined);
+			history.push("/game");
 		});
 		socket.on("startGame", (msg) => {
 			console.log("start game!");
