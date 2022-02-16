@@ -1,26 +1,23 @@
-import { useEffect, useState, useContext} from 'react';
-import {socket} from '../../socket/userSocket'
-import { gameRoom, GameContext } from '../../socket/gameSocket'
-import GameBox from './GameBox'
+import { useEffect, useState, useContext} from "react";
+import {socket} from "../../socket/userSocket"
+import { gameRoom, GameContext } from "../../socket/gameSocket"
+import GameBox from "./GameBox"
 
 export default function GameRoomSlide(props: any){
 	const gameContext = useContext(GameContext);
 	const [idx, setIdx] = useState<number>(0);
-	const [gameRoomList, setList] = useState<Array<gameRoom>>(gameContext.gameroomlist[0] || []);
-	let list: Array<gameRoom> = gameRoomList;
+	const gameRoomList = gameContext.gameroomlist;
+	let list: Array<gameRoom> = gameRoomList[0];
 
 	useEffect(()=>{
-		//조건이 필요한가?
-		// console.log(gameContext.gameroomlist[0])
-		if (!gameContext.gameroomlist[0]){
-			console.log('game room list!')
+		if (!gameRoomList[0]){
+			console.log("game room list!")
 			socket.emit("gameRoomList");
 		}
 	}, [idx, gameRoomList, gameContext]);
 	socket.on("gameRoomList", (msg)=>{
-		console.log('socket on! gameRoomList in gmaeRoomSlide!')
-		gameContext.gameroomlist[1](msg);
-		setList(msg);
+		console.log("socket on! gameRoomList in gmaeRoomSlide!")
+		gameRoomList[1](msg);
 	});
 	const handleButton = (num: number) => {
 		if (num === 1 && (idx + 1) * 6 < list.length){
@@ -33,6 +30,9 @@ export default function GameRoomSlide(props: any){
 		let i:number = idx * 6;
 		let carousel = [];
 		
+		if (!list){
+			return [];
+		}
 		for (;i < list.length; i++){
 			if (i >= (idx * 6) + 6)
 				break ;
@@ -41,7 +41,7 @@ export default function GameRoomSlide(props: any){
 		return carousel;
 	}
 	const handleSearchItem = () => {
-		const searchRoom = gameRoomList.filter(room => room.title.indexOf(props.search) !== -1);
+		const searchRoom = gameRoomList[0].filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
 		list = searchRoom;
 		return handleCarouselItem();
 	}

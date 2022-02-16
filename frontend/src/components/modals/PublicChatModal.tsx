@@ -40,7 +40,7 @@ export default function PublicChatModal(){
 					<div className="modal-body">
 						<div className="container p-0">
 							<div className="row overflow-scroll justify-content-center">
-								{publicRoom[0] &&  publicRoom[0].chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom}/>)}
+								{publicRoom[0] &&  publicRoom[0].chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} key={`publicChatList_${room.chatid}`}/>)}
 							</div>
 						</div>
 					</div>

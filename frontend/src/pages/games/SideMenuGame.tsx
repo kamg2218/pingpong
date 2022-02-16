@@ -2,7 +2,7 @@ import '../../css/Game.css';
 import MenuGame from '../../components/games/MenuGame'
 import { Link } from 'react-router-dom'
 import {useState, useContext, useEffect} from 'react'
-import {socket, UserContext, Friend} from '../../socket/userSocket';
+import {socket, UserContext, Friend, User} from '../../socket/userSocket';
 import { GameContext } from '../../socket/gameSocket';
 import ProfileModal from '../../components/modals/ProfileModal';
 import MyProfileModal from '../../components/modals/MyProfileModal';
@@ -10,41 +10,46 @@ import MyProfileModal from '../../components/modals/MyProfileModal';
 export default function SideMenuGame(){
 	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
+	const user = userContext.user;
 	// const [info, setInfo] = useState<User>(userContext.user[0]);
 	const [clicked, setClicked] = useState<string>("");
 
 	useEffect(()=>{
-		socket.on("newFriend", (data)=>{
-			userContext.user[0]?.newfriends?.push(data);
-			// info.newfriends.push(data);
+		if (userContext.user[0] === undefined){
+			socket.emit("userInfo");
+		}
+		socket.on("newFriend", (data:Friend)=>{
+			const tmp:User = user[0];
+			tmp.newfriends?.push(data);
+			user[1](tmp);
 		});
-		socket.on("addFriend", (data)=>{
-			userContext.user[0]?.friends?.push(data);
-			// info.friends?.push(data);
-			console.log('add friend!');
+		socket.on("addFriend", (data:Friend)=>{
+			const tmp:User = user[0];
+			console.log('user = ', user[0]);
+			tmp.friends?.push(data);
+			user[1](tmp);
 		});
-		socket.on("deleteFriend", (data)=>{
-			//userid 가 동일한 친구를 제거한다.
-			if (userContext){
-				userContext.user[0].friends = userContext.user[0].friends.filter((friend:Friend)=>friend.userid !== data.userid);
-			}
-			// info.friends = info.friends.filter((one:Friend)=>one.userid !== data.userid);
+		socket.on("deleteFriend", (data:Friend)=>{
+			const tmp:User = user[0];
+			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
+			user[1](tmp);
 		});
-		socket.on("blockFriend", (data)=>{
-			userContext.user[0].blacklist.push(data);
-			// info.blacklist.push(data);
+		socket.on("blockFriend", (data:Friend)=>{
+			const tmp:User = user[0];
+			tmp.blacklist?.push(data);
+			user[1](tmp);
 		});
 		socket.on("updateProfile", (data)=>{
+			const tmp:User = user[0];
 			if (data.nickname){
-				userContext.user[0].nickname = data.nickname;
-				// info.nickname = data.nickname;
+				tmp.nickname = data.nickname;
 			}
 			if (data.profile){
-				userContext.user[0].profile = data.profile;
-				// info.profile = data.profile;
+				tmp.profile = data.profile;
 			}
+			user[1](tmp);
 		});
-	}, [userContext]);
+	}, [user, userContext]);
 	return (
 		<div id="gameTab">
 			<div className="row">

@@ -3,20 +3,20 @@ import './Modals.css'
 import {socket} from '../../socket/userSocket'
 
 type info = {
-	title: String,
-	map: String,
+	title: string,
+	speed: number,
 	observer: number,
-	type: String,
-	password?: String
+	type: string,
+	password?: string
 }
 
 export default function AddGameRoomModal(props: any){
-	const [title, setTitle] = useState<String>("");
-	const [radio, setRadio] = useState<String>("public");
-	const [pwd, setPwd] = useState<String>("");
+	const [title, setTitle] = useState<string>("");
+	const [radio, setRadio] = useState<string>("public");
+	const [pwd, setPwd] = useState<string>("");
 	const [observer, setObserber] = useState<number>(5);
 	const [okBtn, setOkBtn] = useState<boolean>(false);
-	const [map, setMap] = useState<String>("1");
+	const [speed, setSpeed] = useState<number>(1);
 
 	function checkPwd(pvalue:String):boolean {
 		if (pvalue.length !== 4)
@@ -48,8 +48,8 @@ export default function AddGameRoomModal(props: any){
 	const handleObserver = (event:any) => {
 		setObserber(event.target.value);
 	}
-	const handleMap = (event:any) => {
-		setMap(event.target.value);
+	const handleSpeed = (event:any) => {
+		setSpeed(event.target.value);
 	}
 	const handleOkBtn = (tvalue:String, pvalue:String) => {
 		if (radio === "private" && !checkPwd(pvalue))
@@ -64,7 +64,7 @@ export default function AddGameRoomModal(props: any){
 			title: title,
 			observer: observer,
 			type: radio,
-			map: map,
+			speed: speed,
 		}
 		if (radio === "private")
 			info.password = pwd;
@@ -100,8 +100,8 @@ export default function AddGameRoomModal(props: any){
 								<div className="invalid-feedback">숫자 4자리</div>
 							</div>
 							<div id="selects" className="m-3">
-								<label className="col-form-label">맵</label>
-								<select className="form-control-sm mx-3" onChange={handleMap}>
+								<label className="col-form-label">스피드</label>
+								<select className="form-control-sm mx-3" onChange={handleSpeed}>
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>

@@ -5,15 +5,15 @@ import {socket} from "../../socket/userSocket"
 import "../../css/GameBox.css"
 
 type info = {
-	roomid: String,
+	roomid: string,
 	isPlayer: boolean,
-	password?: String
+	password?: string
 }
 
 export default function GameBox(props:any){
 	const history = useHistory();
 	const [state, setState] = useState<boolean>(false);
-	const [pwd, setPwd] = useState<String>("");
+	const [pwd, setPwd] = useState<string>("");
 
 	const handleEnterGameRoom = (result: boolean) => {
 		let info:info = {
@@ -24,9 +24,10 @@ export default function GameBox(props:any){
 		if (pwd !== "")
 			info.password = pwd;
 		socket.emit("enterGameRoom", info, (result:boolean)=>{
-			if (!result)
-				alert("비밀번호를 확인해주세요!");
-			else{
+ 			if (!result){
+				alert("다시 시도해주세요");
+				history.push(history.location.pathname);
+			}else{
 				history.push(`/game/waiting/${props.info.roomid}`);
 			}
 		});

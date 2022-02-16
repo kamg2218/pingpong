@@ -6,7 +6,7 @@ import Lobby from "./Lobby"
 import { Route, Switch } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom";
-import { socket, UserContext, User } from "../../socket/userSocket"
+import { socket, UserContext } from "../../socket/userSocket"
 import { GameContext, GameUser, match } from "../../socket/gameSocket"
 import logo from "../../icons/logo_brown_profile.png"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
@@ -17,60 +17,34 @@ export default function Game() {
 	const history = useHistory();
 	const gameContext = useContext(GameContext);
 	const userContext = useContext(UserContext);
-	const [user, setUser] = useState<User>(userContext.user[0]);
+	const game = gameContext.gameroom;
+	const user = userContext.user;
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [matchData, setMatch] = useState<match>();
 
 	useEffect(() => {
 		if (!user) {
 			socket.emit("userInfo");
-			console.log("user info !!!");
 			socket.emit("myChatRoom");
 		}
 		socket.on("userInfo", (data) => {
 			console.log("user Info is changed!");
-			if (!user) {
-				setUser(data);
-			} else if (data.id) {
-				user.userid = data.id;
-			} else if (data.nickname) {
-				user.nickname = data.nickname;
-			} else if (data.win) {
-				user.win = data.win;
-			} else if (data.lose) {
-				user.lose = data.lose;
-			} else if (data.profile) {
-				user.profile = data.profile;
-			} else if (data.level) {
-				user.level = data.level;
-			} else if (data.levelpoint) {
-				user.levelpoint = data.levelpoint;
-			} else if (data.levelnextpoint) {
-				user.levelnextpoint = data.levelnextpoint;
-			} else if (data.friends) {
-				user.friends = data.friends;
-			} else if (data.newfriends) {
-				user.newfriends = data.newfriends;
-			} else if (data.blacklist) {
-				user.blacklist = data.blacklist;
-			}
-			userContext.user[1](user);
+			user[1](data);
 		});
 		socket.on("enterGameRoom", (msg) => {
 			console.log("enter game room");
-			console.log(msg);
 			if (msg.message) {
-				console.log(msg.message);
+				// console.log(msg.message);
 				alert("fail to enter the room!");
 			}
 			else {
-				console.log("entered!")
-				gameContext.gameroom[1](msg);
+				game[1](msg);
 			}
 		});
 		socket.on("exitGameRoom", (msg) => {
-			console.log(msg);
-			gameContext.gameroom[1](undefined);
+			// console.log(msg);
+			game[1](undefined)
+			// gameContext.gameroom[1](undefined);
 		});
 		socket.on("startGame", (msg) => {
 			console.log("start game!");
@@ -82,39 +56,41 @@ export default function Game() {
 			}
 		});
 		socket.on("updateGameRoom", (msg) => {
+			const tmp = game[0];
 			if (msg.manager) {
-				gameContext.gameroom[0].manager = msg.manager;
+				tmp.manager = msg.manager;
 			}
 			if (msg.title) {
-				gameContext.gameroom[0].title = msg.title;
+				tmp.title = msg.title;
 			}
 			if (msg.speed) {
-				gameContext.gameroom[0].speed = msg.speed;
+				tmp.speed = msg.speed;
 			}
 			if (msg.status) {
-				gameContext.gameroom[0].status = msg.status;
+				tmp.status = msg.status;
 			}
 			if (msg.type) {
-				gameContext.gameroom[0].type = msg.type;
+				tmp.type = msg.type;
 			}
 			if (msg.addObserver) {
-				msg.addObserver.forEach((observer: GameUser) => gameContext.gameroom[0].oberserver.push(observer))
+				msg.addObserver.map((observer: GameUser) => tmp.oberserver.push(observer))
 			}
 			if (msg.deleteObserver) {
-				msg.deleteObserver.forEach((observer: GameUser) => gameContext.gameroom[0].observer.filter((ob: GameUser) => ob.userid === observer.userid))
+				msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))
 			}
 			if (msg.addPlayers) {
-				msg.addPlayers.forEach((player: GameUser) => gameContext.gameroom[0].players.push(player))
+				msg.addPlayers.map((player: GameUser) => tmp.players.push(player))
 			}
 			if (msg.deletePlayers) {
-				msg.deletePlayers.forEach((player: GameUser) => gameContext.gameroom[0].players.filter((person: GameUser) => person.userid === player.userid))
+				msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
 			}
+			game[1](tmp);
 		});
 		socket.on("matchResponse", (data) => {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [user, userContext, gameContext, history]);
+	}, [user, history, game, gameContext]);
 	return (
 		<div className="container-fluid m-0 px-2" id="gamelobby">
 			<div className="col h-100">
