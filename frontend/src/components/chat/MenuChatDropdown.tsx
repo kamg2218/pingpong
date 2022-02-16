@@ -8,7 +8,7 @@ import "./chat.css";
 
 export default function MenuChatDropdown(props :any){
 	const userContext = useContext(UserContext);
-	const chatContext = useContext(ChatContext);
+	// const chatContext = useContext(ChatContext);
 	const [pwdDisabled] = useState(
 		props.info.owner !== userContext.user[0]?.id ? true : !props.info.lock
 	);
@@ -19,13 +19,16 @@ export default function MenuChatDropdown(props :any){
 	}
 	//exit the chatroom
 	const handleExit = () => {
-		socket.emit("exitChatRoom", { chatid: props.info.chatid }, (result:boolean)=>{
-			if (result === true){
-				const chatroom = chatContext.chatroom;
-				chatroom[1](chatroom[0].chatroom.filter((room:chatRoom)=>room.chatid !== props.info.chatid));
-				chatroom[1](chatroom[0].order.filter((id:string)=>id !== props.info.chatid));
-			}
-		});
+		console.log("exit chat room!");
+		socket.emit("exitChatRoom", { chatid: props.info.chatid });
+		// (result:boolean)=>{
+		// 	if (result === true){
+		// 		const chatroom = chatContext.chatroom;
+		// 		chatroom[1](chatroom[0].chatroom.filter((room:chatRoom)=>room.chatid !== props.info.chatid));
+		// 		chatroom[1](chatroom[0].order.filter((id:string)=>id !== props.info.chatid));
+		// 	}
+		// });
+		socket.emit("myChatRoom");
 	}
 
 	return (

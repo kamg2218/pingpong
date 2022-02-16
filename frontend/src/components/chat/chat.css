@@ -35,7 +35,7 @@
 #chatSend:hover{
     background-color: #C9A641;
 }
-#chatlist, #chatInput, #chatSend{
+#chatInput, #chatSend{
     border: 0.5px solid #C9A641;
     border-radius: 5px;
 }

@@ -21,7 +21,7 @@ export default function Lobby(props:any){
 		socket.emit("randomMatchingCancel");
 	}
 	$("#LoadingModal").on("hide.bs.modal", function(e){
-		console.log(e);
+		// console.log(e);
 		console.log("Loading is over!");
 		handleCancelMatching();
 		e.stopImmediatePropagation();

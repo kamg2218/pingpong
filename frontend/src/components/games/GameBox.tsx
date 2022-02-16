@@ -23,14 +23,7 @@ export default function GameBox(props:any){
 		setState(result);
 		if (pwd !== "")
 			info.password = pwd;
-		socket.emit("enterGameRoom", info, (result:boolean)=>{
- 			if (!result){
-				alert("다시 시도해주세요");
-				history.push(history.location.pathname);
-			}else{
-				history.push(`/game/waiting/${props.info.roomid}`);
-			}
-		});
+		socket.emit("enterGameRoom", info);
 	}
 	const handlePwd = (result: boolean) => {
 		const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;

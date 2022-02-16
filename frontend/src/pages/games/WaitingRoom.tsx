@@ -30,6 +30,7 @@ export default function WaitingRoom(){
 		socket.emit("exitGameRoom", {
 			roomid: gameRoom?.roomid
 		});
+		gameContext.gameroomlist[1](undefined);
 		history.push('/game');
 	}
 	return (
@@ -39,10 +40,10 @@ export default function WaitingRoom(){
 			</div>
 			<div className="row-4 px-2 mt-3" id="waitingroombox">
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{profileBox(gameRoom?.players[0].userid, Profile(gameRoom?.players[0].profile), gameRoom?.players[0].nickname, true)}
+					{profileBox(gameRoom?.players[0]?.userid, Profile(gameRoom?.players[0]?.profile), gameRoom?.players[0]?.nickname, true)}
 				</div>
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{!gameRoom?.players[1] ?? profileBox(gameRoom?.players[1].userid, Profile(gameRoom?.players[1].profile), gameRoom?.players[1].nickname, true)}
+					{!gameRoom?.players[1] ?? profileBox(gameRoom?.players[1].userid, Profile(gameRoom?.players[1]?.profile), gameRoom?.players[1]?.nickname, true)}
 				</div>
 			</div>
 			<div className="row-4 px-3 my-5 d-flex">

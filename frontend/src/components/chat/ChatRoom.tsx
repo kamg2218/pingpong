@@ -21,6 +21,7 @@ export default function ChatRoom(props :any){
 
 	useEffect(()=>{
 		if (!chatHistory[0] || chatHistory[0].chatid !== props.idx){
+			console.log("chat history emitted!")
 			socket.emit("chatHistory", {
 				chatid: props.idx,
 			});
@@ -28,7 +29,12 @@ export default function ChatRoom(props :any){
 		socket.on("chatHistory", (data)=>{
 			chatHistory[1](data);
 		})
-	}, [chat, chatHistory, props.idx]);
+		socket.on("chatMessage", (data)=>{
+			const chat = chatHistory[0];
+			chat.list.push(data);
+			chatHistory[1](chat);
+		})
+	}, [chatHistory, props.idx]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
