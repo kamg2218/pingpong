@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import "../../css/MenuGame.css"
 import Profile from "../../icons/Profile"
-import {Friend, socket, UserContext} from "../../socket/userSocket"
+import {Friend, socket, UserContext, User} from "../../socket/userSocket"
 
 export function NewList(person: Friend): any {
 	const userContext = useContext(UserContext);
+
 	const handleNewFriend = (result: boolean) => {
 		socket.emit("newFriend", {
 			userid: person.userid,
@@ -41,9 +42,10 @@ export function OldList(person: Friend, setClicked: Function): any {
 
 export default function MenuGame(props:any){
 	const userContext = useContext(UserContext);
-	const [user] = useState(userContext.user[0]);
+	const user:User = userContext.user[0];
 
-	useEffect(()=>{}, [user, userContext]);
+	useEffect(()=>{
+	}, []);
 	return (
 		<div className="container p-2" id="menu">
 			<div className="col justify-content-center">

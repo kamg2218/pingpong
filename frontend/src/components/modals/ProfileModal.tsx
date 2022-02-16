@@ -8,21 +8,22 @@ import "./profileModal.css"
 
 export default function ProfileModal(props: any) {
 	const history = useHistory();
+	const game = useContext(GameContext).gameroom;
+	const userid:string = props.userid;
 	const [profile, setProfile] = useState<ProfileUser>();
 	const button:string = "row w-75 my-1 btn modal-button";
 	let buttonFriend:string = button;
-	const game = useContext(GameContext).gameroom;
 
 	useEffect(() => {
 		if (!profile) {
 			socket.emit("opponentProfile", {
-				userid: props.userid,
+				userid: userid,
 			});
 		}
 		socket.on("opponentProfile", (data) => {
 			setProfile(data);
 		});
-	}, [profile, props.userid]);
+	}, [profile, userid]);
 	
 	const handleChat = () => {
 		socket.emit("createChatRoom", {

@@ -109,7 +109,7 @@ module.exports = function(io){
                 lose: 3,
                 profile: 3,
                 level: "hi",
-                history: [{nick: "first", profile:2, winner:"1212"}, {nick: "second", profile:2, winner:"2948"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}],
+                history: [{nick: "first", profile:2, winner:"1212"}, {nick: "second", profile:2, winner:"2948"}, {nick: "third", profile:4, winner:"1212"}, {nick: "forth", profile:6, winner:"123432"}, {nick: "abcd", profile:4, winner:"1212"}, {nick: "fifth", profile:6, winner:"123432"}],
                 block: false,
                 friend: true
             });
