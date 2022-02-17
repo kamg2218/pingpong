@@ -1,0 +1,30 @@
+// import { BadRequestException, Injectable, Query } from "@nestjs/common";
+// import { PassportStrategy } from "@nestjs/passport";
+// import { Strategy } from 'passport-custom'
+// import { AuthService } from "../auth.service";
+// import { Request } from 'express'
+
+// @Injectable()
+// export class CustomStrategy extends PassportStrategy(Strategy, 'custom') {
+
+//     constructor(private authService : AuthService) {
+//         super()
+//     }
+
+//     async validate(req : Request) : Promise<string> {
+//         const nickname = req.body.nickname;
+//         const emailid = req.cookies['_pongTempEmailId'];
+//         // console.log(req);
+//         console.log(req.headers);
+//         // console.log("email id  :", emailid);
+//         // const res = await this.authService.searchEmail(emailid);
+//         console.log("1")
+//         if (!res || !nickname)
+//             throw new BadRequestException()
+//         console.log("2")
+//         if (await this.authService.isDuplicate(nickname))
+//             throw new BadRequestException()
+//         console.log("3")
+//         return res;
+//     }
+// }
