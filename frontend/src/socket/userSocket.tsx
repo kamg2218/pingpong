@@ -41,8 +41,9 @@ export type User = {
 	friends: Array<Friend>,
 	newfriends: Array<Friend>,
 	blacklist: Array<Friend>,
-	qrcode?: string,
-	history?: Array<History>
+	qrcode: string,
+	history: Array<History>,
+	twofactor: boolean,
 }
 export type ProfileUser = {
 	userid: string,
@@ -56,8 +57,8 @@ export type ProfileUser = {
 	friend: boolean
 }
 //game
-socket.on("qrcode", (data)=>{
-	console.log('got qrcode!');
-	console.log(data.qrcode);
-	// user.qrcode = data.qrcode;
-})
+// socket.on("qrcode", (data)=>{
+// 	console.log('got qrcode!');
+// 	console.log(data.qrcode);
+// 	// user.qrcode = data.qrcode;
+// })

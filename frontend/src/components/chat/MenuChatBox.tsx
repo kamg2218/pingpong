@@ -37,7 +37,11 @@ export default function MenuChatBox(props :any){
 			socket.emit("chatHistory", {
 				chatid: chatid
 			});
-			history.push(`/game/chat/${idx}`)
+			if (history.location.pathname.length === 10){
+				history.push(`/game/chat/${idx}`);
+			}else{
+				history.push(`/game/chat/${idx}` + history.location.pathname.slice(10));
+			}
 		}
 	}
 

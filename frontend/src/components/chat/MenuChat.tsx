@@ -17,7 +17,7 @@ export default function MenuChat(){
 	}, [chatContext]);
 
 	const handleTitleChange = (chatid :string, title :string) => {
-		let chat:Array<chatRoom> = chatroom.chatroom;
+		let chat:Array<chatRoom> = chatroom[0].chatroom;
 
 		const idx = chat.findIndex(room => room.chatid === chatid);
 		if (idx !== -1){
