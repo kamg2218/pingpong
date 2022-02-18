@@ -18,7 +18,8 @@ let userInfo = {
     friends: [{userid:'121', nickname: 'first', profile: 1, onoff: true}, {userid:'122', nickname: 'second', profile: 2, onoff: false}, {userid:'112', nickname: 'third', profile: 0, onoff: false},{userid:'111', nickname: 'forth', profile: 3, onoff: false},{userid:'101', nickname: 'fifth', profile: 4, onoff: false}, {userid:'2232', nickname: 'se3th', profile: 4, onoff: false}, {userid:'4253', nickname: 'fisdkesh', profile: 1, onoff: false}],
     newfriends: [{userid:'1211111', nickname: 'newbie', profile: 2, onoff: false}],
     blacklist: [],
-    qrcode: ''
+    qrcode: '',
+    twofactor: true,
 }
 let chatMessage = [
     {chatid: '1232', list:[{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"},{userid: '123223', content: "hello, nice to meet you!"}, {userid: '2535', content: "I'm in!"}, {userid: '123223', content: "I'm out!"}]},
@@ -232,7 +233,7 @@ module.exports = function(io){
         socket.on("randomMatchingCancel", ()=>{
             console.log("random Matching is Canecled!!!");
         });
-        socket.on("enterGameRoom", (msg, done)=>{
+        socket.on("enterGameRoom", (msg)=>{
             if (Math.floor(Math.random() * 2)){
                 socket.emit("enterGameRoom", {
                     title: 'hello1',
@@ -245,9 +246,6 @@ module.exports = function(io){
 	                players:[{userid: "1232943", nickname: "player1", profile: 1}],
 	                isPlayer: true
                 });
-                done(true);
-            }else{
-                done(false);
             }
         })
         socket.on("exitGameRoom", (msg)=>{
