@@ -83,7 +83,7 @@ export class AuthController {
         const {accessToken, accessOptions, refreshToken, refreshOptions} = await this.authService.login(user);
         res.cookie('refreshToken', refreshToken, refreshOptions);
         res.cookie('accessToken', accessToken, accessOptions);
-        this.logger.log(`[Login] ${user.userid} has loggin in.`);
+        this.logger.log(`[Login] ${user.nickname} has loggin in.`);
         if (user.nickname === user.email)
             return res.redirect(frontSignupPage);
         else if (user.isTwoFactorAuthenticationEnabled === true)

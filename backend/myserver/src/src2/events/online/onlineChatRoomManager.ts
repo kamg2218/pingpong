@@ -1,22 +1,25 @@
 
 import { onlineChatRoom } from "./onlineChatRoom";
 
-const chatRooms : onlineChatRoom[] = [];
+const chatRooms = {};
 
 export const onlineChatRoomManager = {
 
     getRoomByid(roomid : string) {
-        const res = chatRooms.find(room=>room.id === roomid);
-        return res;
+        return chatRooms[roomid];
     },
 
     create(roomid : string) {
         const newRoom = new onlineChatRoom(roomid);
-        chatRooms.push(newRoom);
+        chatRooms[roomid] = newRoom;
         return newRoom;
     },
 
     delete(roomid : string) {
         delete chatRooms[roomid];
+    },
+
+    print() {
+        console.log("chatRoom > ", chatRooms);
     }
 }

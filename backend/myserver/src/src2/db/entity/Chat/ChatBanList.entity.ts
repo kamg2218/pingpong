@@ -10,10 +10,10 @@ export class ChatBanList {
 
     @ManyToOne(type => ChatRoom, chatroom => chatroom.banlists, { onDelete : "CASCADE" })
     @JoinColumn({ name : "chatid" })
-    chatid: ChatRoom;
+    chatRoom: ChatRoom;
 
     @ManyToOne(type => User, user => user.banUser, { onDelete : "CASCADE" })
     @JoinColumn({ name : "userid" })
-    userid : User;
+    user : User;
 
 }

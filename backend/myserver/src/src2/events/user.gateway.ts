@@ -1,5 +1,6 @@
 
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException, WsResponse } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { User } from 'src/db/entity/User/UserEntity';
@@ -19,7 +20,7 @@ const options = {
 }
 
 @WebSocketGateway(options)
-// @UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('ws-jwt'))
 export class UserGateway{
   
     constructor(
@@ -75,6 +76,8 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
+		if (!payload.userid)
+			return ;
 		const theOther = await getCustomRepository(UserRepository).findOne(payload.userid);
 		const all = Promise.all([
 			this.userGatewayService.getTheOtherUSerInfo(user, theOther),

@@ -127,7 +127,7 @@ export class AuthService {
     return {
       accessToken : token, 
       maxAge : atExpireIn,
-      httpOnly : true,
+      // httpOnly : true,
       domain : "localhost", 
       path :"/"
     }

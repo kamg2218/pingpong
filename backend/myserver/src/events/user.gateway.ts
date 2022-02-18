@@ -1,5 +1,6 @@
 
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException, WsResponse } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { User } from 'src/db/entity/User/UserEntity';
@@ -19,7 +20,7 @@ const options = {
 }
 
 @WebSocketGateway(options)
-// @UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('ws-jwt'))
 export class UserGateway{
   
     constructor(
@@ -35,10 +36,11 @@ export class UserGateway{
   
     private log(msg : String) {
       	this.logger.log(msg, "UserGateway");
-  }
+  	}
 
     @SubscribeMessage('userInfo') 
     async sendUserInfo(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "userInfo", ...payload1});
 		let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
@@ -61,6 +63,7 @@ export class UserGateway{
 
     @SubscribeMessage('opponentProfile')
     async sendOpponentInfo(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "opponentProfile", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -73,6 +76,8 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
+		if (!payload.userid)
+			return ;
 		const theOther = await getCustomRepository(UserRepository).findOne(payload.userid);
 		const all = Promise.all([
 			this.userGatewayService.getTheOtherUSerInfo(user, theOther),
@@ -85,6 +90,7 @@ export class UserGateway{
 
     @SubscribeMessage('addFriend')
     async requestFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "addFriend", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -108,6 +114,7 @@ export class UserGateway{
 
     @SubscribeMessage('deleteFriend')
     async deleteFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "deleteFriend", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -127,6 +134,7 @@ export class UserGateway{
 
     @SubscribeMessage('block')
     async blockFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "block", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -146,6 +154,7 @@ export class UserGateway{
 
     @SubscribeMessage('unblock')
     async unblockFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "unblock", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -167,6 +176,7 @@ export class UserGateway{
     // "respond" : false
     @SubscribeMessage('newFriend')
     async respondToFriendRequest(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+		this.log({gate : "newFriend", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -193,6 +203,7 @@ export class UserGateway{
 
     @SubscribeMessage('updateProfile')
     async update(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) : Promise<WsResponse<object>> {
+		this.log({gate : "updateProfile", ...payload1});
 		let user : User;
 		let payload;
         if (process.env.NODE_ENV === "dev") {

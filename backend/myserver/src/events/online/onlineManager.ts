@@ -3,7 +3,7 @@ import { FriendsRepository, UserRepository } from "src/db/repository/User/UserCu
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
 
-const onlineMap = {};
+const onlineMap = {"/" : {}};
 
 export const onlineManager = {
     
@@ -33,20 +33,18 @@ export const onlineManager = {
 		return onlineMap["/"].hasOwnProperty(userid);
 	},
 
-	async online(socket : AuthSocket, payload : any) {
+	online(socket : AuthSocket) {
         if (!onlineMap[socket.nsp.name]) {
             onlineMap[socket.nsp.name] = {};
         }
-        const repo_user = getCustomRepository(UserRepository);
-        const user = await repo_user.findOne({nickname : payload.myNickname}); //temp
-        onlineMap[socket.nsp.name][user.userid] = socket.id;
+        onlineMap[socket.nsp.name][socket.userid] = socket.id;
     },
 
 	offline(socket : AuthSocket) {
 		for (let key in onlineMap[socket.nsp.name]) {
 			if (onlineMap[socket.nsp.name][key] === socket.id) {
-			delete onlineMap[socket.nsp.name][key];
-			break;
+				delete onlineMap[socket.nsp.name][key];
+				break;
 			}
 		}
 	},

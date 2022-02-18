@@ -1,4 +1,5 @@
-import { Logger } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { User } from "src/db/entity/User/UserEntity";
@@ -19,7 +20,7 @@ const options = {
 }
   
 @WebSocketGateway(options)
-// @UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('ws-jwt'))
 export class GameGateway {
     constructor(
         private readonly gameGatewayService : GameGatewayService,
@@ -50,6 +51,7 @@ export class GameGateway {
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
         this.log({gate : "createGameRoom", ...payload});
+        payload.speed = payload.map;
         let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
@@ -70,6 +72,7 @@ export class GameGateway {
 
     @SubscribeMessage('enterGameRoom')
     async enterGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "enterGameRoom", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -85,6 +88,7 @@ export class GameGateway {
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
             payload = payload1;
         }
+
         if (await this.gameGatewayService.amIinGameRoom(user))
         	return this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
         const validateResult = await this.gameGatewayService.checkIfItIsAvailableToJoinAs(payload);
@@ -96,6 +100,7 @@ export class GameGateway {
 
     @SubscribeMessage('exitGameRoom')
     async exitGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "exitGameRoom", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -119,6 +124,7 @@ export class GameGateway {
 
     @SubscribeMessage('changeGameRoom')
     async changeGameRoomOptions(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "changeGameRoom", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -145,6 +151,7 @@ export class GameGateway {
 
     @SubscribeMessage('gameRoomList') 
     async getGameroomList(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
+        this.log({gate : "gameRoomList", ...payload});
         const result = await this.gameGatewayService.getAllGameRoomList();
         this.gameGatewayService.respondToUser(socket, "gameRoomList", result);
     }
@@ -152,6 +159,7 @@ export class GameGateway {
     //방장인지 확인 필요
     @SubscribeMessage('startGame')
     async start(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "startGame", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -193,6 +201,7 @@ export class GameGateway {
 
     @SubscribeMessage('pauseGame')
     async pause(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "pauseGame", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -216,6 +225,7 @@ export class GameGateway {
 
     @SubscribeMessage('restartGame')
     async restart(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "restartGame", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -239,6 +249,7 @@ export class GameGateway {
 
     @SubscribeMessage('speedUp')
     async speedUp(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "speedUp", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -262,6 +273,7 @@ export class GameGateway {
 
     @SubscribeMessage('speedDown')
     async speedDown(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "speedDown", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -286,6 +298,7 @@ export class GameGateway {
 
     @SubscribeMessage('move')
     async move(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "move", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -311,7 +324,8 @@ export class GameGateway {
 
 	@SubscribeMessage('randomMatching')
 	async requestRandomMatching(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-	    let user : User;
+	    this.log({gate : "randomMatching", ...payload1});
+        let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
         }
@@ -358,7 +372,8 @@ export class GameGateway {
 
 	@SubscribeMessage('randomMatchingCancel')
 	async cancleRandomMatching(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
-		let user : User;
+		this.log({gate : "randomMatchingCancel", ...payload1});
+        let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload1.myNickname});
         }
@@ -371,6 +386,7 @@ export class GameGateway {
 
 	@SubscribeMessage('matchResponse')
 	async matchResponse(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "matchResponse", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -390,7 +406,7 @@ export class GameGateway {
     	const theOtherSocketId = onlineManager.socketIdOf(request.owner.userid);
 		if (this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
 			this.gameGatewayService.deleteMatch(request);
-			this.server.to(theOtherSocketId).emit("matchResponse",  {result : false});
+			this.server.to(theOtherSocketId).emit("matchRequest",  {result : false});
 			return ;
 		}
         this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
@@ -400,6 +416,7 @@ export class GameGateway {
 	
 	@SubscribeMessage('matchRequest')
 	async matchRequest(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "matchRequest", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {
@@ -420,7 +437,7 @@ export class GameGateway {
 		const theOtherSocketId = onlineManager.socketIdOf(payload.userid);
 
         const requestid = await this.gameGatewayService.createMatchRoom(socket, user);
-		this.server.to(theOtherSocketId).emit("matchRequest", { 
+		this.server.to(theOtherSocketId).emit("matchResponse", { 
 			userid : user.userid, 
 			nickname : user.nickname,
 			requestid : requestid,
@@ -432,6 +449,7 @@ export class GameGateway {
 
     @SubscribeMessage('backToGameRoom')
     async backToGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
+        this.log({gate : "backToGameRoom", ...payload1});
         let user : User;
         let payload;
         if (process.env.NODE_ENV === "dev") {

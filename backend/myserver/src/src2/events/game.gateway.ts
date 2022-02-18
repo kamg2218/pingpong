@@ -1,4 +1,5 @@
-import { Logger } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { User } from "src/db/entity/User/UserEntity";
@@ -19,7 +20,7 @@ const options = {
 }
   
 @WebSocketGateway(options)
-// @UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('ws-jwt'))
 export class GameGateway {
     constructor(
         private readonly gameGatewayService : GameGatewayService,
@@ -50,6 +51,7 @@ export class GameGateway {
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
         this.log({gate : "createGameRoom", ...payload});
+        payload.speed = payload.map;
         let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});

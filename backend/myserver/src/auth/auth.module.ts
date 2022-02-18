@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -20,7 +20,7 @@ import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFil
   ],
   controllers: [AuthController],
   providers: [UnauthorizedExceptionFilter, Logger, AuthService, JwtStrategy, JwtAuthenticationStrategy, FortyTwoStrategy, RefreshStrategy],
-  exports : [AuthService, Logger, JwtStrategy]
+  exports : [JwtModule, AuthService, Logger, JwtStrategy]
 })
 
 export class AuthModule {
