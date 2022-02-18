@@ -18,6 +18,9 @@ export class ChatMembership {
     @CreateDateColumn({ type: "timestamp" })
     enterDate : Date;
 
+    @Column({default : null, nullable : true})
+    promotedDate : Date;
+
     @ManyToOne(type => ChatRoom, chatroom => chatroom.membership, { onDelete : "CASCADE" , eager : true})
     @JoinColumn({ name : "chatid" })
     chatroom: ChatRoom;

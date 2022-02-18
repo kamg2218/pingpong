@@ -14,6 +14,8 @@ import { ChatMembership, ChatRoom, ChatBanList, ChatHistory } from 'src/db/entit
 import { ChatGatewayService } from './chatGateway.service';
 import { onlineChatRoom } from './online/onlineChatRoom';
 import { onlineChatRoomManager } from './online/onlineChatRoomManager';
+import e from 'cors';
+import { userInfo } from 'os';
 
 const options = {
   cors : {
@@ -44,26 +46,32 @@ export class ChatGateway {
   @SubscribeMessage('myChatRoom')
   async getAllChatByUser(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "myChatRoom", ...payload1});
-    // const user = onlineChat[socket.nsp.name][socket.id]
-    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname});
+   
     const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    // const payload = {userid : user.userid};
+
 
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
     const repo_user = getCustomRepository(UserRepository);
-    const joinedchat : ChatMembership[] = await repo_chatmember.find({member : user});
-    
+    const joinedchat : ChatMembership[] = await repo_chatmember.find({
+      where : {member : {userid : socket.userid}},
+      select : ["index", "chatroom"]
+    });
     let order = [];
     let chatroom = [];
+    for (let index in joinedchat) {
+ 
+    }
 
-    const chatList = await Promise.all(joinedchat.map(async (element : ChatMembership) => {
-      const {chatid, title, type, password} = element.chatroom;
-      let members = [];
-      // let managers = [];
-      let lock = password ? true : false;
-      const max = 100 // .env
-      const ownerInfo = await repo_chatmember.findOne({where : [{chatroom : element.chatroom}, {position : "owner" }]});
-      const owner = ownerInfo.member.userid;
+
+
+    // const chatList = await Promise.all(joinedchat.map(async (element : ChatMembership) => {
+    //   const {chatid, title, type, password} = element.chatroom;
+    //   let members = [];
+    //   // let managers = [];
+    //   let lock = password ? true : false;
+    //   const max = 100 // .env
+    //   const ownerInfo = await repo_chatmember.findOne({where : [{chatroom : element.chatroom}, {position : "owner" }]});
+    //   const owner = ownerInfo.member.userid;
 
       // // 매니저가 여러명일 경우
       // const repo_chat : ChatMembership[] = await getCustomRepository(ChatMembershipRepository).find({chatroom: element.chatroom});
@@ -73,17 +81,17 @@ export class ChatGateway {
       //     return ;
       //   managers.push(element.member.userid);
       // })
-      const managers = this.chatGatewayService.managerList(element);
+    //   const managers = this.chatGatewayService.managerList(element);
 
-      // 멤버가 여러명일 경우
-      const memberInfo = await repo_chatmember.find({chatroom: element.chatroom});
-      memberInfo.map((chatmember : ChatMembership) => {
-        members.push(repo_user.getSimpleInfo(chatmember.member));
-      })
-      order.push(element.chatroom.chatid);
-      chatroom.push({title, chatid, owner, managers, members, lock, type, max});
-    }));
-    socket.emit("myChatRoom", {order, chatroom});
+    //   // 멤버가 여러명일 경우
+    //   const memberInfo = await repo_chatmember.find({chatroom: element.chatroom});
+    //   memberInfo.map((chatmember : ChatMembership) => {
+    //     members.push(repo_user.getSimpleInfo(chatmember.member));
+    //   })
+    //   order.push(element.chatroom.chatid);
+    //   chatroom.push({title, chatid, owner, managers, members, lock, type, max});
+    // }));
+    // socket.emit("myChatRoom", {order, chatroom});
   }
 
   // 전체 채팅방 조회 : 생성되어 있는 전체 채팅방 조회(내가 들어가지 않은 채팅방 + private 제외)
@@ -179,6 +187,7 @@ export class ChatGateway {
     // 1. payload 확인 : private & password -> public & password -> 
     // 2. member
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
+    const repo_blockList = getCustomRepository(BlockedFriendsRepository);
     const chatid = await this.chatGatewayService.createChatRoom(payload, user);
     const newRoom = onlineChatRoomManager.create(chatid);
     const chatroomInfo = await repo_chatroom.findOne({chatid : chatid});
@@ -187,18 +196,17 @@ export class ChatGateway {
     newRoom.join(socket.id);
     members.push(repo_user.getSimpleInfo(user));
     this.log("ok create owner");
-    await Promise.all(payload.member?.map(async (userid : string) => {
-      // 초대한 멤버가 나를 차단했는가? //
-      const chatroomIn = await repo_chatroom.findOne({chatid: chatid});
-      const repo_blockList = getCustomRepository(BlockedFriendsRepository);
-      const mem = await repo_user.findOne({userid : userid});
+    for (let index in payload.member) {
+      let userid = payload.member[index];
+      let chatroomIn = await repo_chatroom.findOne({chatid: chatid});
+      let mem = await repo_user.findOne({userid : userid});
       if (!await repo_blockList.amIBlockedBy(user, mem)) {
         if (await this.chatGatewayService.enterChatRoom(mem, chatroomIn)) {
           members.push(repo_user.getSimpleInfo(mem));
           newRoom.join(onlineManager.socketIdOf(mem.userid));
         }
       }
-    }));
+    }
     this.log("ok create member");
     const res = await repo_chatroom.getRoomInfo(chatroomInfo);
     newRoom.announce("enterChatRoom", res);
@@ -223,7 +231,6 @@ export class ChatGateway {
     const repo_chatMember = getCustomRepository(ChatMembershipRepository);
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
     this.log("test log")
-    console.log("test")
     if (user.banPublicChat) {
       console.log("test1-1")
       this.log("you banPublicChat");
@@ -266,37 +273,31 @@ export class ChatGateway {
     }
     
     // 채팅방 입장 online으로 변경
-    console.log("here")
     await this.chatGatewayService.enterChatRoom(user, chatroom);
-    console.log("here2");
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
     room.join(socket.id);
     room.announceExceptMe(socket.id, "updateChatRoom", {chatid : chatroom.chatid, enterUser : [repo_user.getSimpleInfo(user)]});
-    console.log("here3")
     const res = await repo_chatroom.getRoomInfo(chatroom);
-    console.log("here4")
     socket.emit("enterChatRoom", res);
   }
 
   @SubscribeMessage('updateChatRoom')
   async updateChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "updateChatRoom", ...payload1});
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    const payload = {userid : user.userid, chatid: payload1.chatid, addManager:payload1.addManager, deleteManager:payload1.deleteManager, 
-      title : payload1?.title, type : payload1?.type, lock : payload1?.lock, password: payload1?.password};
-
-    // 채팅방에 속해있는가?, 소유자인가?
-    let repo_chatroom = getCustomRepository(ChatRoomRepository);
-    let repo_chatmember = getCustomRepository(ChatMembershipRepository);
-
-    const changer = await repo_chatmember.findOne({member : user, chatroom: {chatid : payload.chatid}});
+    let payload = payload1;
+    if (process.env.NODE_ENV === "dev") {
+      const chatroom = await getCustomRepository(ChatRoomRepository).findOne({title: payload1.title});
+      payload["chatid"] = chatroom.chatid;
+      delete payload["title"]
+    }
+    const repo_chatroom = getCustomRepository(ChatRoomRepository);
+    const repo_chatmember = getCustomRepository(ChatMembershipRepository);
+    const changer = await repo_chatmember.findOne({member : {userid : socket.userid}, chatroom: {chatid : payload.chatid}});
     if (changer === undefined || changer.position != "owner") {
-      // throw new BadRequest("변경할 수 없습니다.");
       console.log("Not authorized");
       return false;
     }
     const {title, type, password} = payload;
-
     const change = {title, type, password};
     for (let key in change) {
       if (!change[key])
@@ -341,7 +342,7 @@ export class ChatGateway {
     onlineChatRoomManager.getRoomByid(payload.chatid).announce("updateChatRoom", change);
   }
 
-  // 채팅방 유저 초대 :  
+  // 채팅방 유저 초대 :
   @SubscribeMessage('inviteChatRoom')
   async inviteChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
   this.log({gate : "inviteChatRoom", ...payload1});
@@ -395,89 +396,72 @@ export class ChatGateway {
   }));
   }
 
-  // 채팅방 나가기 :
+  // 채팅방 나가기
   @SubscribeMessage('exitChatRoom')
   async leaveChat(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "exitChatRoom", ...payload1});
-    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    const payload = {userid : user.userid, chatid: payload1.chatid};
-
-    // 채팅방에 들어가있지 않는 경우
+    let payload;
+    if (process.env.NODE_ENV === "dev") {
+      const chatRoomX = await getCustomRepository(ChatRoomRepository).findOne({title : payload1.title});
+      payload = {chatid : chatRoomX.chatid};
+    }
+    else {
+      payload = payload1;
+    }
+    // 나중에 정해야함!!!!!!!채팅방 소유자가 나갈 경우(매니저 없음)
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
-    const repo_chatroom = getCustomRepository(ChatRoomRepository);
-    const chatroom = await repo_chatroom.findOne({chatid: payload.chatid});
-    const findUser = await getCustomRepository(UserRepository).findOne({userid: payload.userid})
-    const chatUser = await repo_chatmember.findOne({chatroom:chatroom, member:findUser})
-	if (chatUser) {
-      // error
+    const chatUser = await repo_chatmember.findOne({chatroom:{chatid : payload.chatid}, member:{userid : socket.userid}});
+    if (!chatUser) {
+        this.log("You are not in this chatRoom");
+        return false;
     }
-  if (chatroom.memberCount === 1) {
-    // 채팅방 폭파
-    repo_chatroom.delete(payload.chatid);
-    return ;
-  }
-  if (chatUser.position == "owner") {
-	// 채널 소유자가 나간 경우
-	// 있으면 가장 오래된 관리자에게 위임
-	  const managers = await getCustomRepository(ChatMembershipRepository).find({chatroom:chatroom, position:"manager"});
-		let changeManager;
-		// 매니저가 없을 경우
-		if (managers.length === 0) {
-			// 채팅방 폭파
-      repo_chatroom.delete(payload.chatid);
-		}
-		// 매니저에게 권한 위임
-		else {
-			for (let i = 0; i < managers.length - 1; i++) {
-				if (managers[i].enterDate < managers[i+1].enterDate)
-					changeManager = managers[i];
-				else {
-					changeManager = managers[i+1];
-				}
-			}
-		}
-		// changeManager를 관리자로 변경(db 변경)
-    repo_chatmember.update(changeManager.index, {position: "owner"});
-		// updateChatRoom을 해줘야하는건가..
+    await repo_chatmember.deleteChatUser(socket.userid, payload.chatid);
+    const room = onlineChatRoomManager.getRoomByid(payload.chatid);
+    room.leave(socket.id);
+    room.announce("updateChatRoom", {exitUser : [socket.userid]});
+    if (await this.chatGatewayService.shouldDeleteRoom(payload.chatid)) {
+      await this.chatGatewayService.deleteChatRoom(payload.chatid);
     }
-	else {
-		// 소유자가 아니라면 그냥 나감
-		const room = onlineChatRoomManager.getRoomByid(payload.chatid);
-    room.leave(socket.userid);
-	}
-    // chatroom 정보 변경(updatechatroom)
-    // const chatmember = getCustomRepository(ChatMembershipRepository).findOne({userid})
+    else if (this.chatGatewayService.shouldDelegateOwner(chatUser)) {
+      await this.chatGatewayService.delegateteOwner(payload.chatid);
+    }
+    return true;
   }
 
   // 채팅방 강퇴 :
   @SubscribeMessage('kickChatRoom') 
   async kickChatMember(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "kickChatRoom", ...payload1});
-    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    const payload = {userid : user.userid, chatid: payload1.chatid};
-
-    // 오너가 아닌 경우
+    let payload;
+    if (process.env.NODE_ENV === "dev") {
+      const chatRoomX = await getCustomRepository(ChatRoomRepository).findOne({title : payload1.title});
+      const userX = await getCustomRepository(UserRepository).findOne({nickname : payload1.nickname});
+      payload = {chatid : chatRoomX.chatid, userid : userX.userid};
+    }
+    else {
+      payload = payload1;
+    }
     const repo_chatMember = getCustomRepository(ChatMembershipRepository);
-	  const chatroom = await getCustomRepository(ChatRoomRepository).findOne({chatid: payload.chatid});
-	  const chatuser = await getCustomRepository(UserRepository).findOne({userid: payload.userid});
-    const kickUser = await getCustomRepository(ChatMembershipRepository).findOne({chatroom : chatroom, member : chatuser});
-    const setter = await repo_chatMember.findOne({member : user});
-    if (setter.position === "normal") {
-    //   throw new BadRequest("소유자가 아니라 강퇴할 수 없습니다.");
+    const kickUser = await repo_chatMember.findOne({chatroom : {chatid : payload.chatid}, member : {userid : payload.userid}});
+    const setter = await repo_chatMember.findOne({chatroom : {chatid : payload.chatid}, member : {userid : socket.userid}});
+    if (!setter || setter.position === "normal") {
+      this.log("Not Authorized");
+      return ;
     }
-    // 매니저가 매니저를 강퇴한경우
-    if (setter.position === "manager" && (kickUser.position === "manager" || kickUser.position === "owner")) {
-    //   throw new BadRequest("관리자를 강퇴할 수 없습니다.");
+    if (!kickUser || kickUser.position !== "normal") {
+      this.log("Can't kicke this user");
+      return ;
     }
-    // db(ChatMembership)에서 유저 제거, 채팅 벤리스트에 추가
-    repo_chatMember.delete(kickUser.index);  // 확인
-    // socket.emit("kickChatRoom", {payload.chatid, payload.userid})
-    // 강퇴당한 본인 - kickChatRoom
-    // 나머지 - updateChatRoom
-    // chatmembership delete, chatroom 인원 -1
-    // socket.emit("updateChatRoom", )
+    let exitUser = [kickUser.member.userid];
+    await this.chatGatewayService.kickUserFromChatRoom(kickUser.member, payload.chatid);
+    let room = onlineChatRoomManager.getRoomByid(payload.chatid);
+    let socketid = onlineManager.socketIdOf(kickUser.member.userid);
+    if (socketid) {
+      room.leave(socketid);
+      this.server.to(socketid).emit("kickChatRoom", {chatid : payload.chatid});
+    }
+    room.announce("updateChatRoom", {exitUser});
+    this.log(`${setter.member.nickname} kicked ${kickUser.member.nickname}`);
   }
 
   // 채팅방 내부 :
@@ -529,7 +513,8 @@ export class ChatGateway {
     this.log({gate : "chatMessage", ...payload1});
     let payload;
     if (process.env.NODE_ENV === "dev") {
-      payload = {contents: payload1.contents, chatid: payload1.chatid};
+      const chatRoom = await getCustomRepository(ChatRoomRepository).findOne({title : payload1.title});
+      payload = {contents: payload1.contents, chatid: chatRoom.chatid};
     }
     else {
       payload = payload1;
@@ -543,17 +528,16 @@ export class ChatGateway {
     // 나머지 전부 보냄.
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
     let now = new Date();
-    if (me.muteUntil > now)
-      return ({chatid : payload.chatid, result : false});
+    if (me.muteUntil > now) {
+      this.log("Mute")
+      return false;
+    }
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
-    if (chatRoom.type === "private" && chatRoom.memberCount === 2) {
+    if (chatRoom.type === "private" && chatRoom.memberCount === 2)
       room.sayToRoom(socket, payload);
-      // chathistory repository에 저장
-    }
-    else {
-      room.announceExceptMe(socket.id, "chatMessage", {contents : payload.contents})
-      // chathistory repository에 저장
-    }
+    else
+      room.announce("chatMessage", {contents : payload.contents});
+    repo_chathistory.insertHistory(socket.userid, payload.contents, chatRoom);
   }
 
   // 채팅 음소거 :
@@ -570,10 +554,17 @@ export class ChatGateway {
     const repo_chatMember = getCustomRepository(ChatMembershipRepository);
     const me = await repo_chatMember.findOne({chatroom : {chatid : payload.chatid}, member : {userid : socket.userid}});
     const other = await repo_chatMember.findOne({chatroom : {chatid : payload.chatid}, member : {userid : payload.userid}});
-    if (!me || !other)
-      return {chatid : payload.chatid, result : false};
-    if (me.position === "normal" || other.position !== "normal")
-      return {chatid : payload.chatid, result : false};
-    repo_chatMember.update(other.index, {muteUntil: payload.time});
+    if (!me || !other) {
+      this.log("No such user OR Not in the chatRoom");
+      return false;
+    }
+    if (me.position === "normal" || other.position !== "normal") {
+      this.log("not normal user");
+      return false;
+    }
+    let time = new Date();
+    time.setSeconds(time.getSeconds() + payload.time);
+    await repo_chatMember.update(other.index, {muteUntil: time});
+    return true;
   }
 }

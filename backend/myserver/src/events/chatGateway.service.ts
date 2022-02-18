@@ -1,10 +1,11 @@
 import { Logger } from "@nestjs/common";
 import { ChatRoom, ChatMembership } from "src/db/entity/Chat/ChatEntity";
 import { User } from "src/db/entity/User/UserEntity";
-import { ChatMembershipRepository, ChatRoomRepository } from "src/db/repository/Chat/ChatCustomRepository";
+import { ChatBanListRepository, ChatHistoryRepository, ChatMembershipRepository, ChatRoomRepository } from "src/db/repository/Chat/ChatCustomRepository";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
+import { onlineChatRoomManager } from "./online/onlineChatRoomManager";
 // import { onlineChatMap } from "./online/chatRoom"
 // import { onlineManager } from "./online/chatRoomManager";
 
@@ -12,6 +13,9 @@ import { getCustomRepository } from "typeorm";
 export class ChatGatewayService {
     private readonly logger = new Logger();
     
+    private log(msg : any) {
+        this.logger.log(msg, "ChatGatewayService")
+    }
     public async getChatMemberInfo(chatmember : ChatMembership) {
         let {chatroom, member, position} = chatmember;
         const chatid = chatroom.chatid;
@@ -68,4 +72,55 @@ export class ChatGatewayService {
         return true;
     }
 
+    async kickUserFromChatRoom(user : User, chatid : string ) {
+        if (!user || !chatid) {
+            this.log("Something Wrong");
+            return ;
+        }
+        const repo_chatHistory = getCustomRepository(ChatHistoryRepository);
+        const repo_chatMember = getCustomRepository(ChatMembershipRepository);
+        const repo_chatBanList = getCustomRepository(ChatBanListRepository);
+        const repo_chatroom = getCustomRepository(ChatRoomRepository);
+
+        const chatroom = await repo_chatroom.findOne({chatid: chatid});
+        await Promise.all([
+            repo_chatBanList.createBanUser(chatroom ,user),
+            repo_chatMember.deleteChatUser(user.userid, chatid),
+            repo_chatHistory.anonymise(user.userid, chatid),]
+        );
+    }
+
+    async shouldDeleteRoom(chatid :string) {
+        const repo_chatmember = getCustomRepository(ChatMembershipRepository);
+        const chatroom = await getCustomRepository(ChatRoomRepository).findOne({chatid:chatid});
+        const managers = await repo_chatmember.find({chatroom:{chatid: chatid},position:"manager"})
+
+        if (chatroom.memberCount === 0)
+            return true;
+        return false;
+    }
+    
+    async deleteChatRoom(chatid: string) {
+        const repo_chathistory = getCustomRepository(ChatHistoryRepository);
+        const repo_chatRoom = getCustomRepository(ChatRoomRepository);
+        await repo_chatRoom.delete(chatid);
+        onlineChatRoomManager.delete(chatid);
+        await repo_chathistory.deleteAllHistory(chatid);
+    }
+
+    shouldDelegateOwner(user : ChatMembership) : boolean {
+        if (user.position === "owner")
+            return true;
+        return false;
+    }
+
+    async delegateteOwner(chatid : string) {
+        const repo_chatmember = getCustomRepository(ChatMembershipRepository);
+        const room = onlineChatRoomManager.getRoomByid(chatid);
+        const newOwner = await repo_chatmember.getNewOwner(chatid);
+        if (newOwner) {
+            await repo_chatmember.update(newOwner.index, {position : "owner"});
+            room.announce("updateChatRoom", {"owner" : newOwner.member.userid}) // edit
+        };
+    }
 }

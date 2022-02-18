@@ -30,7 +30,7 @@ export class onlineChatRoom {
         let user = await repo_user.findOne(socket.userid);
         this.members.map(async (socketid) => {
             let theOtherId = onlineManager.userIdOf(socketid);
-            if (socketid !== socket.id && !await repo_blockList.amIBlockedByid(user, theOtherId))
+            if (!await repo_blockList.amIBlockedByid(user, theOtherId))
                 onlineChatRoom.server.to(socketid).emit("chatMessage", payload);
         });
     }
