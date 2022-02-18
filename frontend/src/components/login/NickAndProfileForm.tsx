@@ -40,7 +40,7 @@ export default function Nick(){
 		).then(res=>{
 			console.log(res);
 			console.log(res.data);
-			if (res.data === "cookie set"){
+			if (res.data){
 				history.push("/game");
 			}
 		}).catch(err=>{

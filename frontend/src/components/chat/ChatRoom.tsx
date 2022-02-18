@@ -30,6 +30,9 @@ export default function ChatRoom(props :any){
 			chatHistory[1](data);
 		})
 		socket.on("chatMessage", (data)=>{
+			if (data.result){
+				return ;
+			}
 			const chat = chatHistory[0];
 			chat.list.push(data);
 			chatHistory[1](chat);
@@ -61,7 +64,7 @@ export default function ChatRoom(props :any){
 				<div className="row m-1" onClick={()=>{history.goBack()}}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0" id="chatlist">
 					{chatHistory[0] && chatHistory[0].list?.map((data:ChatBlock, idx:number)=>{
-						if (data.userid === userContext.user[0].id)
+						if (data.userid === userContext.user[0].userid)
 							return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
 						else
 							return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>

@@ -8,7 +8,7 @@ import axios from "axios";
 export default function MyProfileModal(props: any) {
 	const userContext = useContext(UserContext);
 	const profile:User = userContext.user[0];
-	const [code, setCode] = useState<boolean>(false);
+	// const [code, setCode] = useState<boolean>(false);
 	const [state, setState] = useState<boolean>(false);
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
@@ -20,31 +20,42 @@ export default function MyProfileModal(props: any) {
 		setNum(event.target.value);
 	}
 	const handleSubmit = () => {
-		const url:string = "http://localhost:4242/2fa/turn-on";
+		const url:string = "http://localhost:4242/2fa";
 		if (num.length !== 4){
 			return ;
 		}
-		console.log(num);
-		axios.post(url).then((res:any)=>{
-			console.log(res)
-			setState(false);
-		}).catch((err:any)=>{console.log(err)});
+		// console.log(num);
+		if (!profile?.twofactor){
+			axios.post(url + "/turn-on").then((res:any)=>{
+				console.log(res)
+				setState(false);
+				socket.emit("userInfo");
+			}).catch((err:any)=>{console.log(err)});
+		}else{
+			axios.post(url + "/turn-off").then((res:any)=>{
+				console.log(res)
+				setState(false);
+				socket.emit("userInfo");
+			}).catch((err:any)=>{console.log(err)});
+		}
 	}
 	const handleQrcode = () => {
 		const url:string = "http://localhost:4242/2fa";
-		if (!code){
-			setState(true);
+		
+		setState(true);
+		if (!profile?.twofactor){
 			axios.post(url + "/generate").then((res:any)=>{
 				console.log(res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});
-		}else {
-			setState(false);
-			axios.post(url + "/turn-off").then((res:any)=>{
-				console.log(res)
-			}).catch((err:any)=>{console.log(err)});
 		}
-		setCode(!code);
+		// }else {
+		// 	// setState(false);
+		// 	axios.post(url + "/turn-off").then((res:any)=>{
+		// 		console.log(res)
+		// 	}).catch((err:any)=>{console.log(err)});
+		// }
+		// setCode(!code);
 	}
 	const handleClick = (userid: string) => {
 		props.setClicked(userid);
@@ -122,12 +133,15 @@ export default function MyProfileModal(props: any) {
 										<div className="row pt-2" id="modalTwofactorTitle">
 											<div className="col h5 text-center">2중 인증</div>
 											<div className="col-3 form-check form-switch">
-												<input className="form-check-input" type="checkbox" onClick={handleQrcode}/>
+												<input className="form-check-input" type="checkbox" onClick={handleQrcode} defaultChecked={profile?.twofactor}/>
 											</div>
 										</div>
 										{ state && 
 											<div className="text-center">
-												<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  Profile(1): qrcode} alt="qrcode"></img></div>
+												<label>Google OTP 인증해주세요.</label>
+												{ !profile?.twofactor &&
+													<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  Profile(1): qrcode} alt="qrcode"></img></div>
+												}
 												<div className="row my-1 input-group">
 												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>
 												  <button className="col btn modal-button px-0" type="button" onClick={handleSubmit}>확인</button>
