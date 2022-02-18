@@ -24,7 +24,7 @@ export default function MyProfileModal(props: any) {
 		if (num.length !== 4){
 			return ;
 		}
-		console.log(num);
+		// console.log(num);
 		axios.post(url).then((res:any)=>{
 			console.log(res)
 			setState(false);
@@ -127,7 +127,9 @@ export default function MyProfileModal(props: any) {
 										</div>
 										{ state && 
 											<div className="text-center">
-												<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  Profile(1): qrcode} alt="qrcode"></img></div>
+												{ !code &&
+													<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  Profile(1): qrcode} alt="qrcode"></img></div>
+												}
 												<div className="row my-1 input-group">
 												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>
 												  <button className="col btn modal-button px-0" type="button" onClick={handleSubmit}>확인</button>

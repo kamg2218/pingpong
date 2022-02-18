@@ -30,6 +30,9 @@ export default function ChatRoom(props :any){
 			chatHistory[1](data);
 		})
 		socket.on("chatMessage", (data)=>{
+			if (data.result){
+				return ;
+			}
 			const chat = chatHistory[0];
 			chat.list.push(data);
 			chatHistory[1](chat);

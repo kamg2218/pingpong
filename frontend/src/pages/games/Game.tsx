@@ -24,6 +24,7 @@ export default function Game() {
 
 	useEffect(() => {
 		if (!user) {
+			console.log("user Info emit!")
 			socket.emit("userInfo");
 			socket.emit("myChatRoom");
 		}

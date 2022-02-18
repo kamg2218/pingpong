@@ -20,15 +20,14 @@ export default function MenuChatDropdown(props :any){
 	//exit the chatroom
 	const handleExit = () => {
 		console.log("exit chat room!");
-		socket.emit("exitChatRoom", { chatid: props.info.chatid });
-		// (result:boolean)=>{
-		// 	if (result === true){
-		// 		const chatroom = chatContext.chatroom;
-		// 		chatroom[1](chatroom[0].chatroom.filter((room:chatRoom)=>room.chatid !== props.info.chatid));
-		// 		chatroom[1](chatroom[0].order.filter((id:string)=>id !== props.info.chatid));
-		// 	}
-		// });
-		socket.emit("myChatRoom");
+		socket.emit("exitChatRoom", { chatid: props.info.chatid }, (result:boolean)=>{
+			if (result === true){
+				// const chatroom = chatContext.chatroom;
+				// chatroom[1](chatroom[0].chatroom.filter((room:chatRoom)=>room.chatid !== props.info.chatid));
+				// chatroom[1](chatroom[0].order.filter((id:string)=>id !== props.info.chatid));
+				socket.emit("myChatRoom");
+			}
+		});
 	}
 
 	return (
