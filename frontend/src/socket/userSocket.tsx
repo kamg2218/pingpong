@@ -6,7 +6,19 @@ export const socket = io("http://localhost:4242", {
 	  polling: {
 		extraHeaders: {  Authorization: `${document.cookie}` }
 	  },
-	}});
+}});
+
+// export function socketConnection(){
+// 	if (socket === undefined){
+// 		socket = io("http://localhost:4242",
+// 			{ transportOptions: {
+// 				polling: {
+// 					extraHeaders: {  Authorization: `${document.cookie}` }
+// 		  		},
+// 			}}
+// 		);
+// 	}
+// }
 
 export const UserContext = createContext<any>(null);
 

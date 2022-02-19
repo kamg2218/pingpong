@@ -20,7 +20,7 @@ export default function ProfileModal(props: any) {
 				userid: userid,
 			});
 		}
-		socket.on("opponentProfile", (data) => {
+		socket.on("opponentProfile", (data:ProfileUser) => {
 			setProfile(data);
 		});
 	}, [profile, userid]);

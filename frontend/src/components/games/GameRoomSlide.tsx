@@ -14,11 +14,12 @@ export default function GameRoomSlide(props: any){
 			console.log("game room list!")
 			socket.emit("gameRoomList");
 		}
+		socket.on("gameRoomList", (msg:gameRoom)=>{
+			console.log("socket on! gameRoomList in gmaeRoomSlide!")
+			gameRoomList[1](msg);
+		});
 	}, [idx, gameRoomList, gameContext]);
-	socket.on("gameRoomList", (msg)=>{
-		console.log("socket on! gameRoomList in gmaeRoomSlide!")
-		gameRoomList[1](msg);
-	});
+
 	const handleButton = (num: number) => {
 		if (num === 1 && (idx + 1) * 6 < list.length){
 			setIdx(idx + 1);
@@ -41,7 +42,10 @@ export default function GameRoomSlide(props: any){
 		return carousel;
 	}
 	const handleSearchItem = () => {
-		const searchRoom = gameRoomList[0].filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
+		const searchRoom = gameRoomList[0];
+		if (searchRoom && searchRoom.length > 0){
+			gameRoomList[0].filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
+		}
 		list = searchRoom;
 		return handleCarouselItem();
 	}
@@ -52,7 +56,7 @@ export default function GameRoomSlide(props: any){
 				<div key="slide1Row" className="row mx-1 my-0">
 					{props.search === "" ? handleCarouselItem() : handleSearchItem()}
 				</div>
-				<div key="slide2Row" className="row d-flex justify-content-center m-0">
+				<div key="slide2Row" className="row d-flex justify-content-center m-1">
 					<span key="slidePrev" className="carousel-control-prev-icon shadow mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
 					<span key="slideNext" className="carousel-control-next-icon shadow mx-5" aria-hidden="true" onClick={()=>handleButton(1)}></span>
 				</div>
