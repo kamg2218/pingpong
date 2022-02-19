@@ -4,12 +4,10 @@ export const ChatContext = createContext<any>(null);
 
 export function ChatVariables(){
 	const [chatroom, setChatRoom] = useState<ChatData>();
-	// const [publicroom, setPublicRoom] = useState<ChatData>();
 	const [history, setHistory] = useState<ChatHistory>();
 
 	const variable = {
 		chatroom: [chatroom, setChatRoom],
-		// publicroom: [publicroom, setPublicRoom],
 		history: [history, setHistory]
 	};
 	return variable;

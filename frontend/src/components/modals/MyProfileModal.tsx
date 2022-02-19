@@ -40,22 +40,15 @@ export default function MyProfileModal(props: any) {
 		}
 	}
 	const handleQrcode = () => {
-		const url:string = "http://localhost:4242/2fa";
+		const url:string = "http://localhost:4242/2fa/generate";
 		
-		setState(true);
-		if (!profile?.twofactor){
-			axios.post(url + "/generate").then((res:any)=>{
+		if (!state && !profile?.twofactor){
+			axios.post(url).then((res:any)=>{
 				console.log(res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});
 		}
-		// }else {
-		// 	// setState(false);
-		// 	axios.post(url + "/turn-off").then((res:any)=>{
-		// 		console.log(res)
-		// 	}).catch((err:any)=>{console.log(err)});
-		// }
-		// setCode(!code);
+		setState(!state);
 	}
 	const handleClick = (userid: string) => {
 		props.setClicked(userid);

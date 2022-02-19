@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom"
 import {socket, UserContext} from "../../socket/userSocket";
-import { ChatContext, ChatBlock } from "../../socket/chatSocket";
+import { ChatContext, ChatBlock, ChatHistory } from "../../socket/chatSocket";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "../../css/ChatRoom.css"
@@ -26,10 +26,10 @@ export default function ChatRoom(props :any){
 				chatid: props.idx,
 			});
 		}
-		socket.on("chatHistory", (data)=>{
+		socket.on("chatHistory", (data:ChatHistory)=>{
 			chatHistory[1](data);
 		})
-		socket.on("chatMessage", (data)=>{
+		socket.on("chatMessage", (data:any)=>{
 			if (data.result){
 				return ;
 			}

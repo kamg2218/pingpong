@@ -1,9 +1,8 @@
 import Main from './pages/Main';
 import Game from './pages/games/Game';
-// import Admin from './pages/Admin';
-import NickAndProfile from './pages/login/NickAndProfile';
-import Qrcode from './pages/login/Qrcode';
 import Play from './pages/games/Play'
+import Qrcode from './pages/login/Qrcode';
+import NickAndProfile from './pages/login/NickAndProfile';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { GameContext, GameVariables } from './socket/gameSocket';
 import { UserContext, UserVariables } from './socket/userSocket';
@@ -21,7 +20,6 @@ function App() {
               <Route path='/twofactor'><Qrcode/></Route>
               <Route path='/game/play/:id'><Play/></Route>
               <Route path='/game'><Game/></Route>
-              {/* <Route path='/admin'><Admin/></Route> */}
               <Route><Main/></Route>
             </Switch>
           </GameContext.Provider>

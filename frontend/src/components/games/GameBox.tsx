@@ -18,7 +18,7 @@ export default function GameBox(props:any){
 	const handleEnterGameRoom = (result: boolean) => {
 		let info:info = {
 			roomid: props.info.roomid,
-			isPlayer: state
+			isPlayer: result,
 		}
 		setState(result);
 		if (pwd !== "")

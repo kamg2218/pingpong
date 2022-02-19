@@ -13,7 +13,7 @@ export default function PublicChatModal(){
 			console.log("public chat room emit!")
 			socket.emit("publicChatRoom");
 		}
-		socket.on("publicChatRoom", (data)=>{
+		socket.on("publicChatRoom", (data:ChatData)=>{
 			console.log("public chat room on!");
 			setPublic(data);
 		})

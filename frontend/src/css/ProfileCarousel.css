@@ -4,11 +4,12 @@
 }
 
 .img{
-	width: 150px;
-	height: 200px;
+	width: 10em;
+	height: 10em;
 	border-radius: 20%;
 	object-fit: cover;
 	overflow: hidden;
-	margin: 2%;
+	margin: 13%;
+	margin-top: 5%;
 	display: inline-block;
 }

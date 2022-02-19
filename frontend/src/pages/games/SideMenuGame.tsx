@@ -38,7 +38,7 @@ export default function SideMenuGame(){
 			tmp.blacklist?.push(data);
 			user[1](tmp);
 		});
-		socket.on("updateProfile", (data)=>{
+		socket.on("updateProfile", (data:any)=>{
 			const tmp:User = user[0];
 			if (data.nickname){
 				tmp.nickname = data.nickname;

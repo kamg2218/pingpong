@@ -1,12 +1,9 @@
-import Profile1 from './profileImage1.png'
-import Profile2 from './profileImage2.png'
-import Profile3 from './profileImage3.png'
-import Profile4 from './profileImage4.png'
-import Profile5 from './profileImage5.png'
-import Profile6 from './profileImage6.png'
-import Profile7 from './profileImage7.png'
-import Profile8 from './profileImage8.png'
-import Profile9 from './profileImage9.png'
+import Profile1 from './profile1.png'
+import Profile2 from './profile2.png'
+import Profile3 from './profile3.png'
+import Profile4 from './profile4.png'
+import Profile5 from './profile5.png'
+import Profile6 from './profile6.png'
 
 export default function Profile(num: number){
 	if (num === 1)
@@ -21,11 +18,5 @@ export default function Profile(num: number){
 		return Profile5;
 	else if (num === 6)
 		return Profile6;
-	else if (num === 7)
-		return Profile7;
-	else if (num === 8)
-		return Profile8;
-	else if (num === 9)
-		return Profile9;
 	return Profile1;
 }

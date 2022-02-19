@@ -6,12 +6,12 @@ import Lobby from "./Lobby"
 import { Route, Switch } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom";
-import { socket, UserContext } from "../../socket/userSocket"
+import { socket, UserContext, User } from "../../socket/userSocket"
 import { GameContext, GameUser, match } from "../../socket/gameSocket"
 import logo from "../../icons/logo_brown_profile.png"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
-
 import Modal from "react-modal"
+
 Modal.setAppElement("#root");
 export default function Game() {
 	const history = useHistory();
@@ -28,11 +28,11 @@ export default function Game() {
 			socket.emit("userInfo");
 			socket.emit("myChatRoom");
 		}
-		socket.on("userInfo", (data) => {
+		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
 			user[1](data);
 		});
-		socket.on("enterGameRoom", (msg) => {
+		socket.on("enterGameRoom", (msg:any) => {
 			console.log("enter game room");
 			if (msg.message) {
 				alert("fail to enter the room!");
@@ -46,11 +46,11 @@ export default function Game() {
 				}
 			}
 		});
-		socket.on("exitGameRoom", (msg) => {
+		socket.on("exitGameRoom", () => {
 			game[1](undefined)
 			history.push("/game");
 		});
-		socket.on("startGame", (msg) => {
+		socket.on("startGame", (msg:any) => {
 			console.log("start game!");
 			if (msg.result) {
 				alert("failed to play the game!");
@@ -59,7 +59,7 @@ export default function Game() {
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
-		socket.on("updateGameRoom", (msg) => {
+		socket.on("updateGameRoom", (msg:any) => {
 			const tmp = game[0];
 			if (msg.manager) {
 				tmp.manager = msg.manager;
@@ -90,7 +90,7 @@ export default function Game() {
 			}
 			game[1](tmp);
 		});
-		socket.on("matchResponse", (data) => {
+		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);
 		})

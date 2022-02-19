@@ -5,6 +5,7 @@ import PwdModal from "../modals/PwdModal";
 import InviteModal from "../modals/InviteModal";
 import { ChatContext, chatRoom } from "../../socket/chatSocket";
 import "./chat.css";
+import MuteModal from "../modals/MuteModal";
 
 export default function MenuChatDropdown(props :any){
 	const userContext = useContext(UserContext);
@@ -37,20 +38,24 @@ export default function MenuChatDropdown(props :any){
 			</button>
 			<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<li className="dropdown-item" key="title">
-					<button className="btn" key="title" onClick={()=>handleTitle()} disabled={props.info.owner !== userContext.user[0]?.id}>title</button>
+					<button className="btn" key="title" onClick={()=>handleTitle()} disabled={props.info.owner !== userContext.user[0]?.id}>Title</button>
 				</li>
 				<li className="dropdown-item" key="pwd">
-					<button type="button" className="btn" data-toggle="modal" data-target="#PwdModal" disabled={pwdDisabled}>password</button>
+					<button type="button" className="btn" data-toggle="modal" data-target="#PwdModal" disabled={pwdDisabled}>Password</button>
 				</li>
 				<li className="dropdown-item" key="invite">
-					<button className="btn" data-toggle="modal" data-target="#InviteModal">invite</button>
+					<button className="btn" data-toggle="modal" data-target="#InviteModal">Invite</button>
+				</li>
+				<li className="dropdown-item" key="mute">
+					<button className="btn" data-toggle="modal" data-target="#MuteModal">Mute</button>
 				</li>
 				<li className="dropdown-item" key="exit">
-					<button className="btn" onClick={() => handleExit()}>exit</button>
+					<button className="btn" onClick={() => handleExit()}>Exit</button>
 				</li>
 			</ul>
 			<PwdModal info={props.info}></PwdModal>
 			<InviteModal info={props.info}></InviteModal>
+			<MuteModal info={props.info}></MuteModal>
 		</div>
 	);
 }
