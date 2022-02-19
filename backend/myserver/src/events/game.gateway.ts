@@ -51,7 +51,6 @@ export class GameGateway {
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
         this.log({gate : "createGameRoom", ...payload});
-        payload.speed = payload.map;
         let user : User;
         if (process.env.NODE_ENV === "dev") {
             user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname});
@@ -63,7 +62,8 @@ export class GameGateway {
         if (await this.gameGatewayService.amIinGameRoom(user))
         	return this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
         if (!this.gameGatewayService.validateOptions(payload)) {
-        	this.log(`${user.nickname} are trying to create game room with wrong options`);
+            let reason = this.gameGatewayService.whyCantCreate(payload);
+        	this.log(`${user.nickname} are trying to create game room with wrong options : ${reason}`);
         	return this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
         }
         const roomInfo = await this.gameGatewayService.createAndEnterGameRoom(socket, user, payload);

@@ -72,7 +72,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		for (let index in words) {
 			let word = words[index];
 			if (word.search("accessToken=") !== -1) {
-				let name = "accessToken="
+				let name = "accessToken=";
 				let value = word.slice(name.length);
 				return value;
 			}

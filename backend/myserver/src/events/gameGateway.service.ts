@@ -269,6 +269,17 @@ export class GameGatewayService {
         socket.emit(event, data);
     }
 
+    public whyCantCreate(payload : any) {
+        if (payload.type === "private") {
+            if (!payload?.password || payload.password === "")
+                return "Prvate room should have a password"
+        }
+        if (!payload?.observer || payload.observer < 0 || payload.observer > 5)
+            return "Wrong observer option"
+        if (!payload?.speed)
+            return "Wrong speed option";
+        return "No reason";
+    }
 
     public validateOptions(payload : any) {
         if (payload.type === "private") {
@@ -277,6 +288,7 @@ export class GameGatewayService {
         }
         if (!payload?.observer || payload.observer < 0 || payload.observer > 5)
             return false;
+        console.log("speed : ", payload.speed);
         if (!payload?.speed)
             return false;
         return true;
