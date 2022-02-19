@@ -12,6 +12,12 @@ export class FriendsRepository extends Repository<Friends> {
         return true;
     }
 
+    async isNotMyFriend(me : User, other : User) : Promise<boolean> {
+        const res = await this.find({where : [{requestFrom : me, requestTo : other, requestStatus : 'friend'}, {requestTo : me, requestFrom : other, requestStatus : 'friend'}]});
+        if (!res.length)
+            return true;
+        return false;
+    }
     async didISendRequest(me : User, theOther : User) : Promise<boolean> {
         const result : Friends[] = await this.find({requestFrom : me, requestTo : theOther})
         if (result.length)

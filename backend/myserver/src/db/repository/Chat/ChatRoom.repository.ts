@@ -1,25 +1,11 @@
 import { ChatMembership, ChatRoom } from "src/db/entity/Chat/ChatEntity";
-import { AfterUpdate, EntityRepository, getCustomRepository, getRepository, Repository } from "typeorm";
-import { User } from "src/db/entity/User/UserEntity";
-import { RoomMode } from "src/type/RoomMode.type";
+import { EntityRepository, getCustomRepository, getRepository, Repository } from "typeorm";
 import { ChatMembershipRepository } from "./ChatCustomRepository";
 import { UserRepository } from "../User/UserCustomRepository";
+import { User } from "src/db/entity/User/UserEntity";
 
 @EntityRepository(ChatRoom)
 export class ChatRoomRepository extends Repository<ChatRoom> {
-    /*
-    async getinfo(chatRoom : ChatRoom, chatid: string) {
-        // this.manager, owner, member,
-        const chatroom = await this.findOne(chatid);
-        // const repo_membership = getCustomRepository(ChatMembershipRepository);
-        // repo_membership.findOne({position: "owner"});
-        chatroom.membership
-        // repo_membership.find({chatid: }, {position: "manager"});
-
-        // repo_membership.find({chatid: }, {position: "normal"});
-
-    }
-    */
 
     async updateCount(chatroom : ChatRoom) {
         const repo_membership = getRepository(ChatMembership);
@@ -74,10 +60,10 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
     }
 
     async getRoomInfo(chatroom : ChatRoom) {
+        //check : max env 처리 필요
         const repo_chatMember = getCustomRepository(ChatMembershipRepository);
         const repo_user = getCustomRepository(UserRepository);
-        let manager = [];
-        let members = [];
+        let manager, members = [];
         let owner;
         let lock = chatroom.password ? true : false;
         const chatMember = await repo_chatMember.find({chatroom : chatroom});
@@ -88,6 +74,11 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
         else if (membership.position === "manager")
             manager.push(membership.member.userid);
         });
-        return {chatid : chatroom.chatid, title: chatroom.title, members: members, lock : lock, owner:owner, manager: manager, type: chatroom.type}
+        return {
+            chatid : chatroom.chatid, 
+            title: chatroom.title,
+            type: chatroom.type, 
+            members, lock, owner, manager, 
+            max : 100 }
     }
 }

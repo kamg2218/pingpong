@@ -1,21 +1,15 @@
-import { BadRequestException, Logger, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { WSAuthGuard } from 'src/chat/ws-guard';
-import { getCustomRepository, getRepository, LessThan, Not} from 'typeorm';
-
+import { Logger } from '@nestjs/common';
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'socket.io';
+import { getCustomRepository } from 'typeorm';
 import { onlineManager } from './online/onlineManager';
-import { UserRepository, BlockedFriendsRepository, RestrictedListReopsitory, FriendsRepository } from 'src/db/repository/User/UserCustomRepository';
+import { UserRepository, BlockedFriendsRepository, FriendsRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
-import { User, BlockedFriends } from 'src/db/entity/User/UserEntity';
 import { ChatMembershipRepository, ChatBanListRepository, ChatRoomRepository, ChatHistoryRepository } from "src/db/repository/Chat/ChatCustomRepository";
-import { ChatMembership, ChatRoom, ChatBanList, ChatHistory } from 'src/db/entity/Chat/ChatEntity';
+import { ChatRoom } from 'src/db/entity/Chat/ChatEntity';
 import { ChatGatewayService } from './chatGateway.service';
 import { onlineChatRoom } from './online/onlineChatRoom';
 import { onlineChatRoomManager } from './online/onlineChatRoomManager';
-import e from 'cors';
-import { userInfo } from 'os';
 
 const options = {
   cors : {
@@ -25,7 +19,6 @@ const options = {
 
 // @WebSocketGateway({namespace: /\/ws-.+/}) // 정규표현식
 @WebSocketGateway(options)
-// @UseGuards(AuthGuard('ws-jwt'))
 export class ChatGateway {
 @WebSocketServer() public server : Server;
 
@@ -35,7 +28,6 @@ export class ChatGateway {
   ) {}
 
   afterInit(server: Server) : any {
-    console.log('websocketserver init');
     onlineChatRoom.init(server);
   }
   private log(msg : String) {
@@ -46,120 +38,42 @@ export class ChatGateway {
   @SubscribeMessage('myChatRoom')
   async getAllChatByUser(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "myChatRoom", ...payload1});
-   
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-
-
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
-    const repo_user = getCustomRepository(UserRepository);
-    const joinedchat : ChatMembership[] = await repo_chatmember.find({
-      where : {member : {userid : socket.userid}},
-      select : ["index", "chatroom"]
-    });
+    const repo_chatroom = getCustomRepository(ChatRoomRepository);
     let order = [];
     let chatroom = [];
+    const joinedchat : ChatRoom[] = await repo_chatmember.getMyChatRoom(socket.userid);
     for (let index in joinedchat) {
- 
+      let myRoom = joinedchat[index]
+      let info = await repo_chatroom.getRoomInfo(myRoom);
+      order.push(myRoom.chatid);
+      chatroom.push(info);
     }
-
-
-
-    // const chatList = await Promise.all(joinedchat.map(async (element : ChatMembership) => {
-    //   const {chatid, title, type, password} = element.chatroom;
-    //   let members = [];
-    //   // let managers = [];
-    //   let lock = password ? true : false;
-    //   const max = 100 // .env
-    //   const ownerInfo = await repo_chatmember.findOne({where : [{chatroom : element.chatroom}, {position : "owner" }]});
-    //   const owner = ownerInfo.member.userid;
-
-      // // 매니저가 여러명일 경우
-      // const repo_chat : ChatMembership[] = await getCustomRepository(ChatMembershipRepository).find({chatroom: element.chatroom});
-      // const managerList = repo_chat.map((element : ChatMembership) => {
-      //   const manager = element.position;
-      //   if (manager != "manager")
-      //     return ;
-      //   managers.push(element.member.userid);
-      // })
-    //   const managers = this.chatGatewayService.managerList(element);
-
-    //   // 멤버가 여러명일 경우
-    //   const memberInfo = await repo_chatmember.find({chatroom: element.chatroom});
-    //   memberInfo.map((chatmember : ChatMembership) => {
-    //     members.push(repo_user.getSimpleInfo(chatmember.member));
-    //   })
-    //   order.push(element.chatroom.chatid);
-    //   chatroom.push({title, chatid, owner, managers, members, lock, type, max});
-    // }));
-    // socket.emit("myChatRoom", {order, chatroom});
+    socket.emit("myChatRoom", {order, chatroom});
   }
 
   // 전체 채팅방 조회 : 생성되어 있는 전체 채팅방 조회(내가 들어가지 않은 채팅방 + private 제외)
   @SubscribeMessage('publicChatRoom')
   async getAllChat(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "publicChatRoom", ...payload1});
-    // userid로 내가 없는 채팅방 가져오기
-    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    console.log(user);
-    // const payload = {userid : user.userid};
-
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
-    const repo_user = getCustomRepository(UserRepository);
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
-    console.log('1');
-    // const notJoinedChat : ChatMembership[] = await repo_chatmember.find({member: {userid : Not(user.userid)}});
-
-    const notJoinedChat : ChatMembership[] = await repo_chatmember.find({
-      where : [{
-        chatroom : {
-          type: "public"
-        },
-        member : {userid : Not(user.userid)}
-      }],
-      relations : ["chatroom"]
-    });
-    //where : {member: {userid : Not(user.userid)}, chatroom : {type : "public"}});
-    // const userInfo = repo_user.getSimpleInfo(user);
-    // 지금은 중복됨
-    // const notJoinedList = await getCustomRepository(ChatMembershipRepository)
-    //   .createQueryBuilder("chatmember")
-    //   .distinctOn(["chatmember.chatroom"])
-    //   .where("chatmember.chatroom.type = :type", {name: "public"})
-    //   .andWhere("chatmember.member NOT IN :userid", {userid: user.userid})
-    //   .getMany()
-    console.log('22');
-    // .where("chatmember.member NOT IN :id AND chatmember.chatroom.type = :name", {id:ChatMember.userid, name:"public"})
-
+    const myChatroomList : ChatRoom[] = await repo_chatmember.getMyChatRoom(socket.userid);
+    const publicChatroomList = await repo_chatroom.find({type : "public"});
+    for (let index in myChatroomList) {
+      let chatid = myChatroomList[index].chatid;
+      let findResult = publicChatroomList.findIndex(list=>list.chatid === chatid)
+      if (findResult !== -1)
+        publicChatroomList.splice(findResult, 1);
+    };
     let order = [];
     let chatroom = [];
-    console.log('2')
-    const chatList = await Promise.all(notJoinedChat.map(async (element : ChatMembership) => {
-      const {chatid, title, type, password} = element.chatroom;
-      let members = [];
-      let managers = [];
-      let lock = password ? true : false;
-      const max = 100 // .env
-      console.log('3')
-      const ownerInfo = await repo_chatmember.findOne({where : [{chatroom : element.chatroom}, {position : "owner" }]});
-      const owner = ownerInfo.member.userid;
-      
-      // 매니저가 여러명일 경우
-      console.log('4')
-      const repo_chat : ChatMembership[] = await repo_chatmember.find({chatroom: element.chatroom, position:"manager"});
-      repo_chat.map((chatmember : ChatMembership) => {
-        managers.push(chatmember.member.userid);
-      })
-
-      // 멤버가 여러명일 경우
-      console.log('5')
-      const memberInfo = await repo_chatmember.find({chatroom: element.chatroom});
-      memberInfo.map((element : ChatMembership) => {
-        members.push(repo_user.getSimpleInfo(element.member));
-      })
-      order.push(element.chatroom.chatid);
-      chatroom.push({title, chatid, owner, managers, members, lock, type, max});
-    }));
+    for (let index in publicChatroomList) {
+      let myRoom = publicChatroomList[index];
+      let info = await repo_chatroom.getRoomInfo(myRoom);
+      order.push(myRoom.chatid);
+      chatroom.push(info);
+    }
     socket.emit("publicChatRoom", {order, chatroom});
   }
 
@@ -200,7 +114,7 @@ export class ChatGateway {
       let userid = payload.member[index];
       let chatroomIn = await repo_chatroom.findOne({chatid: chatid});
       let mem = await repo_user.findOne({userid : userid});
-      if (!await repo_blockList.amIBlockedBy(user, mem)) {
+      if (await this.chatGatewayService.checkIfIcanAddFriend(user, mem)) {
         if (await this.chatGatewayService.enterChatRoom(mem, chatroomIn)) {
           members.push(repo_user.getSimpleInfo(mem));
           newRoom.join(onlineManager.socketIdOf(mem.userid));
@@ -217,7 +131,6 @@ export class ChatGateway {
   @SubscribeMessage('enterChatRoom')
   async enterChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "enterChatRoom", ...payload1});
-    
     let payload;
     if (process.env.NODE_ENV === "dev") {
       const chatroom = await getCustomRepository(ChatRoomRepository).findOne({title: payload1.title});
@@ -228,51 +141,15 @@ export class ChatGateway {
     }
     const repo_user = getCustomRepository(UserRepository);
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
-    const repo_chatMember = getCustomRepository(ChatMembershipRepository);
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
-    this.log("test log")
-    if (user.banPublicChat) {
-      console.log("test1-1")
-      this.log("you banPublicChat");
-      return ;
-    }
-    // ban되어있는지 확인(chatBanList)
-   
     const chatroom = await repo_chatroom.findOne({chatid: payload.chatid});
-    // 방이 존재하는지
-    console.log("test2")
-    if (chatroom === undefined) {
-      this.log("not exist room");
+    if (!chatroom) {
+      this.log(`Bad Request : No such room`)
       return ;
     }
-    // private방에 초대되었는가?
-    const banList = await getCustomRepository(ChatBanListRepository).findOne({chatRoom: chatroom, user: user});
-    if (banList) {
-      this.log("you baned");
-      return ; // 채팅방 못들어감
-    }
-    console.log("test3")
-    if (chatroom.type === "private") {
-      this.log("not invite you");
+    if (! await this.chatGatewayService.checkIfcanEnterRoom(user, chatroom, payload.password)) {
       return ;
     }
-    console.log("test4")
-    // 이미 채팅방에 입장되어있을 경우
-    if (await repo_chatMember.findOne({chatroom : chatroom, member : user})) {
-      this.log("already enter the room");
-      return ;
-    }
-    // 패스워드 맞는지
-    if (chatroom.password !== payload.password) {
-      this.log("not match password");
-    }
-    // 정원초과인지
-    if (chatroom.memberCount === 100)  {
-      this.log("room is full");
-      return ; // 정원 초과
-    }
-    
-    // 채팅방 입장 online으로 변경
     await this.chatGatewayService.enterChatRoom(user, chatroom);
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
     room.join(socket.id);
@@ -376,7 +253,7 @@ export class ChatGateway {
     let res = await Promise.all([
       repo_blockList.amIBlockedBy(user, theOther),
       repo_blockList.didIBlock(user, theOther),
-      !repo_friendList.isMyFriend(user, theOther)
+      repo_friendList.isNotMyFriend(user, theOther)
     ]);
     if (res.findIndex(result=>result===true) !== -1) {
       //Error
@@ -408,7 +285,6 @@ export class ChatGateway {
     else {
       payload = payload1;
     }
-    // 나중에 정해야함!!!!!!!채팅방 소유자가 나갈 경우(매니저 없음)
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
     const chatUser = await repo_chatmember.findOne({chatroom:{chatid : payload.chatid}, member:{userid : socket.userid}});
     if (!chatUser) {
@@ -468,20 +344,19 @@ export class ChatGateway {
   @SubscribeMessage('chatHistory')
   async chatHistory(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "chatHistory", ...payload1});
-    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    const payload = {userid : user.userid, chatid: payload1.chatid};
-
-    let list = [];
-    // {userid, contents};
-
-    const repo_chatHistory : ChatHistory[] = await getCustomRepository(ChatHistoryRepository).find({chatRoom: {chatid : payload.chatid}});
-    const chatList = repo_chatHistory.map(async (element : ChatHistory) => {
-      const contents = element.contents;
-      const userid = element.userid;
-      list.push({userid, contents});
-    })
-    socket.emit("chatHistory", list);
+    let payload;
+    if (process.env.NODE_ENV === "dev") {
+      const chatRoomX = await getCustomRepository(ChatRoomRepository).findOne({title :payload1.title});
+      payload = {chatid : chatRoomX.chatid}
+    }
+    else 
+      payload = payload1;
+    const repo_chathistory = getCustomRepository(ChatHistoryRepository);
+    const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
+    const {lastIndex, histories} = repo_chathistory.amugeona(lists);
+    if (lastIndex !== -1)
+      socket.historyIndex = lastIndex;
+    socket.emit("chatHistory", {chatid : payload.chatid, list : histories});
   }
   
 
@@ -489,22 +364,19 @@ export class ChatGateway {
   @SubscribeMessage('chatHistoryUpdate')
   async chatHistoryUpdate(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload1: any) {
     this.log({gate : "chatHistoryUpdate", ...payload1});
-    // const user = await getCustomRepository(UserRepository).findOne({nickname: payload1.myNickname})
-    const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-    const payload = {userid : user.userid, chatid: payload1.chatid};
-
-    const chatid = payload.chatid;
-    // 소켓에 저장한다 하고 짜기
-    const index = socket.historyIndex;
-    
-    const chatHistory : ChatHistory[] = await getCustomRepository(ChatHistoryRepository).find(
-      {
-        skip:index, take:30, select:["contents", "userid", "createDate"],
-        where : [{chatRoom : {chatid: payload.chatid}}],
-      });
-    console.log("history : ", chatHistory);
-
-    socket.emit("chatHistoryUpdate", {chatid, chatHistory});
+    let payload;
+    if (process.env.NODE_ENV === "dev") {
+      const chatRoomX = await getCustomRepository(ChatRoomRepository).findOne({title :payload1.title});
+      payload = {chatid : chatRoomX.chatid}
+    }
+    else 
+      payload = payload1;
+    const repo_chathistory = getCustomRepository(ChatHistoryRepository);
+    const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
+    const {lastIndex, histories} = repo_chathistory.amugeona(lists);
+    if (lastIndex !== -1)
+      socket.historyIndex = lastIndex;
+    socket.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});
   }
 
   // 채팅 메세지 :
@@ -528,7 +400,7 @@ export class ChatGateway {
     // 나머지 전부 보냄.
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
     let now = new Date();
-    if (me.muteUntil > now) {
+    if (me.muteUntil && me.muteUntil > now) {
       this.log("Mute")
       return false;
     }

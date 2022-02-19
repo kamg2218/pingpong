@@ -2,13 +2,10 @@ import { Logger } from "@nestjs/common";
 import { ChatRoom, ChatMembership } from "src/db/entity/Chat/ChatEntity";
 import { User } from "src/db/entity/User/UserEntity";
 import { ChatBanListRepository, ChatHistoryRepository, ChatMembershipRepository, ChatRoomRepository } from "src/db/repository/Chat/ChatCustomRepository";
-import { UserRepository } from "src/db/repository/User/UserCustomRepository";
+import { BlockedFriendsRepository, FriendsRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
 import { onlineChatRoomManager } from "./online/onlineChatRoomManager";
-// import { onlineChatMap } from "./online/chatRoom"
-// import { onlineManager } from "./online/chatRoomManager";
-
 
 export class ChatGatewayService {
     private readonly logger = new Logger();
@@ -120,7 +117,73 @@ export class ChatGatewayService {
         const newOwner = await repo_chatmember.getNewOwner(chatid);
         if (newOwner) {
             await repo_chatmember.update(newOwner.index, {position : "owner"});
-            room.announce("updateChatRoom", {"owner" : newOwner.member.userid}) // edit
+            room.announce("updateChatRoom", {"switchOnwer" : newOwner.member.userid}) // edit
         };
+    }
+    async onlineMyChatRoom(socket :AuthSocket) {
+        if (!socket.userid)
+            return ;
+        const repo_chatmember = getCustomRepository(ChatMembershipRepository);
+        const myChatList = await repo_chatmember.getMyChatRoom(socket.userid);
+        myChatList.map(list => {
+            const room = onlineChatRoomManager.getRoomByid(list.chatid);
+            room.join(socket.id);
+        })
+    }
+
+    async offlineMyChatRoom(socket :  AuthSocket) {
+        if (!socket.userid)
+            return ;
+        const repo_chatmembership = getCustomRepository(ChatMembershipRepository);
+        const myRoomlist = await repo_chatmembership.getMyChatRoom(socket.userid);
+        console.log("myroom : ", myRoomlist);
+        myRoomlist.map(list=>{
+            let onlineChatRoom = onlineChatRoomManager.getRoomByid(list.chatid);
+            if (onlineChatRoom)
+                onlineChatRoom.leave(socket.id);
+        })
+    }
+
+    async checkIfIcanAddFriend(user: User, mem: User) {
+        const repo_friendList = getCustomRepository(FriendsRepository);
+        const repo_blockList = getCustomRepository(BlockedFriendsRepository);
+        let res = await Promise.all([
+            repo_blockList.amIBlockedBy(user, mem),
+            repo_blockList.didIBlock(user, mem),
+            repo_friendList.isNotMyFriend(user, mem)
+          ]); 
+        if (res.findIndex(value=>value===true) === -1)
+          return true;
+        return false;
+    }
+
+    async checkIfcanEnterRoom(user : User, chatroom : ChatRoom, password:string) {
+        const repo_chatMember = getCustomRepository(ChatMembershipRepository);
+        const repo_banlist = getCustomRepository(ChatBanListRepository);
+        if (user.banPublicChat) {
+            this.log("you banPublicChat");
+            return false;
+        }
+        if (await repo_banlist.findOne({chatRoom: chatroom, user: user})) {
+            this.log("you baned");
+            return false;
+        }
+        if (chatroom.type === "private") {
+            this.log("not invite you");
+            return false;
+        }
+        if (await repo_chatMember.findOne({chatroom : chatroom, member : user})) {
+            this.log("already enter the room");
+            return false;
+        }
+        if (chatroom.password !== password) {
+            this.log("not match password");
+            return false;
+        }
+        if (chatroom.memberCount === 100)  {
+            this.log("room is full");
+            return false;
+        }
+        return true;
     }
 }

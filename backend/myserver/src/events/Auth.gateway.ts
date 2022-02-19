@@ -15,6 +15,7 @@ import { MatchingManager } from './online/matchingManager';
 import { UserGatewayService } from './userGateway.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
+import { ChatGatewayService } from './chatGateway.service';
 
 const options = {
 	cors : {
@@ -32,7 +33,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		private readonly jwtService : JwtService,
 		private readonly authService : AuthService,
 		private readonly userGatewayService : UserGatewayService,
-		private readonly gameGatewayService : GameGatewayService) {  
+		private readonly gameGatewayService : GameGatewayService,
+		private readonly chatGatewayService : ChatGatewayService) {  
 	}
   
 	@WebSocketServer() public server:Server;
@@ -102,6 +104,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 					all.then((values)=>{
 						this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
 					});
+				this.chatGatewayService.onlineMyChatRoom(socket);
 			}}
 			catch(err) {
 				console.log("Invalid Token");
@@ -122,27 +125,25 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		MatchingManager.cancle(userid);
 		await this.gameGatewayService.deleteMyMatch(user.userid);
 		let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
-		if (gameRoom) {
-		gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
-		}
+		if (gameRoom)
+			gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
 		await getCustomRepository(UserRepository).logout(user);
-		onlineManager.offline(socket);
-		onlineManager.print();
 		console.log("[disconnected] online game : ", onlineGameMap);
 		const list = await onlineManager.onlineFriends(socket, user);
 		for (let sokId in list) {
 			let friend = list[sokId];
-			const all = Promise.all([
+			const all = await Promise.all([
 				this.userGatewayService.getUserInfo(friend),
 				this.userGatewayService.getFriendsInfo(friend),
 				this.userGatewayService.getFriendRequest(friend),
 				this.userGatewayService.getGamehistory(friend),
 				this.userGatewayService.getBlocklist(friend),
 			  ]);
-			all.then((values)=>{
-				this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
-			});
+			this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
 		}
+		await this.chatGatewayService.offlineMyChatRoom(socket);
+		onlineManager.offline(socket);
+		onlineManager.print();
 	}
 
 	@SubscribeMessage('connecting')
@@ -154,16 +155,15 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const list = await onlineManager.onlineFriends(socket, user);
 		for (let sokId in list) {
 			let friend = list[sokId];
-			const all = Promise.all([
+			const all = await Promise.all([
 				this.userGatewayService.getUserInfo(friend),
 				this.userGatewayService.getFriendsInfo(friend),
 				this.userGatewayService.getFriendRequest(friend),
 				this.userGatewayService.getGamehistory(friend),
 				this.userGatewayService.getBlocklist(friend),
 			  ]);
-			all.then((values)=>{
-				this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
-			});
+			this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
 		}
+		this.chatGatewayService.onlineMyChatRoom(socket);
 	}
 }

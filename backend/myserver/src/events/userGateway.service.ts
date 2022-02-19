@@ -180,7 +180,7 @@ export class UserGatewayService {
         this.logger.log("no such user");
         throw new WsException("Bad Request");
       }  
-      if (!await repo_friend.isMyFriend(user, friend)) {
+      if (await repo_friend.isNotMyFriend(user, friend)) {
         this.logger.log(`You are not friend of ${friend.nickname}`, "UserGatewayService");
         throw new WsException(`You are not friend of ${friend.nickname}`);
       }

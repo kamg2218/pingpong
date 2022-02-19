@@ -64,5 +64,14 @@ export class ChatMembershipRepository extends Repository<ChatMembership> {
             });
         }
         return newOwner;
-    } 
+    }
+    // 내가 속해있는 챗팅방의 chatid를 배열로 return
+    async getMyChatRoom(userid : string) {
+        let chatList = [];
+        let allChatList = await this.find({member : {userid: userid}});
+        for (let index in allChatList) {
+            chatList.push(allChatList[index].chatroom);
+        };
+        return chatList;
+    }
 }
