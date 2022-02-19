@@ -67,6 +67,19 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 	}
 
+	private getAccessToken(raw : string) {
+		const words = raw.split(";");
+		for (let index in words) {
+			let word = words[index];
+			if (word.search("accessToken=") !== -1) {
+				let name = "accessToken="
+				let value = word.slice(name.length);
+				return value;
+			}
+		}
+		throw new Error("No Token");
+	}
+
 	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
     	this.logger.log(`${socket.id} socket connected`, "AuthGateway");
 		const x = socket?.handshake?.headers["authorization"];
@@ -76,9 +89,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (!x)
 			socket.disconnect();
 		else {
-			let tokenName = "accessToken=";
-			let tokenValue = x.slice(tokenName.length);
 			try {
+				let tokenValue = this.getAccessToken(x);
 				let inform = true;
 				console.log(`verify : ${tokenValue}`);
 				let res = await this.jwtService.verify(tokenValue);
