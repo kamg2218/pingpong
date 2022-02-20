@@ -68,9 +68,3 @@ export type ProfileUser = {
 	block: boolean,
 	friend: boolean
 }
-//game
-// socket.on("qrcode", (data)=>{
-// 	console.log('got qrcode!');
-// 	console.log(data.qrcode);
-// 	// user.qrcode = data.qrcode;
-// })

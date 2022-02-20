@@ -25,14 +25,17 @@ export default function MenuChat(){
 			chatroom[1](chat);
 		}
 	}
+	const handlePublic = () => {
+		socket.emit("publicChatRoom");
+	}
 
 	return (
 		<div key="menuchat" className="container" id="chatlist">
 			<div className="d-flex justify-content-end">
-				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#AddChatModal">
+				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#addChatModal">
 					<i className="bi bi-chat"/>
 				</button>
-				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#PublicChatModal">
+				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#publicChatModal" onClick={handlePublic}>
 					<i className="bi bi-unlock"/>
 				</button>
 			</div>

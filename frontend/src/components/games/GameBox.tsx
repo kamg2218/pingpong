@@ -34,7 +34,7 @@ export default function GameBox(props:any){
 			return <div key={k} className="btn btn-sm disabled" id="gameBoxButton">{content}</div>
 		}
 		else if (props.info.password){
-			return <div key={k} className="btn btn-sm" id="gameBoxButton" data-toggle="modal" data-target="#InputPwdModal" onClick={()=>setState(result)}>{content}</div>
+			return <div key={k} className="btn btn-sm" id="gameBoxButton" data-toggle="modal" data-target="#inputPwdModal" onClick={()=>setState(result)}>{content}</div>
 		}else{
 			return <div key={k} className="btn btn-sm" id="gameBoxButton" onClick={()=>handleEnterGameRoom(result)}>{content}</div>
 		}

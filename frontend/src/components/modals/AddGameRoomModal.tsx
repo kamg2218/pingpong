@@ -71,7 +71,7 @@ export default function AddGameRoomModal(props: any){
 		socket.emit("createGameRoom", info);
 	}
 	return (
-		<div className="modal fade" id="AddGameRoomModal" role="dialog" tabIndex={-1} aria-labelledby="addGameRoomModalLabel" aria-hidden="true">
+		<div className="modal fade" id="addGameRoomModal" role="dialog" tabIndex={-1} aria-labelledby="addGameRoomModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">
 				<div className="modal-content">
 					<div className="modal-header">

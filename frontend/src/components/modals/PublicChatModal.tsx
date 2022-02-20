@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import {socket} from "../../socket/userSocket"
-import { ChatData, chatRoom } from "../../socket/chatSocket"
 import PublicChatList from "../chat/PublicChatList"
+import { ChatContext, ChatData, chatRoom } from "../../socket/chatSocket"
 
 export default function PublicChatModal(){
 	const [pwd, setPwd] = useState<string>("");
 	const [checkedroom, checkRoom] = useState<string>("");
-	const [publicroom, setPublic] = useState<ChatData>();
+	const {publicroom} = useContext(ChatContext);
 
 	useEffect(() => {
-		if (!publicroom){
-			console.log("public chat room emit!")
+		if (!publicroom[0]){
 			socket.emit("publicChatRoom");
 		}
 		socket.on("publicChatRoom", (data:ChatData)=>{
 			console.log("public chat room on!");
-			setPublic(data);
+			publicroom[1](data);
 		})
 	}, [pwd, checkedroom, publicroom]);
 
@@ -28,7 +27,7 @@ export default function PublicChatModal(){
 	}
 
 	return (
-		<div className="modal fade h-8" id="PublicChatModal" role="dialog" tabIndex={-1} aria-labelledby="PublicChatModalLabel" aria-hidden="true">
+		<div className="modal fade h-8" id="publicChatModal" role="dialog" tabIndex={-1} aria-labelledby="PublicChatModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">
 				<div className="modal-content">
 					<div className="modal-header">
@@ -40,7 +39,7 @@ export default function PublicChatModal(){
 					<div className="modal-body">
 						<div className="container p-0">
 							<div className="row overflow-scroll justify-content-center">
-								{publicroom &&  publicroom.chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} key={`publicChatList_${room.chatid}`}/>)}
+								{publicroom[0] &&  publicroom[0].chatroom?.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} key={`publicChatList_${room.chatid}`}/>)}
 							</div>
 						</div>
 					</div>

@@ -1,6 +1,6 @@
 export default function AlertModal(props: any){
 	return (
-		<div className="modal fade" id="AlertModal" role="dialog" tabIndex={-1} aria-labelledby="AlertModalLabel" aria-hidden="true">
+		<div className="modal fade" id="alertModal" role="dialog" tabIndex={-1} aria-labelledby="AlertModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered modal-sm" role="document">
 				<div className="modal-content">
 					<div className="modal-header">

@@ -2,14 +2,12 @@
 import {useContext, useState} from "react";
 import { socket, UserContext } from "../../socket/userSocket";
 import PwdModal from "../modals/PwdModal";
-import InviteModal from "../modals/InviteModal";
-import { ChatContext, chatRoom } from "../../socket/chatSocket";
-import "./chat.css";
 import MuteModal from "../modals/MuteModal";
+import InviteModal from "../modals/InviteModal";
+import "./chat.css";
 
 export default function MenuChatDropdown(props :any){
 	const userContext = useContext(UserContext);
-	// const chatContext = useContext(ChatContext);
 	const [pwdDisabled] = useState(
 		props.info.owner !== userContext.user[0]?.id ? true : !props.info.lock
 	);
@@ -23,10 +21,8 @@ export default function MenuChatDropdown(props :any){
 		console.log("exit chat room!");
 		socket.emit("exitChatRoom", { chatid: props.info.chatid }, (result:boolean)=>{
 			if (result === true){
-				// const chatroom = chatContext.chatroom;
-				// chatroom[1](chatroom[0].chatroom.filter((room:chatRoom)=>room.chatid !== props.info.chatid));
-				// chatroom[1](chatroom[0].order.filter((id:string)=>id !== props.info.chatid));
 				socket.emit("myChatRoom");
+				window.location.reload();
 			}
 		});
 	}
@@ -41,13 +37,13 @@ export default function MenuChatDropdown(props :any){
 					<button className="btn" key="title" onClick={()=>handleTitle()} disabled={props.info.owner !== userContext.user[0]?.id}>Title</button>
 				</li>
 				<li className="dropdown-item" key="pwd">
-					<button type="button" className="btn" data-toggle="modal" data-target="#PwdModal" disabled={pwdDisabled}>Password</button>
+					<button type="button" className="btn" data-toggle="modal" data-target="#pwdModal" disabled={pwdDisabled}>Password</button>
 				</li>
 				<li className="dropdown-item" key="invite">
-					<button className="btn" data-toggle="modal" data-target="#InviteModal">Invite</button>
+					<button className="btn" data-toggle="modal" data-target="#inviteModal">Invite</button>
 				</li>
 				<li className="dropdown-item" key="mute">
-					<button className="btn" data-toggle="modal" data-target="#MuteModal">Mute</button>
+					<button className="btn" data-toggle="modal" data-target="#muteModal">Mute</button>
 				</li>
 				<li className="dropdown-item" key="exit">
 					<button className="btn" onClick={() => handleExit()}>Exit</button>

@@ -26,6 +26,7 @@ export default function SideMenuChat(){
 		// });
 		socket.on("enterChatRoom", (data:chatRoom)=>{
 			const tmp:ChatData = chatContext.chatroom[0];
+			console.log(tmp);
 			tmp.order.push(data.chatid);
 			tmp.chatroom.push(data);
 			chatContext.chatroom[1](tmp);
