@@ -41,10 +41,10 @@ export default function Lobby(props:any){
 				</div>
 				<div className="col-2 p-0 mx-0 my-5">
 				 	<div className="row my-3 mx-1 px-1">
-						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#AddGameRoomModal"><i className="bi bi-plus-circle"></i> 방 만들기</button>
+						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#addGameRoomModal"><i className="bi bi-plus-circle"></i> 방 만들기</button>
 					</div>
 					<div className="row my-3 mx-1 px-1">
-						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#LoadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
+						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#loadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
 					</div>
 				</div>
 			</div>

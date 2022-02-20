@@ -22,7 +22,7 @@ export default function MatchRequestModal(props:any){
 	}, [handleSubmit, value]);
 	
   return (
-		<div>
+		<div id="matchRequestModal">
 			<div className="modal-header">
 				<h5 className="modal-title">대전 신청</h5>
 			</div>

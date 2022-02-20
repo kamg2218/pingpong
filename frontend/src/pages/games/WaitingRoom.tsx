@@ -32,6 +32,7 @@ export default function WaitingRoom(){
 		});
 		gameContext.gameroomlist[1](undefined);
 		history.push('/game');
+		window.location.reload();
 	}
 	return (
 		<div className="container-fluid m-0 p-0 pb-2" id="waitingRoom">
@@ -54,7 +55,7 @@ export default function WaitingRoom(){
 				<div className="col mx-1" id="waitingRoomObserver">{gameRoom?.observer[4] ? profileBox(gameRoom?.observer[4].userid, Profile(gameRoom?.observer[4].profile), gameRoom?.observer[4].nickname, false):''}</div>
 			</div>
 			<div className="row mx-3 my-2">
-				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart}>Start</button>
+				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={gameRoom?.players.length !== 2}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>
 		</div>

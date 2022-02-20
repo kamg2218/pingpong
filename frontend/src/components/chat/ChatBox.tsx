@@ -1,10 +1,10 @@
-import { ChatContext, ChatData } from "../../socket/chatSocket"
-import Profile from "../../icons/Profile"
 import {useContext} from "react";
+import Profile from "../../icons/Profile"
+import { ChatContext, ChatData } from "../../socket/chatSocket"
 
 export default function ChatBox(props:any){
 	const chatContext = useContext(ChatContext);
-	const chatRoom:ChatData = chatContext.chatroom[0];  
+	const chatRoom:ChatData = chatContext.chatroom[0];
 	const room = chatRoom?.chatroom.find(data => data.chatid === props.chatid);
 	const member = room?.members.find(person => person.userid === props.userid);
 	let profile = Profile(member?.profile ?? 1);

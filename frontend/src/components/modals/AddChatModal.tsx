@@ -108,7 +108,7 @@ export default function AddChatModal(){
 	}
 
 	return (
-		<div className="modal fade h-8" id="AddChatModal" role="dialog" tabIndex={-1} aria-labelledby="AddChatModalLabel" aria-hidden="true">
+		<div className="modal fade h-8" id="addChatModal" role="dialog" tabIndex={-1} aria-labelledby="AddChatModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">
 				<div className="modal-content">
 					<div className="modal-header">

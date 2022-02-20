@@ -80,7 +80,7 @@ export default function MyProfileModal(props: any) {
 		});
 		profile?.friends?.forEach((friend:Friend)=>{
 			list.push(
-				<div className="row text-center align-items-center" id="friendContent" key={`friend_${friend.userid}`} data-dismiss="modal" data-toggle="modal" data-target="#ProfileModal" onClick={()=>handleClick(friend.userid)}>
+				<div className="row text-center align-items-center" id="friendContent" key={`friend_${friend.userid}`} data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
 					<div className="col" key={`friend_${friend.userid}_img`}><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
 					<div className="col" key={`friend_${friend.userid}_nickname`}>{friend.nickname}</div>
 					<div className="col" key={`friend_${friend.userid}_onoff`}>{friend.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}</div>
@@ -93,7 +93,7 @@ export default function MyProfileModal(props: any) {
 		let list:any = [];
 		profile?.blacklist?.forEach((friend:Friend)=>{
 			list.push(
-				<div className="row text-center align-items-center" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#ProfileModal" onClick={()=>handleClick(friend.userid)}>
+				<div className="row text-center align-items-center" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
 					<div className="col"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
 					<div className="col">{friend.nickname}</div>
 					<div className="col">{friend.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}</div>
@@ -103,7 +103,7 @@ export default function MyProfileModal(props: any) {
 		return list;
 	}
 	return (
-		<div className="modal fade" id="MyProfileModal" role="dialog" tabIndex={-1} aria-labelledby="MyProfileModalLabel" aria-hidden="true">
+		<div className="modal fade" id="myProfileModal" role="dialog" tabIndex={-1} aria-labelledby="MyProfileModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">
 				<div className="modal-content">
 					<div className="modal-header">

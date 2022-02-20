@@ -32,7 +32,7 @@ export default function MenuGame(props:any){
 			setClicked(person.userid);
 		}
 		return (
-			<div className="m-0 p-2" id="friendonoff" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#ProfileModal">
+			<div className="m-0 p-2" id="friendonoff" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#profileModal">
 				<div className="col-8 m-0 mx-1 px-2 h6" id="friendNick">{person.nickname}</div>
 				<div className="col">
 					{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light" id="light-circle"/>}
@@ -45,7 +45,7 @@ export default function MenuGame(props:any){
 		<div className="container p-2" id="menu">
 			<div className="col justify-content-center">
 				<img src={Profile(user[0]?.profile ? user[0].profile : 1)} className="row mx-auto my-3" alt="profile" id="menuGameProfile"/>
-				<div className="row h2 mx-4 p-2"  id="menuNick" data-toggle="modal" data-target="#MyProfileModal">{user[0]?.nickname}</div>
+				<div className="row h2 mx-4 p-2"  id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user[0]?.nickname}</div>
 				<label className="row mt-3" id="menuRecord">WIN : LOSE</label>
 				<div className="row h1 mb-4" id="winLose">{user[0]?.win} : {user[0]?.lose}</div>
 				<div className="row m-1 p-1" id="friendList">
