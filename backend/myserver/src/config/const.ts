@@ -1,0 +1,1 @@
+export const DELAYEDDAY = 7
