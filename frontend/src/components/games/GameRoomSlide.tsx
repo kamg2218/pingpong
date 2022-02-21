@@ -2,6 +2,7 @@ import { useEffect, useState, useContext} from "react";
 import {socket} from "../../socket/userSocket"
 import { gameRoom, GameContext } from "../../socket/gameSocket"
 import GameBox from "./GameBox"
+import "../../css/Game.css";
 
 export default function GameRoomSlide(props: any){
 	const gameContext = useContext(GameContext);
@@ -52,13 +53,13 @@ export default function GameRoomSlide(props: any){
 
 	return (
 		<div key="gameRoomSlide" className="container m-0 p-0">
-			<div key="slideFirstCol" className="col">
+			<div key="slideFirstCol" className="col h-100">
 				<div key="slide1Row" className="row mx-1 my-0">
 					{props.search === "" ? handleCarouselItem() : handleSearchItem()}
 				</div>
-				<div key="slide2Row" className="row d-flex justify-content-center m-1">
-					<span key="slidePrev" className="carousel-control-prev-icon shadow mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
-					<span key="slideNext" className="carousel-control-next-icon shadow mx-5" aria-hidden="true" onClick={()=>handleButton(1)}></span>
+				<div key="slide2Row" id="slide2Row" className="row m-1 h-100">
+					<span key="slidePrev" id="slidePrev" className="carousel-control-prev-icon mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
+					<span key="slideNext" id="slideNext" className="carousel-control-next-icon mx-5" aria-hidden="true" onClick={()=>handleButton(1)}></span>
 				</div>
 			</div>
 		</div>

@@ -31,11 +31,11 @@ export default function Lobby(props:any){
 		<div className="container mx-1 p-2" id="lobbyPad">
 			<div className="row m-0">
 				<div className="col-10">
-					<div className="row-2 d-flex justify-content-start mx-1 my-2">
+					<div className="row-3 d-flex justify-content-start mx-1 my-2">
 						<i className="bi bi-search mx-3"></i>
 						<input className="w-50" id="lobbySearch" onChange={handleSearch}></input>
 					</div>
-					<div className="row">
+					<div className="row h-75">
 						<GameRoomSlide search={search}></GameRoomSlide>
 					</div>
 				</div>

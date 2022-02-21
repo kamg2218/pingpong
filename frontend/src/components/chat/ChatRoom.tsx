@@ -20,10 +20,10 @@ export default function ChatRoom(props :any){
 	const chatid = chatContext.chatroom[0]?.order[props.idx];
 
 	useEffect(()=>{
-		if (!chatHistory[0] || chatHistory[0].chatid !== props.idx){
+		if (!chatHistory[0] || chatHistory[0].chatid !== chatid){
 			console.log("chat history emitted!")
 			socket.emit("chatHistory", {
-				chatid: props.idx,
+				chatid: chatid,
 			});
 		}
 		socket.on("chatHistory", (data:ChatHistory)=>{
@@ -31,9 +31,10 @@ export default function ChatRoom(props :any){
 		})
 		socket.on("chatMessage", (data:any)=>{
 			if (data.result){
+				console.log(data.result);
 				return ;
 			}
-			const chat = chatHistory[0];
+			const chat:ChatHistory = chatHistory[0];
 			chat.list.push(data);
 			chatHistory[1](chat);
 		})
@@ -43,8 +44,11 @@ export default function ChatRoom(props :any){
 		setChat(e.target.value);
 	}
 	const handleSendBtn = (event:any) => {
+		if (chat === ""){
+			return ;
+		}
 		socket.emit("chatMessage", {
-			chatid: props.idx,
+			chatid: chatid,
 			content: chat,
 		}, (result:boolean)=>{
 			if (result === false)
