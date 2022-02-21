@@ -3,8 +3,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./NickAndProfile.css";
 import AlertModal from "../../components/modals/AlertModal";
-import Profile from "../../components/login/ProfileCarousel";
-
+import ProfileCarousel from "../../components/login/ProfileCarousel";
 
 export default function NickAndProfile(){
 	const history = useHistory();
@@ -65,7 +64,7 @@ export default function NickAndProfile(){
 	return (
 		<div id='nickandprofile'>
 			<form>
-				<Profile profile={profile} setProfile={setProfile}></Profile>
+				<ProfileCarousel profile={profile} setProfile={setProfile}></ProfileCarousel>
 				<div className="d-flex my-2">
 					<label className="m-2" id="nickLabel">Nickname</label>
 					<input className="m-1" id="nickInput" placeholder={nicknamePlaceholder} onChange={handleInput} required />
