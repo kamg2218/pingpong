@@ -16,7 +16,7 @@ export default function AddChatModal(){
 	const [okBtn, setOkBtn] = useState<boolean>(true);
 	let members:Array<string> = [];
 
-	function handleSubmit(){
+	const handleSubmit = () => {
 		let data: any = {};
 
 		if (okBtn === false)

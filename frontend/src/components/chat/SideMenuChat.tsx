@@ -18,18 +18,27 @@ export default function SideMenuChat(){
 	useEffect(()=>{
 		socket.on("myChatRoom", (data:ChatData)=>{
 			console.log("my chat room!!");
+			console.log(data);
 			chatContext.chatroom[1](data);
 		});
-		// socket.on("publicChatRoom", (data:ChatData)=>{
-		// 	console.log("public chat room");
-		// 	chatContext.publicroom[1](data);
-		// });
 		socket.on("enterChatRoom", (data:chatRoom)=>{
 			const tmp:ChatData = chatContext.chatroom[0];
 			console.log(tmp);
-			tmp.order.push(data.chatid);
-			tmp.chatroom.push(data);
-			chatContext.chatroom[1](tmp);
+			if (!tmp){
+				let list:ChatData = {
+					order: [],
+					chatroom: [],
+				};
+				list.order.push(data.chatid);
+				list.chatroom.push(data);
+				chatContext.chatroom[1](list);
+			}
+			else if (tmp.order.indexOf(data.chatid) === -1){
+				tmp.order.push(data.chatid);
+				tmp.chatroom.push(data);
+				chatContext.chatroom[1](tmp);
+			}
+			window.location.reload();
 		});
 		socket.on("updateChatRoom", (data:InputChatRoom)=>{
 			const tmp:ChatData = chatContext.chatroom[0];

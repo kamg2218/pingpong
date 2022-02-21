@@ -32,6 +32,7 @@
 	border: 2px solid #C9A641;
 	border-top: none;
 	border-radius: 0px 25px 25px 25px;
+	min-height: 74vh;
 }
 #lobbyButton{
 	border: 1px solid #C9A641;
@@ -47,6 +48,7 @@
 #lobbyPad{
 	border: 1px solid #C9A641;
 	border-radius: 25px;
+	min-height: 80vh;
 }
 #lobbySearch{
 	border: 1px solid #C9A641;
@@ -56,4 +58,13 @@
 	border-bottom: 2px solid #C9A641;
 	box-shadow: none;
 	outline: none;
+}
+#slide2Row{
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+}
+#slidePrev:hover, #slideNext:hover{
+	border-radius: 5px;
+	box-shadow: .5px 1px 1px .5px #C9A641;
 }
