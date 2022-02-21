@@ -68,7 +68,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	private getAccessToken(raw : string) {
-		const words = raw.split(";");
+		const words = raw.split("; ");
 		for (let index in words) {
 			let word = words[index];
 			if (word.search("accessToken=") !== -1) {
@@ -120,7 +120,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			}}
 			catch(err) {
 				console.log("Invalid Token");
-				console.log(err)
+				console.log(err);
 				socket.disconnect();
 			}
 		}

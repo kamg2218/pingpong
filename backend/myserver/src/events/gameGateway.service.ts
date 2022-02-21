@@ -105,6 +105,10 @@ export class GameGatewayService {
         const repo_gameRoom = getCustomRepository(GameRoomRepository);
         const gameRoom = await repo_gameRoom.findOne(roomOptions.roomid);
         let position : GamePosition = roomOptions.isPlayer ? 'normal' : 'observer';
+        if (!gameRoom) {
+            this.log(`There is no such GameRoom`);
+            return {result : false, gameRoom : null};
+        }
         if (!repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password)) {
             this.log(`It isn't available to join the GameRoom ${gameRoom.title} as ${position}`);
             return {result : false, gameRoom : null};
@@ -158,14 +162,10 @@ export class GameGatewayService {
             }
             game.updateGameRoom(socket.id, {manager : newOwner.userid});
         };
-        this.checkIfRoomShouldBeDeleted(gameRoom).then(
-            (res)=>{
-            if (!res)
-                return ;
+        if (await this.checkIfRoomShouldBeDeleted(gameRoom)) {
             game.makeObserversLeave();
-            this.deleteGameRoom(gameRoom);
-            }
-        );
+            await this.deleteGameRoom(gameRoom);
+        }
         return gameRoom;
     }
 
@@ -288,7 +288,6 @@ export class GameGatewayService {
         }
         if (!payload?.observer || payload.observer < 0 || payload.observer > 5)
             return false;
-        console.log("speed : ", payload.speed);
         if (!payload?.speed)
             return false;
         return true;
