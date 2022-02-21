@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 import "../../css/MenuGame.css"
 import Profile from "../../icons/Profile"
 import {Friend, socket, UserContext, User} from "../../socket/userSocket"

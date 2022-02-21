@@ -15,7 +15,7 @@ export default function ProfileModal(props: any) {
 	let buttonFriend:string = button;
 
 	useEffect(() => {
-		if (!profile && userid) {
+		if (userid && !profile) {
 			socket.emit("opponentProfile", {
 				userid: userid,
 			});

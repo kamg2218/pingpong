@@ -1,5 +1,4 @@
 import {useState} from "react"
-import {useHistory} from "react-router-dom"
 import InputPwdModal from "../modals/InputPwdModal"
 import {socket} from "../../socket/userSocket"
 import "../../css/GameBox.css"
@@ -11,7 +10,6 @@ type info = {
 }
 
 export default function GameBox(props:any){
-	const history = useHistory();
 	const [state, setState] = useState<boolean>(false);
 	const [pwd, setPwd] = useState<string>("");
 
