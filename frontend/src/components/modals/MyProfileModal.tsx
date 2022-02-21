@@ -8,7 +8,6 @@ import axios from "axios";
 export default function MyProfileModal(props: any) {
 	const userContext = useContext(UserContext);
 	const profile:User = userContext.user[0];
-	// const [code, setCode] = useState<boolean>(false);
 	const [state, setState] = useState<boolean>(false);
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
@@ -24,7 +23,6 @@ export default function MyProfileModal(props: any) {
 		if (num.length !== 4){
 			return ;
 		}
-		// console.log(num);
 		if (!profile?.twofactor){
 			axios.post(url + "/turn-on").then((res:any)=>{
 				console.log(res)
