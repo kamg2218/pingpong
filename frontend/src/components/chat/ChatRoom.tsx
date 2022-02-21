@@ -20,7 +20,7 @@ export default function ChatRoom(props :any){
 	const chatid = chatContext.chatroom[0]?.order[props.idx];
 
 	useEffect(()=>{
-		if (!chatHistory[0] || chatHistory[0].chatid !== chatid){
+		if (chatid && (!chatHistory[0] || chatHistory[0].chatid !== chatid)){
 			console.log("chat history emitted!")
 			socket.emit("chatHistory", {
 				chatid: chatid,

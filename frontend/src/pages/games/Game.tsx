@@ -23,7 +23,7 @@ export default function Game() {
 	const [matchData, setMatch] = useState<match>();
 
 	useEffect(() => {
-		if (!user) {
+		if (!user[0]) {
 			console.log("user Info emit!")
 			socket.emit("userInfo");
 			socket.emit("myChatRoom");
@@ -36,7 +36,6 @@ export default function Game() {
 			console.log("enter game room");
 			if (msg.message) {
 				alert("fail to enter the room!");
-				history.push(history.location.pathname);
 			}
 			else {
 				game[1](msg);
@@ -45,6 +44,7 @@ export default function Game() {
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
 			}
+			window.location.reload();
 		});
 		socket.on("exitGameRoom", () => {
 			game[1](undefined)
@@ -89,6 +89,7 @@ export default function Game() {
 				msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
 			}
 			game[1](tmp);
+			window.location.reload();
 		});
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
