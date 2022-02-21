@@ -42,6 +42,8 @@ export class UserRepository extends Repository<User> {
             let option = options[value];
             if (option ===  "onoff")
                 res[option] = this.isOnOrOff(user);
+            else if (option === "twofactor")
+                res[option] = user.isTwoFactorAuthenticationEnabled;
             else if (user?.[option] !== undefined)
                 res[option] = user[option];
         }

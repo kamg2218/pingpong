@@ -1,24 +1,21 @@
 
-import { Logger, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Logger } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException, WsResponse } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { CORS_ORIGIN } from 'src/config/const';
 import { User } from 'src/db/entity/User/UserEntity';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
 import { getCustomRepository } from 'typeorm';
 import { onlineManager } from './online/onlineManager';
-// import { onlineMap } from './online/onlineManager';
 import { UserGatewayService } from './userGateway.service';
 
 const options = {
-  cors : {
-    origin : ["http://localhost:3000", "https://admin.socket.io"],
-    credentials : true,
-    // origin : "http://localhost:3000",
-  }
+    cors : {
+        origin : CORS_ORIGIN,
+        credentials : true,
+    }
 }
-
 @WebSocketGateway(options)
 // @UseGuards(AuthGuard('ws-jwt'))
 export class UserGateway{

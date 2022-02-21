@@ -21,7 +21,7 @@ export class UserGatewayService {
     
     public async getUserInfo(user : User) {
       const repo_user = getCustomRepository(UserRepository);
-      const userInfo = repo_user.getSimpleInfo(user, ["levelpoint"]);
+      const userInfo = repo_user.getSimpleInfo(user, ["levelpoint", "twofactor"]);
       const levelnextpoint = LevelManager.nextLevelPoint(userInfo.levelpoint);
       const level = LevelManager.level(userInfo.levelpoint);
       return {...userInfo, levelnextpoint, level};

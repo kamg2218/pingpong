@@ -6,6 +6,8 @@ import { BlockedFriendsRepository, FriendsRepository } from "src/db/repository/U
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
 import { onlineChatRoomManager } from "./online/onlineChatRoomManager";
+import { hash, compare } from 'bcrypt';
+import { SALTROUND } from "src/config/const";
 
 export class ChatGatewayService {
     private readonly logger = new Logger();
@@ -136,7 +138,7 @@ export class ChatGatewayService {
             return ;
         const repo_chatmembership = getCustomRepository(ChatMembershipRepository);
         const myRoomlist = await repo_chatmembership.getMyChatRoom(socket.userid);
-        console.log("myroom : ", myRoomlist);
+        // console.log("myroom : ", myRoomlist);
         myRoomlist.map(list=>{
             let onlineChatRoom = onlineChatRoomManager.getRoomByid(list.chatid);
             if (onlineChatRoom)
@@ -160,6 +162,8 @@ export class ChatGatewayService {
     async checkIfcanEnterRoom(user : User, chatroom : ChatRoom, password:string) {
         const repo_chatMember = getCustomRepository(ChatMembershipRepository);
         const repo_banlist = getCustomRepository(ChatBanListRepository);
+        const encodedPassword = await this.hashing(password);
+
         if (user.banPublicChat) {
             this.log("you banPublicChat");
             return false;
@@ -176,7 +180,7 @@ export class ChatGatewayService {
             this.log("already enter the room");
             return false;
         }
-        if (chatroom.password !== password) {
+        if (!this.checkPassword(chatroom, encodedPassword)) {
             this.log("not match password");
             return false;
         }
@@ -186,4 +190,16 @@ export class ChatGatewayService {
         }
         return true;
     }
+
+    async hashing(password: string) {
+        const encodedPassword = await hash(password, SALTROUND);
+        return encodedPassword;
+    }
+
+    async checkPassword(chatroom : ChatRoom, password : string) {
+        const incoded = await this.hashing(password);
+        const check = compare(chatroom.password, incoded);
+        return check;
+      }
+
 }

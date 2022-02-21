@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { UserRepository } from 'src/db/repository/User/User.repository';
+import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
 import { getConnection, getCustomRepository } from 'typeorm';
 import { onlineManager } from './online/onlineManager';
@@ -16,14 +16,14 @@ import { UserGatewayService } from './userGateway.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 import { ChatGatewayService } from './chatGateway.service';
+import { CORS_ORIGIN } from 'src/config/const';
 
 const options = {
-	cors : {
-    	origin : ["http://localhost:3000", "https://admin.socket.io"],
-    	credentials : true,
-  }
+    cors : {
+        origin : CORS_ORIGIN,
+        credentials : true,
+    }
 }
-
 
 @WebSocketGateway(options)
 export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -103,9 +103,10 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				socket.historyIndex = 0;
 				if (!inform)
 					return ;
+				const repo_user = getCustomRepository(UserRepository);
 				const list = await onlineManager.onlineFriends(socket, user);
 				for (let sokId in list) {
-					let friend = list[sokId];
+					let friend = list[sokId]
 					const all = Promise.all([
 						this.userGatewayService.getUserInfo(friend),
 						this.userGatewayService.getFriendsInfo(friend),

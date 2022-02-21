@@ -5,15 +5,17 @@ import { getCustomRepository } from 'typeorm';
 import { onlineManager } from './online/onlineManager';
 import { UserRepository, BlockedFriendsRepository, FriendsRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
-import { ChatMembershipRepository, ChatBanListRepository, ChatRoomRepository, ChatHistoryRepository } from "src/db/repository/Chat/ChatCustomRepository";
+import { ChatMembershipRepository, ChatRoomRepository, ChatHistoryRepository } from "src/db/repository/Chat/ChatCustomRepository";
 import { ChatRoom } from 'src/db/entity/Chat/ChatEntity';
 import { ChatGatewayService } from './chatGateway.service';
 import { onlineChatRoom } from './online/onlineChatRoom';
 import { onlineChatRoomManager } from './online/onlineChatRoomManager';
+import { CORS_ORIGIN } from 'src/config/const';
 
 const options = {
   cors : {
-    origin : "http://localhost:3000",
+      origin : CORS_ORIGIN,
+      credentials : true,
   }
 }
 
@@ -85,8 +87,9 @@ export class ChatGateway {
     const repo_user = getCustomRepository(UserRepository);
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
     let payload;
+    // let hashingPassword = await AuthService.hashing(payload.string);
     if (process.env.NODE_ENV === "dev") {
-      payload = {member : [], type:payload1.type, title:payload1.title, password:payload1.password};
+      // payload = {member : [], type:payload1.type, title:payload1.title, password:hashingPassword};
       if (payload1.member) {
         await Promise.all(payload1.member.map(async (one)=>{
           let memberInfo = await repo_user.findOne({nickname : one});
@@ -185,8 +188,10 @@ export class ChatGateway {
     if (payload.lock === false) {
       let room = await repo_chatroom.findOne(payload.chatid);
       if (room.type === "public")
-        change[password] = null;
+        change["password"] = null;
     }
+    if (change.password)
+      change["password"] = await this.chatGatewayService.hashing(password);
     if (Object.keys(change).length)
       await repo_chatroom.update(payload.chatid, change);
     this.log("update title, type, password");
@@ -253,7 +258,7 @@ export class ChatGateway {
     let res = await Promise.all([
       repo_blockList.amIBlockedBy(user, theOther),
       repo_blockList.didIBlock(user, theOther),
-      repo_friendList.isNotMyFriend(user, theOther)
+      repo_friendList.isMyFriend(user, theOther)
     ]);
     if (res.findIndex(result=>result===true) !== -1) {
       //Error
@@ -398,6 +403,8 @@ export class ChatGateway {
     // 음소거일 경우 못보냄
     // 2명 private 차단리스트 확인.
     // 나머지 전부 보냄.
+    if (!payload?.contents)
+      return ;
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
     let now = new Date();
     if (me.muteUntil && me.muteUntil > now) {
@@ -409,7 +416,8 @@ export class ChatGateway {
       room.sayToRoom(socket, payload);
     else
       room.announce("chatMessage", {contents : payload.contents});
-    repo_chathistory.insertHistory(socket.userid, payload.contents, chatRoom);
+    this.log("Sended Chat");
+    await repo_chathistory.insertHistory(socket.userid, payload.contents, chatRoom);
   }
 
   // 채팅 음소거 :

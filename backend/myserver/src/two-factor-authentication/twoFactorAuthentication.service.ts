@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "src/db/entity/User/UserEntity";
 import { authenticator } from 'otplib'
-import { AuthService } from "../auth/auth.service";
 import { Response } from "express";
 import { toFileStream } from 'qrcode'
 import { getCustomRepository } from "typeorm";
@@ -12,7 +11,6 @@ import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 @Injectable()
 export class TwoFactorAuthenticationService {
     constructor(
-        private readonly authService : AuthService,
     ) {}
 
     async setTwoFactorAthenticationSecret(secret : string, userid : string) {

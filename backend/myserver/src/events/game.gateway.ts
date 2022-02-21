@@ -1,7 +1,8 @@
-import { Logger, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import { Logger } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
+import { env } from "process";
 import { Server } from "socket.io";
+import { CORS_ORIGIN } from "src/config/const";
 import { User } from "src/db/entity/User/UserEntity";
 import { GameRoomRepository } from "src/db/repository/Game/GameRoom.repository";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
@@ -14,7 +15,7 @@ import { onlineManager } from "./online/onlineManager";
 
 const options = {
     cors : {
-        origin : ["http://localhost:3000", "https://admin.socket.io"],
+        origin : CORS_ORIGIN,
         credentials : true,
     }
 }
@@ -31,10 +32,25 @@ export class GameGateway {
   
     private async afterInit(server: Server) {
         this.logger.log('Gamegateway init');
+        console.log("ENV : ", env.DB_HOST);
     }
 
     private log(msg : String) {
         this.logger.log(msg, "GameGateway");
+    }
+
+    public checkPayload(payload : any, checker : object) {
+        for (let key in checker) {
+            if (!payload[key])
+                return false;
+            let type = checker[key];
+            if (type === "number") {
+                Number.isInteger(payload[key])
+            }
+            else if (type === "string") {
+
+            }
+        }
     }
 
     //test
@@ -88,7 +104,6 @@ export class GameGateway {
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
             payload = payload1;
         }
-
         if (await this.gameGatewayService.amIinGameRoom(user))
         	return this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
         const validateResult = await this.gameGatewayService.checkIfItIsAvailableToJoinAs(payload);

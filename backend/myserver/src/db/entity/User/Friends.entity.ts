@@ -1,9 +1,9 @@
 import { RequestStatus } from "src/type/RequestStatus.type";
-import {Entity, Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn, BaseEntity} from "typeorm";
 import { User } from "./User.entity";
 
 @Entity()
-export class Friends{
+export class Friends extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     index : number;

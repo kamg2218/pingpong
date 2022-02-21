@@ -1,8 +1,8 @@
-import {Column, Entity, ManyToOne, JoinColumn, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, JoinColumn, PrimaryGeneratedColumn, BaseEntity} from "typeorm";
 import { User } from "./User.entity";
 
 @Entity()
-export class BlockedFriends{
+export class BlockedFriends extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     index : number;

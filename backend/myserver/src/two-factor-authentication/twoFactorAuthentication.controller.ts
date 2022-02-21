@@ -4,10 +4,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserDeco } from 'src/type/user.decorator';
 import { User } from 'src/db/entity/User/User.entity';
 import { Body, Controller, HttpCode, Logger, Post, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiBody, ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthService } from 'src/auth/auth.service';
-import { UserRepository } from 'src/db/repository/User/User.repository';
-import { getCustomRepository } from 'typeorm';
 
 
 @Controller('2fa')
@@ -21,12 +19,11 @@ export class TwoFactorAuthenticationController {
     ) {}
 
         @Post('generate')
-        // @UseGuards(AuthGuard('jwt'))
+        @UseGuards(AuthGuard('jwt'))
         @ApiOperation({ summary: '2fa qr코드 생성', description: '2fa qr코드 생성'})
         @ApiResponse({status : 201, description : "qr코드 생성 성공"})
         @ApiCookieAuth("accessToken")
-        async register(@Res() res: Response, @UserDeco() user1 : User) {
-            const user = await getCustomRepository(UserRepository).findOne({nickname: "nahkim"})
+        async register(@Res() res: Response, @UserDeco() user : User) {
             const otpauthUrl = await this.twoFactorAuthenticationService.generateTwoFactorAuthnticateSecret(user);
             this.logger.log("2fa generate success");
             return this.twoFactorAuthenticationService.pipeQrCodeStream(res, otpauthUrl);

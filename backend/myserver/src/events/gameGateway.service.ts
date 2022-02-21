@@ -1,5 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
+import { hash } from "bcrypt";
+import { SALTROUND } from "src/config/const";
 import { GameRoom } from "src/db/entity/Game/GameEntity";
 import { User } from "src/db/entity/User/UserEntity";
 import { GameRoomRepository, GameMembershipRepository, GameHistoryRepository } from "src/db/repository/Game/GameCustomRepository";
@@ -109,7 +111,7 @@ export class GameGatewayService {
             this.log(`There is no such GameRoom`);
             return {result : false, gameRoom : null};
         }
-        if (!repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password)) {
+        if (!await repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password)) {
             this.log(`It isn't available to join the GameRoom ${gameRoom.title} as ${position}`);
             return {result : false, gameRoom : null};
         }
@@ -241,6 +243,8 @@ export class GameGatewayService {
             if (!updateInfo[key])
                 delete updateInfo[key];
         };
+        if (updateInfo.password)
+            updateInfo["password"] = await hash(updateInfo.password, SALTROUND);
         await repo_gameRoom.update(roomid, updateInfo);
 
         const game = onlineGameMap[roomid];

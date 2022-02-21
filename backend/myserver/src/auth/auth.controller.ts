@@ -11,7 +11,7 @@ import { Cookies } from './cookies.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiNoContentResponse, ApiMovedPermanentlyResponse, ApiCookieAuth, ApiBadRequestResponse } from '@nestjs/swagger';
 import { getCustomRepository } from 'typeorm';
 import { UserRepository } from 'src/db/repository/User/User.repository';
-// import { validationPipe } from './signup.validationpipe';
+
 
 @UseFilters(UnauthorizedExceptionFilter)
 @Controller('auth')
@@ -126,35 +126,4 @@ export class AuthController {
         this.logger.log(`[Check] Check if ${nickname} is duplicate`);
         return {message : res};
     }
-
-    // two factor
-    // @Post('generate')
-    // @UseGuards(AuthGuard('jwt'))
-    // async register(@Res() res: Response, @UserDeco() user : User) {
-    //     const { otpauthUrl } = await this.authService.generateTwoFactorAuthnticateSecret(user);
-    //     this.logger.log("2fa generate success");
-    //     return this.authService.pipeQrCodeStream(res, otpauthUrl);
-    // }
-
-    // @Post('turn-on')
-    // @HttpCode(200)
-    // @UseGuards(AuthGuard('jwt'))
-    // async turnOnTwoFactorAuthentication(@Body() { twoFactorAuthenticationCode }, @UserDeco() user : User) {
-    //     const isCodeValid = this.authService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user);
-    //     if (!isCodeValid)
-    //         throw new UnauthorizedException('Wrong authentication code');
-    //     await this.authService.turnOnTwoFactorAuthentication(user.userid);
-    // }
-
-    // @Post('authenticate')
-    // @HttpCode(200)
-    // @UseGuards(AuthGuard('jwt-2fa'))
-    // @ApiOperation({ summary : '2fa 유효성 확인', description : '2fa 유효성 확인 후 로비 페이지로 이동'})
-    // async authenticate (@Res() res : Response, @Body('twoFactorAuthenticationCode') twoFactorAuthenticationCode : string, @UserDeco() user : User) {
-    //     const isCodeValid = this.authService.isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user);
-    //     if (!isCodeValid)
-    //         throw new UnauthorizedException('Wrong authentication code');
-    //     const {accessToken, ...accessOptions} = this.authService.getCookieWithJwtAccessToken(user.userid, true);
-    //     res.cookie('accessToken', accessToken, accessOptions);
-    // }
 }

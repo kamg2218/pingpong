@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { hash } from 'bcrypt';
 import { jwtConstants } from 'src/config/jwt.config';
 import { JwtService } from '@nestjs/jwt';
 import { getCustomRepository, getRepository } from 'typeorm';
@@ -7,9 +6,7 @@ import { SignUpDTO } from 'src/type/signup.dto';
 import { RestrictedListReopsitory, UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { User } from 'src/db/entity/User/UserEntity';
 import { Response } from 'express';
-import { authenticator } from 'otplib'
-import { toFileStream } from 'qrcode'
-import {TokenPayload} from 'src/type/PayLoad.interface'
+import { TokenPayload } from 'src/type/PayLoad.interface'
 
 @Injectable()
 export class AuthService {
@@ -74,49 +71,6 @@ export class AuthService {
     await repoList.insert(list);
   }
 
-
-
-  async hashing(password: string) {
-    const saltOrRounds = 10; //env
-    const encodedPassword = await hash(password, saltOrRounds);
-    return encodedPassword;
-  }
-
-  // Two Factor 
-
-//   async setTwoFactorAthenticationSecret(secret : string, userid : string) {
-//     const repoUser = getCustomRepository(UserRepository);
-//     await repoUser.update(userid, {twoFactorAuthenticationSecret : secret})
-//   }
-
-//   public async generateTwoFactorAuthnticateSecret(user : User) {
-//     const TWO_FACTOR_AUTHENTICATION_APP_NAME = 'pong game'  //config
-//     const secret = authenticator.generateSecret();
-//     const otpauthUrl = authenticator.keyuri(user.email, 
-//         TWO_FACTOR_AUTHENTICATION_APP_NAME, secret);
-//     await this.setTwoFactorAthenticationSecret(secret, user.userid)
-//     return {
-//         secret, 
-//         otpauthUrl
-//     }
-//   }
-
-// async turnOnTwoFactorAuthentication(userId : string) {
-//     const repo_user = getCustomRepository(UserRepository);
-//     return repo_user.update(userId, {isTwoFactorAuthenticationEnabled : true})
-// }
-
-//   public async pipeQrCodeStream(res : Response, otpauthUrl : string) {
-//     return toFileStream(res, otpauthUrl);
-//   }
-
-//   public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode : string, user : User) {
-//     return authenticator.verify({
-//         token : twoFactorAuthenticationCode,
-//         secret : user.twoFactorAuthenticationSecret
-//     })
-//   }
-
   public getCookieWithJwtAccessToken(userid : string, isSecondFactorAuthenticated = false) {
     const payload : TokenPayload = {userid, isSecondFactorAuthenticated};
     const atExpireIn = jwtConstants.getByms('at');
@@ -127,7 +81,6 @@ export class AuthService {
     return {
       accessToken : token, 
       maxAge : atExpireIn,
-      // httpOnly : true,
       domain : "localhost", 
       path :"/"
     }
@@ -147,11 +100,6 @@ export class AuthService {
       path :"/"
     }
   }
-
-// public async setCurrentRefreshToken(refreshToken : string, userId : string) { 
-//   const repo_user = getCustomRepository(UserRepository);
-//   await repo_user.update(userId, {refreshToken : refreshToken});
-// }
 
   async validateJwt(payload : TokenPayload) {
     const repoUser = getCustomRepository(UserRepository);

@@ -2,11 +2,11 @@ import { WsException } from "@nestjs/websockets";
 import { GameRoom } from "src/db/entity/Game/GameEntity";
 import { User } from "src/db/entity/User/UserEntity";
 import { GamePosition } from "src/type/MemberPosition.type";
-import { RoomMode } from "src/type/RoomMode.type";
 import { EntityRepository, getCustomRepository, Repository } from "typeorm";
 import { UserRepository } from "../User/User.repository";
 import { GameMembershipRepository } from "./GameCustomRepository";
-
+import {hash, compare} from 'bcrypt'
+import { SALTROUND } from "src/config/const";
 @EntityRepository(GameRoom)
 export class GameRoomRepository extends Repository<GameRoom> {
     
@@ -64,7 +64,7 @@ export class GameRoomRepository extends Repository<GameRoom> {
             if (key === "observer")
                 newRoom["maxObsCount"] = roomOption[key];
             else if (key === "password")
-                newRoom[key] = roomOption[key]; //hashing 필요
+                newRoom[key] = await hash(roomOption[key], SALTROUND);
             else
                 newRoom[key] = roomOption[key];
         }
@@ -129,14 +129,15 @@ export class GameRoomRepository extends Repository<GameRoom> {
             return false;
         return true;
     }
-    public isAvaliableToJoinAs(gameRoom : GameRoom, position : GamePosition, password : string) {
+
+    public async isAvaliableToJoinAs(gameRoom : GameRoom, position : GamePosition, password : string) {
         const checker = {
             'normal' : this.checkPlayerCount,
             'observer' : this.checkObserverCount,
         }
         if (!checker[position](gameRoom))
             return false;
-        if (gameRoom.password && gameRoom.password !== password)
+        if (gameRoom.password && !await compare(password, gameRoom.password))
             return false;
         if (gameRoom.roomStatus !== 'waiting')
             return false;
