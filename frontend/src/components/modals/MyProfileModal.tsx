@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { socket, UserContext, User, Friend } from "../../socket/userSocket";
 import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
@@ -6,6 +7,7 @@ import "./profileModal.css"
 import axios from "axios";
 
 export default function MyProfileModal(props: any) {
+	const history = useHistory();
 	const userContext = useContext(UserContext);
 	const profile:User = userContext.user[0];
 	const [state, setState] = useState<boolean>(false);
@@ -114,7 +116,10 @@ export default function MyProfileModal(props: any) {
 						<div className="container p-1">
 							<div className="col">
 								<div className="row mb-2">
-									<div className="col m-0 p-0"><img src={Profile(profile ? profile.profile : 1)} alt="profile" id="myProfile"/></div>
+									<div className="col m-0 p-0 text-center">
+										<img src={Profile(profile ? profile.profile : 1)} alt="profile" className="row m-1" id="myProfile"/>
+										<button className="row col-11 btn modal-button" data-dismiss="modal" onClick={()=>history.push("/nickandprofile")}>정보 변경</button>
+									</div>
 									<div className="col p-1 mx-0">
 										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.nickname}</div>
 										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.level}</div>
