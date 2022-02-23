@@ -1,8 +1,8 @@
-import {useState} from "react"
-import GameRoomSlide from "../../components/games/GameRoomSlide"
-import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
-import LoadingModal from "../../components/modals/LoadingModal";
+import { useState } from "react"
 import { socket } from "../../socket/userSocket";
+import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
+import GameRoomSlide from "../../components/games/GameRoomSlide";
+import LoadingModal from "../../components/modals/LoadingModal";
 
 export default function Lobby(props:any){
 	const [search, setSearch] = useState<string>("");

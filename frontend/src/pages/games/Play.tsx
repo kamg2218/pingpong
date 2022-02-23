@@ -1,8 +1,31 @@
 import SideMenuPlay from "./SideMenuPlay"
 import PlayRoom from "../../components/play/PlayRoom"
 import logo from '../../icons/logo_brown_profile.png'
+import axios from "axios";
+import { useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { socket } from "../../socket/userSocket";
+import { GameContext } from "../../socket/gameSocket";
 
 export default function Play(){
+	const checkUrl:string = "http://localhost:4242/user/check";
+	const { gameroom } = useContext(GameContext);
+	const history = useHistory();
+
+	useEffect(()=>{
+		axios.get(checkUrl + "?url=play").then((res:any)=>{
+			if (res.state){
+				if (res.state === "play" && gameroom[0].roomid){
+					socket.emit("exitGameRoom", {
+						roomid: gameroom[0].roomid,
+					});
+				}
+			}
+		}).catch((err)=>{
+			console.log(err);
+			history.replace("/");
+		})
+	}, []);
 	return (
 		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
 			<div className="col">

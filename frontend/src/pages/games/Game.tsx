@@ -1,24 +1,22 @@
-import "../../css/Game.css"
-import SideMenuChat from "../../components/chat/SideMenuChat"
-import SideMenuGame from "./SideMenuGame"
-import WaitingRoom from "./WaitingRoom"
 import Lobby from "./Lobby"
-import { Route, Switch } from "react-router-dom"
+import Modal from "react-modal"
+import { Route, Switch, useHistory } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom";
 import { socket, UserContext, User } from "../../socket/userSocket"
 import { GameContext, GameUser, match } from "../../socket/gameSocket"
-import logo from "../../icons/logo_brown_profile.png"
+import WaitingRoom from "./WaitingRoom"
+import SideMenuGame from "./SideMenuGame"
+import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
-import Modal from "react-modal"
+
+import "../../css/Game.css"
+import logo from "../../icons/logo_brown_profile.png"
 
 Modal.setAppElement("#root");
 export default function Game() {
 	const history = useHistory();
-	const gameContext = useContext(GameContext);
-	const userContext = useContext(UserContext);
-	const game = gameContext.gameroom;
-	const user = userContext.user;
+	const { gameroom, playroom } = useContext(GameContext);
+	const { user } = useContext(UserContext);
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [matchData, setMatch] = useState<match>();
 
@@ -36,9 +34,14 @@ export default function Game() {
 			console.log("enter game room");
 			if (msg.message) {
 				alert("fail to enter the room!");
+				//updateGameRoom에 대한 응답을 받은 경우
+				//유저가 존재하지 않으면 로비로 이동
+				if (history.location.pathname.search("waiting")){
+					history.replace("/game");
+				}
 			}
 			else {
-				game[1](msg);
+				gameroom[1](msg);
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -47,7 +50,7 @@ export default function Game() {
 			window.location.reload();
 		});
 		socket.on("exitGameRoom", () => {
-			game[1](undefined)
+			gameroom[1](undefined)
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -55,12 +58,12 @@ export default function Game() {
 			if (msg.result) {
 				alert("failed to play the game!");
 			} else {
-				gameContext.playroom[1](msg);
+				playroom[1](msg);
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
 		socket.on("updateGameRoom", (msg:any) => {
-			const tmp = game[0];
+			const tmp = gameroom[0];
 			if (msg.manager) {
 				tmp.manager = msg.manager;
 			}
@@ -88,14 +91,14 @@ export default function Game() {
 			if (msg.deletePlayers) {
 				msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
 			}
-			game[1](tmp);
+			gameroom[1](tmp);
 			window.location.reload();
 		});
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [user, history, game, gameContext]);
+	}, []);
 	return (
 		<div className="container-fluid m-0 px-2" id="gamelobby">
 			<div className="col h-100">

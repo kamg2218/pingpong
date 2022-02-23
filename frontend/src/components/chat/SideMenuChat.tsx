@@ -1,21 +1,36 @@
 import "./chat.css";
 import MenuChat from "../../components/chat/MenuChat"
 import ChatRoom from "../../components/chat/ChatRoom"
-import { Switch, Route, Link, useParams } from "react-router-dom"
+import { Switch, Route, Link, useParams, useHistory } from "react-router-dom"
 import {useEffect, useContext} from "react"
 import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from "../../socket/chatSocket"
+import axios from "axios";
 
 type param = {
 	id?: String
 }
 
 export default function SideMenuChat(){
+	const history = useHistory();
 	const chatContext = useContext(ChatContext);
-	const gameContext = useContext(GameContext);
+	const {gameroom} = useContext(GameContext);
+	const checkUrl:string = "http://localhost:4242/user/check";
 	
 	useEffect(()=>{
+		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
+			if (res.state){
+				if (res.state === "play" && gameroom[0].roomid){
+					socket.emit("exitGameRoom", {
+						roomid: gameroom[0].roomid,
+					});
+				}
+			}
+		}).catch((err)=>{
+			console.log(err);
+			history.replace("/");
+		});
 		socket.on("myChatRoom", (data:ChatData)=>{
 			console.log("my chat room!!");
 			console.log(data);
@@ -77,10 +92,10 @@ export default function SideMenuChat(){
 		<div id="chatTab">
 			<div className="row">
 				<div className="col-3 btn" id="tab-game">
-					<Link to={`/game${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ""}`} className="text-decoration-none text-reset">game</Link>
+					<Link to={`/game${gameroom[0] ? `/waiting/${gameroom[0].roomid}`: ""}`} className="text-decoration-none text-reset">game</Link>
 				</div>
 				<div className="col-3 btn" id="tab-chat-active">
-					<Link to={`/game/chat${gameContext.gameroom[0] ? `/waiting/${gameContext.gameroom[0].roomid}`: ""}`} className="text-decoration-none text-reset">chat</Link>
+					<Link to={`/game/chat${gameroom[0] ? `/waiting/${gameroom[0].roomid}`: ""}`} className="text-decoration-none text-reset">chat</Link>
 				</div>
 			</div>
 			<div className="row" id="nav-chat">
