@@ -1,7 +1,7 @@
 import {io} from "socket.io-client";
 import {useState, createContext} from 'react'
 
-export const socket = io("http://localhost:4242/game", {
+export const socket = io("http://localhost:4242", {
 	transportOptions: {
 	  polling: {
 		extraHeaders: {  Authorization: `${document.cookie}` }
