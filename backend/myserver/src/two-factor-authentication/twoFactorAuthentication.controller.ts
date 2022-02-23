@@ -25,7 +25,7 @@ export class TwoFactorAuthenticationController {
         @ApiCookieAuth("accessToken")
         async register(@Req() req : Request, @Res({passthrough : true}) res: Response, @UserDeco() user : User) {
             // console.log("generate : ", req);
-            // console.log("generate cookie : ", req.cookies)
+            // console.log("generate cookie : ", req.cookies);
             // return ;
             const otpauthUrl = await this.twoFactorAuthenticationService.generateTwoFactorAuthnticateSecret(user);
             this.logger.log("2fa generate success");

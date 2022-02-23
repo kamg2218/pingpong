@@ -1,8 +1,7 @@
-const front = "http://localhost:3000"
+import { FRONTADDR } from "./const"
 
-const fronLoginPage = front + "/game"
-const frontSignupPage = front + "/nickandprofile"
-const frontLobyPage = front + "/game"
-const frontTwoFactorAuthenticationPage = front + "/2fa"
+const frontSignupPage = FRONTADDR + "/nickandprofile"
+const frontLobyPage = FRONTADDR + "/game"
+const frontTwoFactorAuthenticationPage = FRONTADDR + "/2fa"
 
-export {fronLoginPage, frontSignupPage, frontLobyPage, frontTwoFactorAuthenticationPage}
+export {frontSignupPage, frontLobyPage, frontTwoFactorAuthenticationPage}
