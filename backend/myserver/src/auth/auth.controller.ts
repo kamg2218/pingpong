@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, HttpCode, Logger, Post, Query, Res, UnauthorizedException, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Logger, Post, Query, Req, Res, UnauthorizedException, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from 'src/db/entity/User/UserEntity';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDeco } from '../type/user.decorator';
 import { frontLobyPage, frontSignupPage, frontTwoFactorAuthenticationPage} from 'src/config/redirect_url';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { SignUpDTO } from 'src/type/signup.dto';
 import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFilter';
 import { Cookies } from './cookies.decorator';
@@ -48,7 +48,9 @@ export class AuthController {
     @ApiOperation({ summary: '회원 가입', description: 'nickname, profile 추가 정보 입력'})
     @ApiCreatedResponse({description: '회원정보 등록 성공 여부', type : Boolean})
     @ApiBadRequestResponse({description : "nickname"})
-    async signup(@Res({passthrough : true}) res : Response, @UserDeco() user : User, @Body() data : SignUpDTO) {
+    async signup(@Req() req : Request, @Res({passthrough : true}) res : Response, @UserDeco() user : User, @Body() data : SignUpDTO) {
+        // console.log("signup : ", req);
+        // console.log("signup cookie : ", req.cookies)
         await this.authService.register(user.userid, data);
         this.logger.log("[Signup] New user has signed up.");
         return true;

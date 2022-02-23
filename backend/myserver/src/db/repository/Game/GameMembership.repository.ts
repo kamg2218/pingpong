@@ -32,6 +32,8 @@ export class GameMembershipRepository extends Repository<GameMembership> {
     async leaveGameRoom(member : User, gameRoom : GameRoom) {
         const repo_gameroom = getCustomRepository(GameRoomRepository);
         const membership = await this.findOne({member: {userid : member.userid}});
+        console.log("userid : ", member.userid);
+        console.log("membership : ", membership);
         await this.delete({member : {userid : member.userid}, gameRoom : gameRoom });
         await repo_gameroom.decreaseCount(gameRoom, membership.position);
         return membership.position;

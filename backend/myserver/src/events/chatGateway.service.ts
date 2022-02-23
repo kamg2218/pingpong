@@ -128,7 +128,10 @@ export class ChatGatewayService {
         const repo_chatmember = getCustomRepository(ChatMembershipRepository);
         const myChatList = await repo_chatmember.getMyChatRoom(socket.userid);
         myChatList.map(list => {
-            const room = onlineChatRoomManager.getRoomByid(list.chatid);
+            let room = onlineChatRoomManager.getRoomByid(list.chatid);
+            if (!room) {
+                room = onlineChatRoomManager.create(list.chatid);
+            } 
             room.join(socket.id);
         })
     }

@@ -39,7 +39,7 @@ export class Game {
         this.running = false;
         this.over = false;
         this.ball = new Ball(speed);
-        this._score = 100;
+        this._score = 10;
         this.turn = null;
         this._speed = speed;
         this.participants = [];
@@ -134,7 +134,7 @@ export class Game {
             throw new Error("The room is already full");
         this.participants.push(socketid);
         this.updateGameRoom(socketid, {
-            addPlayers : repo_user.getSimpleInfo(user),
+            addPlayers : [repo_user.getSimpleInfo(user)],
         });
     }
 
@@ -142,7 +142,7 @@ export class Game {
         const repo_user = getCustomRepository(UserRepository);
         this.participants.push(socketid);
         this.updateGameRoom(socketid, {
-            addObserver : repo_user.getSimpleInfo(user),
+            addObserver : [repo_user.getSimpleInfo(user)],
         });
     }
 
@@ -158,12 +158,10 @@ export class Game {
         if (this.right.onoff() && this.right.id === userid) {
             this.right.direction = DIRECTION.IDLE;
             this.right.off();
-            console.log("right switch off")
         }
         else if (this.left.onoff() && this.left.id === userid) {
             this.left.direction = DIRECTION.IDLE;
             this.left.off();
-            console.log("left switch off")
         }
         else
             isPlayer = false;

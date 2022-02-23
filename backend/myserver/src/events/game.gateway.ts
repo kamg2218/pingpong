@@ -194,10 +194,10 @@ export class GameGateway {
             this.log("No such gameRoom")
             throw new WsException("No such gameRoom");
         }
-        if (!await this.gameGatewayService.validationAuthority(user, game.id)) {
-            this.log(`${user.nickname} has no authority to start game.`);
-            throw new WsException("Not authorized")
-        }
+        // if (!await this.gameGatewayService.validationAuthority(user, game.id)) {
+        //     this.log(`${user.nickname} has no authority to start game.`);
+        //     throw new WsException("Not authorized")
+        // }
         if (!game.checkIfItCanStart()) {
             this.log("This room can't start the game")
             throw new WsException("This room can't start the game");

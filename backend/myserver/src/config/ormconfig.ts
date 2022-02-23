@@ -10,6 +10,6 @@ export const ormconfig : TypeOrmModuleOptions= {
    "database": "my-service",
    "synchronize": true,
    "logging" : false,
-   // "dropSchema" : true, //나중에는 지우기
+   "dropSchema" : true, //나중에는 지우기
    "entities": [ __dirname + "/../db/entity/**/*.entity.{js,ts}" ],
 }

@@ -137,9 +137,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		/* game : Exit game room*/
 		MatchingManager.cancle(userid);
 		await this.gameGatewayService.deleteMyMatch(user.userid);
-		let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
-		if (gameRoom)
-			gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
+	
 		await getCustomRepository(UserRepository).logout(user);
 		console.log("[disconnected] online game : ", onlineGameMap);
 		const list = await onlineManager.onlineFriends(socket, user);
@@ -157,6 +155,9 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		await this.chatGatewayService.offlineMyChatRoom(socket);
 		onlineManager.offline(socket);
 		onlineManager.print();
+		let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
+		if (gameRoom)
+			gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
 	}
 
 	@SubscribeMessage('connecting')

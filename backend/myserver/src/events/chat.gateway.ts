@@ -330,7 +330,7 @@ export class ChatGateway {
       return ;
     }
     if (!kickUser || kickUser.position !== "normal") {
-      this.log("Can't kicke this user");
+      this.log("Can't kick this user");
       return ;
     }
     let exitUser = [kickUser.member.userid];
@@ -356,6 +356,10 @@ export class ChatGateway {
     }
     else 
       payload = payload1;
+    if (!payload.chatid) {
+      this.log("Bad Reqeust : chatid");
+      return ;
+    }
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
     const {lastIndex, histories} = repo_chathistory.amugeona(lists);
@@ -391,7 +395,7 @@ export class ChatGateway {
     let payload;
     if (process.env.NODE_ENV === "dev") {
       const chatRoom = await getCustomRepository(ChatRoomRepository).findOne({title : payload1.title});
-      payload = {contents: payload1.contents, chatid: chatRoom.chatid};
+      payload = {contents: payload1.content, chatid: chatRoom.chatid};
     }
     else {
       payload = payload1;
@@ -403,8 +407,10 @@ export class ChatGateway {
     // 음소거일 경우 못보냄
     // 2명 private 차단리스트 확인.
     // 나머지 전부 보냄.
-    if (!payload?.contents)
+    if (!payload?.content) {
+      this.log("There is no content.");
       return ;
+    }
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
     let now = new Date();
     if (me.muteUntil && me.muteUntil > now) {
@@ -415,9 +421,9 @@ export class ChatGateway {
     if (chatRoom.type === "private" && chatRoom.memberCount === 2)
       room.sayToRoom(socket, payload);
     else
-      room.announce("chatMessage", {contents : payload.contents});
-    this.log("Sended Chat");
-    await repo_chathistory.insertHistory(socket.userid, payload.contents, chatRoom);
+      room.announce("chatMessage", {contents : payload.content});
+    await repo_chathistory.insertHistory(socket.userid, payload.content, chatRoom);
+    this.log(`Message from ${me.member.nickname} has been sent.`);
   }
 
   // 채팅 음소거 :
