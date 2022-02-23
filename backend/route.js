@@ -61,5 +61,13 @@ router.post('/2fa/turn-on', (req, res, err)=>{
 router.post('/2fa/turn-off', (req, res, err)=>{
     console.log("turn-off");
 })
+router.get("/user/check", (req, res, err)=>{
+    console.log("user Checked! ", req.query);
+    if (req.cookies){
+        res.send({ state: "login" });
+    }else{
+        res.send({state: "logout"});
+    }
+})
 
 module.exports = router;

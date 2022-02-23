@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import "./NickAndProfile.css";
 import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
+import { socket } from "../../socket/userSocket";
+import { GameContext } from "../../socket/gameSocket";
+import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
 	const history = useHistory();
@@ -12,8 +14,23 @@ export default function NickAndProfile(){
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
-	const url = "http://localhost:4242";
+	const url:string = "http://localhost:4242";
+	const check:string = "/user/check";
+	const { gameroom } = useContext(GameContext);
 
+	useEffect(()=>{
+		axios.get(url + check).then((res:any)=>{
+			if (res.state){
+				if (res.state === "play" && gameroom[0].roomid){
+					socket.emit("exitGameRoom", {
+						roomid: gameroom[0].roomid,
+					});
+				}
+			}
+		}).catch((err)=>{
+			console.log(err);
+		})
+	}, []);
 	const handleInput = (event: any) => {
 		setNickname(event.target.value);
 		if (btn && !btn.getAttribute("data-toggle")){
