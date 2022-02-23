@@ -7,6 +7,7 @@ import { RestrictedListReopsitory, UserRepository } from 'src/db/repository/User
 import { User } from 'src/db/entity/User/UserEntity';
 import { Response } from 'express';
 import { TokenPayload } from 'src/type/PayLoad.interface'
+import { BACK_DOMAIN } from 'src/config/const';
 
 @Injectable()
 export class AuthService {
@@ -79,9 +80,9 @@ export class AuthService {
         expiresIn : atExpireIn
     })
     return {
-      accessToken : token, 
+      accessToken : token,
       maxAge : atExpireIn,
-      domain : "localhost", 
+      domain : BACK_DOMAIN,
       path :"/"
     }
   }
@@ -96,7 +97,7 @@ export class AuthService {
       refreshToken : token, 
       maxAge : rtExpireIn,
       httpOnly : true,
-      domain : "localhost", 
+      domain : BACK_DOMAIN,
       path :"/"
     }
   }
@@ -116,6 +117,7 @@ export class AuthService {
 
   async validate2FAJwt(payload : TokenPayload) {
     const repoUser = getCustomRepository(UserRepository);
+    console.log("payload 2fajwt : ", payload);
     const user = await repoUser.findOne({userid : payload.userid});
     if (user === undefined)
       throw new BadRequestException("No such user");

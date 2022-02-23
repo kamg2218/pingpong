@@ -49,8 +49,6 @@ export class AuthController {
     @ApiCreatedResponse({description: '회원정보 등록 성공 여부', type : Boolean})
     @ApiBadRequestResponse({description : "nickname"})
     async signup(@Req() req : Request, @Res({passthrough : true}) res : Response, @UserDeco() user : User, @Body() data : SignUpDTO) {
-        // console.log("signup : ", req);
-        // console.log("signup cookie : ", req.cookies)
         await this.authService.register(user.userid, data);
         this.logger.log("[Signup] New user has signed up.");
         return true;

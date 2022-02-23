@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { ExceptionFilter, Catch, ArgumentsHost, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
-import { fronLoginPage } from 'src/config/redirect_url';
 
 @Catch(UnauthorizedException)
 export class UnauthorizedExceptionFilter implements ExceptionFilter {
