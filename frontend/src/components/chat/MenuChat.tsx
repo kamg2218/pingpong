@@ -30,7 +30,7 @@ export default function MenuChat(){
 	}
 
 	return (
-		<div key="menuchat" className="container" id="chatlist">
+		<div key="menuchat" className="container" id="menuChatList">
 			<div className="d-flex justify-content-end">
 				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#addChatModal">
 					<i className="bi bi-chat"/>

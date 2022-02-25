@@ -16,8 +16,9 @@ export default function SideMenuGame(){
 	const checkUrl:string = "http://localhost:4242/user/check";
 
 	useEffect(()=>{
-		axios.get(checkUrl + "?url=sideMenuGame").then((res:any)=>{
+		axios.get(checkUrl + "?url=sideMenuGame", {withCredentials: true}).then((res:any)=>{
 			if (res.state){
+				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,

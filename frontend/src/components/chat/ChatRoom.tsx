@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom"
 import {socket, UserContext} from "../../socket/userSocket";
-import { ChatContext, ChatBlock, ChatHistory } from "../../socket/chatSocket";
+import { ChatContext, ChatBlock, ChatHistory, ChatData } from "../../socket/chatSocket";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "../../css/ChatRoom.css"
@@ -10,40 +10,40 @@ import "../../css/ChatRoom.css"
 //chatMessage 업데이트 확인 필요!
 //chat 길이 확인!
 
-export default function ChatRoom(props :any){
-	const userContext = useContext(UserContext);
-	const chatContext = useContext(ChatContext);
-	const chatHistory = chatContext.history;
-	const history = useHistory();
+export default function ChatRoom(props:any){
+	const _history = useHistory();
 	const [chat, setChat] = useState("");
-	const chatInput = useRef<any>(null);
-	const chatid = chatContext.chatroom[0]?.order[props.idx];
+	const {user} = useContext(UserContext);
+	const {chatroom, history} = useContext(ChatContext);
+	const chatid = chatroom[0]?.order[props.idx];
 
 	useEffect(()=>{
-		if (chatid && (!chatHistory[0] || chatHistory[0].chatid !== chatid)){
+		if (chatid && (!history[0] || history[0].chatid !== chatid)){
 			console.log("chat history emitted!")
 			socket.emit("chatHistory", {
 				chatid: chatid,
 			});
 		}
 		socket.on("chatHistory", (data:ChatHistory)=>{
-			chatHistory[1](data);
+			history[1](data);
 		})
 		socket.on("chatMessage", (data:any)=>{
 			if (data.result){
 				console.log(data.result);
 				return ;
 			}
-			const chat:ChatHistory = chatHistory[0];
+			console.log("got chat message");
+			console.log(data);
+			const chat:ChatHistory = history[0];
 			chat.list.push(data);
-			chatHistory[1](chat);
+			history[1](chat);
 		})
-	}, [chatHistory, props.idx]);
+	}, []);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
 	}
-	const handleSendBtn = (event:any) => {
+	const handleSendBtn = () => {
 		if (chat === ""){
 			return ;
 		}
@@ -51,33 +51,38 @@ export default function ChatRoom(props :any){
 			chatid: chatid,
 			content: chat,
 		}, (result:boolean)=>{
-			if (result === false)
+			if (result === false){
 				alert("mute!!!");
+			}
+			setChat("");
+			window.location.reload();
 		});
-		chatInput.current?.reset();        
 	}
 	const handleInputKeypress = (event:any) => {
 		if (event.key === "Enter"){
-			handleSendBtn(event);
+			handleSendBtn();
 		}
 	}
 
 	return (
 		<div className="container-fluid p-2" key={`chatroom${props.idx}`}>
 			<div className="col">
-				<div className="row m-1" onClick={()=>{history.goBack()}}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
+				<div className="row m-1" onClick={()=>{_history.goBack()}}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0" id="chatlist">
-					{chatHistory[0] && chatHistory[0].list?.map((data:ChatBlock, idx:number)=>{
-						if (data.userid === userContext.user[0].userid)
+					<div className="col my-1">
+						{history[0] && history[0].list && history[0].list.map((data:ChatBlock, idx:number)=>{
+							console.log(`idx = ${idx}, data = ${data.content}`);
+							if (data.userid === user[0].userid)
 							return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
-						else
+							else
 							return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>
-					})}
+						})}
+					</div>
 				</div>
-				<form className="d-flex m-0 p-0" id="chatForm" ref={chatInput}>
-					<input className="col" id="chatInput" onChange={(e)=>handleInputChange(e)} onKeyPress={handleInputKeypress}></input>
+				<div className="d-flex m-0 p-0" id="chatForm">
+					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
-				</form>
+				</div>
 			</div>
 		</div>
 	);

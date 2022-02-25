@@ -19,8 +19,9 @@ export default function NickAndProfile(){
 	const { gameroom } = useContext(GameContext);
 
 	useEffect(()=>{
-		axios.get(url + check).then((res:any)=>{
+		axios.get(url + check, {withCredentials: true}).then((res:any)=>{
 			if (res.state){
+				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,

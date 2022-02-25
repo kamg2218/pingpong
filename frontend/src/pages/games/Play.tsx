@@ -13,8 +13,9 @@ export default function Play(){
 	const history = useHistory();
 
 	useEffect(()=>{
-		axios.get(checkUrl + "?url=play").then((res:any)=>{
+		axios.get(checkUrl + "?url=play", {withCredentials: true}).then((res:any)=>{
 			if (res.state){
+				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,

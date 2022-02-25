@@ -23,6 +23,14 @@
 }
 #chatlist{
     overflow-y: scroll;
+    background-color: #c9a74141;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+#menuChatList{
+    overflow-y: scroll;
 }
 #chatInput:focus{
     outline: none;
@@ -38,4 +46,16 @@
 #chatInput, #chatSend{
     border: 0.5px solid #C9A641;
     border-radius: 5px;
+}
+#mychatboxcontent, #chatboxcontent{
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    min-height: 2.5em;
+}
+#mychatboxcontent{
+    justify-content: start;
+}
+#chatboxcontent{
+    justify-content: end;
 }

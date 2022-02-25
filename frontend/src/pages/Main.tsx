@@ -12,8 +12,11 @@ export default function Main(){
 	const {gameroom} = useContext(GameContext);
 
 	useEffect(()=>{
-		axios.get(url + check + "?url=main").then((res:any)=>{
+		axios.get(url + check + "?url=main", {withCredentials: true}).then((res:any)=>{
+			console.log("checked!");
+			console.log(res.state);
 			if (res.state){
+				console.log(res.state);
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
