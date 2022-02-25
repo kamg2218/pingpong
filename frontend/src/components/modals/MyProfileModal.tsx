@@ -26,13 +26,13 @@ export default function MyProfileModal(props: any) {
 			return ;
 		}
 		if (!profile?.twofactor){
-			axios.post(url + "/turn-on").then((res:any)=>{
+			axios.post(url + "/turn-on", {withCredentials: true}).then((res:any)=>{
 				console.log(res)
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}else{
-			axios.post(url + "/turn-off").then((res:any)=>{
+			axios.post(url + "/turn-off", {withCredentials: true}).then((res:any)=>{
 				console.log(res)
 				setState(false);
 				socket.emit("userInfo");
@@ -43,7 +43,7 @@ export default function MyProfileModal(props: any) {
 		const url:string = "http://localhost:4242/2fa/generate";
 		
 		if (!state && !profile?.twofactor){
-			axios.post(url).then((res:any)=>{
+			axios.post(url, {withCredentials: true}).then((res:any)=>{
 				console.log(res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});

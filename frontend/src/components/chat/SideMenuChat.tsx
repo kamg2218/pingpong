@@ -19,8 +19,9 @@ export default function SideMenuChat(){
 	const checkUrl:string = "http://localhost:4242/user/check";
 	
 	useEffect(()=>{
-		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
+		axios.get(checkUrl + "?url=sideMenuChat", {withCredentials: true}).then((res:any)=>{
 			if (res.state){
+				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
@@ -83,7 +84,7 @@ export default function SideMenuChat(){
 		});
 	}, [chatContext]);
 
-	function ChatRoomIdx(){
+	const ChatRoomIdx = () => {
 		let idx:param = useParams();
 		return <ChatRoom idx={idx.id}></ChatRoom>
 	}
