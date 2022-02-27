@@ -13,6 +13,7 @@ export default function MyProfileModal(props: any) {
 	const [state, setState] = useState<boolean>(false);
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
+	const image:string = 'https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgoogle.com%2F&chs=180x180&choe=UTF-8&chld=L|2';
 
 	useEffect(() => {
 	}, [qrcode]);
@@ -136,7 +137,7 @@ export default function MyProfileModal(props: any) {
 											<div className="text-center">
 												<label>Google OTP 인증해주세요.</label>
 												{ !profile?.twofactor &&
-													<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  Profile(1): qrcode} alt="qrcode"></img></div>
+													<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  image: qrcode} alt="qrcode"></img></div>
 												}
 												<div className="row my-1 input-group">
 												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>
