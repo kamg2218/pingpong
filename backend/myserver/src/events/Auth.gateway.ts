@@ -103,22 +103,22 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				socket.historyIndex = 0;
 				if (!inform)
 					return ;
-				const repo_user = getCustomRepository(UserRepository);
-				const list = await onlineManager.onlineFriends(socket, user);
-				for (let sokId in list) {
-					let friend = list[sokId]
-					const all = Promise.all([
-						this.userGatewayService.getUserInfo(friend),
-						this.userGatewayService.getFriendsInfo(friend),
-						this.userGatewayService.getFriendRequest(friend),
-						this.userGatewayService.getGamehistory(friend),
-						this.userGatewayService.getBlocklist(friend),
-					]);
-					all.then((values)=>{
-						this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
-					});
-				this.chatGatewayService.onlineMyChatRoom(socket);
-			}}
+				// const repo_user = getCustomRepository(UserRepository);
+				// const list = await onlineManager.onlineFriends(socket, user);
+				// this.chatGatewayService.onlineMyChatRoom(socket);
+				// for (let sokId in list) {
+				// 	let friend = list[sokId]
+				// 	const all = Promise.all([
+				// 		this.userGatewayService.getUserInfo(friend),
+				// 		this.userGatewayService.getFriendsInfo(friend),
+				// 		this.userGatewayService.getFriendRequest(friend),
+				// 		this.userGatewayService.getGamehistory(friend),
+				// 		this.userGatewayService.getBlocklist(friend),
+				// 	]);
+				// 	all.then((values)=>{
+				// 		this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
+				// 	});}
+			}
 			catch(err) {
 				console.log("Invalid Token");
 				console.log(err);
@@ -137,27 +137,26 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		/* game : Exit game room*/
 		MatchingManager.cancle(userid);
 		await this.gameGatewayService.deleteMyMatch(user.userid);
-	
-		await getCustomRepository(UserRepository).logout(user);
-		console.log("[disconnected] online game : ", onlineGameMap);
-		const list = await onlineManager.onlineFriends(socket, user);
-		for (let sokId in list) {
-			let friend = list[sokId];
-			const all = await Promise.all([
-				this.userGatewayService.getUserInfo(friend),
-				this.userGatewayService.getFriendsInfo(friend),
-				this.userGatewayService.getFriendRequest(friend),
-				this.userGatewayService.getGamehistory(friend),
-				this.userGatewayService.getBlocklist(friend),
-			  ]);
-			this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
-		}
+		// await getCustomRepository(UserRepository).logout(user);
+		// console.log("[disconnected] online game : ", onlineGameMap);
+		// const list = await onlineManager.onlineFriends(socket, user);
+		// for (let sokId in list) {
+		// 	let friend = list[sokId];
+		// 	const all = await Promise.all([
+		// 		this.userGatewayService.getUserInfo(friend),
+		// 		this.userGatewayService.getFriendsInfo(friend),
+		// 		this.userGatewayService.getFriendRequest(friend),
+		// 		this.userGatewayService.getGamehistory(friend),
+		// 		this.userGatewayService.getBlocklist(friend),
+		// 	  ]);
+		// 	this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
+		// }
 		await this.chatGatewayService.offlineMyChatRoom(socket);
 		onlineManager.offline(socket);
 		onlineManager.print();
-		let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
-		if (gameRoom)
-			gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
+		// let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
+		// if (gameRoom)
+			// gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
 	}
 
 	@SubscribeMessage('connecting')

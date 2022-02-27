@@ -7,10 +7,7 @@ import { frontLobyPage, frontSignupPage, frontTwoFactorAuthenticationPage} from 
 import { Request, Response } from 'express';
 import { SignUpDTO } from 'src/type/signup.dto';
 import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFilter';
-import { Cookies } from './cookies.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiNoContentResponse, ApiMovedPermanentlyResponse, ApiCookieAuth, ApiBadRequestResponse } from '@nestjs/swagger';
-import { getCustomRepository } from 'typeorm';
-import { UserRepository } from 'src/db/repository/User/User.repository';
 
 
 @UseFilters(UnauthorizedExceptionFilter)
@@ -22,33 +19,13 @@ export class AuthController {
         private readonly logger : Logger
     ) {}
 
-    @Get('admin/force-create')
-    async forceCreate() {
-        const repo_user = getCustomRepository(UserRepository);
-        const user1 = repo_user.create();
-        const user2 = repo_user.create();
-        const user3 = repo_user.create();
-        user1.email = "jikwon@student.42seoul.kr";
-        user1.nickname = "jikwon"
-        user1.status = "logout";
-        user1.profile = 1;
-        user2.email = "nahkim@student.42seoul.kr"
-        user2.nickname = "nahkim";
-        user2.status = "logout"
-        user2.profile = 2;
-        user3.email = "hyoon@student.42seoul.kr";
-        user3.nickname = "hyoon";
-        user3.status = "logout";
-        user3.profile = 3;
-        await repo_user.insert([user1, user2, user3])
-    }
-
     @Post('signup')
     @UseGuards(AuthGuard('jwt-2fa'))
     @ApiOperation({ summary: '회원 가입', description: 'nickname, profile 추가 정보 입력'})
     @ApiCreatedResponse({description: '회원정보 등록 성공 여부', type : Boolean})
     @ApiBadRequestResponse({description : "nickname"})
     async signup(@Req() req : Request, @Res({passthrough : true}) res : Response, @UserDeco() user : User, @Body() data : SignUpDTO) {
+        console.log(req.cookies);
         await this.authService.register(user.userid, data);
         this.logger.log("[Signup] New user has signed up.");
         return true;
@@ -61,18 +38,9 @@ export class AuthController {
 
     }
 
-    @Get('getme')
-    @UseGuards(AuthGuard('jwt'))
-    getme(@UserDeco() user : User, @Cookies() cookie) {
-        // console.log(cookie)
-        this.logger.log("Someone got self-info");
-        return user; // 본인 정보 리턴
-    }
-
     /* 1 성공하면 로비 */
     /* 2 2fa 면 0> */
     /* 3 닉네임 등록 */
-
     @Get('call')
     @UseGuards(AuthGuard('42'))
     @ApiOperation({ summary: '42인트라 콜백주소', description: '프론트에서 호출 X'})

@@ -1,6 +1,5 @@
-import { Controller, Get, Query, Res, UseGuards } from "@nestjs/common"
+import { Controller, Get, UseGuards } from "@nestjs/common"
 import { AuthGuard } from "@nestjs/passport";
-import { Response } from "express";
 import { User } from "src/db/entity/User/UserEntity";
 import { UserRepository } from "src/db/repository/User/User.repository";
 import { UserDeco } from "src/type/user.decorator";
@@ -16,10 +15,9 @@ export class UserController {
 
     @Get('/check')
     @UseGuards(AuthGuard('jwt'))
-    // async checkState(@Res({passthrough : true}) res : Response) {
-    async checkState(@Res({passthrough : true}) res : Response, @UserDeco() user: User) {
-        // const user = await getCustomRepository(UserRepository).findOne({nickname : "nahkim"});
+    async checkState(@UserDeco() user: User) {
+        // const user = await getCustomRepository(UserRepository).findOne({nickname : "jikwon"});
         const state = await this.userService.findState(user);
-        res.send(state);
+        return {state};
     }
 }
