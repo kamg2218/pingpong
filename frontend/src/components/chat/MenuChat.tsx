@@ -1,30 +1,19 @@
 import { useContext, useEffect } from "react";
 import { socket } from "../../socket/userSocket";
-import { chatRoom, ChatContext } from "../../socket/chatSocket";
+import { chatRoom, ChatContext, ChatData } from "../../socket/chatSocket";
 import MenuChatBox from "./MenuChatBox";
 import AddChatModal from "../modals/AddChatModal";
 import PublicChatModal from "../modals/PublicChatModal"
 
 export default function MenuChat(){
-	const chatContext = useContext(ChatContext);
-	const chatroom = chatContext.chatroom;
+	const {chatroom} = useContext(ChatContext);
 
 	useEffect(()=>{
 		console.log("MenuChat");
-		if (!chatContext.chatroom[0]){
+		if (!chatroom[0]){
 			socket.emit("myChatRoom");
 		}
-	}, [chatContext]);
-
-	const handleTitleChange = (chatid :string, title :string) => {
-		let chat:Array<chatRoom> = chatroom[0].chatroom;
-
-		const idx = chat.findIndex(room => room.chatid === chatid);
-		if (idx !== -1){
-			chat[idx].title = title;
-			chatroom[1](chat);
-		}
-	}
+	}, []);
 	const handlePublic = () => {
 		socket.emit("publicChatRoom");
 	}
@@ -41,7 +30,7 @@ export default function MenuChat(){
 			</div>
 			<div className="m-1 h-90">
 				<ul key="chatBoxList" className="col list-unstyled">
-					{chatroom[0] && chatroom[0].chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} setTitle={handleTitleChange}/>)}
+					{chatroom[0] && chatroom[0].chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info}/>)}
 				</ul>
 			</div>
 			<AddChatModal></AddChatModal>

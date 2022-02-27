@@ -8,12 +8,12 @@ import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 
 export default function Play(){
-	const checkUrl:string = "http://localhost:4242/user/check";
+	const checkUrl:string = "/user/check";
 	const { gameroom } = useContext(GameContext);
 	const history = useHistory();
 
 	useEffect(()=>{
-		axios.get(checkUrl + "?url=play", {withCredentials: true}).then((res:any)=>{
+		axios.get(checkUrl + "?url=play").then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){

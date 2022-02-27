@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom"
 import {socket, UserContext} from "../../socket/userSocket";
-import { ChatContext, ChatBlock, ChatHistory, ChatData } from "../../socket/chatSocket";
+import { ChatContext, ChatBlock, ChatHistory } from "../../socket/chatSocket";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "../../css/ChatRoom.css"
@@ -16,6 +16,7 @@ export default function ChatRoom(props:any){
 	const {user} = useContext(UserContext);
 	const {chatroom, history} = useContext(ChatContext);
 	const chatid = chatroom[0]?.order[props.idx];
+	const chatInput = useRef<HTMLFormElement>(null);
 
 	useEffect(()=>{
 		if (chatid && (!history[0] || history[0].chatid !== chatid)){
@@ -38,7 +39,7 @@ export default function ChatRoom(props:any){
 			chat.list.push(data);
 			history[1](chat);
 		})
-	}, []);
+	}, [chatid, history]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
@@ -55,7 +56,7 @@ export default function ChatRoom(props:any){
 				alert("mute!!!");
 			}
 			setChat("");
-			window.location.reload();
+			chatInput.current?.reset();
 		});
 	}
 	const handleInputKeypress = (event:any) => {
@@ -63,26 +64,37 @@ export default function ChatRoom(props:any){
 			handleSendBtn();
 		}
 	}
+	const handleUrl = () => {
+		const url:string = _history.location.pathname;
+		const idx:number = url.search("waiting");
+		if (idx !== -1){
+			let result:string = url.slice(0, url.search("chat") + 5);
+			result += url.slice(idx);
+			_history.push(result);
+		}else{
+			_history.push("/game/chat");
+		}
+	}
 
 	return (
-		<div className="container-fluid p-2" key={`chatroom${props.idx}`}>
+		<div className="container-fluid p-2 h-100" key={`chatroom${props.idx}`}>
 			<div className="col">
-				<div className="row m-1" onClick={()=>{_history.goBack()}}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
+				<div className="row m-1" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0" id="chatlist">
 					<div className="col my-1">
 						{history[0] && history[0].list && history[0].list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.content}`);
-							if (data.userid === user[0].userid)
-							return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
+							if (data.userid === user[0]?.userid)
+								return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
 							else
-							return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>
+								return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>
 						})}
 					</div>
 				</div>
-				<div className="d-flex m-0 p-0" id="chatForm">
+				<form className="d-flex m-0 p-0" id="chatForm" ref={chatInput}>
 					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
-				</div>
+				</form>
 			</div>
 		</div>
 	);

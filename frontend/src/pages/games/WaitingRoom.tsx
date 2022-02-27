@@ -33,6 +33,9 @@ export default function WaitingRoom(){
 		});
 	}
 	const handleExit = () => {
+		if (!gameroom[0] || !gameroom[0].roomid){
+			return ;
+		}
 		socket.emit("exitGameRoom", {
 			roomid: gameroom[0]?.roomid
 		});
