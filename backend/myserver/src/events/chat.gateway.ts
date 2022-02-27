@@ -422,8 +422,9 @@ export class ChatGateway {
       room.sayToRoom(socket, payload);
     else
       room.announce("chatMessage", {contents : payload.content});
-    await repo_chathistory.insertHistory(socket.userid, payload.content, chatRoom);
+    const temp = await repo_chathistory.insertHistory(socket.userid, payload.content, chatRoom);
     this.log(`Message from ${me.member.nickname} has been sent.`);
+    this.log(`Message is ${temp.contents} .`);
   }
 
   // 채팅 음소거 :
