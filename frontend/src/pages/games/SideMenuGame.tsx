@@ -17,6 +17,9 @@ export default function SideMenuGame(){
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuGame", {withCredentials: true}).then((res:any)=>{
+			console.log("menu game here!!");
+			// console.log("body.state = " + res.body.state);
+			// console.log("state = " + res.state);
 			if (res.state){
 				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){

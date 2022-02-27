@@ -32,6 +32,7 @@ export default function Game() {
 		});
 		socket.on("enterGameRoom", (msg:any) => {
 			console.log("enter game room");
+			console.log(msg);
 			if (msg.message) {
 				alert("fail to enter the room!");
 				//updateGameRoom에 대한 응답을 받은 경우

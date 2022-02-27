@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import TitleInput from "./TitleInput"
 import MenuChatDropdown from "./MenuChatDropdown"
-import { User, ChatContext } from "../../socket/chatSocket"
+import { User, ChatContext, ChatData } from "../../socket/chatSocket"
 import { socket } from "../../socket/userSocket"
 
 function memberlist(member: Array<User>) : string {
@@ -21,18 +21,21 @@ function memberlist(member: Array<User>) : string {
 }
 
 export default function MenuChatBox(props :any){
-	const [title, setTitle] = useState(props.info.title)
 	const history = useHistory()
-	const chatContext = useContext(ChatContext);
+	const {chatroom} = useContext(ChatContext);
+	// const [tmpTitle, setTitle] = useState<string>(props.info.title);
+	const [check, setChange] = useState<boolean>(false);
+	const size:number = props.info.members.length;
 
-	useEffect(()=>{
-	}, []);
-	const handleTitle = (chatid:string, newTitle: string) => {
-		setTitle(newTitle);
-		props.setTitle(chatid, newTitle);
+	useEffect(()=>{}, [check]);
+	const changeTitle = () => {
+		setChange(!check);
 	}
+	// const handleTitle = (chatid:string, newTitle: string) => {
+	// 	setTitle(newTitle);
+	// }
 	const handleDoubleClick = (chatid: string) => {
-		const idx = chatContext.chatroom[0]?.order.indexOf(chatid);
+		const idx = chatroom[0]?.order.indexOf(chatid);
 		if (idx !== -1){
 			socket.emit("chatHistory", {
 				chatid: chatid
@@ -49,14 +52,16 @@ export default function MenuChatBox(props :any){
 		<li key={`menuchatbox_${props.info.chatid}`} className="col-12 btn m-1" id="chatBox" onDoubleClick={()=>handleDoubleClick(props.info.chatid)}>
 			<div key={`box_${props.info.chatid}`} className="d-flex">
 				<div key={`title_${props.info.chatid}`} className="h6 m-1 overflow-hidden" id="boxTitle">
-					{props.info.title[0] === "#" ?
-						<TitleInput setTitle={handleTitle} info={props.info}/>
+					{check ?
+						<TitleInput changeTitle={changeTitle} info={props.info}/>
 							: (props.info.title !== "" ? props.info.title : memberlist(props.info.members))
 					}
 				</div>
-				{/* <div className="font-weight-light member" id="boxMembers">{props.info.title[0] === "#" ?? props.info.member.length}</div> */}
+				{ !check &&
+					<div className="font-weight-light member" id="boxMembers">{size}</div>
+				}
 			</div>
-			<MenuChatDropdown info={props.info} setTitle={handleTitle}/>
+			<MenuChatDropdown info={props.info} changeTitle={changeTitle}/>
 		</li>
 	);
 }
