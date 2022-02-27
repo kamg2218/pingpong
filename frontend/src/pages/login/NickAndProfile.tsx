@@ -14,12 +14,11 @@ export default function NickAndProfile(){
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
-	const url:string = "http://localhost:4242";
-	const check:string = "/user/check";
+	const url:string = "/user/check";
 	const { gameroom } = useContext(GameContext);
 
 	useEffect(()=>{
-		axios.get(url + check, {withCredentials: true}).then((res:any)=>{
+		axios.get(url).then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){

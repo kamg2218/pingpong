@@ -16,10 +16,10 @@ export default function SideMenuChat(){
 	const history = useHistory();
 	const chatContext = useContext(ChatContext);
 	const {gameroom} = useContext(GameContext);
-	const checkUrl:string = "http://localhost:4242/user/check";
+	const checkUrl:string = "/user/check";
 	
 	useEffect(()=>{
-		axios.get(checkUrl + "?url=sideMenuChat", {withCredentials: true}).then((res:any)=>{
+		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){

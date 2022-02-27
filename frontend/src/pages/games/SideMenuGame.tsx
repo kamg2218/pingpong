@@ -13,10 +13,10 @@ export default function SideMenuGame(){
 	const { user } = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
 	const [clicked, setClicked] = useState<string>("");
-	const checkUrl:string = "http://localhost:4242/user/check";
+	const checkUrl:string = "/user/check";
 
 	useEffect(()=>{
-		axios.get(checkUrl + "?url=sideMenuGame", {withCredentials: true}).then((res:any)=>{
+		axios.get(checkUrl + "?url=sideMenuGame").then((res:any)=>{
 			console.log("menu game here!!");
 			// console.log("body.state = " + res.body.state);
 			// console.log("state = " + res.state);

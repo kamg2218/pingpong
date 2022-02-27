@@ -22,29 +22,26 @@ export default function MyProfileModal(props: any) {
 		setNum(event.target.value);
 	}
 	const handleSubmit = () => {
-		const url:string = "http://localhost:4242/2fa";
 		if (num.length !== 4){
 			return ;
 		}
 		if (!profile?.twofactor){
-			axios.post(url + "/turn-on", {withCredentials: true}).then((res:any)=>{
+			axios.post("/2fa/turn-on").then((res:any)=>{
 				console.log(res)
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}else{
-			axios.post(url + "/turn-off", {withCredentials: true}).then((res:any)=>{
+			axios.post("/2fa/turn-off").then((res:any)=>{
 				console.log(res)
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}
 	}
-	const handleQrcode = () => {
-		const url:string = "http://localhost:4242/2fa/generate";
-		
+	const handleQrcode = () => {		
 		if (!state && !profile?.twofactor){
-			axios.post(url, {withCredentials: true}).then((res:any)=>{
+			axios.post("/2fa/generate").then((res:any)=>{
 				console.log(res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});
