@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
@@ -86,23 +86,23 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (process.env.NODE_ENV === "dev") {
 			return ;
 		}
-		if (!x)
+		if (!x) {
+			console.log("No Authorization header");
 			socket.disconnect();
+		}
 		else {
 			try {
 				let tokenValue = this.getAccessToken(x);
-				let inform = true;
 				console.log(`verify : ${tokenValue}`);
 				let res = await this.jwtService.verify(tokenValue);
 				let user = await this.authService.validateJwt(res);
+				if (!user) {
+					throw new UnauthorizedException("no such user");
+				}
 				socket['userid'] = res.userid;
-				if (onlineManager.isOnline(res.userid))
-					inform = false;
 				onlineManager.online(socket);
 				onlineManager.print();
 				socket.historyIndex = 0;
-				if (!inform)
-					return ;
 				// const repo_user = getCustomRepository(UserRepository);
 				// const list = await onlineManager.onlineFriends(socket, user);
 				// this.chatGatewayService.onlineMyChatRoom(socket);
