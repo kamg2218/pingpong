@@ -41,7 +41,7 @@ export default function NickAndProfile(){
 	}
 	const handleCheck = (event : any) => {
 		event.preventDefault();
-		axios.get(`${url}/auth/check?nickname=${nickname}`)
+		axios.get(`/auth/check?nickname=${nickname}`)
 		.then(res=>{console.log(res.data); setCheckModalText("사용 가능한 닉네임입니다.")})
 		.catch(error=>{console.log(error); setCheckModalText("사용 불가능한 닉네임입니다.")});
 		if (btn){
@@ -55,8 +55,8 @@ export default function NickAndProfile(){
 			setCheckModalText("닉네임 중복 확인을 해주세요.");
 			return ;
 		}
-		axios.post(`${url}/auth/signup`, { nickname, profile }, {withCredentials: true}
-		).then(res=>{
+		axios.post(`/auth/signup`, { nickname, profile })
+		.then(res=>{
 			console.log(res);
 			console.log(res.data);
 			if (res.data){
