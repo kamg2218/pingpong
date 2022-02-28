@@ -18,6 +18,7 @@ export class UserController {
     async checkState(@UserDeco() user: User) {
         // const user = await getCustomRepository(UserRepository).findOne({nickname : "jikwon"});
         const state = await this.userService.findState(user);
+        console.log("state : ", state);
         return {state};
     }
 }

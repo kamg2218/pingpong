@@ -22,7 +22,7 @@ export class JwtAuthenticationStrategy extends PassportStrategy(Strategy, 'jwt-2
     }
     
     async validate(payload : TokenPayload) {
-        const res = (await this.authService.validate2FAJwt(payload));
+        const res = await this.authService.validate2FAJwt(payload);
         return res;
     }
 }

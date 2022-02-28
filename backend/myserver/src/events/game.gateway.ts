@@ -35,8 +35,12 @@ export class GameGateway {
         console.log("ENV : ", env.DB_HOST);
     }
 
-    private log(msg : String) {
+    private log(msg : string) {
         this.logger.log(msg, "GameGateway");
+    }
+
+    private over(gateway : string) {
+        console.log(`[${gateway} is over]---------\n`)
     }
 
     public checkPayload(payload : any, checker : object) {
@@ -75,15 +79,19 @@ export class GameGateway {
             //socket.user 접근
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
         }
-        if (await this.gameGatewayService.amIinGameRoom(user))
-        	return this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
+        if (await this.gameGatewayService.amIinGameRoom(user)) {
+            this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
+            return this.over("createGameRoom");
+        }
         if (!this.gameGatewayService.validateOptions(payload)) {
             let reason = this.gameGatewayService.whyCantCreate(payload);
         	this.log(`${user.nickname} are trying to create game room with wrong options : ${reason}`);
-        	return this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
+        	this.gameGatewayService.respondToUser(socket, "createGameRoom", {result : false});
+            return this.over("createGameRoom");
         }
         const roomInfo = await this.gameGatewayService.createAndEnterGameRoom(socket, user, payload);
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
+        return this.over("createGameRoom");
     }
 
     @SubscribeMessage('enterGameRoom')
@@ -104,13 +112,19 @@ export class GameGateway {
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
             payload = payload1;
         }
-        if (await this.gameGatewayService.amIinGameRoom(user))
-        	return this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
+        if (await this.gameGatewayService.amIinGameRoom(user)) {
+            this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
+            return this.over("enterGameRoom");
+        }
+        	
         const validateResult = await this.gameGatewayService.checkIfItIsAvailableToJoinAs(payload);
-        if (!validateResult.result)
-        	return this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "It is not avaliable to join this game room"});
+        if (!validateResult.result) {
+            this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "It is not avaliable to join this game room"});
+            return this.over("enterGameRoom");
+        }
         const roomInfo = await this.gameGatewayService.enterGameRoom(socket.id, user, validateResult.gameRoom, payload);
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
+        return this.over("enterGameRoom");
     }
 
     @SubscribeMessage('exitGameRoom')
@@ -131,10 +145,12 @@ export class GameGateway {
         }
 		if (! (await this.gameGatewayService.isThisMyGameRoom(user, payload.roomid))) {
 			this.log(`${user.nickname} isn't in the GameRoom ${payload1.title}`);
-			throw new WsException(`You are not in the GameRoom ${payload1.title}`);
+			// throw new WsException(`You are not in the GameRoom ${payload1.title}`);
+            return this.over('exitGameRoom');
 		}
         const gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, payload.roomid);
         this.gameGatewayService.respondToUser(socket, "exitGameRoom", {roomid : gameRoom.roomid});
+        return this.over("exitGameRoom");
     }
 
     @SubscribeMessage('changeGameRoom')
@@ -157,11 +173,17 @@ export class GameGateway {
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
             payload = payload1;
         }
-        if (!await this.gameGatewayService.validationAuthority(user, payload.roomid))
-        	return this.gameGatewayService.respondToUser(socket, "changeGameRoom", {result : false});
-        if (!await this.gameGatewayService.checkIfItIsAvailableChangeOptions(payload.roomid))
-        	return this.gameGatewayService.respondToUser(socket, "changeGameRoom", {result : false});
+        if (!await this.gameGatewayService.validationAuthority(user, payload.roomid)) {
+            this.gameGatewayService.respondToUser(socket, "changeGameRoom", {result : false});
+            return this.over('changeGameRoom');
+        }
+        	
+        if (!await this.gameGatewayService.checkIfItIsAvailableChangeOptions(payload.roomid)) {
+            this.gameGatewayService.respondToUser(socket, "changeGameRoom", {result : false});
+            return this.over('changeGameRoom');
+        }
         await this.gameGatewayService.changeGameRoomOptions(payload);
+        return this.over('changeGameRoom');
     }
 
     @SubscribeMessage('gameRoomList') 
@@ -169,6 +191,7 @@ export class GameGateway {
         this.log({gate : "gameRoomList", ...payload});
         const result = await this.gameGatewayService.getAllGameRoomList();
         this.gameGatewayService.respondToUser(socket, "gameRoomList", result);
+        return this.over('gameRoomList');
     }
 
     //방장인지 확인 필요
@@ -192,15 +215,18 @@ export class GameGateway {
         const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
-            throw new WsException("No such gameRoom");
+            // throw new WsException("No such gameRoom");
+            return this.over('startGame');
         }
-        // if (!await this.gameGatewayService.validationAuthority(user, game.id)) {
-        //     this.log(`${user.nickname} has no authority to start game.`);
-        //     throw new WsException("Not authorized")
-        // }
+        if (!await this.gameGatewayService.validationAuthority(user, game.id)) {
+            this.log(`${user.nickname} has no authority to start game.`);
+            // throw new WsException("Not authorized")
+            return this.over('startGame');
+        }
         if (!game.checkIfItCanStart()) {
             this.log("This room can't start the game")
-            throw new WsException("This room can't start the game");
+            // throw new WsException("This room can't start the game");
+            return this.over('startGame');
         }
         let proxy = new Proxy(game, {
         	set : (target, prop, value) => {
@@ -233,9 +259,11 @@ export class GameGateway {
         const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
-            throw new WsException("No such gameRoom");
+            // throw new WsException("No such gameRoom");
+            return this.over('pauseGame');
         }
         game.pause()
+        return this.over('pauseGame');
     }
 
     @SubscribeMessage('restartGame')
@@ -257,9 +285,11 @@ export class GameGateway {
         const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
-            throw new WsException("No such gameRoom");
+            // throw new WsException("No such gameRoom");
+            return this.over('restartGame');
         }
         game.restart();
+        return this.over('restartGame');
     }
 
     @SubscribeMessage('speedUp')
@@ -331,9 +361,11 @@ export class GameGateway {
         const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such gameRoom")
-            throw new WsException("No such gameRoom");
+            // throw new WsException("No such gameRoom");
+            return this.over('move');
         }
         game.chagnePlayersDirection(user.userid, payload.direction);
+        return this.over('move');
     }
 
 
@@ -355,12 +387,14 @@ export class GameGateway {
 			if (!MatchingManager.isThereWaitingUser()) {
 				this.log("No one is waiting.")
 				MatchingManager.putOnTheWaitingList(user.userid);
-				return ;
+                return this.over('randomMatching');
 			}
 			const theOtherId = MatchingManager.getOne();
 			const options = MatchingManager.generateGameRoomOptions();
-			if (await this.gameGatewayService.amIinGameRoom(user))
-				return this.gameGatewayService.respondToUser(socket, "randomMatching", {result : false});
+			if (await this.gameGatewayService.amIinGameRoom(user)) {
+                this.gameGatewayService.respondToUser(socket, "randomMatching", {result : false});
+                return this.over('randomMatching');
+            }	
 			let roomInfo = await this.gameGatewayService.createAndEnterGameRoom(socket, user, options);
 			this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
 			const repo_user = getCustomRepository(UserRepository);
@@ -369,11 +403,14 @@ export class GameGateway {
 			const theOthersocketId : string = onlineManager.socketIdOf(theOtherId);
             roomInfo = await this.gameGatewayService.enterGameRoom(theOthersocketId, theOther, validateResult.gameRoom, {isPlayer : true});
 			this.server.to(theOthersocketId).emit("enterGameRoom", roomInfo);
+            return this.over('randomMatching');
 		}
 		else {
 			let randomizedIndex = MatchingManager.getRandomInt(0, lists.length);
-			if (await this.gameGatewayService.amIinGameRoom(user))
-				return this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
+			if (await this.gameGatewayService.amIinGameRoom(user)) {
+                this.gameGatewayService.respondToUser(socket, "enterGameRoom", {message : "You are already in the game room"});
+                return this.over('randomMatching');
+            }	
 			let validateResult = await this.gameGatewayService.checkIfItIsAvailableToJoinAs({roomid : lists[randomizedIndex].roomid, isPlayer : true});
 			while (!validateResult.result) {
 				randomizedIndex = MatchingManager.getRandomInt(0, lists.length);
@@ -381,7 +418,7 @@ export class GameGateway {
 			}
 			const roomInfo = await this.gameGatewayService.enterGameRoom(socket.id, user, validateResult.gameRoom, {isPlayer : true});
 			this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
-            MatchingManager.print();
+            return this.over('randomMatching');
 		}
 	}
 
@@ -397,6 +434,7 @@ export class GameGateway {
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
         }
 		MatchingManager.cancle(user.userid);
+        return this.over('randomMatchingCancle');
 	}
 
 	@SubscribeMessage('matchResponse')
@@ -414,19 +452,21 @@ export class GameGateway {
             payload = payload1;
         }
 		const request = await this.gameGatewayService.validateRequestStatus(payload.reuqestid);
-    	if (!request)
-			throw new WsException("Bad request");
-        if (!onlineManager.isOnline(request.owner.userid))
-			throw new WsException("Bad Request");
+        if (!request || !onlineManager.isOnline(request.owner.userid)) {
+            this.log("Bad Reqeust")
+            // throw new WsException("Bad request");
+            return this.over("matchResponse")
+        }
     	const theOtherSocketId = onlineManager.socketIdOf(request.owner.userid);
 		if (this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
 			this.gameGatewayService.deleteMatch(request);
 			this.server.to(theOtherSocketId).emit("matchRequest",  {result : false});
-			return ;
+			return this.over("matchResponse")
 		}
         this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
 		const result = await this.gameGatewayService.enterMatch(socket, request, user);
 		this.gameGatewayService.respondToUser(socket, "enterGameRoom", result);
+        return this.over("matchResponse")
 	}
 	
 	@SubscribeMessage('matchRequest')
@@ -447,7 +487,8 @@ export class GameGateway {
         }
     	if (!await this.gameGatewayService.validateMatchRequest(user, payload.userid)) {
             this.log("Bad request")
-            throw new WsException("Bad Reqeust");
+            // throw new WsException("Bad Reqeust");
+            return this.over("matchRequest")
         }
 		const theOtherSocketId = onlineManager.socketIdOf(payload.userid);
 
@@ -459,7 +500,9 @@ export class GameGateway {
 		});
 		setTimeout(()=>{
 			this.gameGatewayService.deleteMyMatch(user.userid);
+            this.log(`Timeover : Match is deleted`)
 		}, 30000);
+        return this.over("matchRequest")
 	}
 
     @SubscribeMessage('backToGameRoom')
@@ -481,10 +524,12 @@ export class GameGateway {
         const game = onlineGameMap[payload.roomid];
         if (!game) {
             this.log("No such game Room");
-            throw new WsException("No such game room");
+            // throw new WsException("No such game room");
+            return this.over("backToGameRoom");
         };
         //게임 종료? 진행중 ? 존재 하는지?멤버인지 등등 확인
         this.log(`${user.nickname} want to back to game room`);
         await this.gameGatewayService.backToGameRoom(user, game);
+        return this.over("backToGameRoom");
     }
 }

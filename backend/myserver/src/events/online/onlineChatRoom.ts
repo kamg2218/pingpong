@@ -31,7 +31,12 @@ export class onlineChatRoom {
         this.members.map(async (socketid) => {
             let theOtherId = onlineManager.userIdOf(socketid);
             if (!await repo_blockList.amIBlockedByid(user, theOtherId))
-                onlineChatRoom.server.to(socketid).emit("chatMessage", payload);
+                onlineChatRoom.server.to(socketid).emit("chatMessage", {
+                    chatid : payload.chatid,
+                    userid : socket.userid,
+                    content : payload.content,
+                    time : payload.time
+                });
         });
     }
 

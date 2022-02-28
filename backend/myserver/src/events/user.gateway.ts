@@ -35,6 +35,10 @@ export class UserGateway{
       	this.logger.log(msg, "UserGateway");
   	}
 
+	private over(gateway : string) {
+        console.log(`[${gateway} is over]---------\n`)
+    }
+
     @SubscribeMessage('userInfo') 
     async sendUserInfo(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
 		this.log({gate : "userInfo", ...payload1});
@@ -46,16 +50,15 @@ export class UserGateway{
             //socket.user 접근
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
         }
-		const all = Promise.all([
+		const all = await Promise.all([
 			this.userGatewayService.getUserInfo(user),
 			this.userGatewayService.getFriendsInfo(user),
 			this.userGatewayService.getFriendRequest(user),
 			this.userGatewayService.getGamehistory(user),
 			this.userGatewayService.getBlocklist(user),
 		]);
-		all.then((values)=>{
-			socket.emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
-		});
+		socket.emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
+		return this.over("userInfo");
     }
 
     @SubscribeMessage('opponentProfile')
@@ -73,16 +76,17 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
-		if (!payload.userid)
-			return ;
+		if (!payload.userid) {
+			this.log("Bad Request")
+			return this.over("opponentProfile");
+		}
 		const theOther = await getCustomRepository(UserRepository).findOne(payload.userid);
-		const all = Promise.all([
+		const all = await Promise.all([
 			this.userGatewayService.getTheOtherUSerInfo(user, theOther),
 			this.userGatewayService.getGamehistory(theOther)
 		]);
-		all.then((values)=>{
-			socket.emit("opponentProfile", this.userGatewayService.arrOfObjToObj(values));
-		})
+		socket.emit("opponentProfile", this.userGatewayService.arrOfObjToObj(all));
+		return this.over("opponentProfile");
     }
 
     @SubscribeMessage('addFriend')
@@ -101,13 +105,15 @@ export class UserGateway{
 			payload = payload1
 		}
 		if (!payload?.userid) {
-			this.log("No such user");
-			throw new WsException("Bad Request");
+			this.log("Bad Request : No such user");
+			// throw new WsException("Bad Request");
+			return this.over("addFriend");
 		}
 		await this.userGatewayService.sendFriendRequest(user, payload.userid);
 		const sok_friend = onlineManager.socketIdOf(payload.userid);
 		this.server.to(sok_friend).emit("addFriend", {userid : user.userid, nickname : user.nickname, profile : user.profile });
-    }
+		return this.over("addFriend");
+	}
 
     @SubscribeMessage('deleteFriend')
     async deleteFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
@@ -124,9 +130,12 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
-		if (!payload.userid)
-			throw new WsException("Bad Request");
+		if (!payload.userid) {
+			this.log("Bad Request : no such user");
+			return this.over("deleteFriend");
+		}
 		await this.userGatewayService.deleteFriend(user, payload.userid);
+		return this.over("deleteFriend");
     }
 
     @SubscribeMessage('block')
@@ -144,9 +153,12 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
-		if (!payload.userid)
-			throw new WsException("Bad Request");
+		if (!payload.userid) {
+			this.log("Bad Request : no such user");
+			return this.over("block");
+		}
 		await this.userGatewayService.block(user, payload.userid);
+		return this.over("block");
     }
 
     @SubscribeMessage('unblock')
@@ -164,13 +176,14 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
-		if (!payload.userid)
-			throw new WsException("Bad Request");
+		if (!payload.userid) {
+			this.log("Bad Request : no such user");
+			return this.over("unblock");
+		}
 		await this.userGatewayService.unblock(user, payload.userid);
+		return this.over("unblock");
     }
 
-    // "theOtherNickname" : "jikwon"
-    // "respond" : false
     @SubscribeMessage('newFriend')
     async respondToFriendRequest(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
 		this.log({gate : "newFriend", ...payload1});
@@ -187,8 +200,8 @@ export class UserGateway{
 			payload = payload1
 		}
 		if (!payload.userid) {
-			this.log("No such user")
-			throw new WsException("No such user");
+			this.log("Bad Request : No such user")
+			return this.over("newFriend");
 		}
 		const {isAccepted, theOtherInfo, myInfo} = await this.userGatewayService.resepondToFriendRequest(user, payload.userid, payload.respond);
 		if (isAccepted) {
@@ -196,10 +209,11 @@ export class UserGateway{
 			socket.emit('newFriend', theOtherInfo);
 			this.server.to(sok_friend).emit("newFriend", myInfo);
 		}
+		return this.over("newFriend");
     }
 
     @SubscribeMessage('updateProfile')
-    async update(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) : Promise<WsResponse<object>> {
+    async update(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload1 : any) {
 		this.log({gate : "updateProfile", ...payload1});
 		let user : User;
 		let payload;
@@ -213,9 +227,7 @@ export class UserGateway{
             user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			payload = payload1
 		}
-		return { 
-			event : "updateProfile", 
-			data : await this.userGatewayService.update(user, payload)
-		};
+		this.server.to(socket.id).emit("updateProfile", {data : await this.userGatewayService.update(user, payload)});
+		return this.over("updateProfile");
 	}
 }

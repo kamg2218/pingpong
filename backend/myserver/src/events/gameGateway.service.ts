@@ -271,6 +271,7 @@ export class GameGatewayService {
 
     public respondToUser(socket : AuthSocket, event : string, data : any) {
         socket.emit(event, data);
+        console.log(`event : ${event}, sokcet : ${socket.userid}`)
     }
 
     public whyCantCreate(payload : any) {

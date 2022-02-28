@@ -395,7 +395,8 @@ export class ChatGateway {
     let payload;
     if (process.env.NODE_ENV === "dev") {
       const chatRoom = await getCustomRepository(ChatRoomRepository).findOne({title : payload1.title});
-      payload = {contents: payload1.content, chatid: chatRoom.chatid};
+      const time = new Date();
+      payload = {contents: payload1.content, chatid: chatRoom.chatid, time : time};
     }
     else {
       payload = payload1;
@@ -412,8 +413,8 @@ export class ChatGateway {
       return ;
     }
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
-    let now = new Date();
-    if (me.muteUntil && me.muteUntil > now) {
+    // let now = new Date();
+    if (me.muteUntil && me.muteUntil > payload.time) {
       this.log("Mute")
       return false;
     }
@@ -421,8 +422,8 @@ export class ChatGateway {
     if (chatRoom.type === "private" && chatRoom.memberCount === 2)
       room.sayToRoom(socket, payload);
     else
-      room.announce("chatMessage", {contents : payload.content});
-    const temp = await repo_chathistory.insertHistory(socket.userid, payload.content, chatRoom);
+      room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, content : payload.content, time : payload.time}); 
+    const temp = await repo_chathistory.insertHistory(socket.userid, payload, chatRoom);
     this.log(`Message from ${me.member.nickname} has been sent.`);
     this.log(`Message is ${temp.contents} .`);
   }
