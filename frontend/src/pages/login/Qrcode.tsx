@@ -2,14 +2,14 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import {useHistory} from 'react-router-dom';
 import "./qrcode.css";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export default function Qrcode(){
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
 
-	useEffect(()=>{
-	});
 	function checkToken():boolean {
 		if (token.length !== 6)
 			return false;
@@ -27,8 +27,9 @@ export default function Qrcode(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const url = "/2fa/authenticate"
-			axios.post(url, { token: token }).then((res:any)=>{
+			const url:string = process.env.URL || "";
+			const auth:string = url + "/2fa/authenticate";
+			axios.post(auth, { token: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
 			}).catch((err:any)=>{

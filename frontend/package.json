@@ -21,7 +21,7 @@
     "socket.io-client": "^4.3.2"
   },
   "scripts": {
-    "start": "export PORT=4242 && react-scripts start",
+    "start": "react-scripts start",
     "build": "export PORT=4242 && react-scripts build"
   },
   "eslintConfig": {

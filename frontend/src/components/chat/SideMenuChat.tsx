@@ -7,6 +7,8 @@ import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from "../../socket/chatSocket"
 import axios from "axios";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 type param = {
 	id?: String
@@ -16,9 +18,11 @@ export default function SideMenuChat(){
 	const history = useHistory();
 	const chatContext = useContext(ChatContext);
 	const {gameroom} = useContext(GameContext);
-	const checkUrl:string = "/user/check";
+	const url:string = process.env.URL || "";
+	const checkUrl:string = url + "/user/check";
 	
 	useEffect(()=>{
+		console.log(checkUrl);
 		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
 				console.log(res.state)

@@ -5,6 +5,8 @@ import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"
 import axios from "axios";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export default function MyProfileModal(props: any) {
 	const history = useHistory();
@@ -13,6 +15,7 @@ export default function MyProfileModal(props: any) {
 	const [state, setState] = useState<boolean>(false);
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
+	const url:string =  process.env.URL || "";
 	const image:string = 'https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgoogle.com%2F&chs=180x180&choe=UTF-8&chld=L|2';
 
 	useEffect(() => {
@@ -26,13 +29,13 @@ export default function MyProfileModal(props: any) {
 			return ;
 		}
 		if (!profile?.twofactor){
-			axios.post("/2fa/turn-on").then((res:any)=>{
+			axios.post(url + "/2fa/turn-on").then((res:any)=>{
 				console.log(res)
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}else{
-			axios.post("/2fa/turn-off").then((res:any)=>{
+			axios.post(url + "/2fa/turn-off").then((res:any)=>{
 				console.log(res)
 				setState(false);
 				socket.emit("userInfo");
@@ -41,7 +44,7 @@ export default function MyProfileModal(props: any) {
 	}
 	const handleQrcode = () => {		
 		if (!state && !profile?.twofactor){
-			axios.post("/2fa/generate").then((res:any)=>{
+			axios.post(url + "/2fa/generate").then((res:any)=>{
 				console.log(res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});
