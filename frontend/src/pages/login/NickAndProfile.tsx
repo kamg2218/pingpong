@@ -6,6 +6,8 @@ import ProfileCarousel from "../../components/login/ProfileCarousel";
 import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 import "./NickAndProfile.css";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export default function NickAndProfile(){
 	const history = useHistory();
@@ -14,11 +16,12 @@ export default function NickAndProfile(){
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
-	const url:string = "/user/check";
+	const url:string = process.env.URL || "";
+	const checkUrl:string = "/user/check";
 	const { gameroom } = useContext(GameContext);
 
 	useEffect(()=>{
-		axios.get(url).then((res:any)=>{
+		axios.get(checkUrl).then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){
@@ -41,7 +44,7 @@ export default function NickAndProfile(){
 	}
 	const handleCheck = (event : any) => {
 		event.preventDefault();
-		axios.get(`/auth/check?nickname=${nickname}`)
+		axios.get(url + `/auth/check?nickname=${nickname}`)
 		.then(res=>{console.log(res.data); setCheckModalText("사용 가능한 닉네임입니다.")})
 		.catch(error=>{console.log(error); setCheckModalText("사용 불가능한 닉네임입니다.")});
 		if (btn){
@@ -55,7 +58,7 @@ export default function NickAndProfile(){
 			setCheckModalText("닉네임 중복 확인을 해주세요.");
 			return ;
 		}
-		axios.post(`/auth/signup`, { nickname, profile })
+		axios.post(url + `/auth/signup`, { nickname, profile })
 		.then(res=>{
 			console.log(res);
 			console.log(res.data);

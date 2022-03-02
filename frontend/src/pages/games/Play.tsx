@@ -6,9 +6,12 @@ import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export default function Play(){
-	const checkUrl:string = "/user/check";
+	const url:string = process.env.URL || "";
+	const checkUrl:string = url + "/user/check";
 	const { gameroom } = useContext(GameContext);
 	const history = useHistory();
 
