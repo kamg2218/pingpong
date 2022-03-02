@@ -26,4 +26,5 @@ services:
       - postgres
     environment:
       - DB_HOST=192.168.219.106
-    # command : sh -c "dockerize -wait tcp://postgres:5432 -timeout 60s"
+    volumes:
+      - ./src:/app/src

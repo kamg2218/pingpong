@@ -2,7 +2,7 @@ import { Logger, UsePipes, ValidationPipe } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { CORS_ORIGIN } from "src/config/const";
-import { GameRoomRepository } from "src/db/repository/Game/GameCustomrepository";
+import { GameRoomRepository } from "src/db/repository/Game/GameCustomRepository";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
