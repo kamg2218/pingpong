@@ -2,19 +2,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser'
-import { setupSwagger } from 'src/util/SetupSwagger'
+import { setupSwagger } from 'src/config/SetupSwagger'
 import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
-import {Database, Resource} from '@adminjs/typeorm';
+import { Database, Resource } from '@adminjs/typeorm';
 import { BlockedFriends, Friends, User } from './db/entity/User/UserEntity';
-import { CORS_ORIGIN } from './config/const';
-import {NestExpressApplication} from '@nestjs/platform-express'
-import {join} from 'path';
+
 AdminJS.registerAdapter({Database, Resource});
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
   const adminJs = new AdminJS({
-    
     resources : [User, Friends, BlockedFriends],
     rootPath : '/admin',
   });
@@ -42,10 +39,10 @@ async function bootstrap() {
       transform : true
     })
   )
-  app.enableCors({
-    origin : CORS_ORIGIN,
-    credentials : true,
-  });
+  // app.enableCors({
+  //   origin : CORS_ORIGIN,
+  //   credentials : true,
+  // });
   await app.listen(4242);
 
 }

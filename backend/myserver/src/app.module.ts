@@ -5,7 +5,7 @@ import { TypeOrmModule} from '@nestjs/typeorm';
 import { ormconfig } from 'src/config/ormconfig'
 import { AuthModule } from './auth/auth.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/twoFactorAuthentication.module';
-import { EventsModule } from './events/events.module';
+import { EventsModule } from './socketEvents/events.module';
 import { UserModule } from './user/user.module';
 import {ServeStaticModule} from '@nestjs/serve-static';
 import { join } from 'path';

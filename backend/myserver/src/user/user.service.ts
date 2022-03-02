@@ -12,7 +12,6 @@ export class UserService {
 
     async findState(user: User) {
         let result;
-
         const gameRoom = await getCustomRepository(GameMembershipRepository).findOne({member: user});
         if (gameRoom !== undefined)
             result = "play";

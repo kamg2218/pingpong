@@ -16,7 +16,7 @@ export class ChatHistory {
     @Column({ type : "text" })
     contents : string;
 
-    @ManyToOne(type => ChatRoom, chatroom => chatroom.history)
+    @ManyToOne(type => ChatRoom, chatroom => chatroom.history, {onDelete: `CASCADE`})
     @JoinColumn({ name : "chatid" })
     chatRoom: ChatRoom;
 

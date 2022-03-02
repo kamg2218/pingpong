@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Logger, Post, Query, Req, Res, UnauthorizedException, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Post, Query, Req, Res, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from 'src/db/entity/User/UserEntity';
 import { AuthGuard } from '@nestjs/passport';
@@ -7,7 +7,7 @@ import { frontLobyPage, frontSignupPage, frontTwoFactorAuthenticationPage} from 
 import { Request, Response } from 'express';
 import { SignUpDTO } from 'src/type/signup.dto';
 import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFilter';
-import { ApiTags, ApiOperation, ApiResponse, ApiCreatedResponse, ApiNoContentResponse, ApiMovedPermanentlyResponse, ApiCookieAuth, ApiBadRequestResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiCreatedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 
 @UseFilters(UnauthorizedExceptionFilter)

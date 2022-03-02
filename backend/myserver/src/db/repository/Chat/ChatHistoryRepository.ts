@@ -5,9 +5,10 @@ import { EntityRepository, getConnection, LessThan, Repository } from "typeorm";
 @EntityRepository(ChatHistory)
 export class ChatHistoryRepository extends Repository<ChatHistory> {
     async insertHistory(userid : string, payload : any, chatroom: ChatRoom) {
+        console.log("payload : ", payload);
         let history = this.create();
         history.userid = userid;
-        history.contents = payload.contents;
+        history.contents = payload.content;
         history.chatRoom = chatroom;
         history.createDate = payload.time;
         await this.insert(history);

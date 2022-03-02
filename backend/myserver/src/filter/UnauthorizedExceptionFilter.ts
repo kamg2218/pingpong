@@ -14,10 +14,7 @@ export class UnauthorizedExceptionFilter implements ExceptionFilter {
         const status = exception.getStatus();
         this.logger.error(`[Error] error code : ${status} - UnauthorizedException`)
         response.status(status)
-                .send(exception.message)
-                // .json({data : exception.message})
-                // .redirect("http://localhost:3000")
-                // .redirect(fronLoginPage);
+                .send(exception.message);
         return response;
     }
 }

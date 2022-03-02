@@ -25,7 +25,7 @@ export class ChatRoom {
     @OneToMany(type => ChatBanList, chatbanlist => chatbanlist.chatRoom, { cascade : true })
     banlists : ChatBanList[];
 
-    @OneToMany(type => ChatHistory, chathistory => chathistory.chatRoom)
+    @OneToMany(type => ChatHistory, chathistory => chathistory.chatRoom, { cascade : true })
     history : ChatHistory[];
 
     @OneToMany(type => ChatMembership, ChatMembership => ChatMembership.chatroom, { cascade : true })

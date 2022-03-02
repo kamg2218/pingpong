@@ -1,9 +1,7 @@
 import { Controller, Get, UseGuards } from "@nestjs/common"
 import { AuthGuard } from "@nestjs/passport";
 import { User } from "src/db/entity/User/UserEntity";
-import { UserRepository } from "src/db/repository/User/User.repository";
 import { UserDeco } from "src/type/user.decorator";
-import { getCustomRepository } from "typeorm";
 import { UserService } from "./user.service";
 
 @Controller('user')
