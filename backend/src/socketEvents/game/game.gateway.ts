@@ -11,6 +11,7 @@ import { MatchingManager } from "../online/matchingManager";
 import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
 import { GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchResponseDTO, MatchRequestDTO,  } from "./dto/game.dto";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 const options = {
     cors : {
@@ -19,11 +20,13 @@ const options = {
     }
 }
 
+
 @WebSocketGateway(options)
 @UsePipes(new ValidationPipe({      
     whitelist : true,
     // forbidNonWhitelisted : true,
     transform : true}))
+@ApiTags('GameGateway')
 export class GameGateway {
     constructor(
         private readonly gameGatewayService : GameGatewayService,
@@ -45,6 +48,7 @@ export class GameGateway {
     }
 
     //test
+    @ApiOperation({ summary: 'test ', description: ''})
     @SubscribeMessage('onlineGame')
     async print(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : any) {
         this.log({gate : "onlineGame", ...payload});

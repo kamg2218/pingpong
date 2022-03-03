@@ -93,7 +93,6 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else {
 			try {
 				let tokenValue = this.getAccessToken(x);
-				console.log(`verify : ${tokenValue}`);
 				let res = await this.jwtService.verify(tokenValue);
 				let user = await this.authService.validateJwt(res);
 				if (!user) {
@@ -121,7 +120,6 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			}
 			catch(err) {
 				console.log("Invalid Token");
-				console.log(err);
 				socket.disconnect();
 			}
 		}

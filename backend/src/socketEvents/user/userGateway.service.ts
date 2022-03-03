@@ -8,17 +8,14 @@ import { LevelManager } from "../game/gameElement/levelManager";
 
 export class UserGatewayService {
     private readonly logger = new Logger();  
-  // constructor(
-  //     private readonly logger : Logger,
-  //   ) {
-  //   }
+
 
     public arrOfObjToObj(values : Array<object>) : Object {
       let obj = {};
       values.map((value)=>(Object.assign(obj, value)));
       return obj;
     }
-    
+
     public async getUserInfo(user : User) {
       const repo_user = getCustomRepository(UserRepository);
       const userInfo = repo_user.getSimpleInfo(user, ["levelpoint", "twofactor"]);
@@ -52,7 +49,7 @@ export class UserGatewayService {
       return {friends : res}
     }
 
-    private calculateWinLose(lists, myUserid : string) {
+    private calculateWinLose(lists : any, myUserid : string) {
       let win = 0;
       let lose = 0;
       lists.map(function(one) {
@@ -96,10 +93,7 @@ export class UserGatewayService {
     }
 
     public async block(user : User, theOtherUserid : string) {    
-      /* temp */
-      /* change : nickanme -> theOtherUserid */
       const theOther = await getCustomRepository(UserRepository).findOne(theOtherUserid); 
-      /*-----*/
       const repo_block = getCustomRepository(BlockedFriendsRepository);
       const repo_friend = getCustomRepository(FriendsRepository);
       if (!theOther) {
@@ -120,11 +114,9 @@ export class UserGatewayService {
     }
 
     public async unblock(user : User, theOtherUserid : string) {
-      /* temp */
-      /* change : nickanme -> theOtherUserid */
-      const theOther = await getCustomRepository(UserRepository).findOne(theOtherUserid); 
-      /*-----*/
       const repo_block = getCustomRepository(BlockedFriendsRepository);
+      const repo_user = getCustomRepository(UserRepository);
+      const theOther = await repo_user.findOne(theOtherUserid); 
       if (!theOther) {
         this.logger.log("no such user", "UserGatewayService")
         throw new WsException("Bad Request");
@@ -137,29 +129,30 @@ export class UserGatewayService {
       this.logger.log(`${user.nickname} unblocked ${theOther.nickname}`, "UserGatewayService");
     }
 
-    public async sendFriendRequest(user : User, theOtherUserid : string) {
-      /* temp */
-      /* change : nickanme -> theOtherUserid */
-      const friend = await getCustomRepository(UserRepository).findOne(theOtherUserid); 
-      /*-----*/
+    public async checkIfICanSendFriendRequest(user : User, theOtherUserid : string) {
       const repo_block = getCustomRepository(BlockedFriendsRepository);
       const repo_friend = getCustomRepository(FriendsRepository);
+      const repo_user = getCustomRepository(UserRepository);
+      const friend = await repo_user.findOne(theOtherUserid); 
       if (!friend) {
         this.logger.log("no such user", "UserGatewayService");
-        throw new WsException("Bad Request");
-      }  
-      if (await repo_friend.isMyFriend(user, friend)) {
-          this.logger.log("already friend", "UserGatewayService");
-          throw new WsException(`You are already friend with ${friend.nickname}`)
+        return false;
       }
-      if (await repo_block.amIBlockedBy(user, friend)) {
-          this.logger.log("you are blocked", "UserGatewayService");
-          throw new WsException(`You are blocked by ${friend.nickname}`);
-      }  
-      if (await repo_block.didIBlock(user, friend)) {
-           this.logger.log("You blocked", "UserGatewayService");
-          throw new WsException(`You blocked ${friend.nickname}`);
+      const res = await Promise.all([
+        repo_friend.isMyFriend(user, friend),
+        repo_block.amIBlockedBy(user, friend),
+        repo_block.didIBlock(user, friend),
+      ]);
+      if (res.findIndex(value=>value===true) !== -1) {
+        return false;
       }
+      return true;
+    }
+
+    public async sendFriendRequest(user : User, theOtherUserid : string) {
+      const repo_user = getCustomRepository(UserRepository);
+      const repo_friend = getCustomRepository(FriendsRepository);
+      const friend = await repo_user.findOne(theOtherUserid); 
       if (await repo_friend.didISendRequest(friend, user)) {
         await repo_friend.acceptFriendRequest(friend, user);
         this.logger.log(`${user.nickname} accepted a friendRequest from ${friend.nickname}`, "UserGatewayService");
@@ -171,11 +164,9 @@ export class UserGatewayService {
     }
 
     public async deleteFriend(user : User, theOtherUserid : string) {
-      /* temp */
-      /* change : nickanme -> theOtherUserid */
-      const friend = await getCustomRepository(UserRepository).findOne(theOtherUserid); 
-      /*-----*/
+      const repo_user = getCustomRepository(UserRepository);
       const repo_friend = getCustomRepository(FriendsRepository);
+      const friend = await repo_user.findOne(theOtherUserid); 
       if (!friend) {
         this.logger.log("no such user");
         throw new WsException("Bad Request");
@@ -189,12 +180,9 @@ export class UserGatewayService {
     }
 
     public async resepondToFriendRequest(user : User, theOtherUserid : string, respond : boolean) {
-      /* temp */
-      /* change : nickanme -> theOtherUserid */
-      const theOther = await getCustomRepository(UserRepository).findOne(theOtherUserid); 
-      /*-----*/
-      const repo_friend = getCustomRepository(FriendsRepository);
       const repo_user = getCustomRepository(UserRepository);
+      const repo_friend = getCustomRepository(FriendsRepository);
+      const theOther = await repo_user.findOne(theOtherUserid); 
       if (!theOther) {
         this.logger.log("no such user", "UserGatewayService");
         throw new WsException("Bad Request");
@@ -207,7 +195,6 @@ export class UserGatewayService {
         await repo_friend.acceptFriendRequest(theOther, user);
         this.logger.log(`${user.nickname} accepted friendRequest from ${theOther.nickname}`, "UserGatewayService");
       }
-        
       else {
         await repo_friend.rejectFriendRequest(theOther, user);
         this.logger.log(`${user.nickname} rejected friendRequest from ${theOther.nickname}`, "UserGatewayService");
@@ -221,22 +208,15 @@ export class UserGatewayService {
 
     async update(user : User, newOptions : any) {
       const repo_user = getCustomRepository(UserRepository);
-      const {nickname, profile} = newOptions;
-      if (nickname && profile) {
-        await repo_user.update(user.userid, {nickname : nickname, profile : profile});
-        this.logger.log(`${user.nickname} has changed nickname & profile`, "UserGatewayService");
-        return {nickname : true, profile : true};
+      const newInfo = {nickname : newOptions.nickname, profile : newOptions.profile};
+      for (let key in newInfo) {
+        if (!newInfo[key])
+          delete newInfo[key];
       }
-      else if (nickname) {
-        await repo_user.update(user.userid, {nickname : nickname});
-        this.logger.log(`${user.nickname} has changed nickname`, "UserGatewayService");
-        return {nickname : true};
+      await repo_user.update(user.userid, newInfo);
+      for (let key in newInfo) {
+        newInfo[key] = true;
       }
-      else if (profile) {
-        await repo_user.update(user.userid, {profile : profile});
-        this.logger.log(`${user.nickname} has changed profile`, "UserGatewayService");
-        return {profile : true};
-      }
-
+      return newInfo;
     }
 }

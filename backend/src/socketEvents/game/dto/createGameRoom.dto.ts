@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateGameRoomDTO {
 
@@ -8,8 +8,8 @@ export class CreateGameRoomDTO {
     readonly title : string;
 
     @ApiProperty({description:'speed'})
-    @IsString()
-    readonly speed : string;
+    @IsNumber()
+    readonly speed : number;
 
     @ApiProperty({description : 'observer'})
     @IsNumber()
@@ -22,5 +22,5 @@ export class CreateGameRoomDTO {
     @ApiProperty({description : " password"})
     @IsOptional()
     @IsString()
-    readonly password? : string
+    readonly password? : string;
 }
