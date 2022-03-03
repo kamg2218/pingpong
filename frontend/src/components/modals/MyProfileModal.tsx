@@ -16,7 +16,7 @@ export default function MyProfileModal(props: any) {
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
 	const url:string =  process.env.URL || "";
-	const image:string = 'https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgoogle.com%2F&chs=180x180&choe=UTF-8&chld=L|2';
+	const image:string = "loading...";
 
 	useEffect(() => {
 	}, [qrcode]);
@@ -25,18 +25,21 @@ export default function MyProfileModal(props: any) {
 		setNum(event.target.value);
 	}
 	const handleSubmit = () => {
-		if (num.length !== 4){
+		if (num.length !== 6){
+			alert("다시 시도해주세요.");
 			return ;
 		}
 		if (!profile?.twofactor){
 			axios.post(url + "/2fa/turn-on").then((res:any)=>{
 				console.log(res)
+				alert("확인되었습니다.");
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}else{
 			axios.post(url + "/2fa/turn-off").then((res:any)=>{
-				console.log(res)
+				console.log(res);
+				alert("확인되었습니다.");
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
@@ -44,6 +47,7 @@ export default function MyProfileModal(props: any) {
 	}
 	const handleQrcode = () => {		
 		if (!state && !profile?.twofactor){
+			console.log("generate");
 			axios.post(url + "/2fa/generate").then((res:any)=>{
 				console.log(res.data);
 				setQrcode(res.data);

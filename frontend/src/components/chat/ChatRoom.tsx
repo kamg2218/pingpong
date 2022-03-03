@@ -29,17 +29,17 @@ export default function ChatRoom(props:any){
 			history[1](data);
 		})
 		socket.on("chatMessage", (data:any)=>{
+			console.log("got chat message");
 			if (data.result){
 				console.log(data.result);
 				return ;
 			}
-			console.log("got chat message");
 			console.log(data);
 			const chat:ChatHistory = history[0];
 			chat.list.push(data);
 			history[1](chat);
 		})
-	}, [chatid, history]);
+	}, [chatid, history, chat]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
@@ -56,7 +56,7 @@ export default function ChatRoom(props:any){
 				alert("mute!!!");
 			}
 			setChat("");
-			chatInput.current?.reset();
+			// chatInput.current?.reset();
 		});
 	}
 	const handleInputKeypress = (event:any) => {
