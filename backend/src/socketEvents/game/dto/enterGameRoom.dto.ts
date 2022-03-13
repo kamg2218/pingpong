@@ -6,6 +6,6 @@ export class EnterGameRoomDTO extends GameRoomInfoDTO {
     @IsString()
     password? : string;
 
-    @IsBoolean()
+    @IsString()
     isPlayer : boolean;
 }
