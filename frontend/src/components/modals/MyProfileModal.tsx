@@ -39,10 +39,10 @@ export default function MyProfileModal(props: any) {
 			}).catch((err:any)=>{console.log(err)});
 		}
 	}
-	const handleQrcode = async () => {		
+	const handleQrcode = () => {		
 		if (!state && !profile?.twofactor){
 			console.log("generate: " + "/2fa/generate");
-			await axios.post("/2fa/generate").then((res:any)=>{
+			axios.post("/2fa/generate").then((res:any)=>{
 				console.log(`qrcode = ` + res.data);
 				console.log(typeof res.data);
 				setQrcode(res.data);
