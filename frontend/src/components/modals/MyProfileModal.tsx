@@ -18,9 +18,7 @@ export default function MyProfileModal(props: any) {
 	const url:string =  process.env.URL || "";
 	const image:string = "loading...";
 
-	// useEffect(() => {
-	// }, [qrcode, state]);
-
+	useEffect(() => { console.log(`qr = `, qrcode)}, [qrcode, state]);
 	const handleInput = (event:any) => {
 		setNum(event.target.value);
 	}
@@ -52,7 +50,7 @@ export default function MyProfileModal(props: any) {
 				console.log(`qrcode = ` + res.data);
 				console.log(typeof res.data);
 				setQrcode(res.data);
-			}).catch((err:any)=>{console.log("Error!"); console.log(err)});
+			}).catch((err:any)=>{console.log(err)});
 		}
 		setState(!state);
 	}
