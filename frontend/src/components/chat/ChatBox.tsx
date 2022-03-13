@@ -13,11 +13,12 @@ export default function ChatBox(props:any){
 		if (!props.data || !props.data.time){
 			return "";
 		}
-		let date:Date = props.data.time;
-		console.log(`time = ${date}, ${typeof date}`);
-		const hour = String(date.getHours()).padStart(2, "0");
-		const minutes = String(date.getMinutes()).padStart(2, "0");
-		return `${hour}:${minutes}`;
+		return "";
+		// let date:Date = props.data.time;
+		// console.log(`time = ${date}, ${typeof date}`);
+		// const hour = String(date.getHours()).padStart(2, "0");
+		// const minutes = String(date.getMinutes()).padStart(2, "0");
+		// return `${hour}:${minutes}`;
 	}
 
 	return (
