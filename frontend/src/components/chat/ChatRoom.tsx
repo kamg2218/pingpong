@@ -15,7 +15,7 @@ export default function ChatRoom(props:any){
 	const [chat, setChat] = useState("");
 	const {user} = useContext(UserContext);
 	const {chatroom, history} = useContext(ChatContext);
-	const chatid = chatroom[0]?.order[props.idx];
+	const chatid:string = chatroom[0]?.order[props.idx];
 	const chatInput = useRef<HTMLFormElement>(null);
 
 	useEffect(()=>{
@@ -60,6 +60,7 @@ export default function ChatRoom(props:any){
 		});
 	}
 	const handleInputKeypress = (event:any) => {
+		event.preventDefault();
 		if (event.key === "Enter"){
 			handleSendBtn();
 		}
