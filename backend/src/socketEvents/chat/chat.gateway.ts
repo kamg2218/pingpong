@@ -386,6 +386,7 @@ export class ChatGateway {
     this.log(`Message from ${me.member.nickname} has been sent.`);
     this.log(`Message is ${temp.contents} .`);
     console.log("[chat5], ", new Date());
+    return true;
   }
 
   // 채팅 음소거 :
