@@ -45,6 +45,7 @@ export default function ChatRoom(props:any){
 		setChat(e.target.value);
 	}
 	const handleSendBtn = () => {
+		console.log("Send Chat Message");
 		if (chat === ""){
 			return ;
 		}
