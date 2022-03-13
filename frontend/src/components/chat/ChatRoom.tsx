@@ -39,7 +39,7 @@ export default function ChatRoom(props:any){
 			chat.list.push(data);
 			history[1](chat);
 		})
-	}, [chat, history]);
+	}, [history]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
@@ -92,10 +92,10 @@ export default function ChatRoom(props:any){
 						})}
 					</div>
 				</div>
-				<form className="d-flex m-0 p-0" id="chatForm" ref={chatInput}>
+				<div className="d-flex m-0 p-0" id="chatForm">
 					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
-				</form>
+				</div>
 			</div>
 		</div>
 	);
