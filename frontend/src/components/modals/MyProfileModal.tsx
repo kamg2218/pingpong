@@ -18,8 +18,8 @@ export default function MyProfileModal(props: any) {
 	const url:string =  process.env.URL || "";
 	const image:string = "loading...";
 
-	useEffect(() => {
-	}, [qrcode, state]);
+	// useEffect(() => {
+	// }, [qrcode, state]);
 
 	const handleInput = (event:any) => {
 		setNum(event.target.value);
@@ -45,10 +45,10 @@ export default function MyProfileModal(props: any) {
 			}).catch((err:any)=>{console.log(err)});
 		}
 	}
-	const handleQrcode = () => {		
+	const handleQrcode = async () => {		
 		if (!state && !profile?.twofactor){
-			console.log("generate: " + url);
-			axios.post(url + "/2fa/generate").then((res:any)=>{
+			console.log("generate: " + url + "/2fa/generate");
+			await axios.post(url + "/2fa/generate").then((res:any)=>{
 				console.log(`qrcode = ` + res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log("Error!"); console.log(err)});
