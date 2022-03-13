@@ -60,8 +60,8 @@ export default function ChatRoom(props:any){
 		});
 	}
 	const handleInputKeypress = (event:any) => {
-		event.preventDefault();
 		if (event.key === "Enter"){
+			event.preventDefault();
 			handleSendBtn();
 		}
 	}
