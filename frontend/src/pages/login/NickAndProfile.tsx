@@ -6,8 +6,6 @@ import ProfileCarousel from "../../components/login/ProfileCarousel";
 import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 import "./NickAndProfile.css";
-// import dotenv from "dotenv";
-// dotenv.config();
 
 export default function NickAndProfile(){
 	const history = useHistory();

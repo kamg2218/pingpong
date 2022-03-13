@@ -9,9 +9,12 @@ export default function ChatBox(props:any){
 	const member = room?.members.find(person => person.userid === props.userid);
 	let profile = Profile(member?.profile ?? 1);
 
-	function makeTime(){
-		let date = new Date();
-		// console.log(typeof date);
+	const makeTime = ():string => {
+		if (!props.data){
+			return "";
+		}
+		let date:Date = props.data.time;
+		console.log(`time = ${date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return `${hour}:${minutes}`;
@@ -23,7 +26,7 @@ export default function ChatBox(props:any){
 				<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
-					<div className="row col-12" id="chatboxcontent">{props.content}</div>
+					<div className="row col-12" id="chatboxcontent">{props.data?.content}</div>
 					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 			</div>

@@ -5,10 +5,13 @@ import "./chat.css"
 
 export default function MyChatBox(props:any){
 	const {user} = useContext(UserContext);
-	//받은 시간으로 수정 필요함.
 	const makeTime = () => {
-		console.log(`content = ${props.content}`)
-		let date = new Date();
+		if (!props.data){
+			return ;
+		}
+		console.log(`content = ${props.data.content}`)
+		let date = props.data.content;
+		// let date = new Date();
 		// console.log(typeof date);
 		const hour = date.getHours();
 		const minutes = date.getMinutes();
