@@ -165,7 +165,7 @@ export class ChatGateway {
     if (changer === undefined || changer.position != "owner") {
       console.log("Not authorized");
       this.over("updateChatRoom");
-      return false;
+      return {chatid: payload.chatid, result: false};
     }
     const {title, type, password} = payload;
     const change = {title, type, password};
@@ -348,8 +348,9 @@ export class ChatGateway {
   // 채팅 메세지 :
   @SubscribeMessage('chatMessage')
   async chatMessage(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: ChatMessageDTO) {
+    console.log("[chat], ", new Date());
     this.log({gate : "chatMessage", ...payload});
-    
+    console.log("[chat0], ", new Date());
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const repo_chatMember = getCustomRepository(ChatMembershipRepository);
     const chatRoom = await getCustomRepository(ChatRoomRepository).findOne({chatid : payload.chatid});
@@ -361,27 +362,30 @@ export class ChatGateway {
       this.log("There is no content.");
       return this.over("chatMessage");
     }
-    console.log("userid : ", socket.userid);
-
+    console.log("[chat1], ", new Date());
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
     let time = new Date();
     if (!me) {
       this.log("Something Wrong");
-      return this.over("chatMessage");
+      return {chatid:payload.chatid, result:false};
     }
+    console.log("[chat2], ", new Date());
     if (me.muteUntil && me.muteUntil > time) {
       this.log("Mute")
-      return false;
+      return {chatid:payload.chatid, result:false};
     }
+    console.log("[chat3], ", new Date());
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
     if (chatRoom.type === "private" && chatRoom.memberCount === 2)
       room.sayToRoom(socket, {...payload, time});
     else
       room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, content : payload.content, time : time}); 
+    console.log("[chat4], ", new Date());
     const temp = await repo_chathistory.insertHistory(socket.userid, {...payload, time}, chatRoom);
+    console.log("[chat5], ", new Date());
     this.log(`Message from ${me.member.nickname} has been sent.`);
     this.log(`Message is ${temp.contents} .`);
-    return this.over("chatMessage");
+    console.log("[chat5], ", new Date());
   }
 
   // 채팅 음소거 :

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { User } from "src/db/entity/User/UserEntity";
 import { authenticator } from 'otplib'
 import { Response } from "express";
-import { toString, toFileStream } from 'qrcode'
+import { toString } from 'qrcode'
 import { getCustomRepository } from "typeorm";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 
@@ -37,10 +37,9 @@ export class TwoFactorAuthenticationService {
         return repo_user.update(userId, {isTwoFactorAuthenticationEnabled : false});
     }
 
-    public async pipeQrCodeStream(res : Response, otpauthUrl : string) {
-        // return toFileStream(res, otpauthUrl);
-        const x = toString(otpauthUrl);
-        console.log(x);
+    public async pipeQrCodeStream(otpauthUrl : string) {
+        const x = await toString(otpauthUrl);
+        return x;
     }
 
     public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode : string, user : User) {
