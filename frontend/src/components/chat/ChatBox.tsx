@@ -9,12 +9,12 @@ export default function ChatBox(props:any){
 	const member = room?.members.find(person => person.userid === props.userid);
 	let profile = Profile(member?.profile ?? 1);
 
-	const makeTime = ():string => {
-		if (!props.data){
+	const makeTime = () => {
+		if (!props.data || !props.data.time){
 			return "";
 		}
 		let date:Date = props.data.time;
-		console.log(`time = ${date}`);
+		console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return `${hour}:${minutes}`;

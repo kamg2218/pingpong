@@ -6,15 +6,13 @@ import "./chat.css"
 export default function MyChatBox(props:any){
 	const {user} = useContext(UserContext);
 	const makeTime = () => {
-		if (!props.data){
-			return ;
+		if (!props.data || !props.data.time){
+			return "";
 		}
-		console.log(`content = ${props.data.content}`)
-		let date = props.data.content;
-		// let date = new Date();
-		// console.log(typeof date);
-		const hour = date.getHours();
-		const minutes = date.getMinutes();
+		let date:Date = props.data.time;
+		console.log(`time = ${date}, ${typeof date}`);
+		const hour = String(date.getHours()).padStart(2, "0");
+		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return `${hour}:${minutes}`;
 	}
 	return (

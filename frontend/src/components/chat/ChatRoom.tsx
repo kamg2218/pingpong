@@ -15,7 +15,7 @@ export default function ChatRoom(props:any){
 	const [chat, setChat] = useState("");
 	const {user} = useContext(UserContext);
 	const {chatroom, history} = useContext(ChatContext);
-	const chatid = chatroom[0]?.order[props.idx];
+	const chatid:string = chatroom[0]?.order[props.idx];
 	const chatInput = useRef<HTMLFormElement>(null);
 
 	useEffect(()=>{
@@ -39,12 +39,13 @@ export default function ChatRoom(props:any){
 			chat.list.push(data);
 			history[1](chat);
 		})
-	}, [chat, history]);
+	}, [history]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
 	}
 	const handleSendBtn = () => {
+		console.log("Send Chat Message");
 		if (chat === ""){
 			return ;
 		}
@@ -61,6 +62,7 @@ export default function ChatRoom(props:any){
 	}
 	const handleInputKeypress = (event:any) => {
 		if (event.key === "Enter"){
+			event.preventDefault();
 			handleSendBtn();
 		}
 	}
@@ -91,10 +93,10 @@ export default function ChatRoom(props:any){
 						})}
 					</div>
 				</div>
-				<form className="d-flex m-0 p-0" id="chatForm" ref={chatInput}>
+				<div className="d-flex m-0 p-0" id="chatForm">
 					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
-				</form>
+				</div>
 			</div>
 		</div>
 	);

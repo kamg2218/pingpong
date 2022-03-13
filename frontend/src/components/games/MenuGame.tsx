@@ -1,12 +1,13 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import "../../css/MenuGame.css"
 import Profile from "../../icons/Profile"
-import {Friend, socket, UserContext, User} from "../../socket/userSocket"
+import {Friend, socket, UserContext} from "../../socket/userSocket"
 
 export default function MenuGame(props:any){
-	const userContext = useContext(UserContext);
-	const user = userContext.user;
+	const {user} = useContext(UserContext);
+	// const user = userContext.user;
 
+	useEffect(()=>{},[user]);
 	function NewList(person: Friend): any {
 		const handleNewFriend = (result: boolean) => {
 			socket.emit("newFriend", {

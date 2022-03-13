@@ -5,8 +5,6 @@ import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"
 import axios from "axios";
-// import dotenv from "dotenv";
-// dotenv.config();
 
 export default function MyProfileModal(props: any) {
 	const history = useHistory();
@@ -15,12 +13,8 @@ export default function MyProfileModal(props: any) {
 	const [state, setState] = useState<boolean>(false);
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
-	const url:string =  process.env.URL || "";
-	const image:string = "loading...";
 
-	useEffect(() => {
-	}, [qrcode, state]);
-
+	useEffect(() => { console.log(`qr = `, qrcode)}, [qrcode, state]);
 	const handleInput = (event:any) => {
 		setNum(event.target.value);
 	}
@@ -30,14 +24,14 @@ export default function MyProfileModal(props: any) {
 			return ;
 		}
 		if (!profile?.twofactor){
-			axios.post(url + "/2fa/turn-on").then((res:any)=>{
+			axios.post("/2fa/turn-on").then((res:any)=>{
 				console.log(res)
 				alert("확인되었습니다.");
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}else{
-			axios.post(url + "/2fa/turn-off").then((res:any)=>{
+			axios.post("/2fa/turn-off").then((res:any)=>{
 				console.log(res);
 				alert("확인되었습니다.");
 				setState(false);
@@ -47,9 +41,10 @@ export default function MyProfileModal(props: any) {
 	}
 	const handleQrcode = () => {		
 		if (!state && !profile?.twofactor){
-			console.log("generate: " + url);
-			axios.post(url + "/2fa/generate").then((res:any)=>{
+			console.log("generate: " + "/2fa/generate");
+			axios.post("/2fa/generate").then((res:any)=>{
 				console.log(`qrcode = ` + res.data);
+				console.log(typeof res.data);
 				setQrcode(res.data);
 			}).catch((err:any)=>{console.log(err)});
 		}
@@ -141,7 +136,7 @@ export default function MyProfileModal(props: any) {
 											<div className="text-center">
 												<label>Google OTP 인증해주세요.</label>
 												{ !profile?.twofactor &&
-													<div className="row m-1" id="myProfileQrcode"><img src={qrcode === "" ?  image: qrcode} alt="qrcode"></img></div>
+													<div className="row m-1" id="myProfileQrcode"><img src={qrcode} alt="qrcode"></img></div>
 												}
 												<div className="row my-1 input-group">
 												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>

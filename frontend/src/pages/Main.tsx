@@ -4,13 +4,10 @@ import logo_brown from "../icons/logo_brown.png"
 import { socket } from "../socket/userSocket";
 import { GameContext } from "../socket/gameSocket";
 import "../css/Main.css";
-// import dotenv from "dotenv";
-// dotenv.config();
 
 export default function Main(){
-	const url:string = process.env.URL || "";
-	const login:string = url + "/auth/login";
-	const check:string = url + "/user/check";
+	const login:string = "/auth/login";
+	const check:string = "/user/check";
 	const {gameroom} = useContext(GameContext);
 
 	useEffect(()=>{
