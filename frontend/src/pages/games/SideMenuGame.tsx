@@ -7,16 +7,13 @@ import { GameContext } from "../../socket/gameSocket";
 import ProfileModal from "../../components/modals/ProfileModal";
 import MyProfileModal from "../../components/modals/MyProfileModal";
 import "../../css/Game.css";
-// import dotenv from "dotenv";
-// dotenv.config();
 
 export default function SideMenuGame(){
 	const history = useHistory();
 	const { user } = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
 	const [clicked, setClicked] = useState<string>("");
-	const url:string = process.env.URL || "";
-	const checkUrl:string = url + "/user/check";
+	const checkUrl:string = "/user/check";
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuGame").then((res:any)=>{
