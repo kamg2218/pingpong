@@ -10,7 +10,7 @@ export default function ChatBox(props:any){
 	let profile = Profile(member?.profile ?? 1);
 
 	const makeTime = () => {
-		if (!props.data){
+		if (!props.data || !props.data.time){
 			return "";
 		}
 		let date:Date = props.data.time;
