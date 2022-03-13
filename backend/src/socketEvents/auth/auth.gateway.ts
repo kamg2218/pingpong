@@ -126,15 +126,20 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   	}
 
 	async handleDisconnect(@ConnectedSocket() socket: AuthSocket) {
+		console.log("[auth], ", new Date());
 		this.logger.log(`${socket.id} socket disconnected`, "AuthGateway");
 		const userid = onlineManager.userIdOf(socket.id);
+		console.log("[auth2], ", new Date());
 		const user = await getCustomRepository(UserRepository).findOne(userid);
+		console.log("[auth3], ", new Date());
 		if (!user)
 			return ; //test
 		/* ----- */
 		/* game : Exit game room*/
+		console.log("[auth4], ", new Date());
 		MatchingManager.cancle(userid);
 		await this.gameGatewayService.deleteMyMatch(user.userid);
+		console.log("[auth5], ", new Date());
 		// await getCustomRepository(UserRepository).logout(user);
 		// console.log("[disconnected] online game : ", onlineGameMap);
 		// const list = await onlineManager.onlineFriends(socket, user);
@@ -150,7 +155,9 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		// 	this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
 		// }
 		await this.chatGatewayService.offlineMyChatRoom(socket);
+		console.log("[auth6], ", new Date());
 		onlineManager.offline(socket);
+		console.log("[auth7], ", new Date());
 		onlineManager.print();
 		// let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
 		// if (gameRoom)

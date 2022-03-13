@@ -30,6 +30,7 @@ export class onlineChatRoom {
         let user = await repo_user.findOne(socket.userid);
         this.members.map(async (socketid) => {
             let theOtherId = onlineManager.userIdOf(socketid);
+            console.log(`[saytoRoom] Sent to ${theOtherId}`)
             if (!await repo_blockList.amIBlockedByid(user, theOtherId))
                 onlineChatRoom.server.to(socketid).emit("chatMessage", {
                     chatid : payload.chatid,
@@ -49,6 +50,8 @@ export class onlineChatRoom {
 
     public announce(event : string, payload : any) {
         this.members.map(async (socketid)=>{
+            let userid = onlineManager.userIdOf(socketid);
+            console.log(`[announce] Sent to ${userid}`)
             onlineChatRoom.server.to(socketid).emit(event, payload);
         });
     }

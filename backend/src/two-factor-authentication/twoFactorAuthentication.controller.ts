@@ -21,10 +21,10 @@ export class TwoFactorAuthenticationController {
         @ApiOperation({ summary: '2fa qr코드 생성', description: '2fa qr코드 생성'})
         @ApiResponse({status : 201, description : "qr코드 생성 성공"})
         @ApiCookieAuth("accessToken")
-        async register(@Res() res: Response, @UserDeco() user : User) {
+        async register(@UserDeco() user : User) {
             const otpauthUrl = await this.twoFactorAuthenticationService.generateTwoFactorAuthnticateSecret(user);
             this.logger.log("2fa generate success");
-            return this.twoFactorAuthenticationService.pipeQrCodeStream(res, otpauthUrl);
+            return await this.twoFactorAuthenticationService.pipeQrCodeStream(otpauthUrl);
         }
 
         @Post('turn-on')
