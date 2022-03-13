@@ -39,7 +39,7 @@ export default function ChatRoom(props:any){
 			chat.list.push(data);
 			history[1](chat);
 		})
-	}, [chatid, history, chat]);
+	}, [chat, history]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
@@ -85,9 +85,9 @@ export default function ChatRoom(props:any){
 						{history[0] && history[0].list && history[0].list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.content}`);
 							if (data.userid === user[0]?.userid)
-								return <MyChatBox idx={idx} chatid={chatid} content={data.content}></MyChatBox>
+								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
 							else
-								return <ChatBox idx={idx} chatid={chatid} userid={data.userid} content={data.content}></ChatBox>
+								return <ChatBox idx={idx} chatid={chatid} data={data}></ChatBox>
 						})}
 					</div>
 				</div>
