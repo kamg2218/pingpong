@@ -22,10 +22,10 @@ const options = {
 
 
 @WebSocketGateway(options)
-@UsePipes(new ValidationPipe({      
-    whitelist : true,
-    // forbidNonWhitelisted : true,
-    transform : true}))
+// @UsePipes(new ValidationPipe({      
+//     whitelist : true,
+//     // forbidNonWhitelisted : true,
+//     transform : true}))
 @ApiTags('GameGateway')
 export class GameGateway {
     constructor(
