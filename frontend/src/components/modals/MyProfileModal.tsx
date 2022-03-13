@@ -51,7 +51,7 @@ export default function MyProfileModal(props: any) {
 			axios.post(url + "/2fa/generate").then((res:any)=>{
 				console.log(`qrcode = ` + res.data);
 				setQrcode(res.data);
-			}).catch((err:any)=>{console.log(err)});
+			}).catch((err:any)=>{console.log("Error!"); console.log(err)});
 		}
 		setState(!state);
 	}
