@@ -63,38 +63,38 @@ export default function Game() {
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
-		socket.on("updateGameRoom", (msg:any) => {
-			const tmp = gameroom[0];
-			if (msg.manager) {
-				tmp.manager = msg.manager;
-			}
-			if (msg.title) {
-				tmp.title = msg.title;
-			}
-			if (msg.speed) {
-				tmp.speed = msg.speed;
-			}
-			if (msg.status) {
-				tmp.status = msg.status;
-			}
-			if (msg.type) {
-				tmp.type = msg.type;
-			}
-			if (msg.addObserver) {
-				msg.addObserver.map((observer: GameUser) => tmp.oberserver.push(observer))
-			}
-			if (msg.deleteObserver) {
-				msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))
-			}
-			if (msg.addPlayers) {
-				msg.addPlayers.map((player: GameUser) => tmp.players.push(player))
-			}
-			if (msg.deletePlayers) {
-				msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
-			}
-			gameroom[1](tmp);
-			window.location.reload();
-		});
+		// socket.on("updateGameRoom", (msg:any) => {
+		// 	const tmp = gameroom[0];
+		// 	if (msg.manager) {
+		// 		tmp.manager = msg.manager;
+		// 	}
+		// 	if (msg.title) {
+		// 		tmp.title = msg.title;
+		// 	}
+		// 	if (msg.speed) {
+		// 		tmp.speed = msg.speed;
+		// 	}
+		// 	if (msg.status) {
+		// 		tmp.status = msg.status;
+		// 	}
+		// 	if (msg.type) {
+		// 		tmp.type = msg.type;
+		// 	}
+		// 	if (msg.addObserver) {
+		// 		msg.addObserver.map((observer: GameUser) => tmp.oberserver.push(observer))
+		// 	}
+		// 	if (msg.deleteObserver) {
+		// 		msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))
+		// 	}
+		// 	if (msg.addPlayers) {
+		// 		msg.addPlayers.map((player: GameUser) => tmp.players.push(player))
+		// 	}
+		// 	if (msg.deletePlayers) {
+		// 		msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
+		// 	}
+		// 	gameroom[1](tmp);
+		// 	window.location.reload();
+		// });
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);

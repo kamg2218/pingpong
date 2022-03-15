@@ -6,10 +6,11 @@ import "./chat.css"
 export default function MyChatBox(props:any){
 	const {user} = useContext(UserContext);
 	const makeTime = () => {
-		if (!props.data || !props.data.time){
+		if (!props.data || !props.data.createDate){
 			return "";
 		}
-		let date:Date = props.data.time;
+		let tmp:string = props.data.createDate;
+		let date:Date = new Date(tmp);
 		console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -20,7 +21,7 @@ export default function MyChatBox(props:any){
 			<div className="row align-items-start justify-content-end">
 				<div className="col-8">
 					<div className="row justify-content-end" id="mychatboxnickname">{user[0].nickname}</div>
-					<div className="row p-2" id="mychatboxcontent">{props.content}</div>
+					<div className="row p-2" id="mychatboxcontent">{props.contents}</div>
 					<div className="row small text-muted">{makeTime()}</div>
 				</div>
 				<img src={Profile(user[0].profile)} className="col-2 rounded-circle m-1" alt="..."/>

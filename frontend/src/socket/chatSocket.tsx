@@ -46,8 +46,8 @@ export type ChatData = {
 }
 export type ChatBlock = {
 	userid: string,
-	content: string,
-	time: Date,
+	contents: string,
+	createDate: Date,
 }
 export type ChatHistory = {
 	chatid: string,

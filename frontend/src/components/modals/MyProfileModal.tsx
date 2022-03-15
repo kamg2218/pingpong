@@ -102,6 +102,10 @@ export default function MyProfileModal(props: any) {
 		});
 		return list;
 	}
+	const handleLogout = () => {
+		axios.get("/auth/logout").then(res => console.log("Log out! " + res)).catch(err => {throw new Error(err)});
+		history.replace("/");
+	}
 	return (
 		<div className="modal fade" id="myProfileModal" role="dialog" tabIndex={-1} aria-labelledby="MyProfileModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">
@@ -167,6 +171,7 @@ export default function MyProfileModal(props: any) {
 						</div>
 					</div>
 					<div className="modal-footer">
+						<button type="button" className="btn modal-button " data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
 						<button type="button" className="btn modal-button" data-dismiss="modal">닫기</button>
 					</div>
 				</div>
