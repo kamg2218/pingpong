@@ -6,6 +6,6 @@ export class ChatMessageDTO {
     readonly chatid : string;
 
     @IsString()
-    readonly content : string;
+    readonly contents : string;
 
 }

@@ -53,7 +53,7 @@ export class ChatHistoryRepository extends Repository<ChatHistory> {
         const lastIndex = histories[histories.length - 1].index;
         const reversed = histories.reverse();
         histories.map(history=>{
-            delete history["index"]
+            delete history["index"];
         });
         return {lastIndex, histories : reversed};
     }

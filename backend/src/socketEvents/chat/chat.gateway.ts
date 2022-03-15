@@ -358,7 +358,7 @@ export class ChatGateway {
     // 음소거일 경우 못보냄
     // 2명 private 차단리스트 확인.
     // 나머지 전부 보냄.
-    if (!payload?.content) {
+    if (!payload?.contents) {
       this.log("There is no content.");
       return this.over("chatMessage");
     }
@@ -379,7 +379,7 @@ export class ChatGateway {
     if (chatRoom.type === "private" && chatRoom.memberCount === 2)
       room.sayToRoom(socket, {...payload, time});
     else
-      room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, content : payload.content, time : time}); 
+      room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, contents : payload.contents, time : time}); 
     console.log("[chat4], ", new Date());
     const temp = await repo_chathistory.insertHistory(socket.userid, {...payload, time}, chatRoom);
     console.log("[chat5], ", new Date());

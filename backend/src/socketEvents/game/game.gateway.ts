@@ -2,7 +2,7 @@ import { Logger, UsePipes, ValidationPipe } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { CORS_ORIGIN } from "src/config/const";
-import { GameRoomRepository } from "src/db/repository/Game/GameCustomRepository";
+import { GameMembershipRepository, GameRoomRepository } from "src/db/repository/Game/GameCustomRepository";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
@@ -90,6 +90,19 @@ export class GameGateway {
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
         return this.over("enterGameRoom");
     }
+
+    @SubscribeMessage('updateGameRoom')
+    async updateGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : GameRoomInfoDTO) {
+        // const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
+        // const gameRoom = await getCustomRepository(GameRoomRepository).findOne({roomid : payload.roomid});
+        const userid = onlineManager.userIdOf(socket.id);
+        const membership = await getCustomRepository(GameMembershipRepository).findOne({gameRoom : {roomid : payload.roomid}, member : {userid : userid}});
+        if (!membership)
+            return ;
+        const roomInfo = await getCustomRepository(GameRoomRepository).getRoomInfoWithMemberlist(payload.roomid);
+        this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
+    }
+
 
     @SubscribeMessage('exitGameRoom')
     async exitGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : GameRoomInfoDTO) {
