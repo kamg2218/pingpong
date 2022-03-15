@@ -102,6 +102,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				onlineManager.online(socket);
 				onlineManager.print();
 				socket.historyIndex = 0;
+				await this.chatGatewayService.onlineMyChatRoom(socket);
 				// const repo_user = getCustomRepository(UserRepository);
 				// const list = await onlineManager.onlineFriends(socket, user);
 				// this.chatGatewayService.onlineMyChatRoom(socket);

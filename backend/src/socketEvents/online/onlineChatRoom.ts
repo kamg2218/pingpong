@@ -49,7 +49,8 @@ export class onlineChatRoom {
     }
 
     public announce(event : string, payload : any) {
-        this.members.map(async (socketid)=>{
+        console.log("members :", this.members);
+        this.members.map((socketid)=>{
             let userid = onlineManager.userIdOf(socketid);
             console.log(`[announce] Sent to ${userid}`)
             onlineChatRoom.server.to(socketid).emit(event, payload);
@@ -57,6 +58,7 @@ export class onlineChatRoom {
     }
 
     public join(socketid: string) {
+        console.log(`ONline chatroom joined : ${socketid}`);
         if (socketid)
             this.members.push(socketid);
     }
