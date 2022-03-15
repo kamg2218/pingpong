@@ -27,6 +27,8 @@ export default function NickAndProfile(){
 						roomid: gameroom[0].roomid,
 					});
 				}
+			}else if (res.state === "logout"){
+				history.replace("/");
 			}
 		}).catch((err)=>{
 			console.log(err);

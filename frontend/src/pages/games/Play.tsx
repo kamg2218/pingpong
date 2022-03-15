@@ -20,6 +20,8 @@ export default function Play(){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
 					});
+				}else if (res.state === "logout"){
+					history.replace("/");
 				}
 			}
 		}).catch((err)=>{

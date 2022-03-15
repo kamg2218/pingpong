@@ -25,6 +25,8 @@ export default function Qrcode(){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
 					});
+				}else if (res.state === "logout"){
+					history.replace("/");
 				}
 			}
 		}).catch((err)=>{

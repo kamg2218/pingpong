@@ -18,16 +18,15 @@ export default function SideMenuGame(){
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuGame").then((res:any)=>{
 			console.log("menu game here!!");
-			// console.log("body.state = " + res.body.state);
-			// console.log("state = " + res.state);
 			if (res.state){
 				console.log(res.state)
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
 					});
+				}else if (res.state === "logout"){
+					history.replace("/");
 				}
-				// else if (res.state === "play" && )
 			}
 		}).catch((err)=>{
 			console.log(err);
