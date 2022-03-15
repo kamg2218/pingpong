@@ -45,7 +45,7 @@ export default function MenuGame(props:any){
 	return (
 		<div className="container p-2" id="menu">
 			<div className="col justify-content-center">
-				<img src={Profile(user[0]?.profile ? user[0].profile : 1)} className="row mx-auto my-3" alt="profile" id="menuGameProfile"/>
+				<img src={Profile(user[0]?.profile ? user[0].profile : 0)} className="row mx-auto my-3" alt="profile" id="menuGameProfile"/>
 				<div className="row h2 mx-4 p-2"  id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user[0]?.nickname}</div>
 				<label className="row mt-3" id="menuRecord">WIN : LOSE</label>
 				<div className="row h1 mb-4" id="winLose">{user[0]?.win} : {user[0]?.lose}</div>
