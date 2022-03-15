@@ -27,6 +27,7 @@ export default function SideMenuGame(){
 						roomid: gameroom[0].roomid,
 					});
 				}
+				// else if (res.state === "play" && )
 			}
 		}).catch((err)=>{
 			console.log(err);

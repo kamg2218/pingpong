@@ -10,10 +10,10 @@ export default function ChatBox(props:any){
 	let profile = Profile(member?.profile ?? 1);
 
 	const makeTime = () => {
-		if (!props.data || !props.data.time){
+		if (!props.data || !props.data.createDate){
 			return "";
 		}
-		let date:Date = props.data.time;
+		let date:Date = new Date(props.data.createDate);
 		console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -26,7 +26,7 @@ export default function ChatBox(props:any){
 				<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
-					<div className="row col-12" id="chatboxcontent">{props.data?.content}</div>
+					<div className="row col-12" id="chatboxcontent">{props.data?.contents}</div>
 					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 			</div>

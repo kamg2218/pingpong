@@ -26,6 +26,8 @@ export default function ChatRoom(props:any){
 			});
 		}
 		socket.on("chatHistory", (data:ChatHistory)=>{
+			console.log("chatHistroy on!");
+			console.log(data);
 			history[1](data);
 		})
 		socket.on("chatMessage", (data:any)=>{
@@ -51,7 +53,7 @@ export default function ChatRoom(props:any){
 		}
 		socket.emit("chatMessage", {
 			chatid: chatid,
-			content: chat,
+			contents: chat,
 		}, (result:boolean)=>{
 			if (result === false){
 				alert("mute!!!");
@@ -85,7 +87,7 @@ export default function ChatRoom(props:any){
 				<div className="row m-0" id="chatlist">
 					<div className="col my-1">
 						{history[0] && history[0].list && history[0].list.map((data:ChatBlock, idx:number)=>{
-							console.log(`idx = ${idx}, data = ${data.content}`);
+							console.log(`idx = ${idx}, data = ${data.contents}`);
 							if (data.userid === user[0]?.userid)
 								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
 							else
