@@ -26,9 +26,9 @@ export default function NickAndProfile(){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
 					});
+				}else if (res.state === "logout"){
+					history.replace("/");
 				}
-			}else if (res.state === "logout"){
-				history.replace("/");
 			}
 		}).catch((err)=>{
 			console.log(err);
