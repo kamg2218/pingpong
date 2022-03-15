@@ -7,7 +7,7 @@ export class ChatHistoryRepository extends Repository<ChatHistory> {
     async insertHistory(userid : string, payload : any, chatroom: ChatRoom) {
         let history = this.create();
         history.userid = userid;
-        history.contents = payload.content;
+        history.contents = payload.contents;
         history.chatRoom = chatroom;
         history.createDate = payload.time;
         await this.insert(history);
