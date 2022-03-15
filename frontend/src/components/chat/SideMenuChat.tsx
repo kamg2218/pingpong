@@ -14,7 +14,7 @@ type param = {
 
 export default function SideMenuChat(){
 	const history = useHistory();
-	const chatContext = useContext(ChatContext);
+	const {chatroom} = useContext(ChatContext);
 	const {gameroom} = useContext(GameContext);
 	const checkUrl:string = "/user/check";
 	
@@ -22,24 +22,29 @@ export default function SideMenuChat(){
 		console.log(checkUrl);
 		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
-				console.log(res.state)
+				console.log(res.state, gameroom[0].roomid);
 				if (res.state === "play" && gameroom[0].roomid){
 					socket.emit("exitGameRoom", {
 						roomid: gameroom[0].roomid,
 					});
+				}else if (res.state === "logout"){
+					history.replace("/");
 				}
 			}
 		}).catch((err)=>{
 			console.log(err);
 			history.replace("/");
 		});
+		if (!chatroom[0]){
+			socket.emit("myChatRoom");
+		}
 		socket.on("myChatRoom", (data:ChatData)=>{
 			console.log("my chat room!!");
 			console.log(data);
-			chatContext.chatroom[1](data);
+			chatroom[1](data);
 		});
 		socket.on("enterChatRoom", (data:chatRoom)=>{
-			const tmp:ChatData = chatContext.chatroom[0];
+			const tmp:ChatData = chatroom[0];
 			console.log(tmp);
 			if (!tmp){
 				let list:ChatData = {
@@ -48,19 +53,22 @@ export default function SideMenuChat(){
 				};
 				list.order.push(data.chatid);
 				list.chatroom.push(data);
-				chatContext.chatroom[1](list);
+				chatroom[1](list);
 			}
 			else if (tmp.order.indexOf(data.chatid) === -1){
 				tmp.order.push(data.chatid);
 				tmp.chatroom.push(data);
-				chatContext.chatroom[1](tmp);
+				chatroom[1](tmp);
 			}
 			window.location.reload();
 		});
 		socket.on("updateChatRoom", (data:InputChatRoom)=>{
 			console.log("update Chat Room!");
-			let tmp:ChatData = chatContext.chatroom[0];
+			let tmp:ChatData = chatroom[0];
+			console.log(tmp);
+			console.log(`data = ${data}`);
 			const idx = tmp.order.indexOf(data.chatid);
+			console.log(`idx = ${idx}`);
 			if (data.title){
 				tmp.chatroom[idx].title = data.title;
 			}
@@ -83,9 +91,9 @@ export default function SideMenuChat(){
 			if (data.exitUser){
 				data.exitUser.map(user=>tmp.chatroom[idx].members = tmp.chatroom[idx].members.filter((person: User)=> user !== person.userid));
 			}
-			chatContext.chatroom[1](tmp);
+			chatroom[1](tmp);
 		});
-	}, [chatContext]);
+	}, []);
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();

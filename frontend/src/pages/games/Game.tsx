@@ -24,7 +24,9 @@ export default function Game() {
 		if (!user[0]) {
 			console.log("user Info emit!")
 			socket.emit("userInfo");
-			socket.emit("myChatRoom");
+			if (!gameroom[0]){
+				socket.emit("myChatRoom");
+			}
 		}
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");

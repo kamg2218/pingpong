@@ -18,7 +18,7 @@ export default function WaitingRoom(){
 				roomid: param.id,
 			})
 		}
-		socket.on("updateGameRoom", (msg:any) => {
+		socket.on("changeGameRoom", (msg:any) => {
 			const tmp = gameroom[0];
 			if (msg.manager) {
 				tmp.manager = msg.manager;

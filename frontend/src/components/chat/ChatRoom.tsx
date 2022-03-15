@@ -38,8 +38,11 @@ export default function ChatRoom(props:any){
 			}
 			console.log(data);
 			const chat:ChatHistory = history[0];
-			chat.list.push(data);
-			history[1](chat);
+			console.log("got - " + chat);
+			if (chat){
+				chat.list.push(data);
+				history[1](chat);
+			}
 		})
 	}, [chat,history]);
 
