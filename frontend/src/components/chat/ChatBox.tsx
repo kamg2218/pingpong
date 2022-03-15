@@ -26,7 +26,7 @@ export default function ChatBox(props:any){
 				<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
-					<div className="row col-12" id="chatboxcontent">{props.data?.contents}</div>
+					<div className="row col-12" id="chatboxcontent">{props.data.contents}</div>
 					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 			</div>

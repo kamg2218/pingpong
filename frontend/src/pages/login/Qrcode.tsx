@@ -1,7 +1,10 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {useHistory} from 'react-router-dom';
 import "./qrcode.css";
+import {socket, UserContext} from "../../socket/userSocket";
+import {GameContext} from "../../socket/gameSocket";
+
 // import dotenv from "dotenv";
 // dotenv.config();
 
@@ -9,7 +12,26 @@ export default function Qrcode(){
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
+	const checkUrl:string = "/user/check";
+	const {user} = useContext(UserContext);
+	const { gameroom } = useContext(GameContext);
 
+
+	useEffect(()=>{
+		axios.get(checkUrl).then((res:any)=>{
+			if (res.state){
+				console.log(res.state)
+				if (res.state === "play" && gameroom[0].roomid){
+					socket.emit("exitGameRoom", {
+						roomid: gameroom[0].roomid,
+					});
+				}
+			}
+		}).catch((err)=>{
+			console.log(err);
+			history.push("/");
+		})
+	}, []);
 	function checkToken():boolean {
 		if (token.length !== 6)
 			return false;
