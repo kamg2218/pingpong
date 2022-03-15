@@ -17,6 +17,9 @@ export default function NickAndProfile(){
 	const checkUrl:string = "/user/check";
 	const {user} = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
+	const doubleCheck:string = "중복 확인 해주세요!";
+	const possible:string = "사용 가능한 닉네임입니다.";
+	const impossible:string = "사용 불가능한 닉네임입니다.";
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
@@ -40,30 +43,29 @@ export default function NickAndProfile(){
 		if (btn && !btn.getAttribute("data-toggle")){
 			btn.setAttribute("data-toggle", "modal");
 			btn.setAttribute("data-target", "#okModal");
-			setCheckModalText("중복 확인 해주세요!");
+			setCheckModalText(doubleCheck);
 		}
 	}
 	const handleCheck = (event : any) => {
 		event.preventDefault();
 		axios.get(`/auth/check?nickname=${nickname}`)
-		.then(res=>{
-			console.log(res.data);
-			if (res.data.message === false){
-				setCheckModalText("사용 가능한 닉네임입니다.")
-			}else{
-				setCheckModalText("사용 불가능한 닉네임입니다.")
-			}
-		})
-		.catch(error=>{console.log(error)});
-		if (btn){
-			btn.removeAttribute("data-toggle");
-			btn.removeAttribute("data-target");
-		}
+			.then(res=>{
+				console.log(res.data);
+				if (res.data.message === false){
+					setCheckModalText(possible);
+					if (btn){
+						btn.removeAttribute("data-toggle");
+						btn.removeAttribute("data-target");
+					}
+				}else{
+					setCheckModalText(impossible);
+				}
+			}).catch(error=>{console.log(error)});
 	}
 	const handleOK = (event: any) => {
 		event.preventDefault();
 		if (conditionals() === false){
-			setCheckModalText("닉네임 중복 확인을 해주세요.");
+			setCheckModalText(doubleCheck);
 			return ;
 		}
 		axios.post(`/auth/signup`, { nickname, profile })
@@ -90,7 +92,7 @@ export default function NickAndProfile(){
 	const conditionals = (): Boolean => {
 		if (nickname === "")
 			return false;
-		else if (checkModalText !== "사용 가능한 닉네임입니다.")
+		else if (checkModalText !== possible)
 			return false;
 		return true;
 	}
