@@ -101,7 +101,7 @@ export class ChatGateway {
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
     let members =[];
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
-    const repo_blockList = getCustomRepository(BlockedFriendsRepository);
+    // const repo_blockList = getCustomRepository(BlockedFriendsRepository);
     const chatid = await this.chatGatewayService.createChatRoom(payload, user);
     const newRoom = onlineChatRoomManager.create(chatid);
     const chatroomInfo = await repo_chatroom.findOne({chatid : chatid});
@@ -376,16 +376,21 @@ export class ChatGateway {
     }
     console.log("[chat3], ", new Date());
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
-    if (chatRoom.type === "private" && chatRoom.memberCount === 2)
+    if (chatRoom.type === "private" && chatRoom.memberCount === 2) {
+      console.log("roomt type1");
       room.sayToRoom(socket, {...payload, time});
-    else
+    }
+      
+    else {
+      console.log("room type2");
       room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, contents : payload.contents, time : time}); 
+    }
     console.log("[chat4], ", new Date());
     const temp = await repo_chathistory.insertHistory(socket.userid, {...payload, time}, chatRoom);
     console.log("[chat5], ", new Date());
     this.log(`Message from ${me.member.nickname} has been sent.`);
     this.log(`Message is ${temp.contents} .`);
-    console.log("[chat5], ", new Date());
+    console.log("[chat6], ", new Date());
     return true;
   }
 
