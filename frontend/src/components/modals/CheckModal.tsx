@@ -1,4 +1,9 @@
 export default function CheckModal(props: any){
+	const handleOk = () => {
+		if (props.handleOk){
+			props.handleOk();
+		}
+	}
 	return (
 		<div className="modal fade" id="checkModal" role="dialog" tabIndex={-1} aria-labelledby="CheckModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered modal-sm" role="document">
@@ -13,7 +18,7 @@ export default function CheckModal(props: any){
 						<div>{props.content}</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">확인</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close" onClick={handleOk}>확인</button>
 					</div>
 				</div>
 			</div>

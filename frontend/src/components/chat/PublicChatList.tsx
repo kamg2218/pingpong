@@ -1,13 +1,26 @@
+import { socket } from "../../socket/userSocket";
 import CheckModal from "../modals/CheckModal";
 import InputPwdModal from "../modals/InputPwdModal";
+
+type ChatReq = {
+	chatid: string,
+	password?: string,
+}
 
 export default function PublicChatList(props:any){
 	const chatroom = props.chatroom;
 	const decidedModal = chatroom.lock ? "#inputPwdModal" : "#checkModal";
+	let request:ChatReq = {
+		chatid: props.chatroom.chatid,
+	};
 
 	const handlePwd = (pwd: string) => {
+		request.password = pwd;
 		props.setPwd(pwd);
 		props.checkRoom(chatroom.chatid);
+	}
+	const handleOk = () => {
+		socket.emit("enterChatRoom", request);
 	}
 	return (
 		<div key={`publicchat${props.chatroom.chatid}`} className="col-sm-5 col-4 m-2 p-2 modal-button">
@@ -18,8 +31,8 @@ export default function PublicChatList(props:any){
 				</div>
 				<div className="row m-2 px-1 justify-content-end" key={`publicchatMembers_${props.chatroom.chatid}`}>{chatroom.members.length}/{chatroom.max}</div>
 			</button>
-			<InputPwdModal id={chatroom.chatid} setPwd={handlePwd}></InputPwdModal>
-			<CheckModal content="입장하시겠습니까?"></CheckModal>
+			<InputPwdModal id={chatroom.chatid} setPwd={handlePwd} handleOk={handleOk}></InputPwdModal>
+			<CheckModal content="입장하시겠습니까?" handleOk={handleOk}></CheckModal>
 		</div>
 	);
 }

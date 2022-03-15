@@ -30,6 +30,7 @@ export default function NickAndProfile(){
 			}
 		}).catch((err)=>{
 			console.log(err);
+			history.push("/");
 		})
 	}, []);
 	const handleInput = (event: any) => {
@@ -43,8 +44,15 @@ export default function NickAndProfile(){
 	const handleCheck = (event : any) => {
 		event.preventDefault();
 		axios.get(`/auth/check?nickname=${nickname}`)
-		.then(res=>{console.log(res.data); setCheckModalText("사용 가능한 닉네임입니다.")})
-		.catch(error=>{console.log(error); setCheckModalText("사용 불가능한 닉네임입니다.")});
+		.then(res=>{
+			console.log(res.data);
+			if (res.data.message === false){
+				setCheckModalText("사용 가능한 닉네임입니다.")
+			}else{
+				setCheckModalText("사용 불가능한 닉네임입니다.")
+			}
+		})
+		.catch(error=>{console.log(error)});
 		if (btn){
 			btn.removeAttribute("data-toggle");
 			btn.removeAttribute("data-target");

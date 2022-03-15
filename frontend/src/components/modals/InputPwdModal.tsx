@@ -20,8 +20,12 @@ export default function InputPwdModal(props: any){
 				return ;
 			}
 		}
+		if (props.handleOk){
+			props.handleOk();
+		}
 		props.setPwd(pwd);
 		props.handleSubmit(props.state);
+		
 	}
 	return (
 		<div className="modal fade" id="inputPwdModal" role="dialog" tabIndex={-1} aria-labelledby="inputPwdModalLabel" aria-hidden="true">

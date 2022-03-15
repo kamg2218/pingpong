@@ -41,7 +41,7 @@ export default function ChatRoom(props:any){
 			chat.list.push(data);
 			history[1](chat);
 		})
-	}, [history]);
+	}, [chat,history]);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);

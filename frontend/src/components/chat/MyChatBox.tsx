@@ -9,23 +9,33 @@ export default function MyChatBox(props:any){
 		if (!props.data || !props.data.createDate){
 			return "";
 		}
-		let tmp:string = props.data.createDate;
-		let date:Date = new Date(tmp);
+		let date:Date = new Date(props.data.createDate);
 		console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return `${hour}:${minutes}`;
 	}
 	return (
-		<div className="container m-0 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>
+		<div className="container mx-1 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>
 			<div className="row align-items-start justify-content-end">
 				<div className="col-8">
-					<div className="row justify-content-end" id="mychatboxnickname">{user[0].nickname}</div>
-					<div className="row p-2" id="mychatboxcontent">{props.contents}</div>
-					<div className="row small text-muted">{makeTime()}</div>
+					<div className="row col-12 justify-content-end" id="mychatboxnickname">{user[0].nickname}</div>
+					<div className="row col-12" id="mychatboxcontent">{props.data.contents}</div>
+					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 				<img src={Profile(user[0].profile)} className="col-2 rounded-circle m-1" alt="..."/>
 			</div>
 		</div>
 	);
 }
+
+{/* <div className="container mx-1 p-0" key={`${props.chatid}chatbox${props.idx}`} id={props.idx}>
+<div className="row align-items-start">
+	<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
+	<div className="col">
+		<div className="row col-12">{member ? member.nickname : "unknown"}</div>
+		<div className="row col-12" id="chatboxcontent">{props.data.contents}</div>
+		<div className="row col-12 small text-muted">{makeTime()}</div>
+	</div>
+</div>
+</div> */}

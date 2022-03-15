@@ -58,7 +58,8 @@ export default function SideMenuChat(){
 			window.location.reload();
 		});
 		socket.on("updateChatRoom", (data:InputChatRoom)=>{
-			const tmp:ChatData = chatContext.chatroom[0];
+			console.log("update Chat Room!");
+			let tmp:ChatData = chatContext.chatroom[0];
 			const idx = tmp.order.indexOf(data.chatid);
 			if (data.title){
 				tmp.chatroom[idx].title = data.title;
@@ -76,6 +77,7 @@ export default function SideMenuChat(){
 				data.deleteManager.map(man=>tmp.chatroom[idx].manager = tmp.chatroom[idx].manager.filter((person: string)=> man !== person));
 			}
 			if (data.enterUser){
+				console.log("Enter User");
 				data.enterUser.map(user=>tmp.chatroom[idx].members.push(user));
 			}
 			if (data.exitUser){
