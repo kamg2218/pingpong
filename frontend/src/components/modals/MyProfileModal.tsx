@@ -121,7 +121,7 @@ export default function MyProfileModal(props: any) {
 							<div className="col">
 								<div className="row mb-2">
 									<div className="col m-0 p-0 text-center">
-										<img src={Profile(profile ? profile.profile : 1)} alt="profile" className="row m-1" id="myProfile"/>
+										<img src={Profile(profile ? profile.profile : 0)} alt="profile" className="row m-1" id="myProfile"/>
 										<button className="row col-11 btn modal-button" data-dismiss="modal" onClick={()=>history.push("/nickandprofile")}>정보 변경</button>
 									</div>
 									<div className="col p-1 mx-0">
