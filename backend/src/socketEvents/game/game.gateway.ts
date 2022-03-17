@@ -245,7 +245,7 @@ export class GameGateway {
 		const request = await this.gameGatewayService.validateRequestStatus(payload.requestid);
         if (!request || !onlineManager.isOnline(request.owner.userid)) {
             this.log("Bad Reqeust")
-            return this.over("matchResponse")
+            return this.over("matchResponse");
         }
     	const theOtherSocketId = onlineManager.socketIdOf(request.owner.userid);
 		if (this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
@@ -253,9 +253,9 @@ export class GameGateway {
 			this.server.to(theOtherSocketId).emit("matchRequest",  {result : false});
 			return this.over("matchResponse")
 		}
-        this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
 		const result = await this.gameGatewayService.enterMatch(socket, request, user);
-		this.gameGatewayService.respondToUser(socket, "enterGameRoom", result);
+		this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
+        this.gameGatewayService.respondToUser(socket, "enterGameRoom", result);
         return this.over("matchResponse")
 	}
 	
@@ -264,15 +264,22 @@ export class GameGateway {
         this.log({gate : "matchRequest", ...payload});
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 		const theOtherSocketId = onlineManager.socketIdOf(payload.userid);
+        // 이미 요청했는지 확인 필요 &  게임중인지 등 확ㅇ인
+        if (! await this.gameGatewayService.checkIfItIsAvailableRequest(user)) {
+            this.gameGatewayService.respondToUser(socket, "matchRequest", {result : false}); //요청한 쪽에 거절되었다고 보내기
+            return ;
+        }
         const requestid = await this.gameGatewayService.createMatchRoom(socket, user);
 		this.server.to(theOtherSocketId).emit("matchResponse", { 
 			userid : user.userid, 
 			nickname : user.nickname,
 			requestid : requestid,
 		});
+        //matchresponse 처리 중에 타이머 되면 동작 안하도록 변경하기
 		setTimeout(()=>{
 			this.gameGatewayService.deleteMyMatch(user.userid);
-            this.log(`Timeover : Match is deleted`)
+            this.log(`Timeover : Match is deleted`);
+            this.gameGatewayService.respondToUser(socket, "matchRequest", {result : false}); //요청한 쪽에 거절되었다고 보내기
 		}, 30000);
         return this.over("matchRequest")
 	}

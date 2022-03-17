@@ -29,6 +29,13 @@ export class GameGatewayService {
         return res;
     }
 
+    public async checkIfItIsAvailableRequest(user : User) {
+        const repo_gameMembership = getCustomRepository(GameMembershipRepository);
+        if (await repo_gameMembership.findOne({member : {userid : user.userid}}))
+            return false;
+        return true;
+    }
+
     public async createMatchRoom(socket : AuthSocket, user : User) {
         const repo_gameRoom = getCustomRepository(GameRoomRepository);
         const repo_gameMembership = getCustomRepository(GameMembershipRepository);
