@@ -101,6 +101,7 @@ export class ChatGateway {
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
     let members =[];
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
+
     const chatid = await this.chatGatewayService.createChatRoom(payload, user);
     const newRoom = onlineChatRoomManager.create(chatid);
     const chatroomInfo = await repo_chatroom.findOne({chatid : chatid});
@@ -219,7 +220,6 @@ export class ChatGateway {
   @SubscribeMessage('inviteChatRoom')
   async inviteChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: InviteChatRoomDTO) {
   this.log({gate : "inviteChatRoom", ...payload});
-  return ;
   const repo_chatmember = getCustomRepository(ChatMembershipRepository);
   const repo_user = getCustomRepository(UserRepository);
   const repo_blockList = getCustomRepository(BlockedFriendsRepository);

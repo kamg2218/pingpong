@@ -203,7 +203,11 @@ export class ChatGatewayService {
 			return true;
 		if (password === undefined)
 			return false;
+		console.log("passwrod : ", password);
+		console.log("room encoded pw : ", chatroom.password);
+		console.log("input endcoded : ", await this.hashing(password));
 		const compareResult = await compare(password, chatroom.password);
+		console.log("compare Result : ", compareResult);
 		return compareResult;
 	}
 
