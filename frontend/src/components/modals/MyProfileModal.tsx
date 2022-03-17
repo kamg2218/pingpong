@@ -170,7 +170,7 @@ export default function MyProfileModal(props: any) {
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="btn modal-button " data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
+						<button type="button" className="btn modal-button justify-content-start" data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
 						<button type="button" className="btn modal-button" data-dismiss="modal">닫기</button>
 					</div>
 				</div>
