@@ -42,14 +42,15 @@ export class onlineChatRoom {
     }
 
     public announceExceptMe(mySocketId : string, event : string, payload : any) {
-        this.members.map(async (socketid)=>{
+        console.log("[AEM] members :", this.members);
+        this.members.map((socketid)=>{
             if (socketid !== mySocketId)
                 onlineChatRoom.server.to(socketid).emit(event, payload);
         });
     }
 
     public announce(event : string, payload : any) {
-        console.log("members :", this.members);
+        console.log("[AN] members :", this.members);
         this.members.map((socketid)=>{
             let userid = onlineManager.userIdOf(socketid);
             console.log(`[announce] Sent to ${userid}`)

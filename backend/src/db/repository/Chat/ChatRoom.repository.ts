@@ -63,7 +63,8 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
         //check : max env 처리 필요
         const repo_chatMember = getCustomRepository(ChatMembershipRepository);
         const repo_user = getCustomRepository(UserRepository);
-        let manager, members = [];
+        let manager = [];
+        let members = [];
         let owner;
         let lock = chatroom.password ? true : false;
         const chatMember = await repo_chatMember.find({chatroom : chatroom});
@@ -79,6 +80,6 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
             title: chatroom.title,
             type: chatroom.type, 
             members, lock, owner, manager, 
-            max : 100 }
+            max : 100 };
     }
 }
