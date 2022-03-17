@@ -28,9 +28,10 @@ export class UserGatewayService {
       const repo_user = getCustomRepository(UserRepository);
       const repo_friend = getCustomRepository(FriendsRepository);
       const repo_block = getCustomRepository(BlockedFriendsRepository);
-      const userInfo = repo_user.getSimpleInfo(theOther, ["level"]);
+      const userInfo = repo_user.getSimpleInfo(theOther,  ["levelpoint"]);
+      const level = LevelManager.level(userInfo.levelpoint);
       return {
-        ...userInfo,
+        ...userInfo, level,
         friend : await repo_friend.isMyFriend(me, theOther),
         block : await repo_block.didIBlock(me, theOther),
       }
