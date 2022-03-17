@@ -1,1 +1,0 @@
-export type RoomMode = "private" | "public" | "temporary";
