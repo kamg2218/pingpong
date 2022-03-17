@@ -36,7 +36,7 @@ export class onlineChatRoom {
                     chatid : payload.chatid,
                     userid : socket.userid,
                     content : payload.content,
-                    time : payload.time
+                    createdDate : payload.time
                 });
         });
     }
@@ -61,6 +61,7 @@ export class onlineChatRoom {
         console.log(`ONline chatroom joined : ${socketid}`);
         if (socketid)
             this.members.push(socketid);
+        console.log("now members : ", this.members );
     }
 
     public leave(socketid : string) {

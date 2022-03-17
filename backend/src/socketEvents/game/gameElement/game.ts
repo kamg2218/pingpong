@@ -133,7 +133,7 @@ export class Game {
         else
             throw new Error("The room is already full");
         this.participants.push(socketid);
-        this.updateGameRoom(socketid, {
+        this.changeGameRoom(socketid, {
             addPlayers : [repo_user.getSimpleInfo(user)],
         });
     }
@@ -141,7 +141,7 @@ export class Game {
     public joinAsObserver(socketid : string, user : User) {
         const repo_user = getCustomRepository(UserRepository);
         this.participants.push(socketid);
-        this.updateGameRoom(socketid, {
+        this.changeGameRoom(socketid, {
             addObserver : [repo_user.getSimpleInfo(user)],
         });
     }
@@ -171,20 +171,20 @@ export class Game {
             updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
         else (isPlayer)
             updateInfo = {deletePlayer : repo_user.getSimpleInfo(user)};
-        this.updateGameRoom(socketid, updateInfo);
+        this.changeGameRoom(socketid, updateInfo);
         if (isPlayer && this.running)
             this.forceGameOver();
     }
     
-    public updateGameRoom(socketid : string , updateInfo : any) {
+    public changeGameRoom(socketid : string , updateInfo : any) {
         const roomInfo = {
             roomid : this.roomid,
             ...updateInfo,
         }
         if (socketid)
-            this.announceExceptMe(socketid, "updateGameRoom", roomInfo);
+            this.announceExceptMe(socketid, "changeGameRoom", roomInfo);
         else
-            this.announce("updateGameRoom", roomInfo);
+            this.announce("changeGameRoom", roomInfo);
     }
 
     public announceExceptMe(mySocketid : string, event : string, data : any) {
@@ -210,7 +210,7 @@ export class Game {
                 const user = await repo_user.findOne(userid);
                 this.removeFromParticipants(socketid);
                 let updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
-                this.updateGameRoom(socketid, updateInfo);
+                this.changeGameRoom(socketid, updateInfo);
                 Game.server.to(socketid).emit("exitGameRoom", {roomid : this.id});
             }     
         });

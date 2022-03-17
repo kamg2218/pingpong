@@ -162,7 +162,7 @@ export class GameGatewayService {
                 game.makeObserversLeave();
                 this.deleteGameRoom(gameRoom);
             }
-            game.updateGameRoom(socket.id, {manager : newOwner.userid});
+            game.changeGameRoom(socket.id, {manager : newOwner.userid});
         };
         if (await this.checkIfRoomShouldBeDeleted(gameRoom)) {
             game.makeObserversLeave();
@@ -250,7 +250,7 @@ export class GameGatewayService {
         const game = onlineGameMap[roomid];
         if (updateInfo?.speed)
             game.speed = updateInfo.speed;
-        onlineGameMap[roomid].updateGameRoom(null, updateInfo); //add
+        onlineGameMap[roomid].changeGameRoom(null, updateInfo); //add
     }
 
     public async getAllGameRoomList() {

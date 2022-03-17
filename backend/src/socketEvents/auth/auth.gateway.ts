@@ -75,7 +75,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				let name = "accessToken=";
 				let value = word.slice(name.length);
 				return value;
-			}
+			} 
 		}
 		throw new Error("No Token");
 	}
@@ -93,7 +93,9 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else {
 			try {
 				let tokenValue = this.getAccessToken(x);
+				console.log("token : ", tokenValue);
 				let res = await this.jwtService.verify(tokenValue);
+				console.log("res : ", res);
 				let user = await this.authService.validateJwt(res);
 				if (!user) {
 					throw new UnauthorizedException("no such user");
