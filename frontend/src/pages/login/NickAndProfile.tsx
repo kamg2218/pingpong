@@ -47,6 +47,10 @@ export default function NickAndProfile(){
 		}
 	}
 	const handleCheck = (event : any) => {
+		if (nickname.length < 2 || nickname.length > 12){
+			setCheckModalText(impossible);
+			return ;
+		}
 		event.preventDefault();
 		axios.get(`/auth/check?nickname=${nickname}`)
 			.then(res=>{
@@ -103,7 +107,7 @@ export default function NickAndProfile(){
 				<ProfileCarousel profile={profile} setProfile={setProfile}></ProfileCarousel>
 				<div className="d-flex my-2">
 					<label className="m-2" id="nickLabel">Nickname</label>
-					<input className="m-1" id="nickInput" placeholder={nicknamePlaceholder} onChange={handleInput} required />
+					<input className="m-1" id="nickInput" placeholder={nicknamePlaceholder} onChange={handleInput} minLength={2} maxLength={12} required />
 					<button className="btn m-1" id="checkBtn" data-toggle="modal" data-target="#alertModal" onClick={handleCheck}>Check</button>
 				</div>
 				<div>
