@@ -16,11 +16,13 @@ export default function ProfileModal(props: any) {
 
 	useEffect(() => {
 		if (userid && !profile) {
+			console.log("opponent Profile");
 			socket.emit("opponentProfile", {
 				userid: userid,
 			});
 		}
 		socket.on("opponentProfile", (data:ProfileUser) => {
+			console.log(`opponent = `, data);
 			setProfile(data);
 		});
 	}, [profile, userid]);
@@ -85,8 +87,8 @@ export default function ProfileModal(props: any) {
 									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 0)} alt="profile" id="modalProfile"/></div>
 									<div className={button} onClick={handleChat} data-dismiss="modal"> 1 : 1 채팅</div>
 									<div className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#loadingModal">대전 신청</div>
-									<div className={buttonFriend} onClick={handleFriend}>{profile?.friend ? "친구 삭제" : "친구 추가"}</div>
-									<div className={button} onClick={handleBlock}>{profile?.block ? "차단 해제" : "차단"}</div>
+									<div className={buttonFriend} onClick={handleFriend} data-dismiss="modal">{profile?.friend ? "친구 삭제" : "친구 추가"}</div>
+									<div className={button} onClick={handleBlock} data-dismiss="modal">{profile?.block ? "차단 해제" : "차단"}</div>
 								</div>
 								<div className="col">
 									<div className="row h4"><div className="py-1" id="profileNickname">{profile ? profile.nickname : "unknown"}</div></div>

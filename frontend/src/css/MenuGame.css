@@ -9,6 +9,7 @@
 	margin-bottom: 5%;
 	height: 10rem;
 	justify-content: center;
+	align-items: flex-start;
 	overflow-y: auto;
 }
 #friendonoff{

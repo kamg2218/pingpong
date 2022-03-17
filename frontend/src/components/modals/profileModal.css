@@ -32,6 +32,12 @@
 #newFriendContent{
     align-items: center;
 }
+#friendContent{
+    /* text-center align-items-center */
+    text-align: center;
+    align-items: center;
+    padding-left: 1em;
+}
 #friendContent:hover, #newFriendContent:hover{
     background-color: #C9A641;
 }
