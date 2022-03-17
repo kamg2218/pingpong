@@ -93,10 +93,9 @@ export default function MyProfileModal(props: any) {
 		let list:any = [];
 		profile?.blacklist?.forEach((friend:Friend)=>{
 			list.push(
-				<div className="row text-center align-items-center" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
-					<div className="col"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
+				<div className="row" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
+					<div className="col-3"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
 					<div className="col">{friend.nickname}</div>
-					<div className="col">{friend.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light"/>}</div>
 				</div>
 			)
 		});
