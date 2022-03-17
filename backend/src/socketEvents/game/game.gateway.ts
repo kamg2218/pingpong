@@ -248,14 +248,18 @@ export class GameGateway {
             return this.over("matchResponse");
         }
     	const theOtherSocketId = onlineManager.socketIdOf(request.owner.userid);
-		if (this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
-			this.gameGatewayService.deleteMatch(request);
+		if (await this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
+			this.log("You are already in the gameroom OR you rejected");
+            this.gameGatewayService.deleteMatch(request);
 			this.server.to(theOtherSocketId).emit("matchRequest",  {result : false});
-			return this.over("matchResponse")
+			return this.over("matchResponse");
 		}
+        console.log("1-------");
 		const result = await this.gameGatewayService.enterMatch(socket, request, user);
 		this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
+        console.log("2-------");
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", result);
+        console.log("3-------");
         return this.over("matchResponse")
 	}
 	

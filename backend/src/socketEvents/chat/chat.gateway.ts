@@ -101,7 +101,6 @@ export class ChatGateway {
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
     let members =[];
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
-    // const repo_blockList = getCustomRepository(BlockedFriendsRepository);
     const chatid = await this.chatGatewayService.createChatRoom(payload, user);
     const newRoom = onlineChatRoomManager.create(chatid);
     const chatroomInfo = await repo_chatroom.findOne({chatid : chatid});
@@ -142,6 +141,7 @@ export class ChatGateway {
       return this.over("enterChatRoom");
     }
     if (! await this.chatGatewayService.checkIfcanEnterRoom(user, chatroom, payload.password)) {
+      // this.log(`${user.nickname} can't enter chatroom`);
       return this.over("enterChatRoom");
     }
     await this.chatGatewayService.enterChatRoom(user, chatroom);
@@ -370,9 +370,12 @@ export class ChatGateway {
       return {chatid:payload.chatid, result:false};
     }
     console.log("[chat2], ", new Date());
+    console.log(`muteUntil : ${me.muteUntil}  :   time : ${time}`);
+    console.log(`result : ${me.muteUntil > time} `);
     if (me.muteUntil && me.muteUntil > time) {
-      this.log("Mute")
-      return {chatid:payload.chatid, result:false};
+      this.log("Mute");
+      return false;
+      // return {chatid:payload.chatid, result:false};
     }
     console.log("[chat3], ", new Date());
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
@@ -412,7 +415,10 @@ export class ChatGateway {
     }
     let time = new Date();
     time.setSeconds(time.getSeconds() + payload.time);
+    if (time < other.muteUntil)
+      return true;
     await repo_chatMember.update(other.index, {muteUntil: time});
+    this.log(`${other.member.nickname} is muted until ${time}`);
     this.over("chatMute");
     return true;
   }
