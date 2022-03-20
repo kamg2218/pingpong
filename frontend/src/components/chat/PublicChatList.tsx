@@ -20,6 +20,7 @@ export default function PublicChatList(props:any){
 		props.checkRoom(chatroom.chatid);
 	}
 	const handleOk = () => {
+		console.log(request);
 		socket.emit("enterChatRoom", request);
 	}
 	return (

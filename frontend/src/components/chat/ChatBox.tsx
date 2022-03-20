@@ -6,7 +6,9 @@ export default function ChatBox(props:any){
 	const chatContext = useContext(ChatContext);
 	const chatRoom:ChatData = chatContext.chatroom[0];
 	const room = chatRoom?.chatroom.find(data => data.chatid === props.chatid);
+	console.log(`members => `, room?.members);
 	const member = room?.members.find(person => person.userid === props.userid);
+	console.log(`member => `, member);
 	let profile = Profile(member?.profile ?? 1);
 
 	const makeTime = () => {
