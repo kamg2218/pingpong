@@ -93,11 +93,11 @@ export default function WaitingRoom(){
 				</div>
 			</div>
 			<div className="row-4 px-3 my-5 d-flex">
-				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[0] ? profileBox(gameroom[0]?.observer[0].userid, Profile(gameroom[0]?.observer[0].profile), gameroom[0]?.observer[0].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[1] ? profileBox(gameroom[0]?.observer[1].userid, Profile(gameroom[0]?.observer[1].profile), gameroom[0]?.observer[1].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[2] ? profileBox(gameroom[0]?.observer[2].userid, Profile(gameroom[0]?.observer[2].profile), gameroom[0]?.observer[2].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[3] ? profileBox(gameroom[0]?.observer[3].userid, Profile(gameroom[0]?.observer[3].profile), gameroom[0]?.observer[3].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[4] ? profileBox(gameroom[0]?.observer[4].userid, Profile(gameroom[0]?.observer[4].profile), gameroom[0]?.observer[4].nickname, false):""}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[0] ? profileBox(gameroom[0]?.observer[0].userid, Profile(gameroom[0]?.observer[0].profile), gameroom[0]?.observer[0].nickname, false):"none"}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[1] ? profileBox(gameroom[0]?.observer[1].userid, Profile(gameroom[0]?.observer[1].profile), gameroom[0]?.observer[1].nickname, false):"none"}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[2] ? profileBox(gameroom[0]?.observer[2].userid, Profile(gameroom[0]?.observer[2].profile), gameroom[0]?.observer[2].nickname, false):"none"}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[3] ? profileBox(gameroom[0]?.observer[3].userid, Profile(gameroom[0]?.observer[3].profile), gameroom[0]?.observer[3].nickname, false):"none"}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[4] ? profileBox(gameroom[0]?.observer[4].userid, Profile(gameroom[0]?.observer[4].profile), gameroom[0]?.observer[4].nickname, false):"none"}</div>
 			</div>
 			<div className="row mx-3 my-2">
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={gameroom[0]?.players.length !== 2}>Start</button>
