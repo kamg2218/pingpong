@@ -85,11 +85,11 @@ export default function WaitingRoom(){
 			</div>
 			<div className="row-4 px-2 mt-3" id="waitingroombox">
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{!gameroom[0]?.players[0] ?? profileBox(gameroom[0]?.players[0].userid, Profile(gameroom[0]?.players[0]?.profile), gameroom[0]?.players[0]?.nickname, true)}
+					{gameroom[0]?.players[0] ? profileBox(gameroom[0]?.players[0].userid, Profile(gameroom[0]?.players[0]?.profile), gameroom[0]?.players[0]?.nickname, true) : "none"}
 					{/* {profileBox(gameroom[0]?.players[0]?.userid, Profile(gameroom[0]?.players[0]?.profile), gameroom[0]?.players[0]?.nickname, true)} */}
 				</div>
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{!gameroom[0]?.players[1] ?? profileBox(gameroom[0]?.players[1].userid, Profile(gameroom[0]?.players[1]?.profile), gameroom[0]?.players[1]?.nickname, true)}
+					{gameroom[0]?.players[1] ? profileBox(gameroom[0]?.players[1].userid, Profile(gameroom[0]?.players[1]?.profile), gameroom[0]?.players[1]?.nickname, true): "none"}
 				</div>
 			</div>
 			<div className="row-4 px-3 my-5 d-flex">
