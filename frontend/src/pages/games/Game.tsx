@@ -37,8 +37,6 @@ export default function Game() {
 			console.log(msg);
 			if (msg.message) {
 				alert("fail to enter the room!");
-				//updateGameRoom에 대한 응답을 받은 경우
-				//유저가 존재하지 않으면 로비로 이동
 				if (history.location.pathname.search("waiting")){
 					history.replace("/game");
 				}
@@ -50,7 +48,6 @@ export default function Game() {
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
 			}
-			window.location.reload();
 		});
 		socket.on("exitGameRoom", () => {
 			gameroom[1](undefined)
@@ -65,38 +62,6 @@ export default function Game() {
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
-		// socket.on("updateGameRoom", (msg:any) => {
-		// 	const tmp = gameroom[0];
-		// 	if (msg.manager) {
-		// 		tmp.manager = msg.manager;
-		// 	}
-		// 	if (msg.title) {
-		// 		tmp.title = msg.title;
-		// 	}
-		// 	if (msg.speed) {
-		// 		tmp.speed = msg.speed;
-		// 	}
-		// 	if (msg.status) {
-		// 		tmp.status = msg.status;
-		// 	}
-		// 	if (msg.type) {
-		// 		tmp.type = msg.type;
-		// 	}
-		// 	if (msg.addObserver) {
-		// 		msg.addObserver.map((observer: GameUser) => tmp.oberserver.push(observer))
-		// 	}
-		// 	if (msg.deleteObserver) {
-		// 		msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))
-		// 	}
-		// 	if (msg.addPlayers) {
-		// 		msg.addPlayers.map((player: GameUser) => tmp.players.push(player))
-		// 	}
-		// 	if (msg.deletePlayers) {
-		// 		msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
-		// 	}
-		// 	gameroom[1](tmp);
-		// 	window.location.reload();
-		// });
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);
