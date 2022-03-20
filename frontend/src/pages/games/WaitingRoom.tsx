@@ -54,6 +54,7 @@ export default function WaitingRoom(){
 
 	}, [gameroom]);
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
+		console.log("profileBox - " + nick + ", " + player);
 		return (
 			<div className={`m-1 ${player ? "player":"observer"}`} id={id}>
 				<img className="row mx-auto img-fluid img-thumbnail" src={profile} alt={id}></img>

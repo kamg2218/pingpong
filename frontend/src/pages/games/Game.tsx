@@ -51,12 +51,12 @@ export default function Game() {
 				// 	title: msg.title,
 				// 	roomid: msg.roomid,
 				// 	manager: msg.manager,
-				// 	speed: number,
-				// 	observer: Array<GameUser>,
-				// 	type: string,
-				// 	status: boolean,
-				// 	players: Array<GameUser>,
-				// 	isPlayer: boolean
+				// 	speed: msg.speed,
+				// 	observer: msg.observer,
+				// 	type: msg.type,
+				// 	status: msg.status,
+				// 	players: msg.players,
+				// 	isPlayer: msg.isPlayer
 				// });
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
