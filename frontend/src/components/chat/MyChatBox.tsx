@@ -16,26 +16,15 @@ export default function MyChatBox(props:any){
 		return `${hour}:${minutes}`;
 	}
 	return (
-		<div className="container mx-1 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>
+		<div className="container m-0 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>
 			<div className="row align-items-start justify-content-end">
 				<div className="col-8">
 					<div className="row col-12 justify-content-end" id="mychatboxnickname">{user[0].nickname}</div>
 					<div className="row col-12" id="mychatboxcontent">{props.data.contents}</div>
 					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
-				<img src={Profile(user[0].profile)} className="col-2 rounded-circle m-1" alt="..."/>
+				<img src={Profile(user[0].profile)} className="col-2 rounded-circle m-1 mx-0" alt="..."/>
 			</div>
 		</div>
 	);
 }
-
-{/* <div className="container mx-1 p-0" key={`${props.chatid}chatbox${props.idx}`} id={props.idx}>
-<div className="row align-items-start">
-	<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
-	<div className="col">
-		<div className="row col-12">{member ? member.nickname : "unknown"}</div>
-		<div className="row col-12" id="chatboxcontent">{props.data.contents}</div>
-		<div className="row col-12 small text-muted">{makeTime()}</div>
-	</div>
-</div>
-</div> */}

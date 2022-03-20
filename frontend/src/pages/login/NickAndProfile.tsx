@@ -47,11 +47,11 @@ export default function NickAndProfile(){
 		}
 	}
 	const handleCheck = (event : any) => {
-		if (nickname.length < 2 || nickname.length > 12){
+		event.preventDefault();
+		if (nickname.length < 2 || nickname.length > 12 || nickname[0] === "#"){
 			setCheckModalText(impossible);
 			return ;
 		}
-		event.preventDefault();
 		axios.get(`/auth/check?nickname=${nickname}`)
 			.then(res=>{
 				console.log(res.data);

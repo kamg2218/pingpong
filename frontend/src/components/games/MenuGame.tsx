@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react"
 import "../../css/MenuGame.css"
 import Profile from "../../icons/Profile"
-import {Friend, socket, UserContext} from "../../socket/userSocket"
+import {Friend, socket, UserContext, User} from "../../socket/userSocket"
 
 export default function MenuGame(props:any){
-	const {user} = useContext(UserContext);
-	// const user = userContext.user;
+	const userContext = useContext(UserContext);
+	const user:User = userContext.user[0];
 
 	useEffect(()=>{},[user]);
 	function NewList(person: Friend): any {
@@ -14,7 +14,7 @@ export default function MenuGame(props:any){
 				userid: person.userid,
 				result: result
 			});
-			user[1](user[0].newfriends?.filter((friend:Friend)=>friend.userid !== person.userid));
+			userContext.user[1](user.newfriends.filter((friend:Friend)=>friend.userid !== person.userid));
 		}
 		return (
 			<div className="m-0 p-2 h6" id="friendonoff" key={person.userid}>
@@ -46,13 +46,13 @@ export default function MenuGame(props:any){
 	return (
 		<div className="container p-2" id="menu">
 			<div className="col justify-content-center">
-				<img src={Profile(user[0]?.profile ? user[0].profile : 0)} className="row mx-auto my-3" alt="profile" id="menuGameProfile"/>
-				<div className="row h2 mx-4 p-2"  id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user[0]?.nickname}</div>
+				<img src={Profile(user?.profile ? user.profile : 0)} className="row mx-auto my-3" alt="profile" id="menuGameProfile"/>
+				<div className="row h2 mx-4 p-2"  id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user?.nickname}</div>
 				<label className="row mt-3" id="menuRecord">WIN : LOSE</label>
-				<div className="row h1 mb-4" id="winLose">{user[0]?.win} : {user[0]?.lose}</div>
+				<div className="row h1 mb-4" id="winLose">{user?.win} : {user?.lose}</div>
 				<div className="row m-1 p-1" id="friendList">
-					{user[0] && user[0].newfriends?.map((people:Friend) => (NewList(people)))}
-					{user[0] && user[0].friends?.map((people:Friend) => (OldList(people, props.setClicked)))}
+					{user && user.newfriends?.map((people:Friend) => (NewList(people)))}
+					{user && user.friends?.map((people:Friend) => (OldList(people, props.setClicked)))}
 				</div>
 			</div>
 		</div>

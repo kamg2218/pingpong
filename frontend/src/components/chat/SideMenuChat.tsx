@@ -35,39 +35,44 @@ export default function SideMenuChat(){
 			console.log(err);
 			history.replace("/");
 		});
-		if (!chatroom[0]){
-			socket.emit("myChatRoom");
-		}
+		// if (!chatroom){
+		// 	console.log("my chat room!!");
+		// 	socket.emit("myChatRoom");
+		// }
 		socket.on("myChatRoom", (data:ChatData)=>{
 			console.log("my chat room!!");
 			console.log(data);
 			chatroom[1](data);
 		});
 		socket.on("enterChatRoom", (data:chatRoom)=>{
+			console.log(data);
 			const tmp:ChatData = chatroom[0];
 			console.log(tmp);
-			if (!tmp){
-				let list:ChatData = {
-					order: [],
-					chatroom: [],
-				};
-				list.order.push(data.chatid);
-				list.chatroom.push(data);
-				chatroom[1](list);
-			}
-			else if (tmp.order.indexOf(data.chatid) === -1){
+			// if (!tmp){
+			// 	let list:ChatData = {
+			// 		order: [],
+			// 		chatroom: [],
+			// 	};
+			// 	list.order.push(data.chatid);
+			// 	list.chatroom.push(data);
+			// 	chatContext.chatroom[1](list);
+			// 	console.log(list);
+			// }else 
+			if (tmp && tmp.order.indexOf(data.chatid) === -1){
 				tmp.order.push(data.chatid);
 				tmp.chatroom.push(data);
 				chatroom[1](tmp);
+				console.log(tmp);
 			}
-			window.location.reload();
+			// window.location.reload();
 		});
 		socket.on("updateChatRoom", (data:InputChatRoom)=>{
 			console.log("update Chat Room!");
+			console.log(data);
 			let tmp:ChatData = chatroom[0];
 			console.log(tmp);
-			console.log(`data = ${data}`);
-			const idx = tmp.order.indexOf(data.chatid);
+			console.log(`data = `, data);
+			const idx = tmp?.order.indexOf(data.chatid);
 			console.log(`idx = ${idx}`);
 			if (data.title){
 				tmp.chatroom[idx].title = data.title;
@@ -93,7 +98,8 @@ export default function SideMenuChat(){
 			}
 			chatroom[1](tmp);
 		});
-	}, []);
+		// window.location.reload();
+	}, [chatroom]);
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();
