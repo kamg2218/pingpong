@@ -40,7 +40,7 @@ export default function Main(){
 			<div className="col">
 				<img className="row mt-4" id="logo" src={logo_brown} alt="logo"/>
 				<div className="row">
-					<input className="col" placeholder="nickname" onClick={handleInput}/>
+					<input className="col" placeholder="nickname" value="" onClick={handleInput}/>
 					<div className="col btn btn-outline-primary mx-1" onClick={handleTest}>check</div>
 				</div>
 				<a className="row btn btn-outline-primary mx-2" id="loginButton" href={login} role="button">LOG IN</a>
