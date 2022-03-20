@@ -48,7 +48,6 @@ export default function Game() {
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
 			}
-			// window.location.reload();
 		});
 		socket.on("exitGameRoom", () => {
 			gameroom[1](undefined)
