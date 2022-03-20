@@ -40,8 +40,7 @@ export default function Game() {
 				if (history.location.pathname.search("waiting")){
 					history.replace("/game");
 				}
-			}
-			else {
+			}else {
 				gameroom[1](msg);
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){

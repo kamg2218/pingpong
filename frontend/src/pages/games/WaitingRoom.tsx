@@ -16,7 +16,7 @@ export default function WaitingRoom(){
 			console.log("gameroom is empty!");
 			socket.emit("updateGameRoom", {
 				roomid: param.id,
-			})
+			});
 		}
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp = gameroom[0];
