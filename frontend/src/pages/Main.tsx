@@ -34,6 +34,12 @@ export default function Main(){
 		console.log(nick);
 		axios.post("/auth/force_login", {
 			nickname: nick
+		}).then((res)=>{
+			if (res.data === true){
+				window.location.href = "http://localhost:4242/game";
+			}else {
+				window.location.href = "http://localhost:4242/twofactor";
+			}
 		});
 	}
 	return (
