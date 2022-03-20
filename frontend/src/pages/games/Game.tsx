@@ -47,17 +47,6 @@ export default function Game() {
 				}
 			}else {
 				gameroom[1](msg);
-				// gameroom[1]({
-				// 	title: msg.title,
-				// 	roomid: msg.roomid,
-				// 	manager: msg.manager,
-				// 	speed: msg.speed,
-				// 	observer: msg.observer,
-				// 	type: msg.type,
-				// 	status: msg.status,
-				// 	players: msg.players,
-				// 	isPlayer: msg.isPlayer
-				// });
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);

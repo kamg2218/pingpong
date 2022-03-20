@@ -74,9 +74,10 @@ export default function WaitingRoom(){
 		socket.emit("exitGameRoom", {
 			roomid: gameroom[0]?.roomid
 		});
-		gameroomlist[1](undefined);
+		socket.emit("gameRoomList");
+		// gameroomlist[1](undefined);
 		history.push("/game");
-		window.location.reload();
+		// window.location.reload();
 	}
 	return (
 		<div className="container-fluid m-0 p-0 pb-2" id="waitingRoom">
