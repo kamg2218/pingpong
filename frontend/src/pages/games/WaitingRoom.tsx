@@ -12,6 +12,7 @@ export default function WaitingRoom(){
 
 	useEffect(()=>{
 		console.log("waitingRoom");
+		console.log(gameroom[0]);
 		if (!gameroom[0] && param.id){
 			console.log("gameroom is empty!");
 			socket.emit("updateGameRoom", {
