@@ -3,7 +3,7 @@ import Modal from "react-modal"
 import { Route, Switch, useHistory } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import { socket, UserContext, User } from "../../socket/userSocket"
-import { GameContext, GameUser, match } from "../../socket/gameSocket"
+import { GameContext, gameRoomDetail, match } from "../../socket/gameSocket"
 import WaitingRoom from "./WaitingRoom"
 import SideMenuGame from "./SideMenuGame"
 import SideMenuChat from "../../components/chat/SideMenuChat"
@@ -11,6 +11,11 @@ import MatchRequestModal from "../../components/modals/MatchRequestModal"
 
 import "../../css/Game.css"
 import logo from "../../icons/logo_brown_profile.png"
+import { type } from "os"
+
+type message = {
+	message: string,
+};
 
 Modal.setAppElement("#root");
 export default function Game() {
@@ -32,17 +37,27 @@ export default function Game() {
 			console.log("user Info is changed!");
 			user[1](data);
 		});
-		socket.on("enterGameRoom", (msg:any) => {
+		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
 			console.log(msg);
-			if (msg.message) {
+			if ("message" in msg) {
 				alert("fail to enter the room!");
 				if (history.location.pathname.search("waiting")){
 					history.replace("/game");
 				}
-			}
-			else {
+			}else {
 				gameroom[1](msg);
+				// gameroom[1]({
+				// 	title: msg.title,
+				// 	roomid: msg.roomid,
+				// 	manager: msg.manager,
+				// 	speed: msg.speed,
+				// 	observer: msg.observer,
+				// 	type: msg.type,
+				// 	status: msg.status,
+				// 	players: msg.players,
+				// 	isPlayer: msg.isPlayer
+				// });
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);

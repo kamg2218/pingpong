@@ -31,8 +31,15 @@ export default function Main(){
 		setNick(event.target.value);
 	}
 	const handleTest = () => {
+		console.log(nick);
 		axios.post("/auth/force_login", {
 			nickname: nick
+		}).then((res)=>{
+			if (res.data === true){
+				window.location.href = "http://localhost:4242/game";
+			}else {
+				window.location.href = "http://localhost:4242/twofactor";
+			}
 		});
 	}
 	return (
@@ -40,7 +47,7 @@ export default function Main(){
 			<div className="col">
 				<img className="row mt-4" id="logo" src={logo_brown} alt="logo"/>
 				<div className="row">
-					<input className="col" placeholder="nickname" onClick={handleInput}/>
+					<input className="col" placeholder="nickname" onChange={handleInput}/>
 					<div className="col btn btn-outline-primary mx-1" onClick={handleTest}>check</div>
 				</div>
 				<a className="row btn btn-outline-primary mx-2" id="loginButton" href={login} role="button">LOG IN</a>
