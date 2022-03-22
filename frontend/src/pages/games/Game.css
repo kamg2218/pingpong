@@ -2,6 +2,10 @@
 	height: 100vh;
 	width: 100vw;
 }
+#gameTab, #chatTab, #playTab{
+	padding-left: .8em;
+	height: 90%;
+}
 #tab-game, #tab-chat{
 	border: 1px solid whitesmoke;
 	border-bottom: 0px;
@@ -20,19 +24,27 @@
 	background-color: whitesmoke;
 }
 #gameLogo{
-	width: 35%;
-	min-width: 200px;
-	max-width: 350px;
 	display: block;
+	height: 12%;
 	margin: auto;
 	margin-top: 0%;
+	max-width: 350px;
+	min-width: 200px;
+	width: 35%;
+}
+#gamelobbyCol, #gamelobbySide{
+	height: 100%;
+}
+#gamePad{
+	margin: none;
+	height: 89%;
 }
 #nav-game, #nav-chat, #nav-play{
 	background-color: whitesmoke;
 	border: 2px solid #C9A641;
 	border-top: none;
 	border-radius: 0px 25px 25px 25px;
-	height: 75vh;
+	height: 100%;
 }
 #lobbyButton{
 	border: 1px solid #C9A641;
@@ -46,13 +58,20 @@
 	box-shadow: none;
 }
 #lobbyPad{
+	height: 90%;
+	margin-top: 4%;
+	padding: 0;
+}
+#lobbyPadRow{
 	border: 1px solid #C9A641;
 	border-radius: 25px;
-	min-height: 80vh;
+	height: 100%;
+	margin-left: .1em;
 }
 #lobbySearch{
 	border: 1px solid #C9A641;
 	border-radius: 7px;
+	padding: .2em;
 }
 #lobbySearch:focus{
 	border-bottom: 2px solid #C9A641;
@@ -62,7 +81,12 @@
 #slide2Row{
 	display: flex;
 	justify-content: center;
-	align-items: flex-end;
+	position: absolute;
+	bottom: 1%;
+	width: 100%;
+}
+#slideFirstCol{
+	position: relative;
 }
 #slidePrev:hover, #slideNext:hover{
 	border-radius: 5px;

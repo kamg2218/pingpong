@@ -6,14 +6,14 @@ import {socket, UserContext, Friend, User} from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 import ProfileModal from "../../components/modals/ProfileModal";
 import MyProfileModal from "../../components/modals/MyProfileModal";
-import "../../css/Game.css";
 
 export default function SideMenuGame(){
 	const history = useHistory();
 	const { user } = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
 	const [clicked, setClicked] = useState<string>("");
-	const checkUrl:string = "/user/check";
+	const back_url:string = "http://localhost:4242";
+	const checkUrl:string = back_url + "/user/check";
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuGame").then((res:any)=>{
