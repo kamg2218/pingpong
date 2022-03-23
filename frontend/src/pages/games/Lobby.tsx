@@ -30,15 +30,11 @@ export default function Lobby(props:any){
 	return (
 		<div className="container" id="lobbyPad">
 			<div className="col" id="lobbyPadRow">
-				<div className="row-4 d-flex justify-content-start align-items-center mx-1 my-3 p-2 border">
+				<div className="row-4 mx-1 my-3 p-2 border">
 					<i className="bi bi-search mx-3"></i>
-					<input className="col" id="lobbySearch" placeholder="title" onChange={handleSearch}></input>
-					<div className="col ">
-						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#addGameRoomModal"><i className="bi bi-plus-circle"></i> 방 만들기</button>
-					</div>
-					<div className="col">
-						<button className="btn" id="lobbyButton" data-toggle="modal" data-target="#loadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
-					</div>
+					<input className="col col-sm-5 col-md-5 col-lg-4 col-xl-4" id="lobbySearch" placeholder="title" onChange={handleSearch}></input>
+					<button className="col-2 btn" id="lobbyButton" data-toggle="modal" data-target="#addGameRoomModal"><i className="bi bi-plus-circle"></i> 방 만들기</button>
+					<button className="col-2 btn" id="lobbyButton" data-toggle="modal" data-target="#loadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> 랜덤 매칭</button>
 				</div>
 				<div className="row h-100">
 					<GameRoomSlide search={search}></GameRoomSlide>

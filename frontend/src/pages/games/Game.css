@@ -37,7 +37,8 @@
 }
 #gamePad{
 	margin: none;
-	height: 89%;
+	height: 82%;
+	width: 100vw;
 }
 #nav-game, #nav-chat, #nav-play{
 	background-color: whitesmoke;
@@ -50,6 +51,11 @@
 	border: 1px solid #C9A641;
 	border-radius: 5px;
 	background-color: whitesmoke;
+	margin: 1%;
+	margin-left: 2%;
+	/* position: relative;
+	left: auto !important;
+	right: 0%; */
 }
 #lobbyButton:hover{
 	background-color: #C9A641;
@@ -71,7 +77,10 @@
 #lobbySearch{
 	border: 1px solid #C9A641;
 	border-radius: 7px;
-	padding: .2em;
+	margin-left: auto;
+	margin-right: 15%;
+	padding: .4em;
+	padding-left: 3%;
 }
 #lobbySearch:focus{
 	border-bottom: 2px solid #C9A641;
