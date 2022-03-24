@@ -86,8 +86,8 @@ export default function ChatRoom(props:any){
 	return (
 		<div className="container-fluid p-2 h-100" key={`chatroom${props.idx}`}>
 			<div className="col h-100">
-				<div className="row m-1" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
-				<div className="row m-0" id="chatlist">
+				<div className="row m-1 mt-2" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
+				<div className="row m-0 mt-3" id="chatlist">
 					<div className="col my-1">
 						{history[0] && history[0].list && history[0].list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.contents}`);
@@ -98,7 +98,7 @@ export default function ChatRoom(props:any){
 						})}
 					</div>
 				</div>
-				<div className="d-flex m-0 p-0" id="chatForm">
+				<div className="row d-flex m-0 mt-1 p-0" id="chatForm">
 					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
 				</div>

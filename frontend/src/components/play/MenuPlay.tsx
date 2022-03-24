@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react"
 import {useHistory} from "react-router-dom"
-import "../../css/MenuPlay.css"
 import Profile from "../../icons/Profile"
 import {socket} from "../../socket/userSocket"
 import {GameContext, gameRoomDetail, GameUser} from "../../socket/gameSocket"
+import "./MenuPlay.css";
 
 export default function MenuPlay(props:any){
 	const history = useHistory();
@@ -11,8 +11,8 @@ export default function MenuPlay(props:any){
 	const [gameroom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
 	const p1 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player1);
 	const p2 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player2);
-	const s1 = useState<number>(gameContext ? gameContext.draw[0].left.score : 0);
-	const s2 = useState<number>(gameContext ? gameContext.draw[0].right.score : 0);
+	const s1 = useState<number>(gameContext.draw[0] ? gameContext.draw[0].left.score : 0);
+	const s2 = useState<number>(gameContext.draw[0] ? gameContext.draw[0].right.score : 0);
 	
 	useEffect(()=>{
 		console.log("menu play");
@@ -29,30 +29,28 @@ export default function MenuPlay(props:any){
 		socket.emit("exitGameRoom", {
 			roomid: gameroom?.roomid
 		});
-		history.push("/game");
+		history.replace("/game");
 	}
 	return (
-		<div className="container m-1 p-2" id="menuPlay">
-			<div className="col">
-				<div className="row align-items-center">
-					<div className="col">
-						<img src={Profile(p1 ? p1.profile : 0)} className="mt-2" alt="player1" id="player1"/>
-						<label className="h4 m-0">{p1?.nickname}</label>
-					</div>
-					<div className="col-2 h3 justify-content-center">VS</div>
-					<div className="col">
-						<img src={Profile(p2 ? p2.profile : 0)} className="mt-2" alt="player2" id="player2"/>
-						<label className="h4 m-0">{p2?.nickname}</label>
-					</div>
+		<div className="container m-0 p-1" id="menuPlay">
+			<div className="col h-100">
+				<div className="row m-0 justify-content-center">
+					<img src={Profile(p1 ? p1.profile : 0)} alt="player1" id="player1"/>
+					<label className="h5 m-0">{p1 ? p1.nickname : "unknownskejfkss"}</label>
 				</div>
-				<label className="row mx-3 my-2 h2" id="menuScore">{gameContext.playroom[0] ? gameContext.playroom[0].score : 0}</label>
-				<div className="row h3" id="winLose">{s1} : {s2}</div>
-				<div className="row mt-4 mx-1">
+				<div className="row h3 m-2 justify-content-center">VS</div>
+				<div className="row m-0 justify-content-center">
+					<img src={Profile(p2 ? p2.profile : 0)} alt="player2" id="player2"/>
+					<label className="h5 m-0">{p2 ? p2.nickname : "unknownskejfkss"}</label>
+				</div>
+				<label className="row mx-3 my-2 h3" id="menuScore">{gameContext.playroom[0] ? gameContext.playroom[0].score : 0}</label>
+				<div className="row h1" id="winLose">{s1} : {s2}</div>
+				<div className="row mt-5 mx-1">
 					<div className="col mx-1" id="observer">{gameroom?.observer[0] ? profileBox(gameroom.observer[0].userid, Profile(gameroom.observer[0].profile), gameroom.observer[0].nickname, false):""}</div>
 					<div className="col mx-1" id="observer">{gameroom?.observer[1] ? profileBox(gameroom.observer[1].userid, Profile(gameroom.observer[1].profile), gameroom.observer[1].nickname, false):""}</div>
 					<div className="col mx-1" id="observer">{gameroom?.observer[2] ? profileBox(gameroom.observer[2].userid, Profile(gameroom.observer[2].profile), gameroom.observer[2].nickname, false):""}</div>
 				</div>
-				<div className="row mt-4 mb-3 mx-2">
+				<div className="row mt-4 mb-3 mx-3">
 					<div className="col mx-3" id="observer">{gameroom?.observer[3] ? profileBox(gameroom.observer[3].userid, Profile(gameroom.observer[3].profile), gameroom.observer[3].nickname, false):""}</div>
 					<div className="col mx-3" id="observer">{gameroom?.observer[4] ? profileBox(gameroom.observer[4].userid, Profile(gameroom.observer[4].profile), gameroom.observer[4].nickname, false):""}</div>
 				</div>

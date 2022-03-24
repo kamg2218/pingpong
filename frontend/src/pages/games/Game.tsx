@@ -9,7 +9,7 @@ import SideMenuGame from "./SideMenuGame"
 import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
 
-import "../../css/Game.css"
+import "./Game.css"
 import logo from "../../icons/logo_brown_profile.png"
 import { type } from "os"
 
@@ -47,17 +47,6 @@ export default function Game() {
 				}
 			}else {
 				gameroom[1](msg);
-				// gameroom[1]({
-				// 	title: msg.title,
-				// 	roomid: msg.roomid,
-				// 	manager: msg.manager,
-				// 	speed: msg.speed,
-				// 	observer: msg.observer,
-				// 	type: msg.type,
-				// 	status: msg.status,
-				// 	players: msg.players,
-				// 	isPlayer: msg.isPlayer
-				// });
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -83,11 +72,11 @@ export default function Game() {
 		})
 	}, []);
 	return (
-		<div className="container-fluid m-0 px-2" id="gamelobby">
-			<div className="col h-100">
+		<div className="container-fluid m-0 p-0" id="gamelobby">
+			<div className="col" id="gamelobbyCol">
 				<img className="row" id="gameLogo" src={logo} alt="header" />
-				<div className="row m-0" id="gamePad">
-					<div className="col-xs-12 col-md-4 col-lg-3 d-sm-none d-md-block">
+				<div className="row m-0 p-1" id="gamePad">
+					<div className="col-xs-12 col-md-4 col-lg-3 d-sm-none d-md-block" id="gamelobbySide">
 						<Switch>
 							<Route path="/game/chat" component={SideMenuChat}></Route>
 							<Route path="/game" component={SideMenuGame}></Route>

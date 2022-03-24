@@ -1,6 +1,9 @@
 #waitingRoom{
 	border: 1px solid #C9A641;
 	border-radius: 25px;
+	height: 100%;
+	margin: 0%;
+	padding: 0%;
 }
 #waitingRoomTitle{
 	background-color: #C9A641;
@@ -11,7 +14,7 @@
 #waitingroombox{
 	border-radius: 25px;
 	display: flex;
-	height: 11em;
+	height: 12em;
 	justify-content: center;
 }
 #waitingRoomProfile{
@@ -23,7 +26,7 @@
 	border: 1px solid #C9A641;
 	border-radius: 25px;
 	color: whitesmoke;
-	height: 10em;
+	height: 11em;
 }
 #waitingRoomBtn{
 	border: 1px solid #C9A641;
@@ -34,9 +37,7 @@
 #waitingRoomBtn:hover{
 	background-color: #C9A641;
 }
-.player > img {
+.player > img, .observer > img {
 	height: 8em;
-}
-.observer > img {
-	height: 8em;
+	border-radius: 25px;
 }

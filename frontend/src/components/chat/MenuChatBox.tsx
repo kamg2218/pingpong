@@ -49,7 +49,7 @@ export default function MenuChatBox(props :any){
 	}
 
 	return(
-		<li key={`menuchatbox_${props.info.chatid}`} className="col-12 btn m-1" id="chatBox" onDoubleClick={()=>handleDoubleClick(props.info.chatid)}>
+		<li key={`menuchatbox_${props.info.chatid}`} className="col-12 btn mt-2" id="chatBox" onDoubleClick={()=>handleDoubleClick(props.info.chatid)}>
 			<div key={`box_${props.info.chatid}`} className="d-flex">
 				<div key={`title_${props.info.chatid}`} className="h6 m-1 overflow-hidden" id="boxTitle">
 					{check ?

@@ -31,6 +31,17 @@
 }
 #menuChatList{
     height: 100%;
+}
+#chatBoxList{
+    height: 90%;
+    margin: none;
+    padding: 1%;
+}
+#chatBoxUl{
+    height: 100%;
+    list-style: unset;
+    margin: auto;
+    padding: 1%;
     overflow-y: scroll;
 }
 #chatInput:focus{

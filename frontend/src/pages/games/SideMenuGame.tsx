@@ -6,7 +6,6 @@ import {socket, UserContext, Friend, User} from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
 import ProfileModal from "../../components/modals/ProfileModal";
 import MyProfileModal from "../../components/modals/MyProfileModal";
-import "../../css/Game.css";
 
 export default function SideMenuGame(){
 	const history = useHistory();
