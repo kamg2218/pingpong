@@ -37,10 +37,9 @@ export default function Main(){
 			nickname: nick
 		}).then((res)=>{
 			if (res.data === true){
-				// window.location.href = "http://localhost:4242/game";
-				window.location.href = "/game";
+				window.location.href = "http://localhost:4242/game";
 			}else {
-				window.location.href = "/twofactor";
+				window.location.href = "http://localhost:4242/twofactor";
 			}
 		});
 	}
