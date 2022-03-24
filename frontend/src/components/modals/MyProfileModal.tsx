@@ -18,20 +18,30 @@ export default function MyProfileModal(props: any) {
 	const handleInput = (event:any) => {
 		setNum(event.target.value);
 	}
-	const handleSubmit = () => {
+	const checkToken = ():boolean => {
 		if (num.length !== 6){
+			return false;
+		}
+		for (let i = 0; i < num.length; i++){
+			if (isNaN(parseInt(num[i]))){return false;}
+		}
+		return true;
+	}
+	const handleSubmit = () => {
+		if (!checkToken()){
 			alert("다시 시도해주세요.");
 			return ;
 		}
+		console.log(num);
 		if (!profile?.twofactor){
-			axios.post("/2fa/turn-on").then((res:any)=>{
+			axios.post("/2fa/turn-on", {twoFactorAuthenticationCode: num}).then((res:any)=>{
 				console.log(res)
 				alert("확인되었습니다.");
 				setState(false);
 				socket.emit("userInfo");
 			}).catch((err:any)=>{console.log(err)});
 		}else{
-			axios.post("/2fa/turn-off").then((res:any)=>{
+			axios.post("/2fa/turn-off", {twoFactorAuthenticationCode: num}).then((res:any)=>{
 				console.log(res);
 				alert("확인되었습니다.");
 				setState(false);
@@ -140,9 +150,8 @@ export default function MyProfileModal(props: any) {
 												<label>Google OTP 인증해주세요.</label>
 												{ profile && !profile.twofactor &&
 													<div className="row m-1" id="myProfileQrcode"><img src={qrcode} alt="qrcode"></img></div>
-													// <div className="row m-1" id="myProfileQrcode">{qrcode}</div>
 												}
-												<div className="row my-1 input-group">
+												<div className="row my-1 input-group mx-auto">
 												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>
 												  <button className="col btn modal-button px-0" type="button" onClick={handleSubmit}>확인</button>
 												</div>
