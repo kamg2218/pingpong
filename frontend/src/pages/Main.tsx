@@ -6,8 +6,6 @@ import { GameContext } from "../socket/gameSocket";
 import "./Main.css";
 
 export default function Main(){
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
 	const login:string = "/auth/login";
 	const check:string = "/user/check";
 	const {gameroom} = useContext(GameContext);
@@ -39,9 +37,9 @@ export default function Main(){
 			nickname: nick
 		}).then((res)=>{
 			if (res.data === true){
-				window.location.href = back_url + "/game";
+				window.location.href = "http://localhost:4242/game";
 			}else {
-				window.location.href = back_url + "/twofactor";
+				window.location.href = "http://localhost:4242/twofactor";
 			}
 		});
 	}
