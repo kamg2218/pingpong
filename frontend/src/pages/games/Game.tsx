@@ -72,7 +72,7 @@ export default function Game() {
 		})
 	}, []);
 	return (
-		<div className="container-fluid m-0 p-0 border" id="gamelobby">
+		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
 				<img className="row" id="gameLogo" src={logo} alt="header" />
 				<div className="row" id="gamePad">

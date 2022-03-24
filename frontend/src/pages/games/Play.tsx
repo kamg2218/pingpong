@@ -6,9 +6,9 @@ import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { socket } from "../../socket/userSocket";
 import { GameContext } from "../../socket/gameSocket";
+import "./Play.css";
 
 export default function Play(){
-	const front_url:string = "http://localhost:3000";
 	const back_url:string = "http://localhost:4242";
 	const checkUrl:string = back_url + "/user/check";
 	const { gameroom } = useContext(GameContext);
@@ -32,10 +32,10 @@ export default function Play(){
 		})
 	}, []);
 	return (
-		<div className="container-fluid m-0 p-0 min-vh-100 min-vw-100" id="gamelobby">
-			<div className="col">
+		<div className="container-fluid m-0 p-0" id="playroom">
+			<div className="col h-100 p-1">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
-				<div className="mx-1 row">
+				<div className="row">
 					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block h-75">
 						<SideMenuPlay></SideMenuPlay>
 					</div>

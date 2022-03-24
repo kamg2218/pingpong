@@ -80,7 +80,7 @@ export default function WaitingRoom(){
 		// window.location.reload();
 	}
 	return (
-		<div className="container-fluid m-0 p-0 pb-2" id="waitingRoom">
+		<div className="container" id="waitingRoom">
 			<div className="row-2 h2" id="waitingRoomTitle">
 				{gameroom[0]?.title}
 			</div>
@@ -99,7 +99,7 @@ export default function WaitingRoom(){
 				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[3] ? profileBox(gameroom[0]?.observer[3].userid, Profile(gameroom[0]?.observer[3].profile), gameroom[0]?.observer[3].nickname, false):""}</div>
 				<div className="col mx-1" id="waitingRoomObserver">{gameroom[0]?.observer[4] ? profileBox(gameroom[0]?.observer[4].userid, Profile(gameroom[0]?.observer[4].profile), gameroom[0]?.observer[4].nickname, false):""}</div>
 			</div>
-			<div className="row mx-3 my-2">
+			<div className="row mx-3 my-2" id="waitingRoomBtns">
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={gameroom[0]?.players.length !== 2}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>

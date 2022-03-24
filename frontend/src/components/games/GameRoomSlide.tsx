@@ -52,12 +52,12 @@ export default function GameRoomSlide(props: any){
 	}
 
 	return (
-		<div id="gameRoomSlide" className="container">
+		<div className="container h-100">
 			<div className="col h-100" id="slideFirstCol">
-				<div key="slide1Row" className="row mx-1 my-0 border">
+				<div key="slide1Row" className="row">
 					{props.search === "" ? handleCarouselItem() : handleSearchItem()}
 				</div>
-				<div key="slide2Row" id="slide2Row" className="row m-1 p-2">
+				<div className="row" id="slide2Row">
 					<span id="slidePrev" className="carousel-control-prev-icon mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
 					<span id="slideNext" className="carousel-control-next-icon mx-5" aria-hidden="true" onClick={()=>handleButton(1)}></span>
 				</div>

@@ -4,7 +4,7 @@
 }
 #gameTab, #chatTab, #playTab{
 	padding-left: .8em;
-	height: 90%;
+	height: 94%;
 }
 #tab-game, #tab-chat{
 	border: 1px solid whitesmoke;
@@ -64,7 +64,7 @@
 	box-shadow: none;
 }
 #lobbyPad{
-	height: 90%;
+	height: 95%;
 	margin-top: 4%;
 	padding: 0;
 }
@@ -74,11 +74,24 @@
 	height: 100%;
 	margin-left: .1em;
 }
+#lobbyPadBtn{
+	align-items: center;
+	display: flex;
+	height: 15%;
+	margin: .3em;
+	margin-left: auto;
+	padding: .5em;
+}
+#lobbySlide{
+	height: 80%;
+	margin: .5em;
+	padding: .2em;
+}
 #lobbySearch{
 	border: 1px solid #C9A641;
 	border-radius: 7px;
 	margin-left: auto;
-	margin-right: 15%;
+	margin-right: 1.5em;
 	padding: .4em;
 	padding-left: 3%;
 }
@@ -87,17 +100,6 @@
 	box-shadow: none;
 	outline: none;
 }
-#slide2Row{
-	display: flex;
-	justify-content: center;
-	position: absolute;
-	bottom: 1%;
-	width: 100%;
-}
-#slideFirstCol{
-	position: relative;
-}
-#slidePrev:hover, #slideNext:hover{
-	border-radius: 5px;
-	box-shadow: .5px 1px 1px .5px #C9A641;
+#lobbySearchIcon{
+	width: 2.5em;
 }

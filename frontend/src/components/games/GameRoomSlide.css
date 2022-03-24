@@ -1,4 +1,14 @@
-#gameRoomSlide{
-  height: 90%;
-  padding: 1em;
+#slide2Row{
+	display: flex;
+	justify-content: center;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+}
+#slideFirstCol{
+	position: relative;
+}
+#slidePrev:hover, #slideNext:hover{
+	border-radius: 5px;
+	box-shadow: .5px 1px 1px .5px #C9A641;
 }
