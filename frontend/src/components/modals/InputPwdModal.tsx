@@ -24,7 +24,7 @@ export default function InputPwdModal(props: any){
 			props.handleOk();
 		}
 		props.setPwd(pwd);
-		props.handleSubmit(props.state);
+		// props.handleSubmit(props.state);
 		
 	}
 	return (

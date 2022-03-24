@@ -12,11 +12,12 @@ export default function WaitingRoom(){
 
 	useEffect(()=>{
 		console.log("waitingRoom");
+		console.log(gameroom[0]);
 		if (!gameroom[0] && param.id){
 			console.log("gameroom is empty!");
 			socket.emit("updateGameRoom", {
 				roomid: param.id,
-			})
+			});
 		}
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp = gameroom[0];
@@ -53,6 +54,7 @@ export default function WaitingRoom(){
 
 	}, [gameroom]);
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
+		// console.log("profileBox - " + nick + ", " + player);
 		return (
 			<div className={`m-1 ${player ? "player":"observer"}`} id={id}>
 				<img className="row mx-auto img-fluid img-thumbnail" src={profile} alt={id}></img>
@@ -83,11 +85,10 @@ export default function WaitingRoom(){
 			</div>
 			<div className="row-4 px-2 mt-3" id="waitingroombox">
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{!gameroom[0]?.players[0] ?? profileBox(gameroom[0]?.players[0].userid, Profile(gameroom[0]?.players[0]?.profile), gameroom[0]?.players[0]?.nickname, true)}
-					{/* {profileBox(gameroom[0]?.players[0]?.userid, Profile(gameroom[0]?.players[0]?.profile), gameroom[0]?.players[0]?.nickname, true)} */}
+					{gameroom[0]?.players[0] ? profileBox(gameroom[0]?.players[0].userid, Profile(gameroom[0]?.players[0]?.profile), gameroom[0]?.players[0]?.nickname, true) : ""}
 				</div>
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{!gameroom[0]?.players[1] ?? profileBox(gameroom[0]?.players[1].userid, Profile(gameroom[0]?.players[1]?.profile), gameroom[0]?.players[1]?.nickname, true)}
+					{gameroom[0]?.players[1] ? profileBox(gameroom[0]?.players[1].userid, Profile(gameroom[0]?.players[1]?.profile), gameroom[0]?.players[1]?.nickname, true): ""}
 				</div>
 			</div>
 			<div className="row-4 px-3 my-5 d-flex">

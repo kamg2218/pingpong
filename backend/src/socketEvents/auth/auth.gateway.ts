@@ -1,4 +1,4 @@
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { Logger, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
@@ -7,7 +7,6 @@ import { getConnection, getCustomRepository } from 'typeorm';
 import { onlineManager } from '../online/onlineManager';
 import { instrument } from '@socket.io/admin-ui';
 import { GameGatewayService } from '../game/gameGateway.service';
-import { onlineGameMap } from '../online/onlineGameMap';
 import { User } from 'src/db/entity/User/UserEntity';
 import { Game } from 'src/socketEvents/game/gameElement/game';
 import { ormconfig } from 'src/config/ormconfig';
@@ -17,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 import { ChatGatewayService } from '../chat/chatGateway.service';
 import { CORS_ORIGIN } from 'src/config/const';
+import { WsGuard } from '../ws.guard';
 
 const options = {
     cors : {
@@ -26,6 +26,7 @@ const options = {
 }
 
 @WebSocketGateway(options)
+@UseGuards(WsGuard)
 export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   
 	constructor(
@@ -47,7 +48,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 
 		/**/
-		if (process.env.NODE_ENV === "dev" && ormconfig.dropSchema) {
+		// if (process.env.NODE_ENV === "dev" && ormconfig.dropSchema) {
+		if (ormconfig.dropSchema) {
 			const connection = getConnection();
 			await connection
 				.createQueryBuilder()
@@ -57,11 +59,11 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				{email : "jikwon@student.42seoul.kr", nickname : "jikwon", status : "logout", profile : 1},
 				{email : "nahkim@student.42seoul.kr", nickname : "nahkim", status : "logout", profile : 2},
 				{email : "hyoon@student.42seoul.kr", nickname : "hyoon", status : "logout", profile : 3},
-				{email : "hyeyoo@student.42seoul.kr", nickname : "hyeyoo", status : "logout", profile : 4},
-				{email : "dong@student.42seoul.kr", nickname : "dong", status : "logout", profile : 5},
-				{email : "pangpang@student.42seoul.kr", nickname : "pangpang", status : "logout", profile : 6},
-				{email : "cat@student.42seoul.kr", nickname : "cat", status : "logout", profile : 7},
-				{email : "dog@student.42seoul.kr", nickname : "dog", status : "logout", profile : 8},
+				{email : "hyeyoo@student.42seoul.kr", nickname : "hyeyoo", status : "logout", profile : 2},
+				{email : "dong@student.42seoul.kr", nickname : "dong", status : "logout", profile : 2},
+				{email : "pangpang@student.42seoul.kr", nickname : "pangpang", status : "logout", profile : 1},
+				{email : "cat@student.42seoul.kr", nickname : "cat", status : "logout", profile : 3},
+				{email : "dog@student.42seoul.kr", nickname : "dog", status : "logout", profile : 4},
 				])
 				.execute();
 		}

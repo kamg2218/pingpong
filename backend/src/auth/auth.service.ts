@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { jwtConstants } from 'src/config/jwt.config';
 import { JwtService } from '@nestjs/jwt';
-import { getCustomRepository, getRepository } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import { SignUpDTO } from 'src/type/signup.dto';
 import { RestrictedListReopsitory, UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { User } from 'src/db/entity/User/UserEntity';

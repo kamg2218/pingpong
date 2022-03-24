@@ -44,7 +44,7 @@ export default function ChatRoom(props:any){
 				history[1](chat);
 			}
 		})
-	}, [chat,history]);
+	}, []);
 
 	const handleInputChange = (e :any) => {
 		setChat(e.target.value);
@@ -85,7 +85,7 @@ export default function ChatRoom(props:any){
 
 	return (
 		<div className="container-fluid p-2 h-100" key={`chatroom${props.idx}`}>
-			<div className="col">
+			<div className="col h-100">
 				<div className="row m-1" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0" id="chatlist">
 					<div className="col my-1">

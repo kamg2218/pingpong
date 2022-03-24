@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Post, Query, Req, Res, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Post, Query, Req, Res, UnauthorizedException, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from 'src/db/entity/User/UserEntity';
 import { AuthGuard } from '@nestjs/passport';
@@ -8,6 +8,8 @@ import { Request, Response } from 'express';
 import { SignUpDTO } from 'src/type/signup.dto';
 import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFilter';
 import { ApiTags, ApiOperation, ApiCreatedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { getCustomRepository } from 'typeorm';
+import { UserRepository } from 'src/db/repository/User/User.repository';
 
 
 @UseFilters(UnauthorizedExceptionFilter)
@@ -92,5 +94,23 @@ export class AuthController {
         const res = await this.authService.isDuplicate(nickname);
         this.logger.log(`[Check] Check if ${nickname} is duplicate`);
         return {message : res};
+    }
+
+
+    @Post('force_login')
+    async forceLogin(@Res({passthrough : true}) res : Response, @Body('nickname') nickname : string) {
+        const repo_user = getCustomRepository(UserRepository);
+        console.log("nickname : ", nickname);
+        let user = await repo_user.findOne({nickname : nickname});
+        if (!user)
+            throw new UnauthorizedException("no such user");
+        const {accessToken, accessOptions, refreshToken, refreshOptions} = await this.authService.login(user);
+        res.cookie('refreshToken', refreshToken, refreshOptions);
+        res.cookie('accessToken', accessToken, accessOptions);
+        this.logger.log(`[Login] ${user.nickname} has loggin in.`);
+        if (user.isTwoFactorAuthenticationEnabled === true)
+            return false;
+        else
+            return true;
     }
 }

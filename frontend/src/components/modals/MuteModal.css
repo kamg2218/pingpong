@@ -6,6 +6,8 @@
 #muteList{
     overflow-y: scroll;
     padding-bottom: 2%;
+    margin-top: .2em;
+    margin-bottom: .1em;
 }
 #mutePerson:hover{
     background-color: #c9a741a9;

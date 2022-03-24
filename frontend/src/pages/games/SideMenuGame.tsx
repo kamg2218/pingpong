@@ -32,9 +32,9 @@ export default function SideMenuGame(){
 			console.log(err);
 			history.replace("/");
 		});
-		if (user[0] === undefined){
-			socket.emit("userInfo");
-		}
+		// if (user[0] === undefined){
+		// 	socket.emit("userInfo");
+		// }
 		socket.on("newFriend", (data:Friend)=>{
 			const tmp:User = user[0];
 			tmp.newfriends?.push(data);

@@ -1,13 +1,15 @@
 import { socket, User, UserContext } from "../../socket/userSocket";
 import Profile from "../../icons/Profile";
 import "./MuteModal.css";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 
 export default function MuteModal(props: any) {
 	let thirtySeconds: Array<string> = [];
 	let tenMinutes: Array<string> = [];
 	const userContext = useContext(UserContext);
-	const user: User = userContext.user;
+	const user: User = userContext.user[0];
+	const checkBoxTen = useRef(null);
+	const checkBoxThirty = useRef(null);
 
 	const handleSubmit = () => {
 		console.log(tenMinutes);
@@ -40,10 +42,23 @@ export default function MuteModal(props: any) {
 			list.slice(idx, 1);
 		}
 	}
-	const handleCheckBox = (id: string, value: string) => {
+	const handleCheckBox = (id: string, event:any) => {
+		console.log(event.target);
+		const value:string = event.target.value;
 		if (value === "10m") {
+			const thirtyIdx: number = thirtySeconds.indexOf(id);
+			if (thirtyIdx !== -1){
+				thirtySeconds.slice(thirtyIdx, 1);
+				console.log(checkBoxThirty);
+				// checkBoxThirty.checked = false;
+			}
 			toggleList(tenMinutes, id);
 		} else {
+			const tenIdx: number = tenMinutes.indexOf(id);
+			if (tenIdx !== -1){
+				tenMinutes.slice(tenIdx, 1);
+				console.log(checkBoxTen);
+			}
 			toggleList(thirtySeconds, id);
 		}
 	}
@@ -62,15 +77,15 @@ export default function MuteModal(props: any) {
 
 		list.push(muteListHeader());
 		info.forEach((person: User) => {
-			if (person.userid === user.userid) {
+			if (person.userid === user?.userid) {
 				return;
 			}
 			list.push(
 				<div className="row" id="mutePerson" key={`mute_${person.userid}`}>
 					<div className="col p-0" key={`mute_${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="muteProfile" /></div>
 					<div className="col" key={`mute_${person.userid}_nickname`}>{person.nickname}</div>
-					<div className="col-2" key={`mute_${person.userid}_ten`}><input className="form-check-input" type="checkbox" value="10m" onClick={() => handleCheckBox(person.userid, "10m")} /></div>
-					<div className="col-2" key={`mute_${person.userid}_thirty`}><input className="form-check-input" type="checkbox" value="30s" onClick={() => handleCheckBox(person.userid, "30s")} /></div>
+					<div className="col-2" key={`mute_${person.userid}_ten`}><input className="form-check-input" type="checkbox" value="10m" onClick={(e) => handleCheckBox(person.userid, e)} ref={checkBoxTen} /></div>
+					<div className="col-2" key={`mute_${person.userid}_thirty`}><input className="form-check-input" type="checkbox" value="30s" onClick={(e) => handleCheckBox(person.userid, e)} ref={checkBoxThirty}/></div>
 				</div>
 			);
 		});
@@ -91,7 +106,7 @@ export default function MuteModal(props: any) {
 					</div>
 					<div className="modal-footer">
 						<button type="button" className="btn modal-button" data-dismiss="modal" onClick={handleSubmit}>확인</button>
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">취소</button>
+						<button type="button" className="btn modal-button " data-dismiss="modal" aria-label="Close">취소</button>
 					</div>
 				</div>
 			</div>

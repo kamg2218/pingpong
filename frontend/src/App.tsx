@@ -8,6 +8,8 @@ import { GameContext, GameVariables } from './socket/gameSocket';
 import { UserContext, UserVariables } from './socket/userSocket';
 import { ChatContext, ChatVariables } from './socket/chatSocket';
 
+// const ChatContext = createContext<any>(null);
+
 function App() {
   return (
     <BrowserRouter>
