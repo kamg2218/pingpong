@@ -7,7 +7,7 @@ export default function MatchHistory(props: any){
 
         props.matchHistory.forEach((history :any)=>{
             list.push(
-                <div className="row" key={`matchHistoryBlock_${history.nick}`}>
+                <div className="row " key={`matchHistoryBlock_${history.nick}`}>
                     <div className="col mt-1" key={`histroyProfile_${history.nick}`}><img src={Profile(history.profile)} alt="profile" id="matchProfile"/></div>
                     <div className="col" key={`historyNickname_${history.nick}`}>{history.nick}</div>
                     <div className="col" key={`historyWinlose_${history.nick}`}>{history.winner === props.userid ? "승" : "패"}</div>

@@ -20,7 +20,7 @@ export default function MenuChat(){
 
 	return (
 		<div key="menuchat" className="container" id="menuChatList">
-			<div className="d-flex justify-content-end">
+			<div className="d-flex justify-content-end my-2">
 				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#addChatModal">
 					<i className="bi bi-chat"/>
 				</button>
@@ -28,8 +28,8 @@ export default function MenuChat(){
 					<i className="bi bi-unlock"/>
 				</button>
 			</div>
-			<div className="m-1 h-90">
-				<ul key="chatBoxList" className="col list-unstyled">
+			<div id="chatBoxList">
+				<ul id="chatBoxUl" className="col">
 					{chatroom[0] && chatroom[0].chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info}/>)}
 				</ul>
 			</div>

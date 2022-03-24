@@ -23,7 +23,7 @@ export default function ChatBox(props:any){
 	}
 
 	return (
-		<div className="container mx-1 p-0" key={`${props.chatid}chatbox${props.idx}`} id={props.idx}>
+		<div className="container p-0" key={`${props.chatid}chatbox${props.idx}`} id={props.idx}>
 			<div className="row align-items-start">
 				<img src={profile} className="col-2 rounded-circle m-1" alt="..."/>
 				<div className="col">

@@ -1,19 +1,21 @@
 #player1, #player2{
-	width: 5em;
-	height: 5.5em;
 	border: 1px solid #C9A641;
-	border-radius: 50%;
-	object-fit: cover;
+	border-radius: 25%;
+	height: 6em;
+	object-fit: fill;
 	overflow: hidden;
+	padding: 0%;
+	width: 6em;
 }
 #observer{
-	width: 5em;
-	height: 5em;
 	border: 1px solid #C9A641;
-	border-radius: 15px;
+	border-radius: 25%;
 	display: flex;
+	height: 3em;
 	justify-content: center;
 	overflow: hidden;
+	padding: 0%;
+	width: 3em;
 }
 #menuPlay{
 	text-align: center;

@@ -138,7 +138,7 @@ export default function MyProfileModal(props: any) {
 										{ state && 
 											<div className="text-center">
 												<label>Google OTP 인증해주세요.</label>
-												{ !profile?.twofactor &&
+												{ profile && !profile.twofactor &&
 													<div className="row m-1" id="myProfileQrcode"><img src={qrcode} alt="qrcode"></img></div>
 												}
 												<div className="row my-1 input-group">
@@ -163,7 +163,9 @@ export default function MyProfileModal(props: any) {
 										</div>
 									</div>
 									<div className="col" id="myMatchHistory">
-										<MatchHistory userid={profile?.userid} matchHistory={profile?.history}/>
+										{ profile &&
+											<MatchHistory userid={profile.userid} matchHistory={profile.history}/>
+										}
 									</div>
 								</div>
 							</div>
