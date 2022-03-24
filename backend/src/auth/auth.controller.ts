@@ -11,14 +11,13 @@ import { ApiTags, ApiOperation, ApiCreatedResponse, ApiBadRequestResponse } from
 import { getCustomRepository } from 'typeorm';
 import { UserRepository } from 'src/db/repository/User/User.repository';
 
-
 @UseFilters(UnauthorizedExceptionFilter)
 @Controller('auth')
 @ApiTags('Auth API')
 export class AuthController {
     constructor(
         private readonly authService : AuthService, 
-        private readonly logger : Logger
+        private readonly logger : Logger,
     ) {}
 
     @Post('signup')

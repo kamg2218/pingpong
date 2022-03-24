@@ -1,14 +1,17 @@
 import { Logger } from "@nestjs/common";
-import { WsException } from "@nestjs/websockets";
+import { WebSocketServer, WsException } from "@nestjs/websockets";
 import { User, Friends, BlockedFriends } from "src/db/entity/User/UserEntity";
 import { UserRepository, FriendsRepository, BlockedFriendsRepository } from "src/db/repository/User/UserCustomRepository";
 import { GameHistoryRepository } from "src/db/repository/Game/GameCustomRepository";
 import { getCustomRepository } from "typeorm";
 import { LevelManager } from "../game/gameElement/levelManager";
+import { onlineManager } from "../online/onlineManager";
+import { Server } from "socket.io";
 
 export class UserGatewayService {
 	private readonly logger = new Logger();
-
+	
+	@WebSocketServer() public server:Server;
 
 	public arrOfObjToObj(values: Array<object>): Object {
 		let obj = {};
@@ -220,4 +223,20 @@ export class UserGatewayService {
 		}
 		return newInfo;
 	}
+
+	public async noticeToFriend(user : User) {
+    await getCustomRepository(UserRepository).logout(user);
+		const list = await onlineManager.onlineFriends(user);
+		for (let sokId in list) {
+			let friend = list[sokId];
+			const all = await Promise.all([
+				this.getUserInfo(friend),
+				this.getFriendsInfo(friend),
+				this.getFriendRequest(friend),
+				this.getGamehistory(friend),
+				this.getBlocklist(friend),
+			  ]);
+			this.server.to(sokId).emit("userInfo", this.arrOfObjToObj(all));
+		}
+  }
 }
