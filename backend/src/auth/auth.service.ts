@@ -14,6 +14,7 @@ export class AuthService {
 
   constructor(
     private readonly jwtService : JwtService,
+ 
     ) {}
 
   async findUser(email : string) {

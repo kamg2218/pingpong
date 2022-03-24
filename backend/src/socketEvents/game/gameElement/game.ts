@@ -124,6 +124,22 @@ export class Game {
         return  "Game#" + this.roomid;
     }
 
+    public onlineRoom(socketid : string, userid : string) {
+        this.participants.push(socketid);
+        // if (this.left.id === userid)
+            
+        // else if (this.right.id === userid)
+        //     this.participants.push(socketid);
+        // else
+        //     this.participants.push(socketid);
+    }
+
+    public offlineRoom(socketid : string) {
+        let index = this.participants.indexOf(socketid);
+        if (index !== -1) {
+            this.participants.splice(index, 1);
+        }
+    }
     public joinAsPlayer(socketid : string, user : User) {
         const repo_user = getCustomRepository(UserRepository);
         if (!this.left.onoff())
@@ -195,6 +211,9 @@ export class Game {
     };
 
     public announce(event : string, data : any) {
+        console.log("online==");
+        onlineManager.print()
+        console.log("member : ", this.participants);
         this.participants.map(socketid=>{
              Game.server.to(socketid).emit(event, data);
         })
@@ -276,8 +295,8 @@ export class Game {
     }
     
     public async start() {
-        this.right.y = 0;   //temp
-        this.right.height = canvas.height; //temp
+        // this.right.y = 0;   //temp
+        // this.right.height = canvas.height; //temp
         this.resetGame();
         this.ball.reset(this.speed);
         this.announce("startGame", {
@@ -463,8 +482,8 @@ export class Game {
         this.ball = new Ball(this.speed);
         this.turn = loser;
         this[winner].score++;
-        //temp
-        this.turn = "left"; 
+        // //temp
+        // this.turn = "left"; 
     }
 
     private newServe() {

@@ -106,22 +106,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				onlineManager.online(socket);
 				onlineManager.print();
 				socket.historyIndex = 0;
-				await this.chatGatewayService.onlineMyChatRoom(socket);
-				// const repo_user = getCustomRepository(UserRepository);
-				// const list = await onlineManager.onlineFriends(socket, user);
-				// this.chatGatewayService.onlineMyChatRoom(socket);
-				// for (let sokId in list) {
-				// 	let friend = list[sokId]
-				// 	const all = Promise.all([
-				// 		this.userGatewayService.getUserInfo(friend),
-				// 		this.userGatewayService.getFriendsInfo(friend),
-				// 		this.userGatewayService.getFriendRequest(friend),
-				// 		this.userGatewayService.getGamehistory(friend),
-				// 		this.userGatewayService.getBlocklist(friend),
-				// 	]);
-				// 	all.then((values)=>{
-				// 		this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(values));
-				// 	});}
+				this.chatGatewayService.onlineMyChatRoom(socket);
+				this.gameGatewayService.onlineMyGameRoom(socket);
 			}
 			catch(err) {
 				console.log("Invalid Token");
@@ -145,21 +131,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		MatchingManager.cancle(userid);
 		await this.gameGatewayService.deleteMyMatch(user.userid);
 		console.log("[auth5], ", new Date());
-		// await getCustomRepository(UserRepository).logout(user);
-		// console.log("[disconnected] online game : ", onlineGameMap);
-		// const list = await onlineManager.onlineFriends(socket, user);
-		// for (let sokId in list) {
-		// 	let friend = list[sokId];
-		// 	const all = await Promise.all([
-		// 		this.userGatewayService.getUserInfo(friend),
-		// 		this.userGatewayService.getFriendsInfo(friend),
-		// 		this.userGatewayService.getFriendRequest(friend),
-		// 		this.userGatewayService.getGamehistory(friend),
-		// 		this.userGatewayService.getBlocklist(friend),
-		// 	  ]);
-		// 	this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
-		// }
 		await this.chatGatewayService.offlineMyChatRoom(socket);
+		// await this.gameGatewayService.offlineMyGameRoom(socket);
 		console.log("[auth6], ", new Date());
 		onlineManager.offline(socket);
 		console.log("[auth7], ", new Date());
@@ -167,26 +140,5 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		// let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
 		// if (gameRoom)
 			// gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
-	}
-
-	@SubscribeMessage('connecting')
-	async saveSocket(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload : any) {
-		const user = await getCustomRepository(UserRepository).findOne({nickname : payload.myNickname})
-		socket.userid = user.userid;
-		onlineManager.online(socket);
-		onlineManager.print();
-		const list = await onlineManager.onlineFriends(socket, user);
-		for (let sokId in list) {
-			let friend = list[sokId];
-			const all = await Promise.all([
-				this.userGatewayService.getUserInfo(friend),
-				this.userGatewayService.getFriendsInfo(friend),
-				this.userGatewayService.getFriendRequest(friend),
-				this.userGatewayService.getGamehistory(friend),
-				this.userGatewayService.getBlocklist(friend),
-			  ]);
-			this.server.to(sokId).emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
-		}
-		this.chatGatewayService.onlineMyChatRoom(socket);
 	}
 }

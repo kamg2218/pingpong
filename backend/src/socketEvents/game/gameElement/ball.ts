@@ -12,11 +12,11 @@ export class Ball extends Pos {
             dirY : DIRECTION.IDLE,
             width : r,
             height : r,
-            speed : (canvas.heightPercent(0.5))});
+            speed : (canvas.heightPercent(2))});
         if (speed === 2)
-            this.speed = canvas.heightPercent(0.7);
+            this.speed = canvas.heightPercent(3);
         else if (speed === 3)
-            this.speed = canvas.heightPercent(0.9);
+            this.speed = canvas.heightPercent(4);
     }
 
     set radius(value : number) {
@@ -40,27 +40,27 @@ export class Ball extends Pos {
     }
 
     public doesNeedToResetTurn() {
-        let res = {x : false, winner : "", loser : ""}
-        if (this.x - this.radius <= 0)
-            this.dirX = DIRECTION.RIGHT;
-        else if (this.x >= canvas.width/4 - this.radius)
-            this.dirX = DIRECTION.LEFT;
-        if (this.y - this.radius <= 0)
-            this.dirY = DIRECTION.DOWN;
-        else if (this.y >= canvas.height/2 - this.radius)
-            this.dirY = DIRECTION.UP
-        return res;
-
         // let res = {x : false, winner : "", loser : ""}
         // if (this.x - this.radius <= 0)
-        //     res = Object.assign(res, {x : true, winner : "right", loser : "left"}); //this.dirX = DIRECTION.RIGHT;          
-        // else if (this.x >= canvas.width - this.radius)
-        //     res = Object.assign(res, {x : true, winner : "left", loser : "right"}); //this.dirX = DIRECTION.LEFT;
+        //     this.dirX = DIRECTION.RIGHT;
+        // else if (this.x >= canvas.width/4 - this.radius)
+        //     this.dirX = DIRECTION.LEFT;
         // if (this.y - this.radius <= 0)
         //     this.dirY = DIRECTION.DOWN;
-        // else if (this.y >= canvas.height - this.radius)
+        // else if (this.y >= canvas.height/2 - this.radius)
         //     this.dirY = DIRECTION.UP
         // return res;
+
+        let res = {x : false, winner : "", loser : ""}
+        if (this.x - this.radius <= 0)
+            res = Object.assign(res, {x : true, winner : "right", loser : "left"}); //this.dirX = DIRECTION.RIGHT;          
+        else if (this.x >= canvas.width - this.radius)
+            res = Object.assign(res, {x : true, winner : "left", loser : "right"}); //this.dirX = DIRECTION.LEFT;
+        if (this.y - this.radius <= 0)
+            this.dirY = DIRECTION.DOWN;
+        else if (this.y >= canvas.height - this.radius)
+            this.dirY = DIRECTION.UP
+        return res;
 
         // if (this.x <= 0)
         //     res = Object.assign(res, {x : true, winner : "right", loser : "left"}); //this.dirX = DIRECTION.RIGHT;          

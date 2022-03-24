@@ -49,7 +49,7 @@ export const onlineManager = {
 		}
 	},
 
-	async onlineFriends(socket : AuthSocket, user : User) {
+	async onlineFriends(user : User) {
 		const repo_friend = getCustomRepository(FriendsRepository);
 		const friends = await repo_friend.friends(user);
 		let res = {}

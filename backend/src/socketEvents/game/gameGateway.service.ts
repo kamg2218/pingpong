@@ -63,7 +63,7 @@ export class GameGatewayService {
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const owner = gameRoom.owner;
 		await Promise.all([
-			// repo_gameMembership.joinGameRoomAs(owner, gameRoom, 'owner'),
+			repo_gameMembership.joinGameRoomAs(owner, gameRoom, 'owner'),
 			repo_gameMembership.joinGameRoomAs(user, gameRoom, 'normal'),
 			repo_gameRoom.update(gameRoom.roomid, { roomStatus: 'waiting' })
 		]);
@@ -371,5 +371,36 @@ export class GameGatewayService {
 				repo_gameMembership.leaveGameRoom(observerInfo.member, gameRoom);
 			})
 		}
+	}
+
+	async onlineMyGameRoom(socket: AuthSocket) {
+		if (!socket.userid)
+			return;
+		const repo_gamemember = getCustomRepository(GameMembershipRepository);
+		const myGamerom = await repo_gamemember.findOne({
+			where : {member : {userid : socket.userid}},
+			relations :["gameRoom"]
+		});
+		if (!myGamerom) {
+			return ;
+		}
+		const game = onlineGameMap[myGamerom.gameRoom.roomid];
+		game.onlineRoom(socket.id, socket.userid);
+	}
+
+	async offlineMyGameRoom(socket: AuthSocket) {
+		if (!socket.userid)
+		return;
+		const repo_gamemember = getCustomRepository(GameMembershipRepository);
+		const myGamerom = await repo_gamemember.findOne({
+			where : {member : {userid : socket.userid}},
+			relations :["gameRoom"]
+			});
+		if (!myGamerom) {
+			return ;
+		}
+		const game = onlineGameMap[myGamerom.gameRoom.roomid];
+		game.offlineRoom(socket.id);
+			
 	}
 }

@@ -17,9 +17,9 @@ export class GameHistoryRepository extends Repository<GameHistory> {
             let player2 = {score : elem.scoreP2, ...repo_user.getSimpleInfo(elem.player2)};
             let winner = elem.winner.userid;
             if (elem.player1.userid === me.userid)
-                res.push({me : player1, theOther : player2, winner : winner});
+                res.push({nick : player2.nickname, profile : player2.profile,  winner : winner});
             else
-                res.push({me : player2, theOther : player1, winner : winner});
+                res.push({nick : player1.nickname, profile : player1.profile, winner : winner});
        });
        return res;
     }
