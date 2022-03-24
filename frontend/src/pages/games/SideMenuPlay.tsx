@@ -14,7 +14,7 @@ export default function SideMenuPlay(){
 			<div className="row">
 				<div className="col-3 btn" id="tab-play">play</div>
 			</div>
-			<div className="row" id="nav-play">
+			<div className="row border" id="nav-play">
 				<MenuPlay gameRoom={gameRoom}></MenuPlay>
 			</div>
 		</div>
