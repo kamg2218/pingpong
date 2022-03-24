@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import {GameContext, gameRoomDetail} from "../../socket/gameSocket"
-import MenuPlay from "../../components/games/MenuPlay"
+import MenuPlay from "../../components/play/MenuPlay"
 
 export default function SideMenuPlay(){
 	const gameContext = useContext(GameContext);
@@ -12,9 +12,7 @@ export default function SideMenuPlay(){
 	return (
 		<div id="playTab">
 			<div className="row">
-				<div className="col-3 btn" id="tab-play">
-					play
-				</div>
+				<div className="col-3 btn" id="tab-play">play</div>
 			</div>
 			<div className="row" id="nav-play">
 				<MenuPlay gameRoom={gameRoom}></MenuPlay>

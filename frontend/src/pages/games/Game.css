@@ -3,7 +3,6 @@
 	width: 100vw;
 }
 #gameTab, #chatTab, #playTab{
-	padding-left: .8em;
 	height: 94%;
 }
 #tab-game, #tab-chat{
@@ -53,9 +52,6 @@
 	background-color: whitesmoke;
 	margin: 1%;
 	margin-left: 2%;
-	/* position: relative;
-	left: auto !important;
-	right: 0%; */
 }
 #lobbyButton:hover{
 	background-color: #C9A641;
@@ -65,7 +61,7 @@
 }
 #lobbyPad{
 	height: 95%;
-	margin-top: 4%;
+	margin-top: 3%;
 	padding: 0;
 }
 #lobbyPadRow{

@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react"
 import {useHistory} from "react-router-dom"
-import "../../css/MenuPlay.css"
 import Profile from "../../icons/Profile"
 import {socket} from "../../socket/userSocket"
 import {GameContext, gameRoomDetail, GameUser} from "../../socket/gameSocket"
+import "./MenuPlay.css";
 
 export default function MenuPlay(props:any){
 	const history = useHistory();
@@ -33,8 +33,8 @@ export default function MenuPlay(props:any){
 	}
 	return (
 		<div className="container m-1 p-2" id="menuPlay">
-			<div className="col">
-				<div className="row align-items-center">
+			<div className="col h-100 border">
+				<div className="row align-items-center border">
 					<div className="col">
 						<img src={Profile(p1 ? p1.profile : 0)} className="mt-2" alt="player1" id="player1"/>
 						<label className="h4 m-0">{p1?.nickname}</label>

@@ -75,7 +75,7 @@ export default function Game() {
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
 				<img className="row" id="gameLogo" src={logo} alt="header" />
-				<div className="row" id="gamePad">
+				<div className="row m-0 p-1" id="gamePad">
 					<div className="col-xs-12 col-md-4 col-lg-3 d-sm-none d-md-block" id="gamelobbySide">
 						<Switch>
 							<Route path="/game/chat" component={SideMenuChat}></Route>
