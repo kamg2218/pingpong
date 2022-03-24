@@ -91,6 +91,18 @@ export class Player extends Pos {
             else if (y > this.y && this.y + this.height > canvas.height - 2 * radius)
                 this.y = canvas.height - 2 * radius - this.height ;
         }
+
+
+        // if (this.direction === DIRECTION.UP)
+        //     this.y -= this.speed;
+        // else if (this.direction === DIRECTION.DOWN)
+        //     this.y += this.speed;
+        // if (x >= this.x && x <= this.x + this.width) {
+        //     if (this.y < y + radius && y < this.y + this.height)
+        //         this.y = y + radius;
+        //     else if (y > this.y && this.y + this.height > canvas.height - 2 * radius)
+        //         this.y = canvas.height - 2 * radius - this.height ;
+        // }
             
         
         // if (this.y < 0)
