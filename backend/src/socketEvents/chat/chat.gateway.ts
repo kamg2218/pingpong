@@ -1,4 +1,4 @@
-import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Logger, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { getCustomRepository } from 'typeorm';
@@ -6,12 +6,13 @@ import { onlineManager } from '../online/onlineManager';
 import { UserRepository, BlockedFriendsRepository, FriendsRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
 import { ChatMembershipRepository, ChatRoomRepository, ChatHistoryRepository } from "src/db/repository/Chat/ChatCustomRepository";
-import { ChatHistory, ChatRoom } from 'src/db/entity/Chat/ChatEntity';
+import { ChatRoom } from 'src/db/entity/Chat/ChatEntity';
 import { ChatGatewayService } from './chatGateway.service';
 import { onlineChatRoom } from '../online/onlineChatRoom';
 import { onlineChatRoomManager } from '../online/onlineChatRoomManager';
 import { CORS_ORIGIN } from 'src/config/const';
 import { ChatHistoryDTO, ChatHistoryUpdateDTO, ChatMessageDTO, ChatMuteDTO, CreateChatRoomDTO, EnterChatRoomDTO, ExitChatRoomDTO, InviteChatRoomDTO, KickChatRoomDTO, UpdateChatRoomDTO } from './dto/chat.dto';
+import { WsGuard } from '../ws.guard';
 
 const options = {
   cors : {
@@ -22,6 +23,7 @@ const options = {
 
 // @WebSocketGateway({namespace: /\/ws-.+/}) // 정규표현식
 @WebSocketGateway(options)
+@UseGuards(WsGuard)
 // @UsePipes(new ValidationPipe({      
 //   whitelist : true,
 //   // forbidNonWhitelisted : true,

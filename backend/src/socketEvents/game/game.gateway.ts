@@ -1,4 +1,4 @@
-import { Logger, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Logger, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { CORS_ORIGIN } from "src/config/const";
@@ -12,6 +12,7 @@ import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
 import { GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchResponseDTO, MatchRequestDTO,  } from "./dto/game.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { WsGuard } from "../ws.guard";
 
 const options = {
     cors : {
@@ -22,6 +23,7 @@ const options = {
 
 
 @WebSocketGateway(options)
+@UseGuards(WsGuard)
 // @UsePipes(new ValidationPipe({      
 //     whitelist : true,
 //     // forbidNonWhitelisted : true,
