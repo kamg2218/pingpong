@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import {useHistory, useParams} from "react-router-dom"
 import { socket } from "../../socket/userSocket";
-import { GameContext, GameUser } from "../../socket/gameSocket"
+import { GameContext, GameUser, gameRoomDetail } from "../../socket/gameSocket"
 import Profile from "../../icons/Profile";
 import "./waitingRoom.css"
 
@@ -20,7 +20,8 @@ export default function WaitingRoom(){
 			});
 		}
 		socket.on("changeGameRoom", (msg:any) => {
-			const tmp = gameroom[0];
+			const tmp:gameRoomDetail = gameroom[0];
+			console.log(tmp);
 			if (msg.manager) {
 				tmp.manager = msg.manager;
 			}
@@ -37,19 +38,21 @@ export default function WaitingRoom(){
 				tmp.type = msg.type;
 			}
 			if (msg.addObserver) {
-				msg.addObserver.map((observer: GameUser) => tmp.oberserver.push(observer))
+				msg.addObserver.map((observer: GameUser) => tmp.observer?.push(observer))
 			}
 			if (msg.deleteObserver) {
 				msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))
 			}
 			if (msg.addPlayers) {
-				msg.addPlayers.map((player: GameUser) => tmp.players.push(player))
+				msg.addPlayers.map((player: GameUser) => tmp.players?.push(player))
 			}
 			if (msg.deletePlayers) {
 				msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
 			}
-			gameroom[1](tmp);
-			window.location.reload();
+			if (tmp){
+				gameroom[1](tmp);
+				// window.location.reload();
+			}
 		});
 
 	}, [gameroom]);

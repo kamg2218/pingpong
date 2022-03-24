@@ -20,12 +20,13 @@ export default function PlayRoom(){
         socket.on("gameResult", (data:any)=>{
             winner[1](data.winner);
         })
-    }, [draw, start, canvas, draw[0], winner]);
+    }, [draw, start, canvas, winner]);
 
     function drawCanvas() {
         const ctx = canvas?.current?.getContext("2d");
-
         if (ctx){
+            //clear
+            ctx.clearRect(0, 0, draw[0].background.width, draw[0].background.height);
             //center
             ctx.beginPath();
             ctx.moveTo(draw[0].background.width / 2, draw[0].background.height);
@@ -98,7 +99,7 @@ export default function PlayRoom(){
         if (e.key === "ArrowDown" || e.key === "ArrowUp"){
             console.log('idle!');
             socket.emit("move", {
-                roomid: playroom[0].roomid,
+                roomid: playroom[0]?.roomid,
                 direction: "idle"
             })
         }
