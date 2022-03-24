@@ -9,8 +9,7 @@ import { GameContext } from "../../socket/gameSocket";
 import "./Play.css";
 
 export default function Play(){
-	const back_url:string = "http://localhost:4242";
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = "/user/check";
 	const { gameroom } = useContext(GameContext);
 	const history = useHistory();
 

@@ -16,9 +16,7 @@ export default function SideMenuChat(){
 	const history = useHistory();
 	const {chatroom} = useContext(ChatContext);
 	const {gameroom} = useContext(GameContext);
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = "/user/check";
 	
 	useEffect(()=>{
 		console.log(checkUrl);

@@ -9,12 +9,10 @@ import {GameContext} from "../../socket/gameSocket";
 // dotenv.config();
 
 export default function Qrcode(){
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = "/user/check";
 	const {user} = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
 
@@ -53,7 +51,7 @@ export default function Qrcode(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const auth:string = back_url + "/2fa/authenticate";
+			const auth:string = "/2fa/authenticate";
 			axios.post(auth, { token: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
