@@ -8,8 +8,8 @@ import { GameContext } from "../../socket/gameSocket";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
+	// const back_url:string = "http://localhost:4242";
+	const back_url:string = "";
 	const history = useHistory();
 	const [profile, setProfile] = useState<number>(0);
 	const [nickname, setNickname] = useState<string>("");

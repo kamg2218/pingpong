@@ -9,8 +9,8 @@ import {GameContext} from "../../socket/gameSocket";
 // dotenv.config();
 
 export default function Qrcode(){
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
+	// const back_url:string = "http://localhost:4242";
+	const back_url:string = "";
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);

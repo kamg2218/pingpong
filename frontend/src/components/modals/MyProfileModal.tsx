@@ -140,6 +140,7 @@ export default function MyProfileModal(props: any) {
 												<label>Google OTP 인증해주세요.</label>
 												{ profile && !profile.twofactor &&
 													<div className="row m-1" id="myProfileQrcode"><img src={qrcode} alt="qrcode"></img></div>
+													// <div className="row m-1" id="myProfileQrcode">{qrcode}</div>
 												}
 												<div className="row my-1 input-group">
 												  <input type="number" className="col form-control" id="modalInput2fa" placeholder="ex)123456" maxLength={6} onChange={handleInput}/>

@@ -8,8 +8,8 @@ import "./Main.css";
 export default function Main(){
 	const front_url:string = "http://localhost:3000";
 	const back_url:string = "http://localhost:4242";
-	const login:string = back_url + "/auth/login";
-	const check:string = back_url + "/user/check";
+	const login:string = "/auth/login";
+	const check:string = "/user/check";
 	const {gameroom} = useContext(GameContext);
 	const [nick, setNick] = useState<string>("");
 
@@ -39,10 +39,9 @@ export default function Main(){
 			nickname: nick
 		}).then((res)=>{
 			if (res.data === true){
-				// window.location.href = "http://localhost:4242/game";
-				window.location.href = front_url + "/game";
+				window.location.href = back_url + "/game";
 			}else {
-				window.location.href = front_url + "/twofactor";
+				window.location.href = back_url + "/twofactor";
 			}
 		});
 	}

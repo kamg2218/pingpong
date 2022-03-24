@@ -12,7 +12,8 @@ export default function SideMenuGame(){
 	const { user } = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
 	const [clicked, setClicked] = useState<string>("");
-	const back_url:string = "http://localhost:4242";
+	// const back_url:string = "http://localhost:4242";
+	const back_url:string = "";
 	const checkUrl:string = back_url + "/user/check";
 
 	useEffect(()=>{
