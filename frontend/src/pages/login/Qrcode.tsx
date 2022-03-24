@@ -5,9 +5,6 @@ import "./qrcode.css";
 import {socket, UserContext} from "../../socket/userSocket";
 import {GameContext} from "../../socket/gameSocket";
 
-// import dotenv from "dotenv";
-// dotenv.config();
-
 export default function Qrcode(){
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
@@ -51,7 +48,7 @@ export default function Qrcode(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const auth:string = back_url + "/2fa/authenticate";
+			const auth:string = "/2fa/authenticate";
 			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
