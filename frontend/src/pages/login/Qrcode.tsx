@@ -51,8 +51,8 @@ export default function Qrcode(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const auth:string = "/2fa/authenticate";
-			axios.post(auth, { token: token }).then((res:any)=>{
+			const auth:string = back_url + "/2fa/authenticate";
+			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
 			}).catch((err:any)=>{
