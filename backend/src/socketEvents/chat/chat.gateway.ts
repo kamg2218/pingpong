@@ -1,4 +1,4 @@
-import { Logger, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { getCustomRepository } from 'typeorm';
@@ -377,7 +377,6 @@ export class ChatGateway {
     if (me.muteUntil && me.muteUntil > time) {
       this.log("Mute");
       return false;
-      // return {chatid:payload.chatid, result:false};
     }
     console.log("[chat3], ", new Date());
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
@@ -396,7 +395,7 @@ export class ChatGateway {
     this.log(`Message from ${me.member.nickname} has been sent.`);
     this.log(`Message is ${temp.contents} .`);
     console.log("[chat6], ", new Date());
-    return true;
+    // return true;
   }
 
   // 채팅 음소거 :
