@@ -17,15 +17,18 @@ export class UserController {
     async checkState(@Query('url') urlvalue : any, @Cookies('accessToken') at : string) {
         try {
             const payload = await this.jwtService.verify(at);
-            const user = await this.authService.validateJwt(payload);
-            const state = await this.userService.findState(user);
-            console.log("state : ", state);
+            const user = await this.authService.validate2FAJwt(payload);
+            let state;
+            if (user.isTwoFactorAuthenticationEnabled && !payload.isSecondFactorAuthenticated)
+                state = "2fa";
+            else
+                state = await this.userService.findState(user);
             return {state};
         }
         catch (e) {
             if (urlvalue === "main") {
                 // console.log("logout");
-                return {state : "logout"};
+                return {state : "logout"};  
             }
             else
                 throw new UnauthorizedException();
