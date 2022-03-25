@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { socket } from "../../socket/userSocket";
+import { socket } from "../../context/userContext";
 
 export default function TitleInput(props :any){
 	const [title, setTitle] = useState(props.info.title);
@@ -15,7 +15,7 @@ export default function TitleInput(props :any){
 			console.log(result);
 		});
 		props.changeTitle();
-		window.location.reload();
+		// window.location.reload();
 	}
 	const handleKeyPress = (e :any) => {
 		if (e.key === "Enter"){

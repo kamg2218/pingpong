@@ -1,6 +1,6 @@
 import {useContext} from "react";
 import Profile from "../../icons/Profile"
-import { ChatContext, ChatData } from "../../socket/chatSocket"
+import { ChatContext, ChatData } from "../../context/chatContext"
 
 export default function ChatBox(props:any){
 	const chatContext = useContext(ChatContext);

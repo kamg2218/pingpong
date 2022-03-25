@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { socket } from "../../socket/userSocket";
+import { socket } from "../../context/userContext";
 
 export default function MatchRequestModal(props:any){
 	const maxValue:number = 10;

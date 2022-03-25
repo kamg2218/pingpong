@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext} from "react";
-import {socket} from "../../socket/userSocket"
-import { gameRoom, GameContext } from "../../socket/gameSocket"
+import {socket} from "../../context/userContext"
+import { gameRoom, GameContext } from "../../context/gameContext"
 import GameBox from "./GameBox"
 import "./GameRoomSlide.css";
 

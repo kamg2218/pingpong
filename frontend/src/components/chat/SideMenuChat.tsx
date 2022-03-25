@@ -3,9 +3,9 @@ import MenuChat from "../../components/chat/MenuChat"
 import ChatRoom from "../../components/chat/ChatRoom"
 import { Switch, Route, Link, useParams, useHistory } from "react-router-dom"
 import {useEffect, useContext} from "react"
-import { socket } from "../../socket/userSocket";
-import { GameContext } from "../../socket/gameSocket";
-import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from "../../socket/chatSocket"
+import { socket } from "../../context/userContext";
+import { GameContext } from "../../context/gameContext";
+import {ChatContext, chatRoom, ChatData, InputChatRoom, User} from "../../context/chatContext"
 import axios from "axios";
 
 type param = {
@@ -101,7 +101,7 @@ export default function SideMenuChat(){
 			chatroom[1](tmp);
 		});
 		// window.location.reload();
-	}, [chatroom]);
+	}, [chatroom, checkUrl, gameroom, history]);
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();

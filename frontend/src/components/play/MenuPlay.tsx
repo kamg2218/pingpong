@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from "react"
 import {useHistory} from "react-router-dom"
 import Profile from "../../icons/Profile"
-import {socket} from "../../socket/userSocket"
-import {GameContext, gameRoomDetail, GameUser} from "../../socket/gameSocket"
+import {socket} from "../../context/userContext"
+import {GameContext, gameRoomDetail, GameUser} from "../../context/gameContext"
 import "./MenuPlay.css";
 
 export default function MenuPlay(props:any){

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import {GameContext, gameRoomDetail} from "../../socket/gameSocket"
+import {GameContext, gameRoomDetail} from "../../context/gameContext"
 import MenuPlay from "../../components/play/MenuPlay"
 
 export default function SideMenuPlay(){

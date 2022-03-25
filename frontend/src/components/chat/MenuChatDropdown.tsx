@@ -1,11 +1,12 @@
 // import "bootstrap/dist/js/bootstrap";
 import {useContext, useEffect, useState} from "react";
-import { socket, UserContext, User } from "../../socket/userSocket";
+import { socket, UserContext, User } from "../../context/userContext";
 import PwdModal from "../modals/PwdModal";
 import MuteModal from "../modals/MuteModal";
 import InviteModal from "../modals/InviteModal";
 import "./chat.css";
-import { chatRoom } from "../../socket/chatSocket";
+import { chatRoom } from "../../context/chatContext";
+import { useHistory } from "react-router";
 
 export default function MenuChatDropdown(props :any){
 	const userContext = useContext(UserContext);
@@ -14,6 +15,8 @@ export default function MenuChatDropdown(props :any){
 	const [pwdDisabled] = useState( info.owner !== user?.userid ? true : info.lock);
 	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user?.userid) !== -1 || info.owner === user?.userid) ? false : true;
 	
+	const history = useHistory();
+
 	useEffect(()=>{
 		console.log("chat dropdown!");
 	});
@@ -27,8 +30,9 @@ export default function MenuChatDropdown(props :any){
 		console.log("exit chat room!");
 		socket.emit("exitChatRoom", { chatid: info.chatid }, (result:boolean)=>{
 			if (result === true){
+				history.push("/");
 				// socket.emit("myChatRoom");
-				window.location.reload();
+				// window.location.reload();
 			}
 		});
 	}

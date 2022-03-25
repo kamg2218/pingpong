@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
-import { socket, UserContext } from "../../socket/userSocket";
-import { GameContext } from "../../socket/gameSocket";
+import { socket, UserContext } from "../../context/userContext";
+import { GameContext } from "../../context/gameContext";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){

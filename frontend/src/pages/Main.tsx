@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import logo_brown from "../icons/logo_brown.png"
-import { socket } from "../socket/userSocket";
-import { GameContext } from "../socket/gameSocket";
+import { socket } from "../context/userContext";
+import { GameContext } from "../context/gameContext";
 import "./Main.css";
+
+import { useHistory } from "react-router";
 
 export default function Main(){
 	const front_url:string = "http://localhost:3000";
@@ -12,6 +14,7 @@ export default function Main(){
 	const check:string = "/user/check";
 	const {gameroom} = useContext(GameContext);
 	const [nick, setNick] = useState<string>("");
+	const history = useHistory();
 
 	useEffect(()=>{
 		axios.get(check + "?url=main").then((res:any)=>{
@@ -20,15 +23,13 @@ export default function Main(){
 			if (res.state){
 				console.log(res.state);
 				if (res.state === "play" && gameroom[0].roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
-					});
+					socket.emit("exitGameRoom", { roomid: gameroom[0].roomid });
 				}
 			}
 		}).catch((err)=>{
 			console.log(err);
 		})
-	}, []);
+	}, [gameroom]);
 
 	const handleInput = (event:any) => {
 		setNick(event.target.value);
@@ -39,9 +40,9 @@ export default function Main(){
 			nickname: nick
 		}).then((res)=>{
 			if (res.data === true){
-				window.location.href = back_url + "/game";
+				history.push("/game");
 			}else {
-				window.location.href = back_url + "/twofactor";
+				history.push("/twofactor");
 			}
 		});
 	}

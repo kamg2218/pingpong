@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState, useRef } from "react";
-import { socket, UserContext } from "../../socket/userSocket";
-import {draw, GameContext, GameUser} from "../../socket/gameSocket";
+import { socket, UserContext } from "../../context/userContext";
+import {draw, GameContext, GameUser} from "../../context/gameContext";
 import "./PlayRoom.css"
 
 export default function PlayRoom(){

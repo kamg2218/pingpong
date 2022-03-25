@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import Profile from '../../icons/Profile';
-import {UserContext} from '../../socket/userSocket'
+import {UserContext} from '../../context/userContext'
 import "./chat.css"
 
 export default function MyChatBox(props:any){

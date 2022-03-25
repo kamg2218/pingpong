@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import {Friend, UserContext} from "../../socket/userSocket";
+import {Friend, UserContext} from "../../context/userContext";
 
 export default function InviteList(props:any){
 	let members:Array<string> = [];

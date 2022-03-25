@@ -1,5 +1,5 @@
 import InviteList from "../chat/InviteList";
-import {socket} from "../../socket/userSocket";
+import {socket} from "../../context/userContext";
 
 export default function InviteModal(props:any){
 	let members:Array<string> = [];

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom"
-import {socket, UserContext} from "../../socket/userSocket";
-import { ChatContext, ChatBlock, ChatHistory } from "../../socket/chatSocket";
+import {socket, UserContext} from "../../context/userContext";
+import { ChatContext, ChatBlock, ChatHistory } from "../../context/chatContext";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "../../css/ChatRoom.css"

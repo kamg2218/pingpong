@@ -2,8 +2,8 @@ import axios from "axios";
 import MenuGame from "../../components/games/MenuGame"
 import {useState, useContext, useEffect} from "react"
 import { Link, useHistory } from "react-router-dom"
-import {socket, UserContext, Friend, User} from "../../socket/userSocket";
-import { GameContext } from "../../socket/gameSocket";
+import {socket, UserContext, Friend, User} from "../../context/userContext";
+import { GameContext } from "../../context/gameContext";
 import ProfileModal from "../../components/modals/ProfileModal";
 import MyProfileModal from "../../components/modals/MyProfileModal";
 

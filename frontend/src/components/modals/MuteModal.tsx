@@ -1,4 +1,4 @@
-import { socket, User, UserContext } from "../../socket/userSocket";
+import { socket, User, UserContext } from "../../context/userContext";
 import Profile from "../../icons/Profile";
 import "./MuteModal.css";
 import { useContext, useRef } from "react";

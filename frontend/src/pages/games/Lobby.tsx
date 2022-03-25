@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { socket } from "../../socket/userSocket";
+import { socket } from "../../context/userContext";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
 import LoadingModal from "../../components/modals/LoadingModal";

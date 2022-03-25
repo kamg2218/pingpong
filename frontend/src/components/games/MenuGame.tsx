@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react"
 import "./MenuGame.css"
 import Profile from "../../icons/Profile"
-import {Friend, socket, UserContext, User} from "../../socket/userSocket"
+import {Friend, socket, UserContext, User} from "../../context/userContext"
 
 export default function MenuGame(props:any){
 	const userContext = useContext(UserContext);

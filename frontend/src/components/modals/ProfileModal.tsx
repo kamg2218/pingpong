@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
-import { socket, ProfileUser } from "../../socket/userSocket";
-import {GameContext} from "../../socket/gameSocket";
+import { socket, ProfileUser } from "../../context/userContext";
+import {GameContext} from "../../context/gameContext";
 import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"

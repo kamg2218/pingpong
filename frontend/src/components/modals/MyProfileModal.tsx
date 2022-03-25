@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { socket, UserContext, User, Friend } from "../../socket/userSocket";
+import { socket, UserContext, User, Friend } from "../../context/userContext";
 import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"
@@ -39,14 +39,14 @@ export default function MyProfileModal(props: any) {
 				alert("확인되었습니다.");
 				setState(false);
 				socket.emit("userInfo");
-			}).catch((err:any)=>{console.log(err)});
+			}).catch((err:any)=>{alert("다시 시도해주세요.");console.log(err)});
 		}else{
 			axios.post("/2fa/turn-off", {twoFactorAuthenticationCode: num}).then((res:any)=>{
 				console.log(res);
 				alert("확인되었습니다.");
 				setState(false);
 				socket.emit("userInfo");
-			}).catch((err:any)=>{console.log(err)});
+			}).catch((err:any)=>{alert("다시 시도해주세요.");console.log(err)});
 		}
 	}
 	const handleQrcode = () => {		

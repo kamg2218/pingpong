@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import './Modals.css'
-import {socket} from '../../socket/userSocket'
+import {socket} from '../../context/userContext'
 
 type info = {
 	title: string,

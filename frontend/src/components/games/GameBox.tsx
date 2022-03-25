@@ -1,6 +1,6 @@
 import {useState} from "react"
 import InputPwdModal from "../modals/InputPwdModal"
-import {socket} from "../../socket/userSocket"
+import {socket} from "../../context/userContext"
 import "../../css/GameBox.css"
 
 type info = {

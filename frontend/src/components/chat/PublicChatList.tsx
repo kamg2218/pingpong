@@ -1,4 +1,4 @@
-import { socket } from "../../socket/userSocket";
+import { socket } from "../../context/userContext";
 import CheckModal from "../modals/CheckModal";
 import InputPwdModal from "../modals/InputPwdModal";
 

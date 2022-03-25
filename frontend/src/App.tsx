@@ -4,9 +4,9 @@ import Play from './pages/games/Play'
 import Qrcode from './pages/login/Qrcode';
 import NickAndProfile from './pages/login/NickAndProfile';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { GameContext, GameVariables } from './socket/gameSocket';
-import { UserContext, UserVariables } from './socket/userSocket';
-import { ChatContext, ChatVariables } from './socket/chatSocket';
+import { GameContext, GameVariables } from './context/gameContext';
+import { UserContext, UserVariables } from './context/userContext';
+import { ChatContext, ChatVariables } from './context/chatContext';
 
 // const ChatContext = createContext<any>(null);
 

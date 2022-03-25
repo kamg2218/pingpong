@@ -1,14 +1,14 @@
 import { useEffect, useContext } from "react";
 import {useHistory, useParams} from "react-router-dom"
-import { socket } from "../../socket/userSocket";
-import { GameContext, GameUser, gameRoomDetail } from "../../socket/gameSocket"
+import { socket } from "../../context/userContext";
+import { GameContext, GameUser, gameRoomDetail } from "../../context/gameContext"
 import Profile from "../../icons/Profile";
 import "./waitingRoom.css"
 
 export default function WaitingRoom(){
 	const history = useHistory();
 	const param:any = useParams();
-	const {gameroom, gameroomlist} = useContext(GameContext);
+	const {gameroom} = useContext(GameContext);
 
 	useEffect(()=>{
 		console.log("waitingRoom");
@@ -55,7 +55,7 @@ export default function WaitingRoom(){
 			}
 		});
 
-	}, [gameroom]);
+	}, [gameroom, param.id]);
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		// console.log("profileBox - " + nick + ", " + player);
 		return (

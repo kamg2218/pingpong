@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
-import { socket } from "../../socket/userSocket";
-import { chatRoom, ChatContext } from "../../socket/chatSocket";
+import { socket } from "../../context/userContext";
+import { chatRoom, ChatContext } from "../../context/chatContext";
 import MenuChatBox from "./MenuChatBox";
 import AddChatModal from "../modals/AddChatModal";
 import PublicChatModal from "../modals/PublicChatModal"

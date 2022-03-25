@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
-import {socket} from "../../socket/userSocket"
+import {socket} from "../../context/userContext"
 import PublicChatList from "../chat/PublicChatList"
-import { ChatContext, ChatData, chatRoom } from "../../socket/chatSocket"
+import { ChatContext, ChatData, chatRoom } from "../../context/chatContext"
 
 export default function PublicChatModal(){
 	const [pwd, setPwd] = useState<string>("");

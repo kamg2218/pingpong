@@ -2,11 +2,8 @@ import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import {useHistory} from 'react-router-dom';
 import "./qrcode.css";
-import {socket, UserContext} from "../../socket/userSocket";
-import {GameContext} from "../../socket/gameSocket";
-
-// import dotenv from "dotenv";
-// dotenv.config();
+import {socket, UserContext} from "../../context/userContext";
+import {GameContext} from "../../context/gameContext";
 
 export default function Qrcode(){
 	// const back_url:string = "http://localhost:4242";
@@ -17,7 +14,6 @@ export default function Qrcode(){
 	const checkUrl:string = back_url + "/user/check";
 	const {user} = useContext(UserContext);
 	const { gameroom } = useContext(GameContext);
-
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
@@ -36,13 +32,12 @@ export default function Qrcode(){
 			history.push("/");
 		})
 	}, []);
-	function checkToken():boolean {
-		if (token.length !== 6)
+	const checkToken = ():boolean => {
+		if (token.length !== 6){
 			return false;
+		}
 		for (let i = 0; i < token.length; i++){
-			const num = parseInt(token[i]);
-			if (isNaN(num))
-				return false;
+			if (isNaN(parseInt(token[i]))){return false;}
 		}
 		return true;
 	}

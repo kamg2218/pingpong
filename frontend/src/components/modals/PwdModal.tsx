@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {socket} from "../../socket/userSocket";
+import {socket} from "../../context/userContext";
 
 export default function PwdModal(props: any){
 	const [pwd, setPwd] = useState("");

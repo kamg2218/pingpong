@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import TitleInput from "./TitleInput"
 import MenuChatDropdown from "./MenuChatDropdown"
-import { User, ChatContext, ChatData } from "../../socket/chatSocket"
-import { socket } from "../../socket/userSocket"
+import { User, ChatContext, ChatData } from "../../context/chatContext"
+import { socket } from "../../context/userContext"
 
 function memberlist(member: Array<User>) : string {
 	let list :string = "";

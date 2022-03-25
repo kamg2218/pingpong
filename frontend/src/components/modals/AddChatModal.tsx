@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {socket} from '../../socket/userSocket';
+import {socket} from '../../context/userContext';
 import './AddChatModal.css';
 import InviteList from '../chat/InviteList';
 

@@ -4,8 +4,8 @@ import logo from '../../icons/logo_brown_profile.png'
 import axios from "axios";
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { socket } from "../../socket/userSocket";
-import { GameContext } from "../../socket/gameSocket";
+import { socket } from "../../context/userContext";
+import { GameContext } from "../../context/gameContext";
 import "./Play.css";
 
 export default function Play(){
