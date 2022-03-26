@@ -5,33 +5,34 @@ import axios from "axios";
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { socket } from "../../context/userContext";
-import { GameContext } from "../../context/gameContext";
+import { GameContext, playRoom } from "../../context/gameContext";
 import "./Play.css";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 
 export default function Play(){
 	// const back_url:string = "http://localhost:4242";
 	const back_url:string = "";
 	const checkUrl:string = back_url + "/user/check";
-	const { gameroom } = useContext(GameContext);
+	// const { playRoom } = useContext(GameContext);
 	const history = useHistory();
+
+	// const playroom:playRoom = useSelector((state:RootState) => state.userReducer, shallowEqual);
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=play").then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
-				if (res.state === "play" && gameroom[0].roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
-					});
-				}else if (res.state === "logout"){
-					history.replace("/");
-				}
+				if (res.state === "logout"){ history.replace("/"); }
 			}
 		}).catch((err)=>{
 			console.log(err);
 			history.replace("/");
-		})
-	}, []);
+		});
+		// if (!playRoom[0]){
+		// 	socket.emit("")
+		// }
+	}, [checkUrl, history]);
 	return (
 		<div className="container-fluid m-0 p-0" id="playroom">
 			<div className="col h-100">

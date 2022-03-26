@@ -7,12 +7,17 @@ import InviteModal from "../modals/InviteModal";
 import "./chat.css";
 import { chatRoom } from "../../context/chatContext";
 import { useHistory } from "react-router";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 
 export default function MenuChatDropdown(props :any){
-	const userContext = useContext(UserContext);
-	const user:User = userContext.user[0];
+	// const userContext = useContext(UserContext);
+	// const user:User = userContext.user[0];
+
+	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+
 	const info:chatRoom = props.info;
-	const [pwdDisabled] = useState( info.owner !== user?.userid ? true : info.lock);
+	const [pwdDisabled] = useState( info.owner !== user.userid ? true : info.lock);
 	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user?.userid) !== -1 || info.owner === user?.userid) ? false : true;
 	
 	const history = useHistory();
@@ -22,9 +27,7 @@ export default function MenuChatDropdown(props :any){
 	});
 
 	//change chatroom title
-	const handleTitle = () => {
-		props.changeTitle();
-	}
+	const handleTitle = () => { props.changeTitle(); }
 	//exit the chatroom
 	const handleExit = () => {
 		console.log("exit chat room!");

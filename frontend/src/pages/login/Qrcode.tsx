@@ -2,8 +2,10 @@ import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import {useHistory} from 'react-router-dom';
 import "./qrcode.css";
-import {socket, UserContext} from "../../context/userContext";
-import {GameContext} from "../../context/gameContext";
+import {socket, User, UserContext} from "../../context/userContext";
+import {GameContext, gameRoomDetail} from "../../context/gameContext";
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from '../../redux/rootReducer';
 
 export default function Qrcode(){
 	// const back_url:string = "http://localhost:4242";
@@ -12,20 +14,19 @@ export default function Qrcode(){
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
 	const checkUrl:string = back_url + "/user/check";
-	const {user} = useContext(UserContext);
-	const { gameroom } = useContext(GameContext);
+	// const {user} = useContext(UserContext);
+	// const { gameroom } = useContext(GameContext);
+	// const dispatch = useDispatch();
+	// const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
-				if (res.state === "play" && gameroom[0].roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
-					});
-				}else if (res.state === "logout"){
-					history.replace("/");
-				}
+				if (res.state === "play" && gameroom.roomid){
+					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+				}else if (res.state === "logout"){ history.replace("/") }
 			}
 		}).catch((err)=>{
 			console.log(err);
@@ -44,7 +45,7 @@ export default function Qrcode(){
 	const handleChange = (event:any) => {
 		setToken(event.target.value);
 	}
-	function handleSubmit(event : any){
+	function handleSubmit(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
@@ -52,15 +53,11 @@ export default function Qrcode(){
 			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
-			}).catch((err:any)=>{
-				setAlert(true);
-			})
+			}).catch((err:any)=>{	setAlert(true);})
 		}
 	}
 	function handleKeypress(event: any){
-		if (event.code === 'Enter'){
-			handleSubmit(event);
-		}
+		if (event.code === 'Enter'){ handleSubmit() }
 	}
 
 	return (

@@ -2,14 +2,18 @@ import { socket, User, UserContext } from "../../context/userContext";
 import Profile from "../../icons/Profile";
 import "./MuteModal.css";
 import { useContext, useRef } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 
 export default function MuteModal(props: any) {
 	let thirtySeconds: Array<string> = [];
 	let tenMinutes: Array<string> = [];
-	const userContext = useContext(UserContext);
-	const user: User = userContext.user[0];
+	// const userContext = useContext(UserContext);
+	// const user: User = userContext.user[0];
 	const checkBoxTen = useRef(null);
 	const checkBoxThirty = useRef(null);
+	
+	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
 
 	const handleSubmit = () => {
 		console.log(tenMinutes);
@@ -77,7 +81,7 @@ export default function MuteModal(props: any) {
 
 		list.push(muteListHeader());
 		info.forEach((person: User) => {
-			if (person.userid === user?.userid) {
+			if (person.userid === user.userid) {
 				return;
 			}
 			list.push(

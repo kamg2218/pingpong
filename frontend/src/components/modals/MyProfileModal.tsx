@@ -5,11 +5,16 @@ import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"
 import axios from "axios";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 
 export default function MyProfileModal(props: any) {
 	const history = useHistory();
-	const userContext = useContext(UserContext);
-	const profile:User = userContext.user[0];
+	// const userContext = useContext(UserContext);
+	// const profile:User = userContext.user[0];
+
+	const profile:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+
 	const [state, setState] = useState<boolean>(false);
 	const [qrcode, setQrcode] = useState<string>("");
 	const [num, setNum] = useState<string>("");
@@ -19,9 +24,7 @@ export default function MyProfileModal(props: any) {
 		setNum(event.target.value);
 	}
 	const checkToken = ():boolean => {
-		if (num.length !== 6){
-			return false;
-		}
+		if (num.length !== 6){ return false; }
 		for (let i = 0; i < num.length; i++){
 			if (isNaN(parseInt(num[i]))){return false;}
 		}
@@ -33,7 +36,7 @@ export default function MyProfileModal(props: any) {
 			return ;
 		}
 		console.log(num);
-		if (!profile?.twofactor){
+		if (!profile.twofactor){
 			axios.post("/2fa/turn-on", {twoFactorAuthenticationCode: num}).then((res:any)=>{
 				console.log(res)
 				alert("확인되었습니다.");
@@ -50,7 +53,7 @@ export default function MyProfileModal(props: any) {
 		}
 	}
 	const handleQrcode = () => {		
-		if (!state && !profile?.twofactor){
+		if (!state && !profile.twofactor){
 			console.log("generate: " + "/2fa/generate");
 			axios.post("/2fa/generate").then((res:any)=>{
 				console.log(`qrcode = ` + res.data);
@@ -60,25 +63,13 @@ export default function MyProfileModal(props: any) {
 		}
 		setState(!state);
 	}
-	const handleClick = (userid: string) => {
-		props.setClicked(userid);
-	}
+	const handleClick = (userid: string) => { props.setClicked(userid); }
 	const friendList = () => {
 		let list:any = [];
 
-		const acceptNewFriend = (userid: string)=>{
-			socket.emit("newFriend", {
-				userid: userid,
-				result: true
-			})
-		}
-		const declineNewFriend = (userid: string)=>{
-			socket.emit("newFriend", {
-				userid: userid,
-				result: false
-			})
-		}
-		profile?.newfriends?.forEach((friend:Friend)=>{
+		const acceptNewFriend = (userid: string)=>{ socket.emit("newFriend", { userid: userid, result: true })}
+		const declineNewFriend = (userid: string)=>{ socket.emit("newFriend", { userid: userid, result: false })}
+		profile.newfriends?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row mx-0 px-2" id="newFriendContent" key={`newFriend_${friend.userid}`} onClick={()=>handleClick(friend.userid)}>
 					<div className="col p-0" key={`newFriend_${friend.userid}_img`}><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
@@ -88,7 +79,7 @@ export default function MyProfileModal(props: any) {
 				</div>
 			)
 		});
-		profile?.friends?.forEach((friend:Friend)=>{
+		profile.friends?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row text-center align-items-center" id="friendContent" key={`friend_${friend.userid}`} data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
 					<div className="col" key={`friend_${friend.userid}_img`}><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
@@ -101,7 +92,7 @@ export default function MyProfileModal(props: any) {
 	}
 	const blockList = () => {
 		let list:any = [];
-		profile?.blacklist?.forEach((friend:Friend)=>{
+		profile.blacklist?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
 					<div className="col-3"><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
@@ -134,15 +125,15 @@ export default function MyProfileModal(props: any) {
 										<button className="row col-11 btn modal-button" data-dismiss="modal" onClick={()=>history.push("/nickandprofile")}>정보 변경</button>
 									</div>
 									<div className="col p-1 mx-0">
-										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.nickname}</div>
-										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile?.level}</div>
-										<div className="row-4 my-1 p-2 h5" id="profileBorder">{profile?.win + profile?.lose}전 {profile?.win} 승 {profile?.lose}패</div>
+										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile.nickname}</div>
+										<div className="row-4 my-1 p-2 h4" id="profileBorder">{profile.level}</div>
+										<div className="row-4 my-1 p-2 h5" id="profileBorder">{profile.win + profile.lose}전 {profile?.win} 승 {profile.lose}패</div>
 									</div>
 									<div className="col" id="modalTwofactor">
 										<div className="row pt-2" id="modalTwofactorTitle">
 											<div className="col h5 text-center">2중 인증</div>
 											<div className="col-3 form-check form-switch">
-												<input className="form-check-input" type="checkbox" onClick={handleQrcode} defaultChecked={profile?.twofactor}/>
+												<input className="form-check-input" type="checkbox" onClick={handleQrcode} defaultChecked={profile.twofactor}/>
 											</div>
 										</div>
 										{ state && 
@@ -173,9 +164,7 @@ export default function MyProfileModal(props: any) {
 										</div>
 									</div>
 									<div className="col" id="myMatchHistory">
-										{ profile &&
-											<MatchHistory userid={profile.userid} matchHistory={profile.history}/>
-										}
+										{ profile && <MatchHistory userid={profile.userid} matchHistory={profile.history}/> }
 									</div>
 								</div>
 							</div>

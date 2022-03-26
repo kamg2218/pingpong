@@ -1,20 +1,28 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { socket } from "../../context/userContext";
-import { chatRoom, ChatContext } from "../../context/chatContext";
+import { chatRoom, ChatContext, ChatData } from "../../context/chatContext";
 import MenuChatBox from "./MenuChatBox";
 import AddChatModal from "../modals/AddChatModal";
 import PublicChatModal from "../modals/PublicChatModal"
+import { RootState } from "../../redux/rootReducer";
+import { shallowEqual, useSelector } from "react-redux";
 
 export default function MenuChat(){
-	const {chatroom} = useContext(ChatContext);
+	// const {chatroom} = useContext(ChatContext);
+	// const dispatch = useDispatch();
+	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
+	// const [room, setRoom] = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
 		console.log("MenuChat");
-		if (!chatroom[0]){
-			socket.emit("myChatRoom");
-		}
-	}, []);
+		console.log(chatroom);
+		// if (!chatroom[0]){
+		// 	console.log("myChatRoom emitted! - MenuChat");
+		// 	socket.emit("myChatRoom");
+		// }
+	}, [chatroom]);
 	const handlePublic = () => {
+		console.log("publicChatRoom emitted! - MenuChat");
 		socket.emit("publicChatRoom");
 	}
 
@@ -30,7 +38,7 @@ export default function MenuChat(){
 			</div>
 			<div id="chatBoxList">
 				<ul id="chatBoxUl" className="col">
-					{chatroom[0] && chatroom[0].chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info}/>)}
+					{chatroom && chatroom.chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info}/>)}
 				</ul>
 			</div>
 			<AddChatModal></AddChatModal>

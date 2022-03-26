@@ -1,14 +1,16 @@
 import { useContext } from 'react';
 import Profile from '../../icons/Profile';
-import {UserContext} from '../../context/userContext'
+import {User, UserContext} from '../../context/userContext'
 import "./chat.css"
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from '../../redux/rootReducer';
 
 export default function MyChatBox(props:any){
-	const {user} = useContext(UserContext);
+	// const {user} = useContext(UserContext);
+	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+
 	const makeTime = () => {
-		if (!props.data || !props.data.createDate){
-			return "";
-		}
+		if (!props.data || !props.data.createDate){ return "00:00"; }
 		let date:Date = new Date(props.data.createDate);
 		console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
@@ -19,11 +21,11 @@ export default function MyChatBox(props:any){
 		<div className="container m-0 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>
 			<div className="row align-items-start justify-content-end">
 				<div className="col-8">
-					<div className="row col-12 justify-content-end" id="mychatboxnickname">{user[0].nickname}</div>
+					<div className="row col-12 justify-content-end" id="mychatboxnickname">{user.nickname}</div>
 					<div className="row col-12" id="mychatboxcontent">{props.data.contents}</div>
 					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
-				<img src={Profile(user[0].profile)} className="col-2 rounded-circle m-1 mx-0" alt="..."/>
+				<img src={Profile(user.profile)} className="col-2 rounded-circle m-1 mx-0" alt="..."/>
 			</div>
 		</div>
 	);

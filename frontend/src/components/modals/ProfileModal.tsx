@@ -1,14 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
 import { socket, ProfileUser } from "../../context/userContext";
-import {GameContext} from "../../context/gameContext";
+import {GameContext, gameRoom} from "../../context/gameContext";
 import Profile from '../../icons/Profile'
 import MatchHistory from "../games/MatchHistory";
 import "./profileModal.css"
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 
 export default function ProfileModal(props: any) {
 	const history = useHistory();
-	const game = useContext(GameContext).gameroom;
+	// const game = useContext(GameContext).gameroom;
+	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const userid:string = props.userid;
 	const [profile, setProfile] = useState<ProfileUser>();
 	const button:string = "row w-75 my-1 btn modal-button";
@@ -17,9 +20,7 @@ export default function ProfileModal(props: any) {
 	useEffect(() => {
 		if (userid && !profile) {
 			console.log("opponent Profile");
-			socket.emit("opponentProfile", {
-				userid: userid,
-			});
+			socket.emit("opponentProfile", { userid: userid });
 		}
 		socket.on("opponentProfile", (data:ProfileUser) => {
 			console.log(`opponent = `, data);
@@ -33,42 +34,23 @@ export default function ProfileModal(props: any) {
 			member: [profile?.userid]
 		}, (chatid: string)=>{
 			console.log(chatid);
-			if (chatid !== ''){
-				history.push(`/game/chat/${chatid}${game[0] ? `/waiting/${game[0].roomid}`: ''}`);
-			}
+			if (chatid !== ''){ history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`); }
 		})
 	}
-	const handleMatch = () => {
-		socket.emit("matchRequest", {
-			userid: profile?.userid
-		})
-	}
+	const handleMatch = () => { socket.emit("matchRequest", { userid: profile?.userid }) }
 	const handleFriend = () => {
 		if (profile?.friend){
-			socket.emit("deleteFriend", {
-				userid: profile.userid
-			})
-			buttonFriend = button;			
+			socket.emit("deleteFriend", { userid: profile.userid })
+			buttonFriend = button;
 		}else{
-			socket.emit("addFriend", {
-				userid: profile?.userid
-			})
+			socket.emit("addFriend", { userid: profile?.userid })
 			buttonFriend = button + " disabled";
 		}
 	}
 	const handleBlock = () => {
-		if (profile?.block){
-			socket.emit("unblockFriend", {
-				userid: profile.userid
-			})
-		}else {
-			socket.emit("blockFriend", {
-				userid: profile?.userid
-			})
-		}
-		socket.emit("opponentProfile", {
-			userid: props.userid,
-		});
+		if (profile?.block){ socket.emit("unblockFriend", { userid: profile.userid }) }
+		else { socket.emit("blockFriend", { userid: profile?.userid }) }
+		socket.emit("opponentProfile", { userid: props.userid });
 	}
 	return (
 		<div className="modal fade" id="profileModal" role="dialog" tabIndex={-1} aria-labelledby="ProfileModalLabel" aria-hidden="true">
@@ -93,17 +75,13 @@ export default function ProfileModal(props: any) {
 								<div className="col">
 									<div className="row h4"><div className="py-1" id="profileNickname">{profile ? profile.nickname : "unknown"}</div></div>
 									<div className="row h4 my-2"><div className="py-1" id="profileLevel">{profile ? profile.level : "primary"}</div></div>
-									<div className="row mt-3 pt-1" id="matchHistory">
-										<MatchHistory userid={profile?.userid} matchHistory={profile?.history}/>
-									</div>
+									<div className="row mt-3 pt-1" id="matchHistory"><MatchHistory userid={profile?.userid} matchHistory={profile?.history}/></div>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="btn modal-button" data-dismiss="modal">
-							닫기
-						</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal">닫기</button>
 					</div>
 				</div>
 			</div>

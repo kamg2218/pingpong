@@ -1,8 +1,6 @@
 export default function CheckModal(props: any){
 	const handleOk = () => {
-		if (props.handleOk){
-			props.handleOk();
-		}
+		if (props.handleOk){ props.handleOk(); }
 	}
 	return (
 		<div className="modal fade" id="checkModal" role="dialog" tabIndex={-1} aria-labelledby="CheckModalLabel" aria-hidden="true">

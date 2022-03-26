@@ -2,20 +2,25 @@ import { useContext, useEffect } from "react"
 import "./MenuGame.css"
 import Profile from "../../icons/Profile"
 import {Friend, socket, UserContext, User} from "../../context/userContext"
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+import { updateUser } from "../../redux/userReducer";
 
 export default function MenuGame(props:any){
-	const userContext = useContext(UserContext);
-	const user:User = userContext.user[0];
+	// const userContext = useContext(UserContext);
+	// const user:User = userContext.user[0];
+	const dispatch = useDispatch();
+	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
 
 	useEffect(()=>{},[user]);
 	
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
-			socket.emit("newFriend", {
-				userid: person.userid,
-				result: result
-			});
-			userContext.user[1](user.newfriends.filter((friend:Friend)=>friend.userid !== person.userid));
+			socket.emit("newFriend", { userid: person.userid, result: result });
+			// userContext.user[1](user.newfriends.filter((friend:Friend)=>friend.userid !== person.userid));
+			let tmp:User = user;
+			tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
+			dispatch(updateUser(tmp));
 		}
 		return (
 			<div id="newfriend" key={person.userid}>
@@ -28,9 +33,7 @@ export default function MenuGame(props:any){
 	}
 
 	const OldList = (person: Friend, setClicked: Function) => {
-		const handleClick = () => {
-			setClicked(person.userid);
-		}
+		const handleClick = () => { setClicked(person.userid); }
 		return (
 			<div id="oldfriend" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#profileModal">
 				<div className="col-2" key={`${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="friendProfile"/></div>
@@ -44,7 +47,7 @@ export default function MenuGame(props:any){
 
 	return (
 		<div id="menuGame">
-			<img src={Profile(user?.profile ? user.profile : 0)} alt="profile" id="menuGameProfile"/>
+			<img src={Profile(user.profile ? user.profile : 0)} alt="profile" id="menuGameProfile"/>
 			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user?.nickname}</div>
 			<label id="menuRecord">WIN : LOSE</label>
 			<div className="h1" id="winLose">{user?.win} : {user?.lose}</div>

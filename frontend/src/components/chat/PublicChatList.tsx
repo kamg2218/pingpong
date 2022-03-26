@@ -10,9 +10,7 @@ type ChatReq = {
 export default function PublicChatList(props:any){
 	const chatroom = props.chatroom;
 	const decidedModal = chatroom.lock ? "#inputPwdModal" : "#checkModal";
-	let request:ChatReq = {
-		chatid: props.chatroom.chatid,
-	};
+	let request:ChatReq = { chatid: props.chatroom.chatid };
 
 	const handlePwd = (pwd: string) => {
 		request.password = pwd;

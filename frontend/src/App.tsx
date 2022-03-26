@@ -8,14 +8,12 @@ import { GameContext, GameVariables } from './context/gameContext';
 import { UserContext, UserVariables } from './context/userContext';
 import { ChatContext, ChatVariables } from './context/chatContext';
 
-// const ChatContext = createContext<any>(null);
-
 function App() {
   return (
     <BrowserRouter>
-      <UserContext.Provider value={UserVariables()}>
-        <ChatContext.Provider value={ChatVariables()}>
-          <GameContext.Provider value={GameVariables()}>
+      {/* <UserContext.Provider value={UserVariables()}> */}
+        {/* <ChatContext.Provider value={ChatVariables()}> */}
+          {/* <GameContext.Provider value={GameVariables()}> */}
             <Switch>
               <Route exact path='/'><Main /></Route>
               <Route path='/nickandprofile'><NickAndProfile/></Route>
@@ -24,9 +22,9 @@ function App() {
               <Route path='/game'><Game/></Route>
               <Route><Main/></Route>
             </Switch>
-          </GameContext.Provider>
-        </ChatContext.Provider>
-      </UserContext.Provider>
+          {/* </GameContext.Provider> */}
+        {/* </ChatContext.Provider> */}
+      {/* </UserContext.Provider> */}
     </BrowserRouter>
   );
 }

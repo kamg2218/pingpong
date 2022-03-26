@@ -1,10 +1,13 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom"
-import {socket, UserContext} from "../../context/userContext";
-import { ChatContext, ChatBlock, ChatHistory } from "../../context/chatContext";
+import {socket, User, UserContext} from "../../context/userContext";
+import { ChatContext, ChatBlock, ChatHistory, chatRoom, ChatData } from "../../context/chatContext";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "../../css/ChatRoom.css"
+import { RootState } from "../../redux/rootReducer";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { updateHistory } from "../../redux/chatReducer";
 
 //채팅방 입장 시, 히스토리 업데이트 필요함!
 //chatMessage 업데이트 확인 필요!
@@ -13,22 +16,31 @@ import "../../css/ChatRoom.css"
 export default function ChatRoom(props:any){
 	const _history = useHistory();
 	const [chat, setChat] = useState("");
-	const {user} = useContext(UserContext);
-	const {chatroom, history} = useContext(ChatContext);
-	const chatid:string = chatroom[0]?.order[props.idx];
-	const chatInput = useRef<HTMLFormElement>(null);
+	// const {user} = useContext(UserContext);
+	// const {chatroom, history} = useContext(ChatContext);
+
+	const dispatch = useDispatch();
+	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
+	const history:ChatHistory = useSelector((state:RootState) => state.chatReducer.history, shallowEqual);
+
+	const chatid:string = chatroom.order[props.idx];
+	// const chatInput = useRef<HTMLFormElement>(null);
 
 	useEffect(()=>{
-		if (chatid && (!history[0] || history[0].chatid !== chatid)){
+		// if (!chatroom[0]){
+		// 	console.log("chatroom!!! - ChatRoom");
+		// 	socket.emit("myChatRoom");
+		// }
+		if (chatid && (!history || history.chatid !== chatid)){
 			console.log("chat history emitted!")
-			socket.emit("chatHistory", {
-				chatid: chatid,
-			});
+			socket.emit("chatHistory", { chatid: chatid });
 		}
 		socket.on("chatHistory", (data:ChatHistory)=>{
 			console.log("chatHistroy on!");
-			console.log(data);
-			history[1](data);
+			// console.log(data);
+			// history[1](data);
+			dispatch(updateHistory(data));
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
@@ -37,16 +49,18 @@ export default function ChatRoom(props:any){
 				return ;
 			}
 			console.log(data);
-			const chat:ChatHistory = history[0];
-			console.log("got - " + chat);
+			const chat:ChatHistory = history;
 			if (chat){
+				console.log("got - ", chat);
 				chat.list.push(data);
-				history[1](chat);
+				// history[1](chat);
+				dispatch(updateHistory(chat));
 			}
 		})
-	}, []);
+	}, [chatid, history, chat]);
 
 	const handleInputChange = (e :any) => {
+		console.log("input change");
 		setChat(e.target.value);
 	}
 	const handleSendBtn = () => {
@@ -61,11 +75,12 @@ export default function ChatRoom(props:any){
 			if (result === false){
 				alert("mute!!!");
 			}
-			setChat("");
+			// setChat("");
 			// chatInput.current?.reset();
 		});
 	}
 	const handleInputKeypress = (event:any) => {
+		console.log(event.key);
 		if (event.key === "Enter"){
 			event.preventDefault();
 			handleSendBtn();
@@ -89,9 +104,9 @@ export default function ChatRoom(props:any){
 				<div className="row m-1 mt-2" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0 mt-3" id="chatlist">
 					<div className="col my-1">
-						{history[0] && history[0].list && history[0].list.map((data:ChatBlock, idx:number)=>{
+						{history && history.list && history.list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.contents}`);
-							if (data.userid === user[0]?.userid)
+							if (data.userid === user.userid)
 								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
 							else
 								return <ChatBox idx={idx} chatid={chatid} data={data}></ChatBox>

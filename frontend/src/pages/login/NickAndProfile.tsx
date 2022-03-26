@@ -3,9 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
-import { socket, UserContext } from "../../context/userContext";
-import { GameContext } from "../../context/gameContext";
+import { socket, User, UserContext } from "../../context/userContext";
+import { GameContext, gameRoomDetail } from "../../context/gameContext";
 import "./NickAndProfile.css";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+import { updateUser } from "../../redux/userReducer";
 
 export default function NickAndProfile(){
 	// const back_url:string = "http://localhost:4242";
@@ -17,8 +20,12 @@ export default function NickAndProfile(){
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
 	const checkUrl:string = back_url + "/user/check";
-	const {user} = useContext(UserContext);
-	const { gameroom } = useContext(GameContext);
+	// const {user} = useContext(UserContext);
+	// const { gameroom } = useContext(GameContext);
+	const dispatch = useDispatch();
+	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	
 	const doubleCheck:string = "중복 확인 해주세요!";
 	const possible:string = "사용 가능한 닉네임입니다.";
 	const impossible:string = "사용 불가능한 닉네임입니다.";
@@ -27,9 +34,9 @@ export default function NickAndProfile(){
 		axios.get(checkUrl).then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
-				if (res.state === "play" && gameroom[0].roomid){
+				if (res.state === "play" && gameroom.roomid){
 					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
+						roomid: gameroom.roomid,
 					});
 				}else if (res.state === "logout"){
 					history.replace("/");
@@ -79,12 +86,13 @@ export default function NickAndProfile(){
 			console.log(res);
 			console.log(res.data);
 			if (res.data){
-				if (user[0]){
-					let tmp = user[0];
+				// if (user){
+					let tmp = user;
 					tmp.profile = profile;
 					tmp.nickname = nickname;
-					user[1](tmp);
-				}
+					// user[1](tmp);
+					dispatch(updateUser(tmp));
+				// }
 				history.push("/game");
 			}
 		}).catch(err=>{

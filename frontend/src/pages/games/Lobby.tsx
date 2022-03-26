@@ -1,13 +1,25 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { socket } from "../../context/userContext";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
 import LoadingModal from "../../components/modals/LoadingModal";
+import { GameContext, gameRoom } from "../../context/gameContext";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
 
-export default function Lobby(props:any){
+export default function Lobby(){
+	// const {gameroomlist} = useContext(GameContext);
 	const [search, setSearch] = useState<string>("");
 	const [content, setContent] = useState<string>("잠시만 기다려 주세요");
+	
+	const gameroomlist:Array<gameRoom> = useSelector((state:RootState) => state.gameReducer.roomlist, shallowEqual);
 
+	useEffect(()=>{
+		// if (!gameroomlist){
+		// 	console.log("Lobby, gameroom Info!");
+		// 	socket.emit("gameRoomList");
+		// }
+	}, [gameroomlist]);
 	const handleSearch = (event:any) => {
 		setSearch(event.target.value);
 	}

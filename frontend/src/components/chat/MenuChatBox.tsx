@@ -4,6 +4,8 @@ import TitleInput from "./TitleInput"
 import MenuChatDropdown from "./MenuChatDropdown"
 import { User, ChatContext, ChatData } from "../../context/chatContext"
 import { socket } from "../../context/userContext"
+import { shallowEqual, useSelector } from "react-redux"
+import { RootState } from "../../redux/rootReducer"
 
 function memberlist(member: Array<User>) : string {
 	let list :string = "";
@@ -12,9 +14,7 @@ function memberlist(member: Array<User>) : string {
 		if (i === 3){
 			list += ", ...";
 			return list;
-		}
-		else if (i > 0)
-			list += ", ";
+		} else if (i > 0){ list += ", "; }
 		list += member[i].nickname;
 	}
 	return list;
@@ -22,24 +22,25 @@ function memberlist(member: Array<User>) : string {
 
 export default function MenuChatBox(props :any){
 	const history = useHistory()
-	const {chatroom} = useContext(ChatContext);
+	// const {chatroom} = useContext(ChatContext);
 	// const [tmpTitle, setTitle] = useState<string>(props.info.title);
 	const [check, setChange] = useState<boolean>(false);
 	const size:number = props.info.members.length;
 
-	useEffect(()=>{}, [check]);
-	const changeTitle = () => {
-		setChange(!check);
-	}
+	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
+
+	useEffect(()=>{
+		console.log("MenuChatBox!");
+		console.log(props.info);
+	}, [check]);
+	const changeTitle = () => { setChange(!check); }
 	// const handleTitle = (chatid:string, newTitle: string) => {
 	// 	setTitle(newTitle);
 	// }
 	const handleDoubleClick = (chatid: string) => {
-		const idx = chatroom[0]?.order.indexOf(chatid);
+		const idx = chatroom.order.indexOf(chatid);
 		if (idx !== -1){
-			socket.emit("chatHistory", {
-				chatid: chatid
-			});
+			socket.emit("chatHistory", { chatid: chatid });
 			if (history.location.pathname.length === 10){
 				history.push(`/game/chat/${idx}`);
 			}else{
