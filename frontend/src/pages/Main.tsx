@@ -1,29 +1,28 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import logo_brown from "../icons/logo_brown.png"
-import { socket } from "../context/userContext";
-import { GameContext, gameRoomDetail } from "../context/gameContext";
-import {User} from "../context/userContext";
-import "./Main.css";
-
 import { useHistory } from "react-router";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../socket/socket";
+import { gameRoomDetail } from "../types/gameTypes";
 import { RootState } from "../redux/rootReducer";
-import { shallowEqual, useSelector } from "react-redux";
+import logo_brown from "../icons/logo_brown.png"
+import "./Main.css";
+import { initialize } from "../redux/userReducer";
 
 export default function Main(){
 	const front_url:string = "http://localhost:3000";
 	const back_url:string = "http://localhost:4242";
 	const login:string = "/auth/login";
 	const check:string = "/user/check";
-	// const {gameroom} = useContext(GameContext);
-	// const dispatch = useDispatch();
-	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-	const [nick, setNick] = useState<string>("");
+
 	const history = useHistory();
+	const dispatch = useDispatch();
+	const [nick, setNick] = useState<string>("");
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
+		dispatch(initialize());
 		axios.get(check + "?url=main").then((res:any)=>{
-			// console.log("checked!");
 			// console.log(res.state);
 			if (res.state){
 				console.log(res.state);
@@ -40,8 +39,8 @@ export default function Main(){
 		axios.post("/auth/force_login", {
 			nickname: nick
 		}).then((res)=>{
-			if (res.data === true){ history.push("/game");
-			}else { history.push("/twofactor"); }
+			if (res.data === true){ history.push("/game");}
+			else { history.push("/twofactor"); }
 		});
 	}
 	return (

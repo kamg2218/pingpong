@@ -1,41 +1,33 @@
-// import "bootstrap/dist/js/bootstrap";
-import {useContext, useEffect, useState} from "react";
-import { socket, UserContext, User } from "../../context/userContext";
+import { useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import {socket} from "../../socket/socket";
+import { User } from "../../types/userTypes";
+import { ChatData, chatRoom } from "../../types/chatTypes";
+import { RootState } from "../../redux/rootReducer";
+import { updateChat } from "../../redux/chatReducer";
 import PwdModal from "../modals/PwdModal";
 import MuteModal from "../modals/MuteModal";
 import InviteModal from "../modals/InviteModal";
 import "./chat.css";
-import { chatRoom } from "../../context/chatContext";
-import { useHistory } from "react-router";
-import { shallowEqual, useSelector } from "react-redux";
-import { RootState } from "../../redux/rootReducer";
 
 export default function MenuChatDropdown(props :any){
-	// const userContext = useContext(UserContext);
-	// const user:User = userContext.user[0];
-
-	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
-
+	const dispatch = useDispatch();
 	const info:chatRoom = props.info;
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
+	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const [pwdDisabled] = useState( info.owner !== user.userid ? true : info.lock);
-	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user?.userid) !== -1 || info.owner === user?.userid) ? false : true;
+	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user.userid) !== -1 || info.owner === user.userid) ? false : true;
 	
-	const history = useHistory();
-
-	useEffect(()=>{
-		console.log("chat dropdown!");
-	});
-
 	//change chatroom title
 	const handleTitle = () => { props.changeTitle(); }
 	//exit the chatroom
 	const handleExit = () => {
-		console.log("exit chat room!");
 		socket.emit("exitChatRoom", { chatid: info.chatid }, (result:boolean)=>{
 			if (result === true){
-				history.push("/");
-				// socket.emit("myChatRoom");
-				// window.location.reload();
+				const tmp:ChatData = chatroom;
+				tmp.order = tmp.order.filter((str:string) => str !== info.chatid);
+				tmp.chatroom = tmp.chatroom.filter((room:chatRoom) => room.chatid !== info.chatid);
+				dispatch(updateChat(tmp));
 			}
 		});
 	}

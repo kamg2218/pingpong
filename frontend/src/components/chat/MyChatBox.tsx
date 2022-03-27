@@ -1,13 +1,11 @@
-import { useContext } from 'react';
-import Profile from '../../icons/Profile';
-import {User, UserContext} from '../../context/userContext'
-import "./chat.css"
 import { shallowEqual, useSelector } from 'react-redux';
+import { User } from '../../types/userTypes';
 import { RootState } from '../../redux/rootReducer';
+import Profile from '../../icons/Profile';
+import "./chat.css";
 
 export default function MyChatBox(props:any){
-	// const {user} = useContext(UserContext);
-	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const makeTime = () => {
 		if (!props.data || !props.data.createDate){ return "00:00"; }
@@ -15,8 +13,9 @@ export default function MyChatBox(props:any){
 		console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
-		return `${hour}:${minutes}`;
+		return (`${hour}:${minutes}`);
 	}
+
 	return (
 		<div className="container m-0 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>
 			<div className="row align-items-start justify-content-end">

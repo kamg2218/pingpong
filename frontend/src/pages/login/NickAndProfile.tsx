@@ -1,14 +1,15 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
-import { socket, User, UserContext } from "../../context/userContext";
-import { GameContext, gameRoomDetail } from "../../context/gameContext";
-import "./NickAndProfile.css";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { User } from "../../types/userTypes";
+import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
 import { updateUser } from "../../redux/userReducer";
+import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
 	// const back_url:string = "http://localhost:4242";
@@ -20,10 +21,9 @@ export default function NickAndProfile(){
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
 	const checkUrl:string = back_url + "/user/check";
-	// const {user} = useContext(UserContext);
-	// const { gameroom } = useContext(GameContext);
+
 	const dispatch = useDispatch();
-	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	
 	const doubleCheck:string = "중복 확인 해주세요!";
@@ -86,28 +86,21 @@ export default function NickAndProfile(){
 			console.log(res);
 			console.log(res.data);
 			if (res.data){
-				// if (user){
-					let tmp = user;
-					tmp.profile = profile;
-					tmp.nickname = nickname;
-					// user[1](tmp);
-					dispatch(updateUser(tmp));
-				// }
+				let tmp = user;
+				tmp.profile = profile;
+				tmp.nickname = nickname;
+				dispatch(updateUser(tmp));
 				history.push("/game");
 			}
-		}).catch(err=>{
-			console.error(err);
-		});
+		}).catch(err=>{ console.error(err); });
 	}
 	const handleCancel = (event: any) => {
 		event.preventDefault();
 		history.push("/");
 	}
 	const conditionals = (): Boolean => {
-		if (nickname === "")
-			return false;
-		else if (checkModalText !== possible)
-			return false;
+		if (nickname === ""){return false;}
+		else if (checkModalText !== possible){return false;}
 		return true;
 	}
 

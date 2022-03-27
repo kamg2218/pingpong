@@ -1,34 +1,21 @@
-import {useContext, useEffect, useState} from "react";
-import Profile from "../../icons/Profile"
-import { ChatContext, ChatData } from "../../context/chatContext"
 import { shallowEqual, useSelector } from "react-redux";
+import { ChatData } from "../../types/chatTypes"
 import { RootState } from "../../redux/rootReducer";
+import Profile from "../../icons/Profile"
 
 export default function ChatBox(props:any){
-	// const chatContext = useContext(ChatContext);
-	// const chatRoom:ChatData = chatContext.chatroom[0];
 	const chatRoom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
-
 	const room = chatRoom.chatroom.find(data => data.chatid === props.chatid);
 	const member = room?.members.find(person => person.userid === props.userid);
-	const [chatTime, setTime] = useState<string>("");
 
-	// const dispatch = useDispatch();
-
-	useEffect(()=>{
-		const makeTime = () => {
-			if (!props.data || !props.data.createDate){ return "00:00"; }
-			let date:Date = new Date(props.data.createDate);
-			console.log(`time = ${date}, ${typeof date}`);
-			const hour = String(date.getHours()).padStart(2, "0");
-			const minutes = String(date.getMinutes()).padStart(2, "0");
-			setTime(`${hour}:${minutes}`);
-		}
-		if (chatTime && chatTime === ""){
-			makeTime();
-		}
-	}, [chatTime, props.data]);
-
+	const makeTime = () => {
+		if (!props.data || !props.data.createDate){ return "00:00"; }
+		let date:Date = new Date(props.data.createDate);
+		console.log(`time = ${date}, ${typeof date}`);
+		const hour = String(date.getHours()).padStart(2, "0");
+		const minutes = String(date.getMinutes()).padStart(2, "0");
+		return (`${hour}:${minutes}`);
+	}
 	return (
 		<div className="container p-0" key={`${props.chatid}chatbox${props.idx}`} id={props.idx}>
 			<div className="row align-items-start">
@@ -36,7 +23,7 @@ export default function ChatBox(props:any){
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
 					<div className="row col-12" id="chatboxcontent">{props.data.contents}</div>
-					<div className="row col-12 small text-muted">{chatTime}</div>
+					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 			</div>
 		</div>

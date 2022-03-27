@@ -1,30 +1,20 @@
-import { useEffect, useState, useContext} from "react";
-import {socket} from "../../context/userContext"
-import { gameRoom, GameContext } from "../../context/gameContext"
-import GameBox from "./GameBox"
-import "./GameRoomSlide.css";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import {socket} from "../../socket/socket"
+import { gameRoom } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
 import { updateRoomList } from "../../redux/gameReducer";
+import GameBox from "./GameBox"
+import "./GameRoomSlide.css";
 
 export default function GameRoomSlide(props: any){
-	// const gameContext = useContext(GameContext);
 	const [idx, setIdx] = useState<number>(0);
-	// const gameRoomList = gameContext.gameroomlist;
-
 	const dispatch = useDispatch();
 	const gameRoomList:Array<gameRoom>= useSelector((state:RootState) => state.gameReducer.roomlist, shallowEqual);
 
-	// let list: Array<gameRoom> = gameRoomList;
-
 	useEffect(()=>{
-		if (!gameRoomList[0]){
-			console.log("game room list!")
-			socket.emit("gameRoomList");
-		}
 		socket.on("gameRoomList", (msg:Array<gameRoom>)=>{
 			console.log("socket on! gameRoomList in gmaeRoomSlide!")
-			// gameRoomList[1](msg);
 			dispatch(updateRoomList(msg));
 		});
 	}, [idx, gameRoomList]);
@@ -53,7 +43,6 @@ export default function GameRoomSlide(props: any){
 		if (searchRoom && searchRoom.length > 0){
 			searchRoom = gameRoomList.filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
 		}
-		// gameRoomList = searchRoom;
 		dispatch(updateRoomList(searchRoom));
 		return handleCarouselItem();
 	}

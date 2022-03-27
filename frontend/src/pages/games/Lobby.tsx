@@ -1,39 +1,29 @@
-import { useContext, useEffect, useState } from "react"
-import { socket } from "../../context/userContext";
+import { useEffect, useState } from "react"
+import { shallowEqual, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { gameRoom } from "../../types/gameTypes";
+import { RootState } from "../../redux/rootReducer";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
 import LoadingModal from "../../components/modals/LoadingModal";
-import { GameContext, gameRoom } from "../../context/gameContext";
-import { shallowEqual, useSelector } from "react-redux";
-import { RootState } from "../../redux/rootReducer";
 
 export default function Lobby(){
-	// const {gameroomlist} = useContext(GameContext);
 	const [search, setSearch] = useState<string>("");
-	const [content, setContent] = useState<string>("잠시만 기다려 주세요");
-	
+	const [content, setContent] = useState<string>("잠시만 기다려 주세요");	
 	const gameroomlist:Array<gameRoom> = useSelector((state:RootState) => state.gameReducer.roomlist, shallowEqual);
 
 	useEffect(()=>{
-		// if (!gameroomlist){
-		// 	console.log("Lobby, gameroom Info!");
-		// 	socket.emit("gameRoomList");
-		// }
+		console.log("Lobby!");
 	}, [gameroomlist]);
-	const handleSearch = (event:any) => {
-		setSearch(event.target.value);
-	}
+
+	const handleSearch = (event:any) => { setSearch(event.target.value); }
+	const handleCancelMatching = () => { socket.emit("randomMatchingCancel"); }
 	const handleMatching = () => {
 		socket.emit("randomMatching", (result: boolean)=>{
-			if (!result)
-				setContent("매칭 가능한 게임 방이 없습니다.");
-		})
-	}
-	const handleCancelMatching = () => {
-		socket.emit("randomMatchingCancel");
+			if (!result){ setContent("매칭 가능한 게임 방이 없습니다."); }
+		});
 	}
 	$("#LoadingModal").on("hide.bs.modal", function(e){
-		// console.log(e);
 		console.log("Loading is over!");
 		handleCancelMatching();
 		e.stopImmediatePropagation();
@@ -48,12 +38,10 @@ export default function Lobby(){
 					<button className="col btn" id="lobbyButton" data-toggle="modal" data-target="#addGameRoomModal"><i className="bi bi-plus-circle"></i> <br/>방 만들기</button>
 					<button className="col btn" id="lobbyButton" data-toggle="modal" data-target="#loadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> <br/>랜덤 매칭</button>
 				</div>
-				<div className="row" id="lobbySlide">
-					<GameRoomSlide search={search}></GameRoomSlide>
-				</div>
+				<div className="row" id="lobbySlide"><GameRoomSlide search={search}/></div>
 			</div>
-			<AddGameRoomModal></AddGameRoomModal>
-			<LoadingModal content={content}></LoadingModal>
+			<AddGameRoomModal/>
+			<LoadingModal content={content}/>
 		</div>
 	);
 }

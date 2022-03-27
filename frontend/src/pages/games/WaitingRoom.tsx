@@ -1,28 +1,21 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import {useHistory, useParams} from "react-router-dom"
-import { socket } from "../../context/userContext";
-import { GameContext, GameUser, gameRoomDetail } from "../../context/gameContext"
-import Profile from "../../icons/Profile";
-import "./waitingRoom.css"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { GameUser, gameRoomDetail } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
 import { updateGameRoom } from "../../redux/gameReducer";
+import "./waitingRoom.css"
+import Profile from "../../icons/Profile";
 
 export default function WaitingRoom(){
 	const history = useHistory();
 	const param:any = useParams();
-	// const {gameroom} = useContext(GameContext);
-
 	const dispatch = useDispatch();
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
 		console.log("waitingRoom");
-		console.log(gameroom);
-		// if (!gameroom && param.id){
-		// 	console.log("gameroom is empty!");
-		// 	socket.emit("updateGameRoom", { roomid: param.id });
-		// }
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = gameroom;
 			console.log(tmp);
@@ -31,46 +24,36 @@ export default function WaitingRoom(){
 			if (msg.speed) {tmp.speed = msg.speed;}
 			if (msg.status) {tmp.status = msg.status;}
 			if (msg.type) {tmp.type = msg.type;}
-			if (msg.addObserver) {msg.addObserver.map((observer: GameUser) => tmp.observer?.push(observer))}
+			if (msg.addObserver) {msg.addObserver.map((observer: GameUser) => tmp.observer.push(observer))}
 			if (msg.deleteObserver) {msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))}
-			if (msg.addPlayers) {msg.addPlayers.map((player: GameUser) => tmp.players?.push(player))}
+			if (msg.addPlayers) {msg.addPlayers.map((player: GameUser) => tmp.players.push(player))}
 			if (msg.deletePlayers) {msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))}
-			// gameroom[1](tmp);
 			dispatch(updateGameRoom(tmp));
 		});
 
 	}, [gameroom, param.id]);
+
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
-		// console.log("profileBox - " + nick + ", " + player);
 		return (
-			<div className={`m-1 ${player ? "player":"observer"}`} id={id}>
+			<div className={`m-1 ${player ? "player" : "observer"}`} id={id}>
 				<img className="row mx-auto img-fluid img-thumbnail" src={profile} alt={id}></img>
-				<label className={`row justify-content-center my-1 ${player ? "h4":"h6"}`}>{nick}</label>
+				<label className={`row justify-content-center my-1 ${player ? "h4" : "h6"}`}>{nick}</label>
 			</div>
 		);
 	}
-	const handleStart = () => {
-		socket.emit("startGame", {
-			roomid: gameroom.roomid
-		});
-	}
+	const handleStart = () => { socket.emit("startGame", { roomid: gameroom.roomid }); }
 	const handleExit = () => {
 		if (!gameroom || !gameroom.roomid){
 			return ;
 		}
-		socket.emit("exitGameRoom", {
-			roomid: gameroom.roomid
-		});
+		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
 		socket.emit("gameRoomList");
-		// gameroomlist[1](undefined);
 		history.push("/game");
-		// window.location.reload();
 	}
+
 	return (
 		<div className="container" id="waitingRoom">
-			<div className="row-2 h2" id="waitingRoomTitle">
-				{gameroom.title}
-			</div>
+			<div className="row-2 h2" id="waitingRoomTitle">{gameroom.title}</div>
 			<div className="row-4 px-2 mt-3" id="waitingroombox">
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
 					{gameroom.players[0] ? profileBox(gameroom.players[0].userid, Profile(gameroom.players[0]?.profile), gameroom.players[0]?.nickname, true) : ""}

@@ -1,33 +1,31 @@
-import { useContext, useEffect, useState } from "react"
-import {socket} from "../../context/userContext"
-import PublicChatList from "../chat/PublicChatList"
-import { ChatContext, ChatData, chatRoom } from "../../context/chatContext"
+import { useEffect, useState } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import {socket} from "../../socket/socket"
 import { RootState } from "../../redux/rootReducer";
 import { updatePublic } from "../../redux/chatReducer";
+import { ChatData, chatRoom } from "../../types/chatTypes"
+import PublicChatList from "../chat/PublicChatList"
 
 export default function PublicChatModal(){
 	const [pwd, setPwd] = useState<string>("");
 	const [checkedroom, checkRoom] = useState<string>("");
-	// const {publicroom} = useContext(ChatContext); 
 	const dispatch = useDispatch();
 	const publicroom:ChatData = useSelector((state:RootState) => state.chatReducer.publicroom, shallowEqual);
 
 	useEffect(() => {
-		// if (!publicroom[0]){
-		// 	socket.emit("publicChatRoom");
-		// }
 		socket.on("publicChatRoom", (data:ChatData)=>{
 			console.log("public chat room on!");
-			// publicroom[1](data);
 			dispatch(updatePublic(data));
 		})
 	}, [pwd, checkedroom, publicroom]);
 
 	const handleSubmit = () => {
-		let data:any = {};
-		data.chatid = checkedroom;
-		if (pwd){ data.password = pwd; }
+		let data:any = {
+			chatid: checkedroom
+		};
+		if (pwd){
+			data.password = pwd;
+		}
 		socket.emit("enterChatRoom", data);
 	}
 

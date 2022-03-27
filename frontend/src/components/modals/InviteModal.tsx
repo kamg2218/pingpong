@@ -1,5 +1,5 @@
 import InviteList from "../chat/InviteList";
-import {socket} from "../../context/userContext";
+import { socket } from "../../socket/socket";
 
 export default function InviteModal(props:any){
 	let members:Array<string> = [];
@@ -14,7 +14,7 @@ export default function InviteModal(props:any){
 		}
 		socket.emit("inviteChatRoom", { chatid: props.info.chatid, user: members }, (result:boolean)=>{
 			if (result === true){ alert(success); }
-			else{ alert(failure); }
+			else { alert(failure); }
 		});
 	}
 	return (

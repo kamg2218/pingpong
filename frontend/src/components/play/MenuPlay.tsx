@@ -1,28 +1,27 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState } from "react"
 import {useHistory} from "react-router-dom"
-import Profile from "../../icons/Profile"
-import {socket} from "../../context/userContext"
-import {draw, GameContext, gameRoomDetail, GameUser, playRoom} from "../../context/gameContext"
-import "./MenuPlay.css";
 import { shallowEqual, useSelector } from "react-redux"
+import { socket } from "../../socket/socket"
+import {draw, gameRoomDetail, GameUser, playRoom} from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer"
+import Profile from "../../icons/Profile"
+import "./MenuPlay.css";
 
-export default function MenuPlay(props:any){
+export default function MenuPlay(){
 	const history = useHistory();
-	// const gameContext = useContext(GameContext);
-	// const [gameroom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
 	const draw:draw = useSelector((state:RootState) => state.gameReducer.draw, shallowEqual);
 
 	const p1 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player1);
 	const p2 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player2);
-	const s1 = useState<number>(draw ? draw.left.score : 0);
-	const s2 = useState<number>(draw ? draw.right.score : 0);
+	const s1 = useState<number>(draw.left ? draw.left.score : 0);
+	const s2 = useState<number>(draw.right ? draw.right.score : 0);
 	
 	useEffect(()=>{
 		console.log("menu play");
 	}, [s1, s2, gameroom]);
+
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
 			<div className="m-1" id={id}>
@@ -33,8 +32,10 @@ export default function MenuPlay(props:any){
 	}
 	const handleEixt = () => {
 		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+		socket.emit("gameRoomList");
 		history.replace("/game");
 	}
+	
 	return (
 		<div className="container m-0 p-1" id="menuPlay">
 			<div className="col h-100">

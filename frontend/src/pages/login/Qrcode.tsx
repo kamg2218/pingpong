@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import {useHistory} from 'react-router-dom';
-import "./qrcode.css";
-import {socket, User, UserContext} from "../../context/userContext";
-import {GameContext, gameRoomDetail} from "../../context/gameContext";
 import { shallowEqual, useSelector } from 'react-redux';
+import { socket } from "../../socket/socket";
+import {gameRoomDetail} from "../../types/gameTypes";
 import { RootState } from '../../redux/rootReducer';
+import "./qrcode.css";
 
 export default function Qrcode(){
 	// const back_url:string = "http://localhost:4242";
@@ -14,10 +14,6 @@ export default function Qrcode(){
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
 	const checkUrl:string = back_url + "/user/check";
-	// const {user} = useContext(UserContext);
-	// const { gameroom } = useContext(GameContext);
-	// const dispatch = useDispatch();
-	// const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
@@ -34,17 +30,13 @@ export default function Qrcode(){
 		})
 	}, []);
 	const checkToken = ():boolean => {
-		if (token.length !== 6){
-			return false;
-		}
+		if (token.length !== 6){ return false; }
 		for (let i = 0; i < token.length; i++){
 			if (isNaN(parseInt(token[i]))){return false;}
 		}
 		return true;
 	}
-	const handleChange = (event:any) => {
-		setToken(event.target.value);
-	}
+	const handleChange = (event:any) => { setToken(event.target.value); }
 	function handleSubmit(){
 		if (!checkToken()){
 			setAlert(true);
@@ -53,11 +45,13 @@ export default function Qrcode(){
 			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
-			}).catch((err:any)=>{	setAlert(true);})
+			}).catch((err:any)=>{	setAlert(true);});
 		}
 	}
 	function handleKeypress(event: any){
-		if (event.code === 'Enter'){ handleSubmit() }
+		if (event.code === 'Enter'){
+			handleSubmit()
+		}
 	}
 
 	return (

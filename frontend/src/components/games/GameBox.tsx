@@ -1,6 +1,6 @@
 import {useState} from "react"
+import {socket} from "../../socket/socket"
 import InputPwdModal from "../modals/InputPwdModal"
-import {socket} from "../../context/userContext"
 import "../../css/GameBox.css"
 
 type info = {
@@ -20,8 +20,8 @@ export default function GameBox(props:any){
 		socket.emit("enterGameRoom", info);
 	}
 	const handlePwd = (result: boolean) => {
-		const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;
 		const content: string = result ? "게임하기" : "관전하기";
+		const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;
 
 		if ((result && props.info.player === 2)
 			|| (!result && props.info.observer === props.info.maxObserver)){

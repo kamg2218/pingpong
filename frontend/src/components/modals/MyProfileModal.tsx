@@ -1,32 +1,34 @@
-import { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { socket, UserContext, User, Friend } from "../../context/userContext";
-import Profile from '../../icons/Profile'
-import MatchHistory from "../games/MatchHistory";
-import "./profileModal.css"
 import axios from "axios";
-import { shallowEqual, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { User, Friend } from "../../types/userTypes";
 import { RootState } from "../../redux/rootReducer";
+import { initialize } from "../../redux/userReducer";
+import MatchHistory from "../games/MatchHistory";
+import Profile from '../../icons/Profile'
+import "./profileModal.css"
 
 export default function MyProfileModal(props: any) {
 	const history = useHistory();
-	// const userContext = useContext(UserContext);
-	// const profile:User = userContext.user[0];
-
-	const profile:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
-
-	const [state, setState] = useState<boolean>(false);
-	const [qrcode, setQrcode] = useState<string>("");
+	const dispatch = useDispatch();
 	const [num, setNum] = useState<string>("");
+	const [qrcode, setQrcode] = useState<string>("");
+	const [state, setState] = useState<boolean>(false);
+	const profile:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	useEffect(() => { console.log(`qr = `, qrcode)}, [qrcode, state]);
-	const handleInput = (event:any) => {
-		setNum(event.target.value);
-	}
+
+	const handleInput = (event:any) => { setNum(event.target.value); }
 	const checkToken = ():boolean => {
-		if (num.length !== 6){ return false; }
+		if (num.length !== 6){
+			return false;
+		}
 		for (let i = 0; i < num.length; i++){
-			if (isNaN(parseInt(num[i]))){return false;}
+			if (isNaN(parseInt(num[i]))){
+				return false;
+			}
 		}
 		return true;
 	}
@@ -62,6 +64,11 @@ export default function MyProfileModal(props: any) {
 			}).catch((err:any)=>{console.log(err)});
 		}
 		setState(!state);
+	}
+	const handleLogout = () => {
+		axios.get("/auth/logout").then(res => console.log("Log out! " + res)).catch(err => {throw new Error(err)});
+		dispatch(initialize());
+		history.replace("/");
 	}
 	const handleClick = (userid: string) => { props.setClicked(userid); }
 	const friendList = () => {
@@ -102,10 +109,7 @@ export default function MyProfileModal(props: any) {
 		});
 		return list;
 	}
-	const handleLogout = () => {
-		axios.get("/auth/logout").then(res => console.log("Log out! " + res)).catch(err => {throw new Error(err)});
-		history.replace("/");
-	}
+
 	return (
 		<div className="modal fade" id="myProfileModal" role="dialog" tabIndex={-1} aria-labelledby="MyProfileModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">

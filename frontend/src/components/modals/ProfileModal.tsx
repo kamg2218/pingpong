@@ -1,20 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
-import { socket, ProfileUser } from "../../context/userContext";
-import {GameContext, gameRoom} from "../../context/gameContext";
-import Profile from '../../icons/Profile'
-import MatchHistory from "../games/MatchHistory";
-import "./profileModal.css"
 import { shallowEqual, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { gameRoom } from "../../types/gameTypes";
+import { ProfileUser } from "../../types/userTypes";
 import { RootState } from "../../redux/rootReducer";
+import MatchHistory from "../games/MatchHistory";
+import Profile from '../../icons/Profile'
+import "./profileModal.css"
 
 export default function ProfileModal(props: any) {
 	const history = useHistory();
-	// const game = useContext(GameContext).gameroom;
-	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const userid:string = props.userid;
 	const [profile, setProfile] = useState<ProfileUser>();
 	const button:string = "row w-75 my-1 btn modal-button";
+	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	let buttonFriend:string = button;
 
 	useEffect(() => {
@@ -34,7 +34,9 @@ export default function ProfileModal(props: any) {
 			member: [profile?.userid]
 		}, (chatid: string)=>{
 			console.log(chatid);
-			if (chatid !== ''){ history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`); }
+			if (chatid !== ''){
+				history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`);
+			}
 		})
 	}
 	const handleMatch = () => { socket.emit("matchRequest", { userid: profile?.userid }) }
@@ -58,9 +60,7 @@ export default function ProfileModal(props: any) {
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="addGameRoomLabel" className="modal-title">상대 프로필</h5>
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					</div>
 					<div className="modal-body">
 						<div className="container p-1">

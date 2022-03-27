@@ -1,19 +1,18 @@
-import { useContext } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import {Friend, User, UserContext} from "../../context/userContext";
+import { Friend, User } from "../../types/userTypes";
 import { RootState } from "../../redux/rootReducer";
 
 export default function InviteList(props:any){
 	let members:Array<string> = [];
-	// const userContext = useContext(UserContext);
-	const user:User = useSelector((state:RootState) => state.userReducer, shallowEqual);
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	function checkbox(data:Friend){
 		const handleClick = async (data:Friend) => {
-			if (members.find(idx => idx === data.userid))
+			if (members.find(idx => idx === data.userid)) {
 				members.filter(idx => idx !== data.userid);
-			else
+			}else {
 				members.push(data.userid);
+			}
 			props.setMembers(members);
 		}
 		return (
@@ -26,7 +25,7 @@ export default function InviteList(props:any){
 	
 	return (
 		<ul key="inviteList">
-			{user && user.friends.map((friend:Friend)=>checkbox(friend))}
+			{user && user.friends?.map((friend:Friend)=>checkbox(friend))}
 		</ul>
 	);
 }

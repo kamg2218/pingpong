@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import './Modals.css'
-import {socket} from '../../context/userContext'
+import { socket } from "../../socket/socket";
 
 type info = {
 	title: string,
@@ -53,9 +53,7 @@ export default function AddGameRoomModal(props: any){
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="addGameRoomLabel" className="modal-title">방 만들기</h5>
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					</div>
 					<div className="modal-body">
 						<div className="form-group">

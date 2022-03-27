@@ -1,4 +1,4 @@
-import {gameRoom, gameRoomDetail, playRoom, draw} from "../context/gameContext"
+import {gameRoom, gameRoomDetail, playRoom, draw} from "../types/gameTypes"
 
 export const gameRoomInitialState:gameRoomDetail = { title: "", roomid: "", manager: "", speed: 0, observer: [],	type: "",	status: false, players: [], isPlayer: true }
 export const roomListInitialState:Array<gameRoom> = [];
@@ -20,6 +20,7 @@ const ROOMLISTUPDATE:string = "game/roomlist";
 const PLAYROOMUPDATE:string = "game/playroom";
 const GAMERESULTUPDATE:string = "game/result";
 const DRAWUPDATE:string = "game/draw";
+const DELETE:string = "DELETE";
 
 export const updateGameRoom = (data:gameRoomDetail) => ({type: GAMEROOMUPDATE, payload: data});
 export const updateRoomList = (data:Array<gameRoom>) => ({type: ROOMLISTUPDATE, payload: data});
@@ -40,53 +41,9 @@ export const gameReducer = (state = gameInitialState, action: any) => {
       return {...state, gameresult: action.payload};
     case DRAWUPDATE:
       return {...state, draw: action.payload};
+    case DELETE:
+      return state;
     default:
       return state;
   }
 }
-
-// export const gameRoomReducer = (state = gameRoomInitialState, action: any) => {
-//   console.log(typeof action.payload);
-//   switch (action.type){
-//     case GAMEROOMUPDATE:
-//       return action.payload ? action.payload : state;
-//     default:
-//       return state;
-//   }
-// };
-// export const roomListReducer = (state = roomListInitialState, action: any) => {
-//   console.log(typeof action.payload);
-//   switch (action.type){
-//     case ROOMLISTUPDATE:
-//       return action.payload ? action.payload : state;
-//     default:
-//       return state;
-//   }
-// };
-// export const playRoomReducer = (state = playRoomInitialState, action: any) => {
-//   console.log(typeof action.payload);
-//   switch (action.type){    
-//     case PLAYROOMUPDATE:
-//       return action.payload ? action.payload : state;
-//     default:
-//       return state;
-//   }
-// };
-// export const gameResultReducer = (state = gameResultInitialState, action: any) => {
-//   console.log(typeof action.payload);
-//   switch (action.type){
-//     case GAMERESULTUPDATE:
-//       return action.payload ? action.payload : state;
-//     default:
-//       return state;
-//   }
-// };
-// export const drawReducer = (state = drawInitialState, action: any) => {
-//   console.log(typeof action.payload);
-//   switch (action.type){
-//     case DRAWUPDATE:
-//       return action.payload ? action.payload : state;
-//     default:
-//       return state;
-//   }
-// };
