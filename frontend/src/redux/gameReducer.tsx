@@ -29,7 +29,8 @@ export const updateGameResult = (data:string) => ({type: GAMERESULTUPDATE, paylo
 export const updateDraw = (data:draw) => ({type: DRAWUPDATE, payload: data});
 
 export const gameReducer = (state = gameInitialState, action: any) => {
-  console.log(typeof action.payload);
+  // console.log(typeof action.payload);
+  // console.log(action.type);
   switch (action.type){
     case GAMEROOMUPDATE:
       return {...state, gameroom: action.payload};
@@ -42,7 +43,7 @@ export const gameReducer = (state = gameInitialState, action: any) => {
     case DRAWUPDATE:
       return {...state, draw: action.payload};
     case DELETE:
-      return state;
+      return gameInitialState;
     default:
       return state;
   }

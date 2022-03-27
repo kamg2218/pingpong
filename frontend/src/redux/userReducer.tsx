@@ -12,11 +12,12 @@ export const updateUser = (data:User) => ({type: UPDATE, payload: data});
 export const initialize = () => ({type: DELETE});
 
 export const userReducer = (state = userState, action: any) => {
+  // console.log(action.type);
   switch (action.type){
     case UPDATE:
       return {...state, user: action.payload};
     case DELETE:
-      return state;
+      return userState;
     default:
       return state;
   }

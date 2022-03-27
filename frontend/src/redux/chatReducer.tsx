@@ -15,7 +15,8 @@ export const updatePublic = (data:ChatData) => ({type: PUBLICUPDATE, payload: da
 export const updateHistory = (data:ChatHistory) => ({type: HISTORYUPDATE, payload: data});
 
 export const chatReducer = (state = chatInitialState, action:any) => {
-  console.log(typeof action.payload);
+  // console.log(typeof action.payload);
+  // console.log(action.type);
   switch(action.type){
     case CHATROOMUPDATE:
       return {...state, chatroom: action.payload};
@@ -24,7 +25,7 @@ export const chatReducer = (state = chatInitialState, action:any) => {
     case PUBLICUPDATE:
       return {...state, publicroom: action.payload};
     case DELETE:
-      return state;
+      return chatInitialState;
     default:
       return state;
   }
