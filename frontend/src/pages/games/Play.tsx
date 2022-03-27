@@ -7,9 +7,7 @@ import "./Play.css";
 import logo from '../../icons/logo_brown_profile.png'
 
 export default function Play(){
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = "/user/check";
 	const history = useHistory();
 
 	useEffect(()=>{

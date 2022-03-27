@@ -12,20 +12,17 @@ import { updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
 	const history = useHistory();
 	const [profile, setProfile] = useState<number>(0);
 	const [nickname, setNickname] = useState<string>("");
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
-	const checkUrl:string = back_url + "/user/check";
-
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	
+	const checkUrl:string = "/user/check";
 	const doubleCheck:string = "중복 확인 해주세요!";
 	const possible:string = "사용 가능한 닉네임입니다.";
 	const impossible:string = "사용 불가능한 닉네임입니다.";
@@ -61,7 +58,7 @@ export default function NickAndProfile(){
 			setCheckModalText(impossible);
 			return ;
 		}
-		axios.get(back_url + `/auth/check?nickname=${nickname}`)
+		axios.get(`/auth/check?nickname=${nickname}`)
 			.then(res=>{
 				console.log(res.data);
 				if (res.data.message === false){
@@ -81,7 +78,7 @@ export default function NickAndProfile(){
 			setCheckModalText(doubleCheck);
 			return ;
 		}
-		axios.post(back_url + `/auth/signup`, { nickname, profile })
+		axios.post(`/auth/signup`, { nickname, profile })
 		.then(res=>{
 			console.log(res);
 			console.log(res.data);

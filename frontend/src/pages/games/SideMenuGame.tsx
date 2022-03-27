@@ -14,9 +14,7 @@ import MyProfileModal from "../../components/modals/MyProfileModal";
 export default function SideMenuGame(){
 	const history = useHistory();
 	const [clicked, setClicked] = useState<string>("");
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = "/user/check";
 
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
