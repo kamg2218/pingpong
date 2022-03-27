@@ -1,17 +1,21 @@
-import Lobby from "./Lobby"
 import Modal from "react-modal"
+import { useEffect, useState } from "react"
 import { Route, Switch, useHistory } from "react-router-dom"
-import { useContext, useEffect, useState } from "react"
-import { socket, UserContext, User } from "../../socket/userSocket"
-import { GameContext, gameRoomDetail, match } from "../../socket/gameSocket"
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { User } from "../../types/userTypes"
+import { ChatData } from "../../types/chatTypes"
+import { gameRoomDetail, match, playRoom } from "../../types/gameTypes"
+import Lobby from "./Lobby"
 import WaitingRoom from "./WaitingRoom"
 import SideMenuGame from "./SideMenuGame"
 import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
-
+import {updateUser} from "../../redux/userReducer"
+import {RootState} from "../../redux/rootReducer"
+import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer"
 import "./Game.css"
 import logo from "../../icons/logo_brown_profile.png"
-import { type } from "os"
 
 type message = {
 	message: string,
@@ -20,33 +24,34 @@ type message = {
 Modal.setAppElement("#root");
 export default function Game() {
 	const history = useHistory();
-	const { gameroom, playroom } = useContext(GameContext);
-	const { user } = useContext(UserContext);
-	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [matchData, setMatch] = useState<match>();
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
+	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (!user[0]) {
+		if (!user || user.nickname === "") {
 			console.log("user Info emit!")
 			socket.emit("userInfo");
-			if (!gameroom[0]){
-				socket.emit("myChatRoom");
-			}
 		}
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
-			user[1](data);
+			dispatch(updateUser(data));
 		});
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
-			console.log(msg);
+			// console.log(msg);
 			if ("message" in msg) {
 				alert("fail to enter the room!");
 				if (history.location.pathname.search("waiting")){
 					history.replace("/game");
 				}
 			}else {
-				gameroom[1](msg);
+				dispatch(updateGameRoom(msg));
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -54,7 +59,7 @@ export default function Game() {
 			}
 		});
 		socket.on("exitGameRoom", () => {
-			gameroom[1](undefined)
+			dispatch(updateGameRoom(gameRoomInitialState));
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -62,7 +67,7 @@ export default function Game() {
 			if (msg.result) {
 				alert("failed to play the game!");
 			} else {
-				playroom[1](msg);
+				dispatch(updateGameRoom(msg));
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
@@ -70,7 +75,7 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, []);
+	}, [chatroom, gameroom, history, playroom, user]);
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
@@ -92,9 +97,7 @@ export default function Game() {
 					</div>
 				</div>
 			</div>
-			<Modal isOpen={isOpen} style={customStyles}>
-				<MatchRequestModal setIsOpen={setIsOpen} matchData={matchData} />
-			</Modal>
+			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>
 	);
 }

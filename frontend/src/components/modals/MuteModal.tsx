@@ -1,15 +1,17 @@
-import { socket, User, UserContext } from "../../socket/userSocket";
+import { useRef } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { User } from "../../types/userTypes";
+import { RootState } from "../../redux/rootReducer";
 import Profile from "../../icons/Profile";
 import "./MuteModal.css";
-import { useContext, useRef } from "react";
 
 export default function MuteModal(props: any) {
 	let thirtySeconds: Array<string> = [];
 	let tenMinutes: Array<string> = [];
-	const userContext = useContext(UserContext);
-	const user: User = userContext.user[0];
 	const checkBoxTen = useRef(null);
 	const checkBoxThirty = useRef(null);
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const handleSubmit = () => {
 		console.log(tenMinutes);
@@ -19,9 +21,7 @@ export default function MuteModal(props: any) {
 				time: 600,
 				userid: id,
 			})
-		}, (result: boolean) => {
-			console.log(result);
-		});
+		}, (result: boolean) => { console.log(result); });
 		console.log(thirtySeconds);
 		thirtySeconds?.forEach((id: string) => {
 			socket.emit("chatMute", {
@@ -29,9 +29,7 @@ export default function MuteModal(props: any) {
 				time: 30,
 				userid: id,
 			})
-		}, (result: boolean) => {
-			console.log(result);
-		});
+		}, (result: boolean) => { console.log(result); });
 	}
 	const toggleList = (list: Array<string>, id: string) => {
 		const idx: number = list.indexOf(id);
@@ -77,7 +75,7 @@ export default function MuteModal(props: any) {
 
 		list.push(muteListHeader());
 		info.forEach((person: User) => {
-			if (person.userid === user?.userid) {
+			if (person.userid === user.userid) {
 				return;
 			}
 			list.push(
@@ -97,9 +95,7 @@ export default function MuteModal(props: any) {
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="MuteModalLabel" className="modal-title">음소거</h5>
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					</div>
 					<div className="modal-body">
 						<div className="container col" id="muteList">{props.info && muteList(props.info.members)}</div>

@@ -1,27 +1,20 @@
 import InviteList from "../chat/InviteList";
-import {socket} from "../../socket/userSocket";
+import { socket } from "../../socket/socket";
 
 export default function InviteModal(props:any){
 	let members:Array<string> = [];
 	const success:string = "초대되었습니다!";
 	const failure:string = "다시 시도해주세요.";
 
-	function setMembers(member:Array<string>){
-		members = member;
-	}
-	function handleInvite(){
+	const setMembers = (member:Array<string>) => { members = member; }
+	const handleInvite = () => {
 		if (members.length < 1){
 			alert(failure);
 			return ;
 		}
-		socket.emit("inviteChatRoom", {
-			chatid: props.info.chatid,
-			user: members,
-		}, (result:boolean)=>{
-			if (result === true)
-				alert(success);
-			else
-				alert(failure);
+		socket.emit("inviteChatRoom", { chatid: props.info.chatid, user: members }, (result:boolean)=>{
+			if (result === true){ alert(success); }
+			else { alert(failure); }
 		});
 	}
 	return (

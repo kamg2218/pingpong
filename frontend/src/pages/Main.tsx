@@ -1,46 +1,44 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../socket/socket";
+import { gameRoomDetail } from "../types/gameTypes";
+import { RootState } from "../redux/rootReducer";
 import logo_brown from "../icons/logo_brown.png"
-import { socket } from "../socket/userSocket";
-import { GameContext } from "../socket/gameSocket";
 import "./Main.css";
+import { initialize } from "../redux/userReducer";
 
 export default function Main(){
 	const login:string = "/auth/login";
 	const check:string = "/user/check";
-	const {gameroom} = useContext(GameContext);
+
+	const history = useHistory();
+	const dispatch = useDispatch();
 	const [nick, setNick] = useState<string>("");
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
+		dispatch(initialize());
 		axios.get(check + "?url=main").then((res:any)=>{
-			// console.log("checked!");
 			// console.log(res.state);
 			if (res.state){
 				console.log(res.state);
-				if (res.state === "play" && gameroom[0].roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
-					});
+				if (res.state === "play" && gameroom.roomid){
+					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
 				}
 			}
-		}).catch((err)=>{
-			console.log(err);
-		})
-	}, []);
+		}).catch((err)=>{ console.log(err); })
+	}, [gameroom]);
 
-	const handleInput = (event:any) => {
-		setNick(event.target.value);
-	}
+	const handleInput = (event:any) => { setNick(event.target.value); }
 	const handleTest = () => {
 		console.log(nick);
 		axios.post("/auth/force_login", {
 			nickname: nick
 		}).then((res)=>{
-			if (res.data === true){
-				window.location.href = "http://localhost:4242/game";
-			}else {
-				window.location.href = "http://localhost:4242/twofactor";
-			}
+			if (res.data === true){ history.push("/game");}
+			else { history.push("/twofactor"); }
 		});
 	}
 	return (

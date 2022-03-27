@@ -1,24 +1,3 @@
-import {io} from "socket.io-client";
-import {useState, createContext} from 'react'
-
-const url = "http://localhost:4242";
-export const socket = io(url, {
-	transportOptions: {
-	  polling: {
-		extraHeaders: {  Authorization: `${document.cookie}` }
-	  },
-}});
-
-export const UserContext = createContext<any>(null);
-
-export function UserVariables(){
-	const [user, setUser] = useState<User>();
-	const variable = {
-		user: [user, setUser],
-	};
-	return variable;
-}
-
 export type Friend = {
 	userid: string,
 	nickname: string,

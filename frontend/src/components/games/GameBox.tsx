@@ -1,6 +1,6 @@
 import {useState} from "react"
+import {socket} from "../../socket/socket"
 import InputPwdModal from "../modals/InputPwdModal"
-import {socket} from "../../socket/userSocket"
 import "../../css/GameBox.css"
 
 type info = {
@@ -14,24 +14,19 @@ export default function GameBox(props:any){
 	const [pwd, setPwd] = useState<string>("");
 
 	const handleEnterGameRoom = (result: boolean) => {
-		let info:info = {
-			roomid: props.info.roomid,
-			isPlayer: result,
-		}
+		let info:info = { roomid: props.info.roomid, isPlayer: result }
 		setState(result);
-		if (pwd !== "")
-			info.password = pwd;
+		if (pwd !== ""){ info.password = pwd; }
 		socket.emit("enterGameRoom", info);
 	}
 	const handlePwd = (result: boolean) => {
-		const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;
 		const content: string = result ? "게임하기" : "관전하기";
+		const k: string = result ? `${props.info.roomid}BoxPlaying` : `${props.info.roomid}BoxWatching`;
 
 		if ((result && props.info.player === 2)
 			|| (!result && props.info.observer === props.info.maxObserver)){
 			return <div key={k} className="btn btn-sm disabled" id="gameBoxButton">{content}</div>
-		}
-		else if (props.info.password){
+		}else if (props.info.password){
 			return <div key={k} className="btn btn-sm" id="gameBoxButton" data-toggle="modal" data-target="#inputPwdModal" onClick={()=>setState(result)}>{content}</div>
 		}else{
 			return <div key={k} className="btn btn-sm" id="gameBoxButton" onClick={()=>handleEnterGameRoom(result)}>{content}</div>

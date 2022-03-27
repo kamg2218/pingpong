@@ -1,26 +1,19 @@
 import { useState } from "react";
-import { socket } from "../../socket/userSocket";
+import { socket } from "../../socket/socket";
 
 export default function TitleInput(props :any){
 	const [title, setTitle] = useState(props.info.title);
 
-	const handleTitleChange = (e :any) => {
-		setTitle(e.target.value);
-	}
+	const handleTitleChange = (e :any) => { setTitle(e.target.value); }
 	const handleTitleClick = () => {
 		socket.emit("updateChatRoom", {
 			chatid: props.info.chatid,
-			title: title,
-		}, (result:boolean)=>{
-			console.log(result);
-		});
+			title: title
+		}, (result:boolean)=>{ console.log(result); });
 		props.changeTitle();
-		window.location.reload();
 	}
 	const handleKeyPress = (e :any) => {
-		if (e.key === "Enter"){
-			handleTitleClick();
-		}
+		if (e.key === "Enter"){ handleTitleClick(); }
 	}
 
 	return (

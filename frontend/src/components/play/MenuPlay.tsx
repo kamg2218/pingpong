@@ -1,22 +1,27 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState } from "react"
 import {useHistory} from "react-router-dom"
+import { shallowEqual, useSelector } from "react-redux"
+import { socket } from "../../socket/socket"
+import {draw, gameRoomDetail, GameUser, playRoom} from "../../types/gameTypes"
+import { RootState } from "../../redux/rootReducer"
 import Profile from "../../icons/Profile"
-import {socket} from "../../socket/userSocket"
-import {GameContext, gameRoomDetail, GameUser} from "../../socket/gameSocket"
 import "./MenuPlay.css";
 
-export default function MenuPlay(props:any){
+export default function MenuPlay(){
 	const history = useHistory();
-	const gameContext = useContext(GameContext);
-	const [gameroom] = useState<gameRoomDetail>(gameContext.gameroom[0]);
-	const p1 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player1);
-	const p2 = gameroom?.players.find((p:GameUser)=> p.userid === gameContext.playroom[0].player2);
-	const s1 = useState<number>(gameContext.draw[0] ? gameContext.draw[0].left.score : 0);
-	const s2 = useState<number>(gameContext.draw[0] ? gameContext.draw[0].right.score : 0);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
+	const draw:draw = useSelector((state:RootState) => state.gameReducer.draw, shallowEqual);
+
+	const p1 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player1);
+	const p2 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player2);
+	const s1 = useState<number>(draw.left ? draw.left.score : 0);
+	const s2 = useState<number>(draw.right ? draw.right.score : 0);
 	
 	useEffect(()=>{
 		console.log("menu play");
-	}, [s1, s2, gameContext, gameroom]);
+	}, [s1, s2, gameroom]);
+
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
 			<div className="m-1" id={id}>
@@ -26,11 +31,11 @@ export default function MenuPlay(props:any){
 		);
 	}
 	const handleEixt = () => {
-		socket.emit("exitGameRoom", {
-			roomid: gameroom?.roomid
-		});
+		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+		socket.emit("gameRoomList");
 		history.replace("/game");
 	}
+	
 	return (
 		<div className="container m-0 p-1" id="menuPlay">
 			<div className="col h-100">
@@ -43,7 +48,7 @@ export default function MenuPlay(props:any){
 					<img src={Profile(p2 ? p2.profile : 0)} alt="player2" id="player2"/>
 					<label className="h5 m-0">{p2 ? p2.nickname : "unknownskejfkss"}</label>
 				</div>
-				<label className="row mx-3 my-2 h3" id="menuScore">{gameContext.playroom[0] ? gameContext.playroom[0].score : 0}</label>
+				<label className="row mx-3 my-2 h3" id="menuScore">{playroom ? playroom.score : 0}</label>
 				<div className="row h1" id="winLose">{s1} : {s2}</div>
 				<div className="row mt-5 mx-1">
 					<div className="col mx-1" id="observer">{gameroom?.observer[0] ? profileBox(gameroom.observer[0].userid, Profile(gameroom.observer[0].profile), gameroom.observer[0].nickname, false):""}</div>

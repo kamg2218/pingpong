@@ -1,21 +1,4 @@
-import {useState, createContext} from "react"
-
-export const ChatContext = createContext<any>(null);
-
-export function ChatVariables(){
-	const [chatroom, setChatRoom] = useState<ChatData>();
-	const [history, setHistory] = useState<ChatHistory>();
-	const [publicroom, setPublic] = useState<ChatData>();
-
-	const variable = {
-		chatroom: [chatroom, setChatRoom],
-		history: [history, setHistory],
-		publicroom: [publicroom, setPublic],
-	};
-	return variable;
-}
-
-export type User = {
+export type ChatUser = {
 	userid: string,
 	nickname: string,
 	profile: number,
@@ -25,7 +8,7 @@ export type chatRoom = {
 	chatid: string,
 	owner: string,
 	manager: Array<string>,
-	members: Array<User>,
+	members: Array<ChatUser>,
 	lock: boolean,
 	type: string,
 	max: number,
@@ -35,7 +18,7 @@ export type InputChatRoom = {
 	title: string,
 	addManager: Array<string>,
 	deleteManager: Array<string>,
-	enterUser: Array<User>,
+	enterUser: Array<ChatUser>,
 	exitUser: Array<string>,
 	lock: boolean,
 	type: string,

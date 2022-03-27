@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import './Modals.css'
-import {socket} from '../../socket/userSocket'
+import { socket } from "../../socket/socket";
 
 type info = {
 	title: string,
@@ -18,7 +18,7 @@ export default function AddGameRoomModal(props: any){
 	const [okBtn, setOkBtn] = useState<boolean>(false);
 	const [speed, setSpeed] = useState<number>(1);
 
-	function checkPwd(pvalue:String):boolean {
+	const checkPwd = (pvalue:String):boolean => {
 		if (pvalue.length !== 4)
 			return false;
 		for (let i = 0; i < 4; i++){
@@ -27,47 +27,24 @@ export default function AddGameRoomModal(props: any){
 		}
 		return true;
 	}
-	function checkTitle(tvalue:String):boolean{
-		if (tvalue[0] === '#')
-			return false;
-		else if (tvalue === "")
-			return false;
+	const checkTitle = (tvalue:String):boolean => {
+		if (tvalue[0] === '#'){ return false; }
+		else if (tvalue === ""){ return false; }
 		return true;
 	}
-	const handleTitle = (event:any) => {
-		setTitle(event.target.value);
-		handleOkBtn(event.target.value, pwd);
-	}
-	const handleRadio = (event:any) => {
-		setRadio(event.target.value);
-	}
-	const handlePwd = (event:any) => {
-		setPwd(event.target.value);
-		handleOkBtn(title, event.target.value);
-	}
-	const handleObserver = (event:any) => {
-		setObserber(event.target.value);
-	}
-	const handleSpeed = (event:any) => {
-		setSpeed(event.target.value);
-	}
+	const handleTitle = (event:any) => { setTitle(event.target.value); handleOkBtn(event.target.value, pwd); }
+	const handleRadio = (event:any) => { setRadio(event.target.value); }
+	const handlePwd = (event:any) => { setPwd(event.target.value); handleOkBtn(title, event.target.value); }
+	const handleObserver = (event:any) => { setObserber(event.target.value); }
+	const handleSpeed = (event:any) => { setSpeed(event.target.value); }
 	const handleOkBtn = (tvalue:String, pvalue:String) => {
-		if (radio === "private" && !checkPwd(pvalue))
-			setOkBtn(false);
-		else if (!checkTitle(tvalue))
-			setOkBtn(false);
-		else
-			setOkBtn(true);
+		if (radio === "private" && !checkPwd(pvalue)){setOkBtn(false);}
+		else if (!checkTitle(tvalue)){setOkBtn(false);}
+		else{setOkBtn(true);}
 	}
 	const handleSubmit = () => {
-		let info:info = {
-			title: title,
-			observer: observer,
-			type: radio,
-			speed: speed,
-		}
-		if (radio === "private")
-			info.password = pwd;
+		let info:info = { title: title, observer: observer, type: radio, speed: speed }
+		if (radio === "private"){ info.password = pwd; }
 		socket.emit("createGameRoom", info);
 	}
 	return (
@@ -76,9 +53,7 @@ export default function AddGameRoomModal(props: any){
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 id="addGameRoomLabel" className="modal-title">방 만들기</h5>
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					</div>
 					<div className="modal-body">
 						<div className="form-group">
