@@ -98,6 +98,7 @@ export default function ChatRoom(props:any){
 					</div>
 				</div>
 				<div className="row d-flex m-0 mt-1 p-0" id="chatForm">
+					<input className="d-none" type="password"></input>
 					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
 				</div>
