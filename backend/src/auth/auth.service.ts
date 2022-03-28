@@ -119,7 +119,7 @@ export class AuthService {
   async validate2FAJwt(payload : TokenPayload) {
     const repoUser = getCustomRepository(UserRepository);
     const user = await repoUser.findOne({userid : payload.userid});
-    if (user === undefined)
+    if (!user)
       throw new BadRequestException("No such user");
     return user;
   }

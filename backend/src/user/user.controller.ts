@@ -18,7 +18,7 @@ export class UserController {
         try {
             const payload = await this.jwtService.verify(at);
             const user = await this.authService.validate2FAJwt(payload);
-            let state;
+            let state : string;
             if (user.isTwoFactorAuthenticationEnabled && !payload.isSecondFactorAuthenticated)
                 state = "2fa";
             else
@@ -27,11 +27,12 @@ export class UserController {
         }
         catch (e) {
             if (urlvalue === "main") {
-                // console.log("logout");
                 return {state : "logout"};  
             }
-            else
+            else {
                 throw new UnauthorizedException();
+            }
+                
         }
     }
 }
