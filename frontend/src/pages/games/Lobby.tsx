@@ -30,7 +30,8 @@ export default function Lobby(){
 			<div className="col" id="lobbyPadRow">
 				<div className="row" id="lobbyPadBtn">
 					<div id="lobbySearchIcon"><i className="bi bi-search"></i></div>
-					<input className="col col-sm-5 col-md-5 col-lg-4 col-xl-4" type="text" id="lobbySearch" placeholder="title" autoComplete="off" onChange={handleSearch}></input>
+					<input className="d-none" type="password"></input>
+					<input className="col col-sm-5 col-md-5 col-lg-4 col-xl-4" type="text" id="lobbySearch" placeholder="title" onChange={handleSearch}></input>
 					<button className="col btn" id="lobbyButton" data-toggle="modal" data-target="#addGameRoomModal"><i className="bi bi-plus-circle"></i> <br/>방 만들기</button>
 					<button className="col btn" id="lobbyButton" data-toggle="modal" data-target="#loadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> <br/>랜덤 매칭</button>
 				</div>
