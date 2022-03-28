@@ -4,7 +4,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { GameUser, gameRoomDetail } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
-import { updateGameRoom } from "../../redux/gameReducer";
+import { undefinedList, updateGameRoom } from "../../redux/gameReducer";
 import "./waitingRoom.css"
 import Profile from "../../icons/Profile";
 

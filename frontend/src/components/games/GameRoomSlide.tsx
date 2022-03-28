@@ -1,26 +1,29 @@
 import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {socket} from "../../socket/socket"
 import { gameRoom } from "../../types/gameTypes"
-import { RootState } from "../../redux/rootReducer";
-import { updateRoomList } from "../../redux/gameReducer";
 import GameBox from "./GameBox"
 import "./GameRoomSlide.css";
 
 export default function GameRoomSlide(props: any){
 	const [idx, setIdx] = useState<number>(0);
-	const dispatch = useDispatch();
-	const gameRoomList:Array<gameRoom>= useSelector((state:RootState) => state.gameReducer.roomlist, shallowEqual);
+	const [roomlist, setRoomList] = useState<Array<gameRoom>>();
 
 	useEffect(()=>{
+		if (!roomlist){
+			socket.emit("gameRoomList");
+		}
 		socket.on("gameRoomList", (msg:Array<gameRoom>)=>{
-			console.log("socket on! gameRoomList in gmaeRoomSlide!")
-			dispatch(updateRoomList(msg));
+			console.log("socket on! gameRoomList in gmaeRoomSlide!");
+			// console.log(msg);
+			setRoomList(msg);
 		});
-	}, [idx, gameRoomList]);
+	}, [idx, roomlist]);
 
 	const handleButton = (num: number) => {
-		if (num === 1 && (idx + 1) * 6 < gameRoomList.length){
+		if (!roomlist){
+			return ;
+		}
+		if (num === 1 && (idx + 1) * 6 < roomlist.length){
 			setIdx(idx + 1);
 		}else if (num === -1 && idx > 0){
 			setIdx(idx - 1);
@@ -30,20 +33,22 @@ export default function GameRoomSlide(props: any){
 		let i:number = idx * 6;
 		let carousel = [];
 		
-		if (!gameRoomList.length){ return []; }
-		for (;i < gameRoomList.length; i++){
+		if (!roomlist || !roomlist.length){ return []; }
+		for (;i < roomlist.length; i++){
 			if (i >= (idx * 6) + 6)
 				break ;
-			carousel.push(<GameBox key={`${gameRoomList[i].roomid}box`} info={gameRoomList[i]} idx={i}></GameBox>);
+			carousel.push(<GameBox key={`${roomlist[i].roomid}box`} info={roomlist[i]} idx={i}></GameBox>);
 		}
 		return carousel;
 	}
 	const handleSearchItem = () => {
-		let searchRoom = gameRoomList;
-		if (searchRoom && searchRoom.length > 0){
-			searchRoom = gameRoomList.filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
+		let searchRoom = roomlist;
+		if (searchRoom){
+			if (searchRoom.length > 0){
+			searchRoom = roomlist?.filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
+			}
+			setRoomList(searchRoom);
 		}
-		dispatch(updateRoomList(searchRoom));
 		return handleCarouselItem();
 	}
 
