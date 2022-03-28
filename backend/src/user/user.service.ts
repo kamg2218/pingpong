@@ -12,8 +12,11 @@ export class UserService {
 
 
     async findState(user: User) {
-        let result;
-        const gameMembership = await getCustomRepository(GameMembershipRepository).findOne({member: user});
+        let result : string;
+        const gameMembership = await getCustomRepository(GameMembershipRepository).findOne(
+            {where : {member : user},
+            relations : ["gameRoom"]}
+        );
         if (!gameMembership)
             result = "login";
         else {
