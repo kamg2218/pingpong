@@ -1,22 +1,18 @@
 import { useEffect, useState } from "react"
-import { shallowEqual, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
-import { gameRoom } from "../../types/gameTypes";
-import { RootState } from "../../redux/rootReducer";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
 import LoadingModal from "../../components/modals/LoadingModal";
 
 export default function Lobby(){
 	const [search, setSearch] = useState<string>("");
-	const [content, setContent] = useState<string>("잠시만 기다려 주세요");	
-	const gameroomlist:Array<gameRoom> = useSelector((state:RootState) => state.gameReducer.roomlist, shallowEqual);
+	const [content, setContent] = useState<string>("잠시만 기다려 주세요");
 
 	useEffect(()=>{
 		console.log("Lobby!");
-	}, [gameroomlist]);
+	}, []);
 
-	const handleSearch = (event:any) => { setSearch(event.target.value); }
+	const handleSearch = (event:any) => { console.log(event.target.value); setSearch(event.target.value); }
 	const handleCancelMatching = () => { socket.emit("randomMatchingCancel"); }
 	const handleMatching = () => {
 		socket.emit("randomMatching", (result: boolean)=>{
@@ -34,7 +30,8 @@ export default function Lobby(){
 			<div className="col" id="lobbyPadRow">
 				<div className="row" id="lobbyPadBtn">
 					<div id="lobbySearchIcon"><i className="bi bi-search"></i></div>
-					<input className="col col-sm-5 col-md-5 col-lg-4 col-xl-4" id="lobbySearch" placeholder="title" onChange={handleSearch}></input>
+					<input className="d-none" type="password"></input>
+					<input className="col col-sm-5 col-md-5 col-lg-4 col-xl-4" type="text" id="lobbySearch" placeholder="title" onChange={handleSearch}></input>
 					<button className="col btn" id="lobbyButton" data-toggle="modal" data-target="#addGameRoomModal"><i className="bi bi-plus-circle"></i> <br/>방 만들기</button>
 					<button className="col btn" id="lobbyButton" data-toggle="modal" data-target="#loadingModal" onClick={handleMatching}><i className="bi bi-controller"></i> <br/>랜덤 매칭</button>
 				</div>

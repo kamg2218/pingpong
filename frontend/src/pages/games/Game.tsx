@@ -13,7 +13,7 @@ import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
 import {updateUser} from "../../redux/userReducer"
 import {RootState} from "../../redux/rootReducer"
-import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer"
+import { gameRoomInitialState, undefinedList, updateGameRoom } from "../../redux/gameReducer"
 import "./Game.css"
 import logo from "../../icons/logo_brown_profile.png"
 
@@ -36,6 +36,7 @@ export default function Game() {
 	useEffect(() => {
 		if (!user || user.nickname === "") {
 			console.log("user Info emit!")
+			dispatch(undefinedList());
 			socket.emit("userInfo");
 		}
 		socket.on("userInfo", (data:User) => {
