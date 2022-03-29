@@ -24,7 +24,7 @@ services:
       - 4242:4242
     depends_on:
       - postgres
-    environment:
-      - DB_HOST=10.19.223.214
+    # environment:
+      # - DB_HOST=10.19.223.214
     volumes:
       - ./src:/app/src
