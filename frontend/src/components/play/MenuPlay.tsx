@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import {useHistory} from "react-router-dom"
-import { shallowEqual, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { socket } from "../../socket/socket"
 import {draw, gameRoomDetail, GameUser, playRoom} from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer"
 import Profile from "../../icons/Profile"
 import "./MenuPlay.css";
+import { initialize } from "../../redux/userReducer"
 
 export default function MenuPlay(){
 	const history = useHistory();
+	const dispatch = useDispatch();
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
 	const draw:draw = useSelector((state:RootState) => state.gameReducer.draw, shallowEqual);
@@ -33,6 +35,7 @@ export default function MenuPlay(){
 	const handleEixt = () => {
 		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
 		socket.emit("gameRoomList");
+		dispatch(initialize());
 		history.replace("/game");
 	}
 	
