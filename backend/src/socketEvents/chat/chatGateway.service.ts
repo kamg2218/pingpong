@@ -8,8 +8,10 @@ import { getCustomRepository } from "typeorm";
 import { onlineChatRoomManager } from "../online/onlineChatRoomManager";
 import { hash, compare } from 'bcrypt';
 import dotenv from 'dotenv'
+import { ENV_PATH } from "src/config/url";
 
-const ENV = dotenv.config();
+const ENV = dotenv.config({path : ENV_PATH});
+
 export class ChatGatewayService {
 	private readonly logger = new Logger();
 

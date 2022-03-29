@@ -59,7 +59,6 @@ export class GameGateway {
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : CreateGameRoomDTO) {
         this.log({gate : "createGameRoom", ...payload});
-        console.log("id : ", socket.userid);
         if (!socket.userid) {
             this.log("Something wrong : Authenticate");
             return ;

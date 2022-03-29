@@ -7,7 +7,7 @@ import { User } from "../User/User.entity";
 @Entity()
 export class GameRoom {
     
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     roomid : string;
 
     @Column()

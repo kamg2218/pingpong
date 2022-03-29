@@ -14,8 +14,10 @@ import { MatchingManager } from "../online/matchingManager";
 import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
 import dotenv from 'dotenv'
+import { ENV_PATH } from "src/config/url";
 
-const ENV = dotenv.config();
+const ENV = dotenv.config({path : ENV_PATH});
+
 export class GameGatewayService {
 	private readonly logger = new Logger();
 
@@ -103,6 +105,7 @@ export class GameGatewayService {
 		this.log(`${user.nickname} has created the GameRoom ${result.title}`);
 
 
+		console.log("create : ", typeof(gameRoom.roomid))
 		const game = new Game(gameRoom.roomid, gameRoom.speed);
 		game.joinAsPlayer(socket.id, user);
 		onlineGameMap[gameRoom.roomid] = game;
