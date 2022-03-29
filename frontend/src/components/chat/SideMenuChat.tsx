@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Switch, Route, Link, useParams, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
@@ -23,6 +23,7 @@ export default function SideMenuChat(){
 	const checkUrl:string = BACK_URL + "/user/check";
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const [room, setRoom] = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
 		const url:string = history.location.pathname;
@@ -52,21 +53,23 @@ export default function SideMenuChat(){
 			console.log("my chat room!!");
 			// console.log(data);
 			dispatch(updateChat(data));
+			setRoom(data);
 		});
 		socket.on("enterChatRoom", (data:chatRoom)=>{
 			console.log("enter chat room!!");
 			// console.log(data);
-			const tmp:ChatData = chatroom;
+			const tmp:ChatData = room;
 			if (tmp.order.indexOf(data.chatid) === -1){
 				tmp.order.push(data.chatid);
 				tmp.chatroom.push(data);
 				dispatch(updateChat(tmp));
+				setRoom(tmp);
 			}
 		});
 		socket.on("updateChatRoom", (data:InputChatRoom)=>{
 			console.log("update Chat Room!");
 			// console.log(data);
-			let tmp:ChatData = chatroom;
+			let tmp:ChatData = room;
 			const idx = tmp.order.indexOf(data.chatid);
 			if (idx === -1){
 				return ;
@@ -74,11 +77,20 @@ export default function SideMenuChat(){
 			if (data.title){ tmp.chatroom[idx].title = data.title; }
 			if (data.lock){ tmp.chatroom[idx].lock = data.lock; }
 			if (data.type){ tmp.chatroom[idx].type = data.type; }
-			if (data.addManager){ data.addManager.map(man=>tmp.chatroom[idx].manager.push(man)); }
-			if (data.deleteManager){ data.deleteManager.map(man=>tmp.chatroom[idx].manager = tmp.chatroom[idx].manager.filter((person: string)=> man !== person)); }
-			if (data.enterUser){ data.enterUser.map(user=>tmp.chatroom[idx].members.push(user)); }
-			if (data.exitUser){ data.exitUser.map(user=>tmp.chatroom[idx].members = tmp.chatroom[idx].members.filter((person:ChatUser)=> user !== person.userid)); }
+			if (data.addManager){ data.addManager.map((man:string)=>{
+				let index:number = -1;
+				index = tmp.chatroom[idx].manager?.findIndex((p:string)=>p === man);
+				if (index === -1){ tmp.chatroom[idx].manager.push(man); }
+			}); }
+			if (data.deleteManager){ data.deleteManager.map(man=>tmp.chatroom[idx].manager = tmp.chatroom[idx].manager?.filter((person: string)=> man !== person)); }
+			if (data.enterUser){ data.enterUser.map((user:ChatUser)=>{
+				let index:number = -1;
+				index = tmp.chatroom[idx].members.findIndex((p:ChatUser)=>p.userid===user.userid);
+				if (index === -1){ tmp.chatroom[idx].members.push(user); }
+			}); }
+			if (data.exitUser){ data.exitUser.map(user=>tmp.chatroom[idx].members = tmp.chatroom[idx].members?.filter((person:ChatUser)=> user !== person.userid)); }
 			dispatch(updateChat(tmp));
+			setRoom(tmp);
 		});
 	}, [chatroom, checkUrl, gameroom, history]);
 

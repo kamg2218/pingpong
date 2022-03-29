@@ -20,6 +20,7 @@ export default function ChatRoom(props:any){
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const chatid:string = chatroom.order[props.idx];
 	const history:ChatHistory = useSelector((state:RootState) => state.chatReducer.history, shallowEqual);
+	const [chatHistory, setHistory] = useState<ChatHistory>(history);
 	// const chatInput = useRef<HTMLFormElement>(null);
 
 	useEffect(()=>{
@@ -30,6 +31,7 @@ export default function ChatRoom(props:any){
 		socket.on("chatHistory", (data:ChatHistory)=>{
 			console.log("chatHistroy on!");
 			dispatch(updateHistory(data));
+			setHistory(data);
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
@@ -38,10 +40,11 @@ export default function ChatRoom(props:any){
 				return ;
 			}
 			console.log(data);
-			const chat:ChatHistory = history;
+			const chat:ChatHistory = chatHistory;
 			if (chat){
 				chat.list.push(data);
 				dispatch(updateHistory(chat));
+				setHistory(chat);
 			}
 		})
 	}, [chatid, history, chat]);
@@ -59,6 +62,7 @@ export default function ChatRoom(props:any){
 				alert("mute!!!");
 			}
 			setChat("");
+			window.location.reload();
 			// chatInput.current?.reset();
 		});
 	}
@@ -80,6 +84,7 @@ export default function ChatRoom(props:any){
 			_history.push("/game/chat");
 		}
 		dispatch(updateHistory(historyInitalState));
+		setHistory(historyInitalState);
 	}
 
 	return (
