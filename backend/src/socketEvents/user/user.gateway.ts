@@ -2,7 +2,6 @@
 import { Logger, UseGuards } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { CORS_ORIGIN } from 'src/config/const';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
 import { getCustomRepository } from 'typeorm';
@@ -10,6 +9,7 @@ import { onlineManager } from '../online/onlineManager';
 import { UserGatewayService } from './userGateway.service';
 import { UserInfoDTO, NewFriendDTO, UpdateProfileDTO } from './dto/user.dto';
 import { WsGuard } from '../ws.guard';
+import { CORS_ORIGIN } from 'src/config/url';
 
 const options = {
   cors : {
@@ -43,6 +43,7 @@ export class UserGateway{
     @SubscribeMessage('userInfo') 
     async sendUserInfo(@ConnectedSocket() socket : AuthSocket) {
 			this.log({gate : "userInfo"});
+			
 			if (!socket.userid)
 				return ;
 			const user = await getCustomRepository(UserRepository).findOne(socket.userid);

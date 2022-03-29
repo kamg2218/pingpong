@@ -43,6 +43,8 @@ async function bootstrap() {
   //   origin : CORS_ORIGIN,
   //   credentials : true,
   // });
+
+  // console.log(ENV.parsed);
   await app.listen(4242);
 
 }

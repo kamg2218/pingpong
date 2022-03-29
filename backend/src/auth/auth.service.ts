@@ -7,7 +7,7 @@ import { RestrictedListReopsitory, UserRepository } from 'src/db/repository/User
 import { User } from 'src/db/entity/User/UserEntity';
 import { Response } from 'express';
 import { TokenPayload } from 'src/type/PayLoad.interface'
-import { BACK_DOMAIN } from 'src/config/const';
+import { BACK_DOMAIN } from 'src/config/url';
 
 @Injectable()
 export class AuthService {

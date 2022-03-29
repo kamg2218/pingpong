@@ -1,7 +1,10 @@
+import dotenv from 'dotenv'
+const ENV = dotenv.config();
+
 export const jwtConstants = {
-    secret : 'secretKey',
-    access_expiresIn : '30m',
-    refresh_expiresIn : '50m',
+    secret : ENV.parsed.JWT_SECRET,
+    access_expiresIn : ENV.parsed.JWT_EXPIRE_AT,
+    refresh_expiresIn : ENV.parsed.JWT_EXPIRE_RT,
     
     getByms(type : string) : number {
         if (type !== 'at' &&  type !== 'rt')

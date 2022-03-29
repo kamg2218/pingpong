@@ -7,6 +7,7 @@ export class WsGuard implements CanActivate {
   }
 
   canActivate(context: any) : boolean{
+    console.log(context);
     if (context.args[0].userid)
       return true;
     return false;

@@ -10,9 +10,9 @@ import { ChatRoom } from 'src/db/entity/Chat/ChatEntity';
 import { ChatGatewayService } from './chatGateway.service';
 import { onlineChatRoom } from '../online/onlineChatRoom';
 import { onlineChatRoomManager } from '../online/onlineChatRoomManager';
-import { CORS_ORIGIN } from 'src/config/const';
 import { ChatHistoryDTO, ChatHistoryUpdateDTO, ChatMessageDTO, ChatMuteDTO, CreateChatRoomDTO, EnterChatRoomDTO, ExitChatRoomDTO, InviteChatRoomDTO, KickChatRoomDTO, UpdateChatRoomDTO } from './dto/chat.dto';
 import { WsGuard } from '../ws.guard';
+import { CORS_ORIGIN } from 'src/config/url';
 
 const options = {
   cors : {
@@ -50,7 +50,7 @@ export class ChatGateway {
   @SubscribeMessage('myChatRoom')
   async getAllChatByUser(@ConnectedSocket() socket: AuthSocket) {
     this.log({gate : "myChatRoom"});
-
+    
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
     let order = [];

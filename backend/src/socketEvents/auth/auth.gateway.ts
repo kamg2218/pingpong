@@ -15,8 +15,8 @@ import { UserGatewayService } from '../user/userGateway.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 import { ChatGatewayService } from '../chat/chatGateway.service';
-import { CORS_ORIGIN } from 'src/config/const';
 import { WsGuard } from '../ws.guard';
+import { CORS_ORIGIN } from 'src/config/url';
 
 const options = {
     cors : {
@@ -83,22 +83,23 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
-    	this.logger.log(`${socket.id} socket connected`, "AuthGateway");
+    this.logger.log(`${socket.id} socket connected`, "AuthGateway");
 		const x = socket?.handshake?.headers["authorization"];
 		if (process.env.NODE_ENV === "dev") {
 			return ;
 		}
 		if (!x) {
 			console.log("No Authorization header");
+			this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
 			socket.disconnect();
 		}
 		else {
 			try {
 				let tokenValue = this.getAccessToken(x);
-				console.log("token : ", tokenValue);
+				// console.log("token : ", tokenValue);
 				let res = await this.jwtService.verify(tokenValue);
-				console.log("res : ", res);
-				let user = await this.authService.validateJwt(res);
+				// console.log("res : ", res);
+				let user = await this.authService.validate2FAJwt(res);
 				if (!user) {
 					throw new UnauthorizedException("no such user");
 				}
@@ -111,6 +112,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			}
 			catch(err) {
 				console.log("Invalid Token");
+				this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
 				socket.disconnect();
 			}
 		}

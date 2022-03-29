@@ -7,8 +7,9 @@ import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
 import { onlineChatRoomManager } from "../online/onlineChatRoomManager";
 import { hash, compare } from 'bcrypt';
-import { SALTROUND } from "src/config/const";
+import dotenv from 'dotenv'
 
+const ENV = dotenv.config();
 export class ChatGatewayService {
 	private readonly logger = new Logger();
 
@@ -194,7 +195,7 @@ export class ChatGatewayService {
 	}
 
 	async hashing(password: string) {
-		const encodedPassword = await hash(password, SALTROUND);
+		const encodedPassword = await hash(password, ENV.parsed.SALTROUND);
 		return encodedPassword;
 	}
 
