@@ -10,8 +10,6 @@ import "./Main.css";
 import { initialize } from "../redux/userReducer";
 
 export default function Main(){
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
 	const login:string = "/auth/login";
 	const check:string = "/user/check";
 

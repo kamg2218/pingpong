@@ -18,13 +18,11 @@ type param = {
 export default function SideMenuChat(){
 	const history = useHistory();
 	const dispatch = useDispatch();
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
-	const checkUrl:string = back_url + "/user/check";
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const checkUrl:string = "/user/check";
 
-	useEffect(()=>{
+  useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
 				console.log(res.state, gameroom.roomid);

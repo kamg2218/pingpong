@@ -8,13 +8,11 @@ import { RootState } from '../../redux/rootReducer';
 import "./Qrcode.css";
 
 export default function Qrcode(){
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
-	const checkUrl:string = back_url + "/user/check";
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const checkUrl:string = "/user/check";
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
@@ -41,7 +39,7 @@ export default function Qrcode(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const auth:string = back_url + "/2fa/authenticate";
+			const auth:string = "/2fa/authenticate";
 			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
