@@ -23,11 +23,9 @@ export default function SideMenuChat(){
 	const checkUrl:string = BACK_URL + "/user/check";
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const checkUrl:string = "/user/check";
 
-	useEffect(()=>{
-		const url:string = history.location.pathname;
-		const idx:number = url.search("wait");
-
+  useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
   		  if (res.state === "playing" && gameroom.roomid){
