@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes"
 import { ChatData } from "../../types/chatTypes"
-import { gameRoomDetail, match, playRoom } from "../../types/gameTypes"
+import { gameRoomDetail, GameUser, match, playRoom } from "../../types/gameTypes"
 import Lobby from "./Lobby"
 import WaitingRoom from "./WaitingRoom"
 import SideMenuGame from "./SideMenuGame"
@@ -26,12 +26,13 @@ export default function Game() {
 	const history = useHistory();
 	const [matchData, setMatch] = useState<match>();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
-
+	
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const dispatch = useDispatch();
+	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
 	useEffect(() => {
 		if (!user || user.nickname === "") {
@@ -59,6 +60,21 @@ export default function Game() {
 				}
 			}
 		});
+		socket.on("changeGameRoom", (msg:any) => {
+			const tmp:gameRoomDetail = room;
+			console.log(tmp);
+			if (msg.manager) {tmp.manager = msg.manager;}
+			if (msg.title) {tmp.title = msg.title;}
+			if (msg.speed) {tmp.speed = msg.speed;}
+			if (msg.status) {tmp.status = msg.status;}
+			if (msg.type) {tmp.type = msg.type;}
+			if (msg.addObserver) {msg.addObserver.map((observer: GameUser) => tmp.observer.push(observer))}
+			if (msg.deleteObserver) {msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))}
+			if (msg.addPlayers) {msg.addPlayers.map((player: GameUser) => tmp.players.push(player))}
+			if (msg.deletePlayers) {msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))}
+			dispatch(updateGameRoom(tmp));
+			setRoom(tmp);
+		});
 		socket.on("exitGameRoom", () => {
 			dispatch(updateGameRoom(gameRoomInitialState));
 			history.push("/game");
@@ -76,7 +92,7 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [chatroom, gameroom, history, playroom, user]);
+	}, [chatroom, room, history, playroom, user]);
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">

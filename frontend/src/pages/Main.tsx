@@ -21,16 +21,15 @@ export default function Main(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
-		console.log(socket);
+		// console.log(socket);
 		dispatch(initialize());
 		axios.get(check + "?url=main").then((res:any)=>{
-			// console.log(res.state);
-			if (res.state){
-				console.log(res.state);
-				if (res.state === "play" && gameroom.roomid){
-					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-				}
-			}
+  		if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		    dispatch(initialize());
+  		  }
+  		}
 		}).catch((err)=>{ console.log(err); })
 	}, [gameroom]);
 

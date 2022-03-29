@@ -8,7 +8,7 @@ import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
-import { updateUser } from "../../redux/userReducer";
+import { initialize, updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
@@ -32,16 +32,12 @@ export default function NickAndProfile(){
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
-			if (res.state){
-				console.log(res.state)
-				if (res.state === "play" && gameroom.roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom.roomid,
-					});
-				}else if (res.state === "logout"){
-					history.replace("/");
-				}
-			}
+  		if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		    dispatch(initialize());
+  		  }
+  		}
 		}).catch((err)=>{
 			console.log(err);
 			history.push("/");

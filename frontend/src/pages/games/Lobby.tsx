@@ -10,7 +10,7 @@ export default function Lobby(){
 
 	useEffect(()=>{
 		console.log("Lobby!");
-		console.log(socket);
+		// console.log(socket);
 	}, []);
 
 	const handleSearch = (event:any) => { console.log(event.target.value); setSearch(event.target.value); }
