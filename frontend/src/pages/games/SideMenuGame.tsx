@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { Link, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
+import { BACK_URL } from "../../types/urlTypes";
 import { Friend, User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
@@ -14,9 +15,7 @@ import MyProfileModal from "../../components/modals/MyProfileModal";
 export default function SideMenuGame(){
 	const history = useHistory();
 	const [clicked, setClicked] = useState<string>("");
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = BACK_URL + "/user/check";
 
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);

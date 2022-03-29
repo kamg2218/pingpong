@@ -8,12 +8,12 @@ import { RootState } from "../redux/rootReducer";
 import logo_brown from "../icons/logo_brown.png"
 import "./Main.css";
 import { initialize } from "../redux/userReducer";
+import { BACK_URL } from "../types/urlTypes";
+import { env } from "process";
 
 export default function Main(){
-	const front_url:string = "http://localhost:3000";
-	const back_url:string = "http://localhost:4242";
-	const login:string = "/auth/login";
-	const check:string = "/user/check";
+	const login:string = BACK_URL + "/auth/login";
+	const check:string = BACK_URL + "/user/check";
 
 	const history = useHistory();
 	const dispatch = useDispatch();

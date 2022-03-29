@@ -65,7 +65,7 @@ export default function Game() {
 			const tmp:gameRoomDetail = room;
 			console.log(room);
 			console.log(msg);
-			if (msg.roomid !== gameroom.roomid){
+			if (msg.roomid !== tmp.roomid){
 				console.log("roomid is different!!");
 				return;
 			}

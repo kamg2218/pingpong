@@ -6,21 +6,20 @@ import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
+import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
 import { initialize, updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
 	const history = useHistory();
 	const [profile, setProfile] = useState<number>(0);
 	const [nickname, setNickname] = useState<string>("");
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = BACK_URL + "/user/check";
 
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
@@ -57,7 +56,7 @@ export default function NickAndProfile(){
 			setCheckModalText(impossible);
 			return ;
 		}
-		axios.get(back_url + `/auth/check?nickname=${nickname}`)
+		axios.get(BACK_URL + `/auth/check?nickname=${nickname}`)
 			.then(res=>{
 				console.log(res.data);
 				if (res.data.message === false){
@@ -77,7 +76,7 @@ export default function NickAndProfile(){
 			setCheckModalText(doubleCheck);
 			return ;
 		}
-		axios.post(back_url + `/auth/signup`, { nickname, profile })
+		axios.post(BACK_URL + `/auth/signup`, { nickname, profile })
 		.then(res=>{
 			console.log(res);
 			console.log(res.data);

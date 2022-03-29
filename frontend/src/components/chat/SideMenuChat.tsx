@@ -3,14 +3,15 @@ import { useEffect } from "react"
 import { Switch, Route, Link, useParams, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
+import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { chatRoom, ChatData, InputChatRoom, ChatUser } from "../../types/chatTypes"
 import { RootState } from "../../redux/rootReducer";
+import { initialize } from "../../redux/userReducer";
 import { updateChat } from "../../redux/chatReducer";
 import MenuChat from "../../components/chat/MenuChat"
 import ChatRoom from "../../components/chat/ChatRoom"
 import "./chat.css";
-import { initialize } from "../../redux/userReducer";
 
 type param = {
 	id?: String
@@ -19,9 +20,7 @@ type param = {
 export default function SideMenuChat(){
 	const history = useHistory();
 	const dispatch = useDispatch();
-	// const back_url:string = "http://localhost:4242";
-	const back_url:string = "";
-	const checkUrl:string = back_url + "/user/check";
+	const checkUrl:string = BACK_URL + "/user/check";
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
