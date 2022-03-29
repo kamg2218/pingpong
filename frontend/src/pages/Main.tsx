@@ -3,13 +3,12 @@ import { useHistory } from "react-router";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../socket/socket";
+import { BACK_URL } from "../types/urlTypes";
 import { gameRoomDetail } from "../types/gameTypes";
 import { RootState } from "../redux/rootReducer";
+import { initialize } from "../redux/userReducer";
 import logo_brown from "../icons/logo_brown.png"
 import "./Main.css";
-import { initialize } from "../redux/userReducer";
-import { BACK_URL } from "../types/urlTypes";
-import { env } from "process";
 
 export default function Main(){
 	const login:string = BACK_URL + "/auth/login";
