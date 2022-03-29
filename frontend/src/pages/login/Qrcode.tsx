@@ -1,27 +1,33 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import {useHistory} from 'react-router-dom';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { socket } from "../../socket/socket";
+import { BACK_URL } from '../../types/urlTypes';
 import {gameRoomDetail} from "../../types/gameTypes";
 import { RootState } from '../../redux/rootReducer';
+import { initialize } from '../../redux/userReducer';
 import "./Qrcode.css";
 
 export default function Qrcode(){
 	const history = useHistory();
+	const dispatch = useDispatch();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
+	const checkUrl:string = BACK_URL + "/user/check";
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const checkUrl:string = "/user/check";
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
-			if (res.state){
-				console.log(res.state)
-				if (res.state === "play" && gameroom.roomid){
-					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-				}else if (res.state === "logout"){ history.replace("/") }
-			}
+  		if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		    dispatch(initialize());
+  		  }else if (res.state === "login"){
+  		    history.replace("/game");
+  		  }
+  		}
 		}).catch((err)=>{
 			console.log(err);
 			history.push("/");
@@ -39,7 +45,7 @@ export default function Qrcode(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const auth:string = "/2fa/authenticate";
+			const auth:string = BACK_URL + "/2fa/authenticate";
 			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
-import { GameUser, gameRoomDetail } from "../../types/gameTypes"
+import { gameRoomDetail } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
 import "./waitingRoom.css"
@@ -17,23 +17,7 @@ export default function WaitingRoom(){
 
 	useEffect(()=>{
 		console.log("waitingRoom");
-		socket.on("changeGameRoom", (msg:any) => {
-			const tmp:gameRoomDetail = room;
-			console.log(tmp);
-			if (msg.manager) {tmp.manager = msg.manager;}
-			if (msg.title) {tmp.title = msg.title;}
-			if (msg.speed) {tmp.speed = msg.speed;}
-			if (msg.status) {tmp.status = msg.status;}
-			if (msg.type) {tmp.type = msg.type;}
-			if (msg.addObserver) {msg.addObserver.map((observer: GameUser) => tmp.observer.push(observer))}
-			if (msg.deleteObserver) {msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))}
-			if (msg.addPlayers) {msg.addPlayers.map((player: GameUser) => tmp.players.push(player))}
-			if (msg.deletePlayers) {msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))}
-			dispatch(updateGameRoom(tmp));
-			setRoom(tmp);
-		});
-
-	}, [room, param.id]);
+	}, []);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
@@ -49,9 +33,10 @@ export default function WaitingRoom(){
 			return ;
 		}
 		socket.emit("exitGameRoom", { roomid: room.roomid });
-		socket.emit("gameRoomList");
 		dispatch(updateGameRoom(gameRoomInitialState));
 		history.push("/game");
+		//check!!!
+		window.location.reload();
 	}
 
 	return (

@@ -3,9 +3,11 @@ import { useEffect } from "react"
 import { Switch, Route, Link, useParams, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
+import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { chatRoom, ChatData, InputChatRoom, ChatUser } from "../../types/chatTypes"
 import { RootState } from "../../redux/rootReducer";
+import { initialize } from "../../redux/userReducer";
 import { updateChat } from "../../redux/chatReducer";
 import MenuChat from "../../components/chat/MenuChat"
 import ChatRoom from "../../components/chat/ChatRoom"
@@ -18,6 +20,7 @@ type param = {
 export default function SideMenuChat(){
 	const history = useHistory();
 	const dispatch = useDispatch();
+	const checkUrl:string = BACK_URL + "/user/check";
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const checkUrl:string = "/user/check";
@@ -25,14 +28,20 @@ export default function SideMenuChat(){
   useEffect(()=>{
 		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
-				console.log(res.state, gameroom.roomid);
-				if (res.state === "play" && gameroom.roomid){
-					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		  if (res.state === "playing" && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+					dispatch(initialize());
 					history.replace("/game");
-				}else if (res.state === "logout"){
-					history.replace("/");
-				}
-			}
+  		  }else if (res.state === "waiting" && idx === -1){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+					dispatch(initialize());
+  		  }else if (res.state === "login" && idx !== -1){
+					dispatch(initialize());	
+					history.replace("/game");
+  		  }else if (res.state === "logout"){
+  		    history.replace("/");
+  		  }
+  		}
 		}).catch((err)=>{
 			console.log(err);
 			history.replace("/");
