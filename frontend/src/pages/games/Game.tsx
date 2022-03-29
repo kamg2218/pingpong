@@ -46,7 +46,7 @@ export default function Game() {
 		});
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
-			// console.log(msg);
+			console.log(msg);
 			if ("message" in msg) {
 				alert("fail to enter the room!");
 				if (history.location.pathname.search("waiting")){
@@ -54,7 +54,8 @@ export default function Game() {
 				}
 			}else {
 				dispatch(updateGameRoom(msg));
-				console.log("path = ", history.location.pathname);
+				setRoom(msg);
+				// console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
@@ -62,21 +63,38 @@ export default function Game() {
 		});
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
-			console.log(tmp);
+			console.log(room);
+			console.log(msg);
+			if (msg.roomid !== gameroom.roomid){
+				console.log("roomid is different!!");
+				return;
+			}
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
 			if (msg.speed) {tmp.speed = msg.speed;}
 			if (msg.status) {tmp.status = msg.status;}
 			if (msg.type) {tmp.type = msg.type;}
-			if (msg.addObserver) {msg.addObserver.map((observer: GameUser) => tmp.observer.push(observer))}
-			if (msg.deleteObserver) {msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))}
-			if (msg.addPlayers) {msg.addPlayers.map((player: GameUser) => tmp.players.push(player))}
-			if (msg.deletePlayers) {msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))}
+			if (msg.addObserver) {
+				msg.addObserver.map((observer: GameUser) => {
+					const idx:number = tmp.observer.findIndex((person:GameUser)=>person.userid===observer.userid);
+					if (idx === -1){ tmp.observer.push(observer) }
+				});
+			}
+			if (msg.deleteObserver) {msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid !== observer.userid))}
+			if (msg.addPlayers) {
+				msg.addPlayers.map((player: GameUser) => {
+					const idx:number = tmp.players.findIndex((person:GameUser)=>person.userid===player.userid);
+					if (idx === -1){ tmp.players.push(player); }
+				});
+			}
+			if (msg.deletePlayers) {msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid))}
 			dispatch(updateGameRoom(tmp));
 			setRoom(tmp);
+			console.log('after => ', tmp);
 		});
 		socket.on("exitGameRoom", () => {
 			dispatch(updateGameRoom(gameRoomInitialState));
+			setRoom(gameRoomInitialState);
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -85,6 +103,7 @@ export default function Game() {
 				alert("failed to play the game!");
 			} else {
 				dispatch(updateGameRoom(msg));
+				setRoom(gameRoomInitialState);
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
