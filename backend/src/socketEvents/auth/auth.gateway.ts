@@ -85,9 +85,6 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
     this.logger.log(`${socket.id} socket connected`, "AuthGateway");
 		const x = socket?.handshake?.headers["authorization"];
-		if (process.env.NODE_ENV === "dev") {
-			return ;
-		}
 		if (!x) {
 			console.log("No Authorization header");
 			this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
