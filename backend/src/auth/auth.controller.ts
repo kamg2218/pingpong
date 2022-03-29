@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { User } from 'src/db/entity/User/UserEntity';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDeco } from '../type/user.decorator';
-import { frontLobyPage, frontSignupPage, frontTwoFactorAuthenticationPage} from 'src/config/redirect_url';
+import { frontLobyPage, frontSignupPage, frontTwoFactorAuthenticationPage} from 'src/config/url';
 import { Request, Response } from 'express';
 import { SignUpDTO } from 'src/type/signup.dto';
 import { UnauthorizedExceptionFilter } from 'src/filter/UnauthorizedExceptionFilter';

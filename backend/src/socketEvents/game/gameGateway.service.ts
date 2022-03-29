@@ -1,7 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { hash } from "bcrypt";
-import { SALTROUND } from "src/config/const";
 import { GameRoom } from "src/db/entity/Game/GameEntity";
 import { User } from "src/db/entity/User/UserEntity";
 import { GameRoomRepository, GameMembershipRepository, GameHistoryRepository } from "src/db/repository/Game/GameCustomRepository";
@@ -14,7 +13,9 @@ import { LevelManager } from "./gameElement/levelManager";
 import { MatchingManager } from "../online/matchingManager";
 import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
+import dotenv from 'dotenv'
 
+const ENV = dotenv.config();
 export class GameGatewayService {
 	private readonly logger = new Logger();
 
@@ -251,7 +252,7 @@ export class GameGatewayService {
 				delete updateInfo[key];
 		};
 		if (updateInfo.password)
-			updateInfo["password"] = await hash(updateInfo.password, SALTROUND);
+			updateInfo["password"] = await hash(updateInfo.password, ENV.parsed.SALTROUND);
 		await repo_gameRoom.update(roomid, updateInfo);
 
 		const game = onlineGameMap[roomid];

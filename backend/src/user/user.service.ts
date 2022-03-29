@@ -22,7 +22,7 @@ export class UserService {
         else {
             const game = onlineGameMap[gameMembership.gameRoom.roomid];
             if (game.start)
-                result = "play";
+                result = "playing";
             else
                 result = "waiting"
         }

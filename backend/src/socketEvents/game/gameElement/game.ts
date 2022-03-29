@@ -150,7 +150,7 @@ export class Game {
             throw new Error("The room is already full");
         this.participants.push(socketid);
         this.changeGameRoom(socketid, {
-            addPlayers : [repo_user.getSimpleInfo(user)],
+            addPlayers : {...repo_user.getSimpleInfo(user)},
         });
     }
 
@@ -158,7 +158,7 @@ export class Game {
         const repo_user = getCustomRepository(UserRepository);
         this.participants.push(socketid);
         this.changeGameRoom(socketid, {
-            addObserver : [repo_user.getSimpleInfo(user)],
+            addObserver : {...repo_user.getSimpleInfo(user)},
         });
     }
 
