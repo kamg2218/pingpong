@@ -5,7 +5,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { socket } from "../../socket/socket";
 import {gameRoomDetail} from "../../types/gameTypes";
 import { RootState } from '../../redux/rootReducer';
-import "./qrcode.css";
+import "./Qrcode.css";
 
 export default function Qrcode(){
 	// const back_url:string = "http://localhost:4242";
@@ -50,6 +50,7 @@ export default function Qrcode(){
 	}
 	function handleKeypress(event: any){
 		if (event.code === 'Enter'){
+			event.preventDefault();
 			handleSubmit()
 		}
 	}

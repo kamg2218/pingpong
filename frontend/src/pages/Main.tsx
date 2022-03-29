@@ -21,6 +21,7 @@ export default function Main(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
+		console.log(socket);
 		dispatch(initialize());
 		axios.get(check + "?url=main").then((res:any)=>{
 			// console.log(res.state);

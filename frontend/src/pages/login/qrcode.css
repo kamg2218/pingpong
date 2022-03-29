@@ -19,7 +19,7 @@
 }
 #qrinput:focus{
     border: 2.5px solid #C9A641;
-    color: transparent;
+    /* color: transparent; */
     outline: none;
 }
 #qrbutton{
