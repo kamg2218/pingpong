@@ -1,69 +1,55 @@
 import axios from 'axios';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import {useHistory} from 'react-router-dom';
-import "./qrcode.css";
-import {socket, UserContext} from "../../socket/userSocket";
-import {GameContext} from "../../socket/gameSocket";
-
-// import dotenv from "dotenv";
-// dotenv.config();
+import { shallowEqual, useSelector } from 'react-redux';
+import { socket } from "../../socket/socket";
+import {gameRoomDetail} from "../../types/gameTypes";
+import { RootState } from '../../redux/rootReducer';
+import "./Qrcode.css";
 
 export default function Qrcode(){
 	const history = useHistory();
 	const [token, setToken] = useState<string>("");
 	const [alertState, setAlert] = useState<boolean>(false);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const checkUrl:string = "/user/check";
-	const {user} = useContext(UserContext);
-	const { gameroom } = useContext(GameContext);
-
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
-				if (res.state === "play" && gameroom[0].roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
-					});
-				}else if (res.state === "logout"){
-					history.replace("/");
-				}
+				if (res.state === "play" && gameroom.roomid){
+					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+				}else if (res.state === "logout"){ history.replace("/") }
 			}
 		}).catch((err)=>{
 			console.log(err);
 			history.push("/");
 		})
 	}, []);
-	function checkToken():boolean {
-		if (token.length !== 6)
-			return false;
+	const checkToken = ():boolean => {
+		if (token.length !== 6){ return false; }
 		for (let i = 0; i < token.length; i++){
-			const num = parseInt(token[i]);
-			if (isNaN(num))
-				return false;
+			if (isNaN(parseInt(token[i]))){return false;}
 		}
 		return true;
 	}
-	const handleChange = (event:any) => {
-		setToken(event.target.value);
-	}
-	function handleSubmit(event : any){
+	const handleChange = (event:any) => { setToken(event.target.value); }
+	function handleSubmit(){
 		if (!checkToken()){
 			setAlert(true);
 		}else {
-			const url:string = process.env.URL || "";
-			const auth:string = url + "/2fa/authenticate";
-			axios.post(auth, { token: token }).then((res:any)=>{
+			const auth:string = "/2fa/authenticate";
+			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
 				console.log(res);
 				history.push("/game");
-			}).catch((err:any)=>{
-				setAlert(true);
-			})
+			}).catch((err:any)=>{	setAlert(true);});
 		}
 	}
 	function handleKeypress(event: any){
 		if (event.code === 'Enter'){
-			handleSubmit(event);
+			event.preventDefault();
+			handleSubmit()
 		}
 	}
 

@@ -1,24 +1,3 @@
-import {useState, createContext} from 'react';
-
-export const GameContext = createContext<any>(null);
-
-export function GameVariables(){
-	const [gameRoom, setGameRoom] = useState<gameRoomDetail>();
-	const [roomList, setList] = useState<Array<gameRoom>>();
-	const [playRoom, setPlayRoom] = useState<playRoom>();
-	const [winner, setWinner] = useState<string>();
-	const [draw, setDraw] = useState<draw>();
-
-	const variable = {
-		gameroom: [gameRoom, setGameRoom],
-		gameroomlist: [roomList, setList],
-		playroom: [playRoom, setPlayRoom],
-		draw: [draw, setDraw],
-		winner: [winner, setWinner],
-	}
-	return variable;
-}
-
 export type GameUser = {
 	userid: string,
 	nickname: string,

@@ -1,59 +1,66 @@
-import Lobby from "./Lobby"
 import Modal from "react-modal"
+import { useEffect, useState } from "react"
 import { Route, Switch, useHistory } from "react-router-dom"
-import { useContext, useEffect, useState } from "react"
-import { socket, UserContext, User } from "../../socket/userSocket"
-import { GameContext, GameUser, match } from "../../socket/gameSocket"
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socket/socket";
+import { User } from "../../types/userTypes"
+import { ChatData } from "../../types/chatTypes"
+import { gameRoomDetail, match, playRoom } from "../../types/gameTypes"
+import Lobby from "./Lobby"
 import WaitingRoom from "./WaitingRoom"
 import SideMenuGame from "./SideMenuGame"
 import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
-
-import "../../css/Game.css"
+import {updateUser} from "../../redux/userReducer"
+import {RootState} from "../../redux/rootReducer"
+import { gameRoomInitialState, undefinedList, updateGameRoom } from "../../redux/gameReducer"
+import "./Game.css"
 import logo from "../../icons/logo_brown_profile.png"
+
+type message = {
+	message: string,
+};
 
 Modal.setAppElement("#root");
 export default function Game() {
 	const history = useHistory();
-	const { gameroom, playroom } = useContext(GameContext);
-	const { user } = useContext(UserContext);
-	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [matchData, setMatch] = useState<match>();
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
+	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (!user[0]) {
+		if (!user || user.nickname === "") {
 			console.log("user Info emit!")
+			dispatch(undefinedList());
 			socket.emit("userInfo");
-			if (!gameroom[0]){
-				socket.emit("myChatRoom");
-			}
 		}
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
-			user[1](data);
+			dispatch(updateUser(data));
 		});
-		socket.on("enterGameRoom", (msg:any) => {
+		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
-			console.log(msg);
-			if (msg.message) {
+			// console.log(msg);
+			if ("message" in msg) {
 				alert("fail to enter the room!");
-				//updateGameRoom에 대한 응답을 받은 경우
-				//유저가 존재하지 않으면 로비로 이동
 				if (history.location.pathname.search("waiting")){
 					history.replace("/game");
 				}
-			}
-			else {
-				gameroom[1](msg);
+			}else {
+				dispatch(updateGameRoom(msg));
 				console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
 			}
-			window.location.reload();
 		});
 		socket.on("exitGameRoom", () => {
-			gameroom[1](undefined)
+			dispatch(updateGameRoom(gameRoomInitialState));
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -61,59 +68,27 @@ export default function Game() {
 			if (msg.result) {
 				alert("failed to play the game!");
 			} else {
-				playroom[1](msg);
+				dispatch(updateGameRoom(msg));
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
-		// socket.on("updateGameRoom", (msg:any) => {
-		// 	const tmp = gameroom[0];
-		// 	if (msg.manager) {
-		// 		tmp.manager = msg.manager;
-		// 	}
-		// 	if (msg.title) {
-		// 		tmp.title = msg.title;
-		// 	}
-		// 	if (msg.speed) {
-		// 		tmp.speed = msg.speed;
-		// 	}
-		// 	if (msg.status) {
-		// 		tmp.status = msg.status;
-		// 	}
-		// 	if (msg.type) {
-		// 		tmp.type = msg.type;
-		// 	}
-		// 	if (msg.addObserver) {
-		// 		msg.addObserver.map((observer: GameUser) => tmp.oberserver.push(observer))
-		// 	}
-		// 	if (msg.deleteObserver) {
-		// 		msg.deleteObserver.map((observer: GameUser) => tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid === observer.userid))
-		// 	}
-		// 	if (msg.addPlayers) {
-		// 		msg.addPlayers.map((player: GameUser) => tmp.players.push(player))
-		// 	}
-		// 	if (msg.deletePlayers) {
-		// 		msg.deletePlayers.map((player: GameUser) => tmp.players = tmp.players?.filter((person: GameUser) => person.userid === player.userid))
-		// 	}
-		// 	gameroom[1](tmp);
-		// 	window.location.reload();
-		// });
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, []);
+	}, [chatroom, gameroom, history, playroom, user]);
 	return (
-		<div className="container-fluid m-0 px-2" id="gamelobby">
-			<div className="col h-100">
+		<div className="container-fluid m-0 p-0" id="gamelobby">
+			<div className="col" id="gamelobbyCol">
 				<img className="row" id="gameLogo" src={logo} alt="header" />
-				<div className="row m-0" id="gamePad">
-					<div className="col-xs-12 col-md-4 col-lg-3 d-sm-none d-md-block">
+				<div className="row m-0 p-1" id="gamePad">
+					<div className="col-xs-12 col-md-4 col-lg-3 d-sm-none d-md-block" id="gamelobbySide">
 						<Switch>
 							<Route path="/game/chat" component={SideMenuChat}></Route>
 							<Route path="/game" component={SideMenuGame}></Route>
 						</Switch>
 					</div>
-					<div className="col d-none d-sm-block px-1">
+					<div className="col d-none d-sm-block m-0 p-0 border">
 						<Switch>
 							<Route path="/game/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game/chat/:idx/waiting/:id" component={WaitingRoom}></Route>
@@ -123,9 +98,7 @@ export default function Game() {
 					</div>
 				</div>
 			</div>
-			<Modal isOpen={isOpen} style={customStyles}>
-				<MatchRequestModal setIsOpen={setIsOpen} matchData={matchData} />
-			</Modal>
+			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>
 	);
 }

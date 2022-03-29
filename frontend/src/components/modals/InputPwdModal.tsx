@@ -5,9 +5,7 @@ export default function InputPwdModal(props: any){
 	const [pwd, setPwd] = useState<String>("");
 	const failure:string = "비밀번호를 확인해주세요!!";
 
-	const handlePwd = (e :any) => {
-		setPwd(e.target.value);
-	}
+	const handlePwd = (e :any) => { setPwd(e.target.value); }
 	const handlePwdOK = ()=>{
 		if (pwd === "" || pwd.length !== 4){
 			alert(failure);
@@ -20,13 +18,10 @@ export default function InputPwdModal(props: any){
 				return ;
 			}
 		}
-		if (props.handleOk){
-			props.handleOk();
-		}
+		if (props.handleOk){ props.handleOk(); }
 		props.setPwd(pwd);
-		props.handleSubmit(props.state);
-		
 	}
+
 	return (
 		<div className="modal fade" id="inputPwdModal" role="dialog" tabIndex={-1} aria-labelledby="inputPwdModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered modal-sm" role="document">

@@ -1,25 +1,19 @@
 import { useEffect, useState } from "react";
-import { socket } from "../../socket/userSocket";
+import { socket } from "../../socket/socket";
 
 export default function MatchRequestModal(props:any){
 	const maxValue:number = 10;
 	const [value, setValue] = useState<number>(0);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+	
 	const handleSubmit = (result:boolean) => {
-    socket.emit("matchResponse", {
-    	requestid: props.matchData?.requestid,
-    	result: result
-		});
+		socket.emit("matchResponse", { requestid: props.matchData?.requestid, result: result });
 		props.setIsOpen(false);
 	};
 	
 	useEffect(()=>{
-		if (value < maxValue){
-			setTimeout(()=>setValue(value + 0.1), 100);
-		}else{
-			handleSubmit(false);
-		}
-	}, [handleSubmit, value]);
+		if (value < maxValue){ setTimeout(()=>setValue(value + 0.1), 100); }
+		else{ handleSubmit(false); }
+	}, [value]);
 	
   return (
 		<div id="matchRequestModal">

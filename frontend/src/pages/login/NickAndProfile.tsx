@@ -1,10 +1,14 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
-import { socket, UserContext } from "../../socket/userSocket";
-import { GameContext } from "../../socket/gameSocket";
+import { socket } from "../../socket/socket";
+import { User } from "../../types/userTypes";
+import { gameRoomDetail } from "../../types/gameTypes";
+import { RootState } from "../../redux/rootReducer";
+import { updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
@@ -14,9 +18,11 @@ export default function NickAndProfile(){
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
+	const dispatch = useDispatch();
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	
 	const checkUrl:string = "/user/check";
-	const {user} = useContext(UserContext);
-	const { gameroom } = useContext(GameContext);
 	const doubleCheck:string = "중복 확인 해주세요!";
 	const possible:string = "사용 가능한 닉네임입니다.";
 	const impossible:string = "사용 불가능한 닉네임입니다.";
@@ -25,9 +31,9 @@ export default function NickAndProfile(){
 		axios.get(checkUrl).then((res:any)=>{
 			if (res.state){
 				console.log(res.state)
-				if (res.state === "play" && gameroom[0].roomid){
+				if (res.state === "play" && gameroom.roomid){
 					socket.emit("exitGameRoom", {
-						roomid: gameroom[0].roomid,
+						roomid: gameroom.roomid,
 					});
 				}else if (res.state === "logout"){
 					history.replace("/");
@@ -48,6 +54,10 @@ export default function NickAndProfile(){
 	}
 	const handleCheck = (event : any) => {
 		event.preventDefault();
+		if (nickname.length < 2 || nickname.length > 12 || nickname[0] === "#"){
+			setCheckModalText(impossible);
+			return ;
+		}
 		axios.get(`/auth/check?nickname=${nickname}`)
 			.then(res=>{
 				console.log(res.data);
@@ -73,27 +83,21 @@ export default function NickAndProfile(){
 			console.log(res);
 			console.log(res.data);
 			if (res.data){
-				if (user[0]){
-					let tmp = user[0];
-					tmp.profile = profile;
-					tmp.nickname = nickname;
-					user[1](tmp);
-				}
+				let tmp = user;
+				tmp.profile = profile;
+				tmp.nickname = nickname;
+				dispatch(updateUser(tmp));
 				history.push("/game");
 			}
-		}).catch(err=>{
-			console.error(err);
-		});
+		}).catch(err=>{ console.error(err); });
 	}
 	const handleCancel = (event: any) => {
 		event.preventDefault();
 		history.push("/");
 	}
 	const conditionals = (): Boolean => {
-		if (nickname === "")
-			return false;
-		else if (checkModalText !== possible)
-			return false;
+		if (nickname === ""){return false;}
+		else if (checkModalText !== possible){return false;}
 		return true;
 	}
 
@@ -103,7 +107,7 @@ export default function NickAndProfile(){
 				<ProfileCarousel profile={profile} setProfile={setProfile}></ProfileCarousel>
 				<div className="d-flex my-2">
 					<label className="m-2" id="nickLabel">Nickname</label>
-					<input className="m-1" id="nickInput" placeholder={nicknamePlaceholder} onChange={handleInput} required />
+					<input className="m-1" id="nickInput" placeholder={nicknamePlaceholder} onChange={handleInput} minLength={2} maxLength={12} required />
 					<button className="btn m-1" id="checkBtn" data-toggle="modal" data-target="#alertModal" onClick={handleCheck}>Check</button>
 				</div>
 				<div>

@@ -1,59 +1,52 @@
-import { useContext, useEffect } from "react"
-import "../../css/MenuGame.css"
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socket/socket"
+import { Friend, User } from "../../types/userTypes"
+import { RootState } from "../../redux/rootReducer";
+import { updateUser } from "../../redux/userReducer";
 import Profile from "../../icons/Profile"
-import {Friend, socket, UserContext} from "../../socket/userSocket"
+import "./MenuGame.css"
 
 export default function MenuGame(props:any){
-	const {user} = useContext(UserContext);
-	// const user = userContext.user;
+	const dispatch = useDispatch();
+	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
-	useEffect(()=>{},[user]);
-	function NewList(person: Friend): any {
+	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
-			socket.emit("newFriend", {
-				userid: person.userid,
-				result: result
-			});
-			user[1](user[0].newfriends?.filter((friend:Friend)=>friend.userid !== person.userid));
+			socket.emit("newFriend", { userid: person.userid, result: result });
+			let tmp:User = user;
+			tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
+			dispatch(updateUser(tmp));
 		}
 		return (
-			<div className="m-0 p-2 h6" id="friendonoff" key={person.userid}>
-				<div className="col-7" id="friendNick">
-					<i className="bi bi-exclamation-lg" id="exclamationMark"></i>
-					{person.nickname}
-				</div>
-				<i className="bi bi-check-lg px-2" id="checkMark" onClick={()=>handleNewFriend(true)}/>
-				<i className="bi bi-x-lg px-2" id="crossMark" onClick={()=>handleNewFriend(false)}/>
+			<div id="newfriend" key={person.userid}>
+				<div className="col-2" key={`${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="friendProfile"/></div>
+				<div className="col-5 m-0 mx-1 px-2 h6" id="friendNick">{person.nickname}</div>
+				<i className="col-2 bi bi-check-lg px-2" id="checkMark" onClick={()=>handleNewFriend(true)}/>
+				<i className="col-2 bi bi-x-lg px-2" id="crossMark" onClick={()=>handleNewFriend(false)}/>
 			</div>
 		);
 	}
 
-	function OldList(person: Friend, setClicked: Function): any {
-		const handleClick = () => {
-			setClicked(person.userid);
-		}
+	const OldList = (person: Friend, setClicked: Function) => {
+		const handleClick = () => { setClicked(person.userid); }
 		return (
-			<div className="m-0 p-2" id="friendonoff" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#profileModal">
+			<div id="oldfriend" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#profileModal">
 				<div className="col-2" key={`${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="friendProfile"/></div>
 				<div className="col-8 m-0 mx-1 px-2 h6" id="friendNick">{person.nickname}</div>
-				<div className="col">
-					{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light" id="light-circle"/>}
-				</div>
+				<div className="col">{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light" id="light-circle"/>}</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="container p-2" id="menu">
-			<div className="col justify-content-center">
-				<img src={Profile(user[0]?.profile ? user[0].profile : 0)} className="row mx-auto my-3" alt="profile" id="menuGameProfile"/>
-				<div className="row h2 mx-4 p-2"  id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user[0]?.nickname}</div>
-				<label className="row mt-3" id="menuRecord">WIN : LOSE</label>
-				<div className="row h1 mb-4" id="winLose">{user[0]?.win} : {user[0]?.lose}</div>
-				<div className="row m-1 p-1" id="friendList">
-					{user[0] && user[0].newfriends?.map((people:Friend) => (NewList(people)))}
-					{user[0] && user[0].friends?.map((people:Friend) => (OldList(people, props.setClicked)))}
-				</div>
+		<div id="menuGame">
+			<img src={Profile(user?.profile ? user.profile : 0)} alt="profile" id="menuGameProfile"/>
+			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user?.nickname}</div>
+			<label id="menuRecord">WIN : LOSE</label>
+			<div className="h1" id="winLose">{user?.win} : {user?.lose}</div>
+			<div id="friendList">
+				{user && user.newfriends?.map((people:Friend) => (NewList(people)))}
+				{user && user.friends?.map((people:Friend) => (OldList(people, props.setClicked)))}
 			</div>
 		</div>
 	);
