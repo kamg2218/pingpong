@@ -1,6 +1,6 @@
 import {TypeOrmModuleOptions} from '@nestjs/typeorm';
 import dotenv from 'dotenv'
-const ENV = dotenv.config();
+const ENV = dotenv.config({path : './src/.env'});
 
 export const ormconfig : TypeOrmModuleOptions= {
    "type": "postgres",

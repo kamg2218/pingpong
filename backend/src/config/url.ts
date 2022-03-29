@@ -1,7 +1,6 @@
 // import { env } from "process";
 import dotenv from 'dotenv'
-const ENV = dotenv.config();
-
+const ENV = dotenv.config({path : './src/.env'});
 
 export const BACK_DOMAIN = ENV.parsed.BACK_DOMAIN
 const FRONT_URL = ENV.parsed.FRONT_URL

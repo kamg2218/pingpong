@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
-const ENV = dotenv.config();
+const ENV = dotenv.config({path : './src/.env'});
+
 
 export const jwtConstants = {
     secret : ENV.parsed.JWT_SECRET,
