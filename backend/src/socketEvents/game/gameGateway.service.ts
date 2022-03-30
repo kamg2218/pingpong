@@ -104,8 +104,6 @@ export class GameGatewayService {
 		let result = await this.getGameRoomInfo(gameRoom.roomid);
 		this.log(`${user.nickname} has created the GameRoom ${result.title}`);
 
-
-		console.log("create : ", typeof(gameRoom.roomid))
 		const game = new Game(gameRoom.roomid, gameRoom.speed);
 		game.joinAsPlayer(socket.id, user);
 		onlineGameMap[gameRoom.roomid] = game;
