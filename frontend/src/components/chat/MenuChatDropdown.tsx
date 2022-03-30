@@ -23,12 +23,7 @@ export default function MenuChatDropdown(props :any){
 	//exit the chatroom
 	const handleExit = () => {
 		socket.emit("exitChatRoom", { chatid: info.chatid }, (result:boolean)=>{
-			if (result === true){
-				const tmp:ChatData = chatroom;
-				tmp.order = tmp.order.filter((str:string) => str !== info.chatid);
-				tmp.chatroom = tmp.chatroom.filter((room:chatRoom) => room.chatid !== info.chatid);
-				dispatch(updateChat(tmp));
-			}
+			if (result === true){ props.handleExit(info.chatid); }
 		});
 	}
 

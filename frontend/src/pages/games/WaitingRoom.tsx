@@ -5,6 +5,7 @@ import { socket } from "../../socket/socket";
 import { gameRoomDetail } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
+import ProfileModal from "../../components/modals/ProfileModal";
 import "./waitingRoom.css"
 import Profile from "../../icons/Profile";
 
@@ -13,15 +14,21 @@ export default function WaitingRoom(){
 	const param:any = useParams();
 	const dispatch = useDispatch();
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const [clicked, setClicked] = useState<string>("");
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
 	useEffect(()=>{
 		console.log("waitingRoom");
+		if (param.id && param.id !== room.roomid){
+			socket.emit("exitGameRoom", {roomid: room.roomid});
+			dispatch(updateGameRoom(gameRoomInitialState));
+			setRoom(gameRoomInitialState);
+		}
 	}, []);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
-			<div className={`m-1 ${player ? "player" : "observer"}`} id={id}>
+			<div className={`m-1 ${player ? "player" : "observer"}`} id={id} onClick={()=>setClicked(id)} data-toggle="modal" data-target="#profileModal">
 				<img className="row mx-auto img-fluid img-thumbnail" src={profile} alt={id}></img>
 				<label className={`row justify-content-center my-1 ${player ? "h4" : "h6"}`}>{nick}</label>
 			</div>
@@ -34,6 +41,7 @@ export default function WaitingRoom(){
 		}
 		socket.emit("exitGameRoom", { roomid: room.roomid });
 		dispatch(updateGameRoom(gameRoomInitialState));
+		setRoom(gameRoomInitialState);
 		history.push("/game");
 		//check!!!
 		window.location.reload();
@@ -61,6 +69,7 @@ export default function WaitingRoom(){
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={room.players.length !== 2}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>
+			<ProfileModal userid={clicked}/>
 		</div>
 	);
 }

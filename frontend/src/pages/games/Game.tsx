@@ -53,8 +53,8 @@ export default function Game() {
 					history.replace("/game");
 				}
 			}else {
-				dispatch(updateGameRoom(msg));
 				setRoom(msg);
+				dispatch(updateGameRoom(msg));
 				// console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -67,7 +67,7 @@ export default function Game() {
 			console.log(msg);
 			if (msg.roomid !== tmp.roomid){
 				console.log("roomid is different!!");
-				return;
+				// return;
 			}
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
@@ -81,19 +81,19 @@ export default function Game() {
 			}
 			if (msg.deleteObserver) {
 				const observer:GameUser = msg.deleteObserver;
-				tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid !== observer.userid)
+				tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid !== observer.userid);
 			}
-			if (msg.addPlayers) {
-				const player:GameUser = msg.addPlayers;
+			if (msg.addPlayer) {
+				const player:GameUser = msg.addPlayer;
 				const idx:number = tmp.players.findIndex((person:GameUser)=>person.userid === player.userid);
 				if (idx === -1){ tmp.players.push(player); }
 			}
-			if (msg.deletePlayers) {
-				const player:GameUser = msg.deletePlayers;
+			if (msg.deletePlayer) {
+				const player:GameUser = msg.deletePlayer;
 				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
 			}
-			dispatch(updateGameRoom(tmp));
 			setRoom(tmp);
+			dispatch(updateGameRoom(tmp));
 		});
 		socket.on("exitGameRoom", () => {
 			dispatch(updateGameRoom(gameRoomInitialState));

@@ -53,7 +53,7 @@ export default function MenuChatBox(props :any){
 				</div>
 				{ !check && <div className="font-weight-light member" id="boxMembers">{size}</div> }
 			</div>
-			<MenuChatDropdown info={props.info} changeTitle={changeTitle}/>
+			<MenuChatDropdown info={props.info} changeTitle={changeTitle} handleExit={props.handleExit}/>
 		</li>
 	);
 }

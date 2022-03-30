@@ -15,13 +15,13 @@ export type chatRoom = {
 }
 export type InputChatRoom = {
 	chatid: string,
-	title: string,
-	addManager: Array<string>,
-	deleteManager: Array<string>,
-	enterUser: Array<ChatUser>,
-	exitUser: Array<string>,
-	lock: boolean,
-	type: string,
+	title?: string,
+	addManager?: Array<string>,
+	deleteManager?: Array<string>,
+	enterUser?: Array<ChatUser>,
+	exitUser?: Array<string>,
+	lock?: boolean,
+	type?: string,
 }
 export type ChatData = {
 	order: Array<string>,

@@ -5,17 +5,20 @@ import { RootState } from "../../redux/rootReducer";
 import { updateUser } from "../../redux/userReducer";
 import Profile from "../../icons/Profile"
 import "./MenuGame.css"
+import { useState } from "react";
 
 export default function MenuGame(props:any){
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
+	const [userState, setUser] = useState<User>(user);
 
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
 			socket.emit("newFriend", { userid: person.userid, result: result });
-			let tmp:User = user;
+			let tmp:User = userState;
 			tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
 			dispatch(updateUser(tmp));
+			setUser(tmp);
 		}
 		return (
 			<div id="newfriend" key={person.userid}>

@@ -15,8 +15,8 @@ export default function MenuPlay(){
 	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
 	const draw:draw = useSelector((state:RootState) => state.gameReducer.draw, shallowEqual);
 
-	const p1 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player1);
-	const p2 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player2);
+	const p1 = gameroom.players?.find((p:GameUser)=> p.userid === playroom.player1);
+	const p2 = gameroom.players?.find((p:GameUser)=> p.userid === playroom.player2);
 	const s1 = useState<number>(draw.left ? draw.left.score : 0);
 	const s2 = useState<number>(draw.right ? draw.right.score : 0);
 	

@@ -1,5 +1,6 @@
 import { shallowEqual, useSelector } from "react-redux";
 import { ChatData } from "../../types/chatTypes"
+import { useEffect, useState } from "react";
 import { RootState } from "../../redux/rootReducer";
 import Profile from "../../icons/Profile"
 
@@ -7,7 +8,13 @@ export default function ChatBox(props:any){
 	const chatRoom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const room = chatRoom.chatroom.find(data => data.chatid === props.chatid);
 	const member = room?.members.find(person => person.userid === props.userid);
+	const [time, setTime] = useState<string>("00:00");
 
+	useEffect(()=>{
+		if (time === "00:00"){
+			setTime(makeTime());
+		}
+	}, [time]);
 	const makeTime = () => {
 		if (!props.data || !props.data.createDate){ return "00:00"; }
 		let date:Date = new Date(props.data.createDate);
@@ -23,7 +30,7 @@ export default function ChatBox(props:any){
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
 					<div className="row col-12" id="chatboxcontent">{props.data.contents}</div>
-					<div className="row col-12 small text-muted">{makeTime()}</div>
+					<div className="row col-12 small text-muted">{time}</div>
 				</div>
 			</div>
 		</div>
