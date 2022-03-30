@@ -150,7 +150,7 @@ export class Game {
             throw new Error("The room is already full");
         this.participants.push(socketid);
         this.changeGameRoom(socketid, {
-            addPlayers : {...repo_user.getSimpleInfo(user)},
+            addPlayer : {...repo_user.getSimpleInfo(user)},
         });
     }
 
@@ -181,6 +181,7 @@ export class Game {
         }
         else
             isPlayer = false;
+        console.log("isplayer : ", isPlayer);
         this.removeFromParticipants(socketid);
         let updateInfo;
         if (!isPlayer)

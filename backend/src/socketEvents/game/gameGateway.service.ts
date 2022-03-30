@@ -195,7 +195,6 @@ export class GameGatewayService {
 	}
 
 	public async delegateAuthority(gameRoom: GameRoom) {
-		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		let indexNewOwner;
 		gameRoom.members.map(member => {

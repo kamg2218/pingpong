@@ -1,5 +1,5 @@
 import { RoomMode } from "src/type/RoomMode.type";
-import { AfterInsert, AfterLoad, AfterUpdate, Column, Connection, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ChatBanList } from "./ChatBanList.entity";
 import { ChatHistory } from "./ChatHistory.entity";
 import { ChatMembership } from "./ChatMembership.entity";
