@@ -248,7 +248,7 @@ export class Game {
             y : this.right.y,
             width : this.right.width,
             height : this.right.height,
-            score: this.right.score,
+            // score: this.right.score,
         }
     };
 
@@ -259,7 +259,7 @@ export class Game {
             y : this.left.y,
             width : this.left.width,
             height : this.left.height,
-            score : this.left.score
+            // score : this.left.score
         }
     };
 
