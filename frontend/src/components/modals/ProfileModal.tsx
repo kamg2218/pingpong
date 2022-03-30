@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { gameRoom } from "../../types/gameTypes";
-import { ProfileUser } from "../../types/userTypes";
+import { ProfileUser, User } from "../../types/userTypes";
 import { RootState } from "../../redux/rootReducer";
 import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
@@ -14,6 +14,7 @@ export default function ProfileModal(props: any) {
 	const userid:string = props.userid;
 	const [profile, setProfile] = useState<ProfileUser>();
 	const button:string = "row w-75 my-1 btn modal-button";
+	const user:User = useSelector((state:RootState)=>state.userReducer.user, shallowEqual);
 	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	let buttonFriend:string = button;
 
@@ -29,9 +30,12 @@ export default function ProfileModal(props: any) {
 	}, [profile, userid]);
 	
 	const handleChat = () => {
+		if (userid === user.userid){
+			return ;
+		}
 		socket.emit("createChatRoom", {
 			type: "private",
-			member: [profile?.userid]
+			member: [userid]
 		}, (chatid: string)=>{
 			console.log(chatid);
 			if (chatid !== ''){
@@ -39,8 +43,16 @@ export default function ProfileModal(props: any) {
 			}
 		})
 	}
-	const handleMatch = () => { socket.emit("matchRequest", { userid: profile?.userid }) }
+	const handleMatch = () => {
+		if (userid === user.userid){
+			return ;
+		}
+		socket.emit("matchRequest", { userid: profile?.userid });
+	}
 	const handleFriend = () => {
+		if (userid === user.userid){
+			return ;
+		}
 		if (profile?.friend){
 			socket.emit("deleteFriend", { userid: profile.userid })
 			buttonFriend = button;
@@ -50,6 +62,9 @@ export default function ProfileModal(props: any) {
 		}
 	}
 	const handleBlock = () => {
+		if (userid === user.userid){
+			return ;
+		}
 		if (profile?.block){ socket.emit("unblockFriend", { userid: profile.userid }) }
 		else { socket.emit("blockFriend", { userid: profile?.userid }) }
 		socket.emit("opponentProfile", { userid: props.userid });
