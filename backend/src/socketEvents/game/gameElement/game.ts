@@ -211,9 +211,6 @@ export class Game {
     };
 
     public announce(event : string, data : any) {
-        console.log("online==");
-        onlineManager.print()
-        console.log("member : ", this.participants);
         this.participants.map(socketid=>{
              Game.server.to(socketid).emit(event, data);
         })
@@ -452,8 +449,13 @@ export class Game {
 
     private checkPositionOfBall(){
         const result = this.ball.doesNeedToResetTurn();
-        if (result.x)
+        if (result.x) {
             this.resetTurn(result.winner, result.loser);
+            this.announce("score", {
+                left : this.left.score,
+                right : this.right.score,
+            });
+        }
     }
 
     public chagnePlayersDirection(userid : string, direction : string) {
@@ -478,8 +480,9 @@ export class Game {
     }
 
     private resetTurn(winner : string, loser : string) {
-        delete this.ball;
-        this.ball = new Ball(this.speed);
+        // delete this.ball;
+        // this.ball = new Ball(this.speed);
+        this.ball.reset(this.speed);
         this.turn = loser;
         this[winner].score++;
         // //temp
@@ -542,8 +545,8 @@ export class Game {
             right : this.drawRight,
             left : this.drawLeft,
         });
-        const winnerUserInfo =  await getCustomRepository(UserRepository).findOne(this.winner);
-        this.announce("gameResult", {winner : winnerUserInfo.nickname});
+        const winnerUserInfo =  await getCustomRepository(UserRepository).findOne(this.winner); //check 수정필요
+        this.announce("gameResult", {winner : winnerUserInfo.userid});
         this.right.ready = false;
         this.left.ready = false;
     }

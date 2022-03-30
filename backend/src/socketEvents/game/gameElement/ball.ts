@@ -2,6 +2,7 @@ import { canvas } from "./canvas";
 import { DIRECTION } from "./direction";
 import { Pos } from "./pos";
 
+const speedPercent : Array<number> = [2,3,4];
 export class Ball extends Pos {
     constructor(speed : number) {
         const r =  (canvas.heightPercent(1));
@@ -12,11 +13,7 @@ export class Ball extends Pos {
             dirY : DIRECTION.IDLE,
             width : r,
             height : r,
-            speed : (canvas.heightPercent(2))});
-        if (speed === 2)
-            this.speed = canvas.heightPercent(3);
-        else if (speed === 3)
-            this.speed = canvas.heightPercent(4);
+            speed : (canvas.heightPercent(speedPercent[speed]))});
     }
 
     set radius(value : number) {
@@ -107,12 +104,6 @@ export class Ball extends Pos {
         this.dirY = [DIRECTION.UP, DIRECTION.DOWN][Math.round(Math.random())];
         this.width = r;
         this.height = r;
-        this.speed = (canvas.heightPercent(0.5));
-        if (speed === 2)
-            this.speed = canvas.heightPercent(0.7);
-        else if (speed === 3)
-            this.speed = canvas.heightPercent(0.9);
+        this.speed = canvas.heightPercent(speedPercent[speed]);
     }
-
-
 }
