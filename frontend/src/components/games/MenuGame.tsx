@@ -31,9 +31,12 @@ export default function MenuGame(props:any){
 	}
 
 	const OldList = (person: Friend, setClicked: Function) => {
-		const handleClick = () => { setClicked(person.userid); }
+		const handleProfileClick = () => {
+			setClicked(person.userid);
+			socket.emit("opponentProfile", { userid: person.userid });
+		}
 		return (
-			<div id="oldfriend" key={person.userid} onClick={handleClick} data-toggle="modal" data-target="#profileModal">
+			<div id="oldfriend" key={person.userid} onClick={handleProfileClick} data-toggle="modal" data-target="#profileModal">
 				<div className="col-2" key={`${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="friendProfile"/></div>
 				<div className="col-8 m-0 mx-1 px-2 h6" id="friendNick">{person.nickname}</div>
 				<div className="col">{person.onoff ? <div className="circle bg-danger"/> : <div className="circle bg-light" id="light-circle"/>}</div>

@@ -82,10 +82,10 @@ export default function ProfileModal(props: any) {
 							<div className="row text-center">
 								<div className="col-4">
 									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 0)} alt="profile" id="modalProfile"/></div>
-									<div className={button} onClick={handleChat} data-dismiss="modal"> 1 : 1 채팅</div>
-									<div className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#loadingModal">대전 신청</div>
-									<div className={buttonFriend} onClick={handleFriend} data-dismiss="modal">{profile?.friend ? "친구 삭제" : "친구 추가"}</div>
-									<div className={button} onClick={handleBlock} data-dismiss="modal">{profile?.block ? "차단 해제" : "차단"}</div>
+									<button className={button} onClick={handleChat} data-dismiss="modal" disabled={userid===user.userid}> 1 : 1 채팅</button>
+									<button className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#loadingModal" disabled={userid===user.userid}>대전 신청</button>
+									<button className={buttonFriend} onClick={handleFriend} data-dismiss="modal" disabled={userid===user.userid}>{profile?.friend ? "친구 삭제" : "친구 추가"}</button>
+									<button className={button} onClick={handleBlock} data-dismiss="modal" disabled={userid===user.userid}>{profile?.block ? "차단 해제" : "차단"}</button>
 								</div>
 								<div className="col">
 									<div className="row h4"><div className="py-1" id="profileNickname">{profile ? profile.nickname : "unknown"}</div></div>
