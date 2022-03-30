@@ -30,7 +30,7 @@ export default function Main(){
   		  }
   		}
 		}).catch((err)=>{ console.log(err); })
-	}, [gameroom]);
+	}, [check, dispatch, gameroom]);
 
 	const handleInput = (event:any) => { setNick(event.target.value); }
 	const handleTest = () => {
