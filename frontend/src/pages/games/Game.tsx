@@ -13,7 +13,7 @@ import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
 import {updateUser} from "../../redux/userReducer"
 import {RootState} from "../../redux/rootReducer"
-import { gameRoomInitialState, undefinedList, updateGameRoom } from "../../redux/gameReducer"
+import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
 import "./Game.css"
 import logo from "../../icons/logo_brown_profile.png"
 
@@ -102,11 +102,11 @@ export default function Game() {
 		});
 		socket.on("startGame", (msg:any) => {
 			console.log("start game!");
+			console.log(msg);
 			if (msg.result) {
 				alert("failed to play the game!");
 			} else {
-				dispatch(updateGameRoom(msg));
-				setRoom(gameRoomInitialState);
+				dispatch(updatePlayRoom(msg));
 				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
@@ -114,7 +114,7 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [chatroom, room, history, playroom, user]);
+	}, [chatroom, room, history, playroom, user, dispatch]);
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">

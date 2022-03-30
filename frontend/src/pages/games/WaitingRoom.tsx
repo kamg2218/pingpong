@@ -83,7 +83,7 @@ export default function WaitingRoom(){
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>
-			<ProfileModal userid={clicked}/>
+			<ProfileModal userid={clicked} disabled={clicked===user.userid}/>
 		</div>
 	);
 }

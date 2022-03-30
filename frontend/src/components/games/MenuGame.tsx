@@ -43,11 +43,14 @@ export default function MenuGame(props:any){
 			</div>
 		);
 	}
+	const handleMyProfileClick = () => {
+		socket.emit("userInfo");
+	}
 
 	return (
 		<div id="menuGame">
 			<img src={Profile(user?.profile ? user.profile : 0)} alt="profile" id="menuGameProfile"/>
-			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal">{user?.nickname}</div>
+			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal" onClick={handleMyProfileClick}>{user?.nickname}</div>
 			<label id="menuRecord">WIN : LOSE</label>
 			<div className="h1" id="winLose">{user?.win} : {user?.lose}</div>
 			<div id="friendList">

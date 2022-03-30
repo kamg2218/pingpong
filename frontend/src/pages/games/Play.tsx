@@ -33,7 +33,7 @@ export default function Play(){
 			console.log(err);
 			history.replace("/");
 		});
-	}, [history]);
+	}, [checkUrl, dispatch, gameroom.roomid, history]);
 
 	return (
 		<div className="container-fluid m-0 p-0" id="playroom">
