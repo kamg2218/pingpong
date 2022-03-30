@@ -248,7 +248,7 @@ export class Game {
             y : this.right.y,
             width : this.right.width,
             height : this.right.height,
-            score: this.right.score,
+            // score: this.right.score,
         }
     };
 
@@ -259,7 +259,7 @@ export class Game {
             y : this.left.y,
             width : this.left.width,
             height : this.left.height,
-            score : this.left.score
+            // score : this.left.score
         }
     };
 
@@ -296,12 +296,8 @@ export class Game {
         // this.right.height = canvas.height; //temp
         this.resetGame();
         this.ball.reset(this.speed);
-        this.announce("startGame", {
-            roomid : this.roomid,
-            score : this.score,
-            left : this.left.id,
-            right : this.right.id,
-        });
+        await this.sendInitialInfo();
+       
         this.running = true;
         this.startTime = new Date();
         await this.readyCount();
@@ -313,6 +309,18 @@ export class Game {
         // await this.counting(3);
         // await this.counting(2);
         await this.counting(1);
+    }
+
+    private async sendInitialInfo() {
+        const repo_user = getCustomRepository(UserRepository);
+        const left = await repo_user.findOne(this.left.id);
+        const right = await repo_user.findOne(this.right.id);
+        this.announce("startGame", {
+            roomid : this.roomid,
+            score : this.score,
+            left : repo_user.getSimpleInfo(left),
+            right : repo_user.getSimpleInfo(right),
+        });
     }
 
     private counting(count : number) {
