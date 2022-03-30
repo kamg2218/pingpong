@@ -181,12 +181,11 @@ export class Game {
         }
         else
             isPlayer = false;
-        console.log("isplayer : ", isPlayer);
         this.removeFromParticipants(socketid);
         let updateInfo;
         if (!isPlayer)
             updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
-        else (isPlayer)
+        else
             updateInfo = {deletePlayer : repo_user.getSimpleInfo(user)};
         this.changeGameRoom(socketid, updateInfo);
         if (isPlayer && this.running)
