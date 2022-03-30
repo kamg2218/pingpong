@@ -75,6 +75,7 @@ export class GameGateway {
             return this.over("createGameRoom");
         }
         const roomInfo = await this.gameGatewayService.createAndEnterGameRoom(socket, user, payload);
+        console.log("roominfo : ", roomInfo);
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
         return this.over("createGameRoom");
     }
@@ -93,6 +94,7 @@ export class GameGateway {
             return this.over("enterGameRoom");
         }
         const roomInfo = await this.gameGatewayService.enterGameRoom(socket.id, user, validateResult.gameRoom, payload);
+        console.log("roominfo : ", roomInfo);
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
         return this.over("enterGameRoom");
     }
