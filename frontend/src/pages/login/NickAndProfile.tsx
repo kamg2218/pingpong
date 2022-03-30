@@ -25,6 +25,7 @@ export default function NickAndProfile(){
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	
+	const checkUrl:string = "/user/check";
 	const doubleCheck:string = "중복 확인 해주세요!";
 	const possible:string = "사용 가능한 닉네임입니다.";
 	const impossible:string = "사용 불가능한 닉네임입니다.";
