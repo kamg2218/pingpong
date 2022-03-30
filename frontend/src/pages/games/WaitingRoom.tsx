@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
+import { User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
@@ -13,6 +14,7 @@ export default function WaitingRoom(){
 	const history = useHistory();
 	const param:any = useParams();
 	const dispatch = useDispatch();
+	const user:User = useSelector((state:RootState)=>state.userReducer.user);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const [clicked, setClicked] = useState<string>("");
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
@@ -24,7 +26,7 @@ export default function WaitingRoom(){
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
 		}
-	}, []);
+	}, [dispatch, param.id, room.roomid]);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
@@ -33,6 +35,14 @@ export default function WaitingRoom(){
 				<label className={`row justify-content-center my-1 ${player ? "h4" : "h6"}`}>{nick}</label>
 			</div>
 		);
+	}
+	const checkStartButton = () => {
+		if (room.manager !== user.userid){
+			return true;
+		}else if (room.players.length !== 2){
+			return true;
+		}
+		return false;
 	}
 	const handleStart = () => { socket.emit("startGame", { roomid: room.roomid }); }
 	const handleExit = () => {
@@ -66,7 +76,7 @@ export default function WaitingRoom(){
 				<div className="col mx-1" id="waitingRoomObserver">{room.observer[4] ? profileBox(room.observer[4].userid, Profile(room.observer[4].profile), room.observer[4].nickname, false):""}</div>
 			</div>
 			<div className="row mx-3 my-2" id="waitingRoomBtns">
-				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={room.players.length !== 2}>Start</button>
+				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>
 			<ProfileModal userid={clicked}/>
