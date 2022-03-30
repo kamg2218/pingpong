@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { draw, gameRoomDetail, GameUser, playRoom } from "../../types/gameTypes";
+import { draw, gameRoomDetail, playRoom } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
 import { updateDraw, updateGameResult } from "../../redux/gameReducer";
 import "./PlayRoom.css"
@@ -20,20 +20,21 @@ export default function PlayRoom() {
 	const canvas = useRef<null | HTMLCanvasElement>(null);
 	const [drawState, setDraw] = useState<draw>(draw);
 	const [win, setWinner] = useState<string>(winner);
-	// const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
 	useEffect(() => {
-		console.log("PlayRoom");
+		// console.log("PlayRoom");
 		if (start[0] && gameDoing) { gameDoing.current?.focus(); }
 		socket.on("draw", (data: draw) => {
 			dispatch(updateDraw(data));
 			setDraw(data);
 		});
 		socket.on("gameResult", (data: any) => {
+			console.log("gameResult");
+			console.log(data);
 			dispatch(updateGameResult(data.winner));
 			setWinner(data.winner);
 		});
-	}, [drawState, start, canvas, win]);
+	}, [drawState, start, canvas, win, dispatch]);
 
 	const drawCanvas = () => {
 		const ctx = canvas?.current?.getContext("2d");
@@ -47,7 +48,7 @@ export default function PlayRoom() {
 			ctx.lineWidth = 0.5;
 			ctx.stroke();
 
-			if (ctx && win[0]) { drawWinner(ctx) }
+			if (ctx && win) { drawWinner(ctx) }
 			else { drawPlay(ctx) }
 		}
 
@@ -60,14 +61,13 @@ export default function PlayRoom() {
 	const drawWinner = (ctx: CanvasRenderingContext2D) => {
 		const width: number = drawState.background?.width / 2;
 		const height: number = drawState.background?.height / 2;
-		// const player:GameUser | undefined = gameroom.players.find((user: GameUser) => user.userid === win);
 
 		ctx.textAlign = "center";
 		ctx.font = "80px verdana bold";
 		ctx.fillStyle = "steelblue";
 		if (user.userid === win) { ctx.fillText("WIN", width, height); }
 		else if (gameroom.isPlayer) { ctx.fillText("LOSE", width, height); }
-		else { ctx.fillText(win === gameroom.players[0].userid ? gameroom.players[0].nickname:gameroom.players[1].nickname, width, height); }
+		else { ctx.fillText(win === gameroom.players[0].userid ? gameroom.players[0].nickname : gameroom.players[1].nickname, width, height); }
 	}
 	const drawPlay = (ctx: CanvasRenderingContext2D) => {
 		//ball

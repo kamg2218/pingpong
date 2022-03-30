@@ -29,8 +29,12 @@ export default function WaitingRoom(){
 	}, [dispatch, param.id, room.roomid]);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
+		const handleProfileClick = () => {
+			setClicked(id);
+			socket.emit("opponentProfile", { userid: id });
+		}
 		return (
-			<div className={`m-1 ${player ? "player" : "observer"}`} id={id} onClick={()=>setClicked(id)} data-toggle="modal" data-target="#profileModal">
+			<div className={`m-1 ${player ? "player" : "observer"}`} id={id} onClick={handleProfileClick} data-toggle="modal" data-target="#profileModal">
 				<img className="row mx-auto img-fluid img-thumbnail" src={profile} alt={id}></img>
 				<label className={`row justify-content-center my-1 ${player ? "h4" : "h6"}`}>{nick}</label>
 			</div>
@@ -79,7 +83,7 @@ export default function WaitingRoom(){
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>
-			<ProfileModal userid={clicked}/>
+			<ProfileModal userid={clicked} disabled={clicked===user.userid}/>
 		</div>
 	);
 }

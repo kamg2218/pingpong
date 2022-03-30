@@ -22,13 +22,9 @@ export default function MyProfileModal(props: any) {
 
 	const handleInput = (event:any) => { setNum(event.target.value); }
 	const checkToken = ():boolean => {
-		if (num.length !== 6){
-			return false;
-		}
+		if (num.length !== 6){ return false; }
 		for (let i = 0; i < num.length; i++){
-			if (isNaN(parseInt(num[i]))){
-				return false;
-			}
+			if (isNaN(parseInt(num[i]))){ return false; }
 		}
 		return true;
 	}
