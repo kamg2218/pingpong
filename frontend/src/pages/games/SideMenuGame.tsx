@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { Link, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
@@ -9,12 +9,9 @@ import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
 import { initialize, updateUser } from "../../redux/userReducer";
 import MenuGame from "../../components/games/MenuGame"
-import ProfileModal from "../../components/modals/ProfileModal";
-import MyProfileModal from "../../components/modals/MyProfileModal";
 
 export default function SideMenuGame(){
 	const history = useHistory();
-	const [clicked, setClicked] = useState<string>("");
 	const checkUrl:string = BACK_URL + "/user/check";
 
 	const dispatch = useDispatch();
@@ -72,7 +69,7 @@ export default function SideMenuGame(){
 			if (data.profile){ tmp.profile = data.profile; }
 			dispatch(updateUser(tmp));
 		});
-	}, [checkUrl, gameroom, history, user]);
+	}, [checkUrl, dispatch, gameroom, history, user]);
 	return (
 		<div id="gameTab">
 			<div className="row">
@@ -83,9 +80,7 @@ export default function SideMenuGame(){
 					<Link to={`/game/chat${gameroom.roomid !== "" ? `/waiting/${gameroom.roomid}`: ""}`} className="text-decoration-none text-reset">chat</Link>
 				</div>
 			</div>
-			<div className="row" id="nav-game"><MenuGame setClicked={setClicked}/></div>
-			<MyProfileModal setClicked={setClicked}/>
-			<ProfileModal userid={clicked}/>
+			<div className="row" id="nav-game"><MenuGame/></div>
 		</div>
 	);
 }
