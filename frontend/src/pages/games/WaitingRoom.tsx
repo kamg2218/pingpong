@@ -6,7 +6,6 @@ import { User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer";
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
-import ProfileModal from "../../components/modals/ProfileModal";
 import "./waitingRoom.css"
 import Profile from "../../icons/Profile";
 
@@ -16,7 +15,6 @@ export default function WaitingRoom(){
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState)=>state.userReducer.user);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-	const [clicked, setClicked] = useState<string>("");
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
 	useEffect(()=>{
@@ -30,7 +28,6 @@ export default function WaitingRoom(){
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		const handleProfileClick = () => {
-			setClicked(id);
 			socket.emit("opponentProfile", { userid: id });
 		}
 		return (
@@ -83,7 +80,6 @@ export default function WaitingRoom(){
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
 			</div>
-			<ProfileModal userid={clicked} disabled={clicked===user.userid}/>
 		</div>
 	);
 }

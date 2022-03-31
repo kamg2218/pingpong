@@ -9,40 +9,27 @@ import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
 
-export default function ProfileModal(props: any) {
+export default function ProfileModal() {
 	const history = useHistory();
-	const userid:string = props.userid;
 	const [profile, setProfile] = useState<ProfileUser>();
-	const button:string = "row w-75 my-1 btn modal-button";
 	const user:User = useSelector((state:RootState)=>state.userReducer.user, shallowEqual);
 	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const disabled:boolean = profile ? profile.userid === user.userid : false;
+	const button:string = "row w-75 my-1 btn modal-button";
 	let buttonFriend:string = button;
-	// const [disabled, setDisabled] = useState<boolean>(user.userid===userid);
-	const disabled:boolean = props.disabled;
 	
 	useEffect(() => {
-		console.log(userid, user.userid);
-		console.log(userid === user.userid);
-		if (userid && !profile) {
-			console.log("opponent Profile");
-			socket.emit("opponentProfile", { userid: userid });
-		}
-		// const handleDisabled = () => {
-		// 	if (userid === user.userid){ setDisabled(true); }
-		// 	return setDisabled(false);
-		// }
 		socket.on("opponentProfile", (data:ProfileUser) => {
 			console.log(`opponent = `, data);
 			setProfile(data);
-			// handleDisabled();
 		});
-	}, [profile, user, userid]);
+	}, [profile, user]);
 	
 	const handleChat = () => {
-		if (disabled){ return ; }
+		if (disabled || !profile){ return ; }
 		socket.emit("createChatRoom", {
 			type: "private",
-			member: [userid]
+			member: [profile?.userid]
 		}, (chatid: string)=>{
 			console.log(chatid);
 			if (chatid !== ''){
@@ -51,13 +38,13 @@ export default function ProfileModal(props: any) {
 		})
 	}
 	const handleMatch = () => {
-		if (disabled){ return ; }
+		if (disabled || !profile){ return ; }
 		socket.emit("matchRequest", { userid: profile?.userid });
 	}
 	const handleFriend = () => {
-		if (disabled){ return ; }
+		if (disabled || !profile){ return ; }
 		if (profile?.friend){
-			socket.emit("deleteFriend", { userid: profile.userid })
+			socket.emit("deleteFriend", { userid: profile?.userid })
 			buttonFriend = button;
 		}else{
 			socket.emit("addFriend", { userid: profile?.userid })
@@ -65,10 +52,9 @@ export default function ProfileModal(props: any) {
 		}
 	}
 	const handleBlock = () => {
-		if (disabled){ return ; }
-		if (profile?.block){ socket.emit("unblockFriend", { userid: profile.userid }) }
+		if (disabled || !profile){ return ; }
+		if (profile?.block){ socket.emit("unblockFriend", { userid: profile?.userid }) }
 		else { socket.emit("blockFriend", { userid: profile?.userid }) }
-		socket.emit("opponentProfile", { userid: props.userid });
 	}
 	return (
 		<div className="modal fade" id="profileModal" role="dialog" tabIndex={-1} aria-labelledby="ProfileModalLabel" aria-hidden="true">
