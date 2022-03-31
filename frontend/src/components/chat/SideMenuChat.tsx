@@ -55,17 +55,17 @@ export default function SideMenuChat(){
 			dispatch(updateChat(data));
 			setRoom(data);
 		});
-		socket.on("enterChatRoom", (data:chatRoom)=>{
-			console.log("enter chat room!!");
-			// console.log(data);
-			const tmp:ChatData = room;
-			if (tmp.order.indexOf(data.chatid) === -1){
-				tmp.order.push(data.chatid);
-				tmp.chatroom.push(data);
-				dispatch(updateChat(tmp));
-				setRoom(tmp);
-			}
-		});
+		// socket.on("enterChatRoom", (data:chatRoom)=>{
+		// 	console.log("enter chat room!!");
+		// 	// console.log(data);
+		// 	const tmp:ChatData = room;
+		// 	if (tmp.order.indexOf(data.chatid) === -1){
+		// 		tmp.order.push(data.chatid);
+		// 		tmp.chatroom.push(data);
+		// 		dispatch(updateChat(tmp));
+		// 		setRoom(tmp);
+		// 	}
+		// });
 		socket.on("updateChatRoom", (data:InputChatRoom)=>{
 			console.log("update Chat Room!");
 			// console.log(data);
@@ -92,7 +92,7 @@ export default function SideMenuChat(){
 			dispatch(updateChat(tmp));
 			setRoom(tmp);
 		});
-	}, [chatroom, checkUrl, gameroom, history]);
+	}, [chatroom, checkUrl, dispatch, gameroom, history, room]);
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();

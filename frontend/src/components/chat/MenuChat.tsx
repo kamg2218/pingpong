@@ -16,7 +16,19 @@ export default function MenuChat(){
 	useEffect(()=>{
 		console.log("MenuChat");
 		// console.log(chatroom);
-	}, [room]);
+		socket.on("enterChatRoom", (data:chatRoom)=>{
+			console.log("enter chat room!!");
+			// console.log(data);
+			const tmp:ChatData = room;
+			console.log(tmp.order.indexOf(data.chatid));
+			if (tmp.order.indexOf(data.chatid) === -1){
+				tmp.order.push(data.chatid);
+				tmp.chatroom.push(data);
+				dispatch(updateChat(tmp));
+				setRoom(tmp);
+			}
+		});
+	}, [dispatch, room]);
 	const handlePublic = () => { socket.emit("publicChatRoom"); }
 	const handleExit = (id: string) => {
 		const tmp:ChatData = chatroom;
@@ -34,7 +46,7 @@ export default function MenuChat(){
 			</div>
 			<div id="chatBoxList">
 				<ul id="chatBoxUl" className="col">
-					{chatroom && chatroom.chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} handleExit={handleExit}/>)}
+					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} handleExit={handleExit}/>)}
 				</ul>
 			</div>
 			<AddChatModal></AddChatModal>

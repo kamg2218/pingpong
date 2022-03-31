@@ -6,9 +6,8 @@ import "./chat.css";
 import { useEffect, useState } from 'react';
 
 export default function MyChatBox(props:any){
-	const [time, setTime] = useState<string>("00:00");
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-
+	
 	const makeTime = () => {
 		if (!props.data || !props.data.createDate){ return "00:00"; }
 		let date:Date = new Date(props.data.createDate);
@@ -17,12 +16,13 @@ export default function MyChatBox(props:any){
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return (`${hour}:${minutes}`);
 	}
+	const [time, setTime] = useState<string>(makeTime());
 
-	useEffect(()=>{
-		if (time === "00:00"){
-			setTime(makeTime());
-		}
-	}, [time]);
+	// useEffect(()=>{
+	// 	if (time === "00:00"){
+	// 		setTime(makeTime());
+	// 	}
+	// }, []);
 
 	return (
 		<div className="container m-0 p-0" key={`${props.chatid}mychatbox${props.idx}`} id={props.idx}>

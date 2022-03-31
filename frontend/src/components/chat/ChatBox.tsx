@@ -14,7 +14,7 @@ export default function ChatBox(props:any){
 		if (time === "00:00"){
 			setTime(makeTime());
 		}
-	}, [time]);
+	}, []);
 	const makeTime = () => {
 		if (!props.data || !props.data.createDate){ return "00:00"; }
 		let date:Date = new Date(props.data.createDate);

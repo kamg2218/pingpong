@@ -40,20 +40,24 @@ export default function ChatRoom(props:any){
 				return ;
 			}
 			console.log(data);
-			const chat:ChatHistory = chatHistory;
-			if (chat){
-				chat.list.push(data);
-				dispatch(updateHistory(chat));
-				setHistory(chat);
+			const hisChat:ChatHistory = chatHistory;
+			if (hisChat.chatid === history.chatid){
+				const idx:number = hisChat.list.findIndex((msg:ChatBlock)=>msg.createDate === data.createDate && msg.userid === data.userid);
+				if (idx === -1){
+					hisChat.list.push(data);
+					dispatch(updateHistory(hisChat));
+					setHistory(hisChat);
+				}
 			}
 		})
-	}, [chatid, history, chat]);
+	}, [chatid, history, chat, dispatch, chatHistory]);
 
 	const handleInputChange = (e :any) => { setChat(e.target.value); }
 	const handleSendBtn = () => {
 		if (chat === ""){
 			return ;
 		}
+		console.log("chatMessage emit!");
 		socket.emit("chatMessage", {
 			chatid: chatid,
 			contents: chat,
@@ -61,6 +65,7 @@ export default function ChatRoom(props:any){
 			if (result === false){
 				alert("mute!!!");
 			}
+			console.log("reload!!!");
 			setChat("");
 			window.location.reload();
 			// chatInput.current?.reset();
@@ -93,7 +98,7 @@ export default function ChatRoom(props:any){
 				<div className="row m-1 mt-2" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0 mt-3" id="chatlist">
 					<div className="col my-1">
-						{history && history.list && history.list.map((data:ChatBlock, idx:number)=>{
+						{chatHistory && chatHistory.list && chatHistory.list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.contents}`);
 							if (data.userid === user.userid)
 								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
