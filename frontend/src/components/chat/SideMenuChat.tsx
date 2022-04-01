@@ -25,10 +25,10 @@ export default function SideMenuChat(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const [room, setRoom] = useState<ChatData>(chatroom);
 
-	useEffect(()=>{
+  useEffect(()=>{
 		const url:string = history.location.pathname;
 		const idx:number = url.search("wait");
-
+		
 		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
 			if (res.state){
   		  if (res.state === "playing" && gameroom.roomid){
