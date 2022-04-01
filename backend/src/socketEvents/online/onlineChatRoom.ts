@@ -53,7 +53,7 @@ export class onlineChatRoom {
         console.log("[AN] members :", this.members);
         this.members.map((socketid)=>{
             let userid = onlineManager.userIdOf(socketid);
-            console.log(`[announce] Sent to ${userid}`)
+            console.log(`[announce] Sent to ${socketid}`);
             onlineChatRoom.server.to(socketid).emit(event, payload);
         });
     }
