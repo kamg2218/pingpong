@@ -65,12 +65,9 @@ export default function Game() {
 		});
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
-			console.log(room);
-			console.log(msg);
-			if (msg.roomid !== tmp.roomid){
-				console.log("roomid is different!!");
-				// return;
-			}
+			console.log("changeGameRoom");
+			// console.log(room);
+			// console.log(msg);
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
 			if (msg.speed) {tmp.speed = msg.speed;}

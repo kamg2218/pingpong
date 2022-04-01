@@ -29,12 +29,12 @@ export default function PlayRoom() {
 			setDraw(data);
 		});
 		socket.on("gameResult", (data: any) => {
-			console.log("gameResult");
+			console.log("gameResult", gameroom.isPlayer);
 			console.log(data);
 			dispatch(updateGameResult(data.winner));
 			setWinner(data.winner);
 		});
-	}, [drawState, start, canvas, win, dispatch]);
+	}, [drawState, start, canvas, win, dispatch, gameroom.isPlayer]);
 
 	const drawCanvas = () => {
 		const ctx = canvas?.current?.getContext("2d");
@@ -67,7 +67,7 @@ export default function PlayRoom() {
 		ctx.fillStyle = "steelblue";
 		if (user.userid === win) { ctx.fillText("WIN", width, height); }
 		else if (gameroom.isPlayer) { ctx.fillText("LOSE", width, height); }
-		else { ctx.fillText(win === gameroom.players[0].userid ? gameroom.players[0].nickname : gameroom.players[1].nickname, width, height); }
+		else { ctx.fillText(win === playroom.left.userid ? playroom.left.nickname : playroom.right.nickname, width, height); }
 	}
 	const drawPlay = (ctx: CanvasRenderingContext2D) => {
 		//ball

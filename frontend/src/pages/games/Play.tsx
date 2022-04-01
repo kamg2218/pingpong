@@ -27,6 +27,9 @@ export default function Play(){
 				}else if (res.state === "login"){
 					dispatch(initialize());
 					history.replace("/game");
+				}else if (res.state === "logout"){
+					dispatch(initialize());
+					history.replace("/");
 				}
   		}
 		}).catch((err)=>{
