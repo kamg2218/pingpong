@@ -8,6 +8,8 @@ import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/typeorm';
 import { BlockedFriends, Friends, User } from './db/entity/User/UserEntity';
 
+const { instrument } = require("@socket.io/admin-ui");
+
 AdminJS.registerAdapter({Database, Resource});
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -39,10 +41,10 @@ async function bootstrap() {
       transform : true
     })
   )
-  // app.enableCors({
-  //   origin : CORS_ORIGIN,
-  //   credentials : true,
-  // });
+  app.enableCors({
+    origin : ["https://admin.socket.io"],
+    credentials : true,
+  });
 
   // console.log(ENV.parsed);
   await app.listen(4242);

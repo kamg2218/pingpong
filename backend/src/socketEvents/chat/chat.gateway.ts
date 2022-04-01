@@ -16,7 +16,7 @@ import { CORS_ORIGIN } from 'src/config/url';
 
 const options = {
   cors : {
-      origin : CORS_ORIGIN,
+      origin : ["https://admin.socket.io"],
       credentials : true,
   }
 }
@@ -44,6 +44,11 @@ export class ChatGateway {
 }
   private over(gateway : string) {
     // console.log(`[${gateway} is over]---------\n`);
+  }
+  @SubscribeMessage('test')
+  async test(@ConnectedSocket() socket: AuthSocket) {
+    socket.emit("test", "hi")
+
   }
 
   // 유저가 참여한 채팅방 조회 : 현재 유저가 참여한 채팅방만 조회
@@ -384,7 +389,6 @@ export class ChatGateway {
       console.log("roomt type1");
       room.sayToRoom(socket, {...payload, time});
     }
-      
     else {
       console.log("room type2");
       room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, contents : payload.contents, createdDate : time}); 

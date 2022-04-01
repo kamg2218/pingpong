@@ -14,9 +14,11 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { WsGuard } from "../ws.guard";
 import { CORS_ORIGIN } from "src/config/url";
 
+import { instrument } from "@socket.io/admin-ui";
+
 const options = {
     cors : {
-        origin : CORS_ORIGIN,
+        origin : ["https://admin.socket.io"],
         credentials : true,
     }
 }
@@ -39,6 +41,7 @@ export class GameGateway {
   
     private async afterInit(server: Server) {
         this.logger.log('Gamegateway init');
+        instrument(this.server, {auth : false})
     }
 
     private log(msg : any) {

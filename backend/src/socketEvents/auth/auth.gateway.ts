@@ -20,7 +20,7 @@ import { CORS_ORIGIN } from 'src/config/url';
 
 const options = {
     cors : {
-        origin : CORS_ORIGIN,
+        origin : ["https://admin.socket.io"],
         credentials : true,
     }
 }
@@ -44,7 +44,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.logger.log('AuthGateway init', "AuthGateway");
 		Game.init(this.server);
 		instrument(server, {
-		auth : false
+		auth : false,
+		namespaceName: "/socket.io"
 		});
 
 		/**/
@@ -83,12 +84,14 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
+
     this.logger.log(`${socket.id} socket connected`, "AuthGateway");
 		const x = socket?.handshake?.headers["authorization"];
 		if (!x) {
 			console.log("No Authorization header");
 			this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
-			socket.disconnect();
+			return ;
+			// socket.disconnect();
 		}
 		else {
 			try {
@@ -110,7 +113,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			catch(err) {
 				console.log("Invalid Token");
 				this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
-				socket.disconnect();
+				// socket.disconnect();
 			}
 		}
   	}
