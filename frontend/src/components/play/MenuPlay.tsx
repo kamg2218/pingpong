@@ -26,6 +26,7 @@ export default function MenuPlay(){
 			s1[1](data.left);
 			s2[1](data.right);
 			dispatch(updateScore(data));
+			socket.off("score");
 		})
 	}, [s1, s2, dispatch]);
 

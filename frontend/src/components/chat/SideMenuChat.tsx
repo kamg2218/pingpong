@@ -54,6 +54,7 @@ export default function SideMenuChat(){
 			// console.log(data);
 			dispatch(updateChat(data));
 			setRoom(data);
+			socket.off("myChatRoom");
 		});
 		// socket.on("enterChatRoom", (data:chatRoom)=>{
 		// 	console.log("enter chat room!!");
@@ -91,6 +92,7 @@ export default function SideMenuChat(){
 			if (data.exitUser){ data.exitUser.map(user=>tmp.chatroom[idx].members = tmp.chatroom[idx].members?.filter((person:ChatUser)=> user !== person.userid)); }
 			dispatch(updateChat(tmp));
 			setRoom(tmp);
+			socket.off("updateChatRoom");
 		});
 	}, [chatroom, checkUrl, dispatch, gameroom, history, room]);
 

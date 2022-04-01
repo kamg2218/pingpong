@@ -3,7 +3,7 @@ import { User } from '../../types/userTypes';
 import { RootState } from '../../redux/rootReducer';
 import Profile from '../../icons/Profile';
 import "./chat.css";
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 export default function MyChatBox(props:any){
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
@@ -16,7 +16,7 @@ export default function MyChatBox(props:any){
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return (`${hour}:${minutes}`);
 	}
-	const [time, setTime] = useState<string>(makeTime());
+	// const [time, setTime] = useState<string>(makeTime());
 
 	// useEffect(()=>{
 	// 	if (time === "00:00"){
@@ -30,7 +30,7 @@ export default function MyChatBox(props:any){
 				<div className="col-8">
 					<div className="row col-12 justify-content-end" id="mychatboxnickname">{user.nickname}</div>
 					<div className="row col-12" id="mychatboxcontent">{props.data.contents}</div>
-					<div className="row col-12 small text-muted">{time}</div>
+					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 				<img src={Profile(user.profile)} className="col-2 rounded-circle m-1 mx-0" alt="..."/>
 			</div>

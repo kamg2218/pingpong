@@ -8,12 +8,12 @@ export default function ChatBox(props:any){
 	const chatRoom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const room = chatRoom.chatroom.find(data => data.chatid === props.chatid);
 	const member = room?.members.find(person => person.userid === props.userid);
-	const [time, setTime] = useState<string>("00:00");
+	// const [time, setTime] = useState<string>(makeTime());
 
 	useEffect(()=>{
-		if (time === "00:00"){
-			setTime(makeTime());
-		}
+		// if (time === "00:00"){
+		// 	setTime(makeTime());
+		// }
 	}, []);
 	const makeTime = () => {
 		if (!props.data || !props.data.createDate){ return "00:00"; }
@@ -30,7 +30,7 @@ export default function ChatBox(props:any){
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
 					<div className="row col-12" id="chatboxcontent">{props.data.contents}</div>
-					<div className="row col-12 small text-muted">{time}</div>
+					<div className="row col-12 small text-muted">{makeTime()}</div>
 				</div>
 			</div>
 		</div>

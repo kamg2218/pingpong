@@ -27,12 +27,14 @@ export default function PlayRoom() {
 		socket.on("draw", (data: draw) => {
 			dispatch(updateDraw(data));
 			setDraw(data);
+			socket.off("draw");
 		});
 		socket.on("gameResult", (data: any) => {
 			console.log("gameResult", gameroom.isPlayer);
 			console.log(data);
 			dispatch(updateGameResult(data.winner));
 			setWinner(data.winner);
+			socket.off("gameResult");
 		});
 	}, [drawState, start, canvas, win, dispatch, gameroom.isPlayer]);
 

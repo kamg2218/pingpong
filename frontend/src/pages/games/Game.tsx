@@ -36,16 +36,27 @@ export default function Game() {
 	const dispatch = useDispatch();
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
+	const handleGameRoom = (data: gameRoomDetail) => {
+		setRoom(data);
+		dispatch(updateGameRoom(data));
+	}
+	const handleUser = (data: User) => {
+		dispatch(updateUser(data));
+	}
+
 	useEffect(() => {
 		if (!user || user.nickname === "") {
 			console.log("user Info emit!")
 			dispatch(undefinedList());
 			socket.emit("userInfo");
 		}
+		console.log("Game - ", socket.disconnected);
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
 			dispatch(updateUser(data));
+			// socket.off("userInfo");
 		});
+
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
 			console.log(msg);
@@ -62,6 +73,8 @@ export default function Game() {
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
 			}
+			// socket.removeAllListeners("enterGameRoom");
+			// socket.off("enterGameRoom", ()=>{console.log("enterGameRoom off!")});
 		});
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
@@ -93,11 +106,13 @@ export default function Game() {
 			}
 			setRoom(tmp);
 			dispatch(updateGameRoom(tmp));
+			// socket.off("changeGameRoom");
 		});
 		socket.on("exitGameRoom", () => {
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
 			history.push("/game");
+			// socket.off("exitGameRoom");
 		});
 		socket.on("startGame", (msg:any) => {
 			console.log("start game!");
@@ -108,10 +123,12 @@ export default function Game() {
 				dispatch(updatePlayRoom(msg));
 				history.push(`/game/play/${msg.roomid}`);
 			}
+			socket.off("startGame");
 		});
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);
+			socket.off("matchResponse");
 		})
 	}, [chatroom, room, history, playroom, user, dispatch]);
 	return (
@@ -127,9 +144,9 @@ export default function Game() {
 					</div>
 					<div className="col d-none d-sm-block m-0 p-0 border">
 						<Switch>
-							<Route path="/game/waiting/:id" component={WaitingRoom}></Route>
-							<Route path="/game/chat/:idx/waiting/:id" component={WaitingRoom}></Route>
-							<Route path="/game/chat/waiting/:id" component={WaitingRoom}></Route>
+							<Route path="/game/waiting/:id" render={()=><WaitingRoom user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}/>}></Route>
+							<Route path="/game/chat/:idx/waiting/:id" render={()=><WaitingRoom user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}/>}></Route>
+							<Route path="/game/chat/waiting/:id" render={()=><WaitingRoom user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}/>}></Route>
 							<Route path="/game" component={Lobby}></Route>
 						</Switch>
 					</div>

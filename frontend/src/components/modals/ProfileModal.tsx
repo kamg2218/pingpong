@@ -22,6 +22,7 @@ export default function ProfileModal() {
 		socket.on("opponentProfile", (data:ProfileUser) => {
 			console.log(`opponent = `, data);
 			setProfile(data);
+			socket.off("opponentProfile");
 		});
 	}, [profile, user]);
 	

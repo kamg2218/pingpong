@@ -10,7 +10,7 @@ import { RootState } from "../../redux/rootReducer";
 import { initialize, updateUser } from "../../redux/userReducer";
 import MenuGame from "../../components/games/MenuGame"
 
-export default function SideMenuGame(){
+export default function SideMenuGame(props:any){
 	const history = useHistory();
 	const checkUrl:string = BACK_URL + "/user/check";
 	const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export default function SideMenuGame(){
 	const [userState, setUser] = useState<User>(user);
 
 	useEffect(()=>{
-		console.log("menu game here!!");
+		console.log("side menu game here!!");
 		axios.get(checkUrl + "?url=sideMenuGame").then((res:any)=>{
 			const url:string = history.location.pathname;
   		const idx:number = url.search("wait");
@@ -52,6 +52,7 @@ export default function SideMenuGame(){
 				dispatch(updateUser(tmp));
 				setUser(tmp);
 			}
+			socket.off("newFriend");
 		});
 		socket.on("addFriend", (data:Friend)=>{
 			console.log("addFriend", data);
@@ -62,6 +63,7 @@ export default function SideMenuGame(){
 				dispatch(updateUser(tmp));
 				setUser(tmp);
 			}
+			socket.off("addFriend");
 		});
 		socket.on("deleteFriend", (data:Friend)=>{
 			console.log("deleteFriend", data);
@@ -69,6 +71,7 @@ export default function SideMenuGame(){
 			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
 			dispatch(updateUser(tmp));
 			setUser(tmp);
+			socket.off("deleteFriend");
 		});
 		socket.on("blockFriend", (data:Friend)=>{
 			console.log("blockFriend", data);
@@ -79,6 +82,7 @@ export default function SideMenuGame(){
 				dispatch(updateUser(tmp));
 				setUser(tmp);
 			}
+			socket.off("blockFriend");
 		});
 		socket.on("updateProfile", (data:any)=>{
 			const tmp:User = userState;
@@ -86,6 +90,7 @@ export default function SideMenuGame(){
 			if (data.profile){ tmp.profile = data.profile; }
 			dispatch(updateUser(tmp));
 			setUser(tmp);
+			socket.off("updateProfile");
 		});
 	}, [checkUrl, dispatch, gameroom, history, userState]);
 	return (

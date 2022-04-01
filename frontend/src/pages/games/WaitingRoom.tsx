@@ -1,30 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom"
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes"
-import { RootState } from "../../redux/rootReducer";
-import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
+import { gameRoomInitialState } from "../../redux/gameReducer";
 import "./waitingRoom.css"
 import Profile from "../../icons/Profile";
 
-export default function WaitingRoom(){
+export default function WaitingRoom(props:any){
 	const history = useHistory();
 	const param:any = useParams();
-	const dispatch = useDispatch();
-	const user:User = useSelector((state:RootState)=>state.userReducer.user);
-	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
+	const user:User = props.user;
+	const gameroom:gameRoomDetail = props.gameroom;
 
 	useEffect(()=>{
 		console.log("waitingRoom");
-		if (param.id && param.id !== room.roomid){
-			socket.emit("exitGameRoom", {roomid: room.roomid});
-			dispatch(updateGameRoom(gameRoomInitialState));
-			setRoom(gameRoomInitialState);
+		if (param.id && param.id !== gameroom.roomid){
+			socket.emit("exitGameRoom", {roomid: gameroom.roomid});
+			props.handleGameRoom(gameRoomInitialState);
+			history.push("/game");
+			window.location.reload();
 		}
-	}, [dispatch, param.id, room.roomid]);
+	}, [gameroom.roomid, history, param.id, props]);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		const handleProfileClick = () => {
@@ -38,43 +35,42 @@ export default function WaitingRoom(){
 		);
 	}
 	const checkStartButton = () => {
-		if (room.manager !== user.userid){
+		if (gameroom.manager !== user.userid){
 			return true;
-		}else if (room.players.length !== 2){
+		}else if (gameroom.players.length !== 2){
 			return true;
 		}
 		return false;
 	}
-	const handleStart = () => { socket.emit("startGame", { roomid: room.roomid }); }
+	const handleStart = () => { socket.emit("startGame", { roomid: gameroom.roomid }); }
 	const handleExit = () => {
-		if (!room || !room.roomid){
+		if (!gameroom || !gameroom.roomid){
 			return ;
 		}
-		socket.emit("exitGameRoom", { roomid: room.roomid });
-		dispatch(updateGameRoom(gameRoomInitialState));
-		setRoom(gameRoomInitialState);
+		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+		props.handleGameRoom(gameRoomInitialState);
+		socket.emit("gameRoomList");
 		history.push("/game");
-		//check!!!
 		window.location.reload();
 	}
 
 	return (
 		<div className="container" id="waitingRoom">
-			<div className="row-2 h2" id="waitingRoomTitle">{room.title}</div>
+			<div className="row-2 h2" id="waitingRoomTitle">{gameroom.title}</div>
 			<div className="row-4 px-2 mt-3" id="waitingroombox">
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{room.players[0] ? profileBox(room.players[0].userid, Profile(room.players[0]?.profile), room.players[0]?.nickname, true) : ""}
+					{gameroom.players[0] ? profileBox(gameroom.players[0].userid, Profile(gameroom.players[0]?.profile), gameroom.players[0]?.nickname, true) : ""}
 				</div>
 				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{room.players[1] ? profileBox(room.players[1].userid, Profile(room.players[1]?.profile), room.players[1]?.nickname, true): ""}
+					{gameroom.players[1] ? profileBox(gameroom.players[1].userid, Profile(gameroom.players[1]?.profile), gameroom.players[1]?.nickname, true): ""}
 				</div>
 			</div>
 			<div className="row-4 px-3 my-5 d-flex">
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[0] ? profileBox(room.observer[0].userid, Profile(room.observer[0].profile), room.observer[0].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[1] ? profileBox(room.observer[1].userid, Profile(room.observer[1].profile), room.observer[1].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[2] ? profileBox(room.observer[2].userid, Profile(room.observer[2].profile), room.observer[2].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[3] ? profileBox(room.observer[3].userid, Profile(room.observer[3].profile), room.observer[3].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[4] ? profileBox(room.observer[4].userid, Profile(room.observer[4].profile), room.observer[4].nickname, false):""}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom.observer[0] ? profileBox(gameroom.observer[0].userid, Profile(gameroom.observer[0].profile), gameroom.observer[0].nickname, false):""}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom.observer[1] ? profileBox(gameroom.observer[1].userid, Profile(gameroom.observer[1].profile), gameroom.observer[1].nickname, false):""}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom.observer[2] ? profileBox(gameroom.observer[2].userid, Profile(gameroom.observer[2].profile), gameroom.observer[2].nickname, false):""}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom.observer[3] ? profileBox(gameroom.observer[3].userid, Profile(gameroom.observer[3].profile), gameroom.observer[3].nickname, false):""}</div>
+				<div className="col mx-1" id="waitingRoomObserver">{gameroom.observer[4] ? profileBox(gameroom.observer[4].userid, Profile(gameroom.observer[4].profile), gameroom.observer[4].nickname, false):""}</div>
 			</div>
 			<div className="row mx-3 my-2" id="waitingRoomBtns">
 				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>

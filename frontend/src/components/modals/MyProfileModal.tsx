@@ -19,7 +19,7 @@ export default function MyProfileModal() {
 	const profile:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const [user, setUser] = useState<User>(profile);
 
-	useEffect(() => { console.log(`qr = `, qrcode)}, [qrcode, state]);
+	useEffect(() => { console.log(`qr = `, qrcode)}, [qrcode, state, profile]);
 
 	const handleInput = (event:any) => { setNum(event.target.value); }
 	const checkToken = ():boolean => {
