@@ -6,14 +6,16 @@ import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes"
 import { ChatData } from "../../types/chatTypes"
 import { gameRoomDetail, GameUser, match, playRoom } from "../../types/gameTypes"
+import {updateUser} from "../../redux/userReducer"
+import {RootState} from "../../redux/rootReducer"
+import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
 import Lobby from "./Lobby"
 import WaitingRoom from "./WaitingRoom"
 import SideMenuGame from "./SideMenuGame"
 import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
-import {updateUser} from "../../redux/userReducer"
-import {RootState} from "../../redux/rootReducer"
-import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
+import MyProfileModal from "../../components/modals/MyProfileModal";
+import ProfileModal from "../../components/modals/ProfileModal";
 import "./Game.css"
 import logo from "../../icons/logo_brown_profile.png"
 
@@ -63,12 +65,9 @@ export default function Game() {
 		});
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
-			console.log(room);
-			console.log(msg);
-			if (msg.roomid !== tmp.roomid){
-				console.log("roomid is different!!");
-				// return;
-			}
+			console.log("changeGameRoom");
+			// console.log(room);
+			// console.log(msg);
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
 			if (msg.speed) {tmp.speed = msg.speed;}
@@ -136,6 +135,8 @@ export default function Game() {
 					</div>
 				</div>
 			</div>
+			<ProfileModal></ProfileModal>
+			<MyProfileModal></MyProfileModal>
 			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>
 	);

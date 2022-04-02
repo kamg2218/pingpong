@@ -103,7 +103,7 @@ export class GameGatewayService {
 		await repo_gameMembership.joinGameRoomAs(user, gameRoom, 'owner');
 		let result = await this.getGameRoomInfo(gameRoom.roomid);
 		this.log(`${user.nickname} has created the GameRoom ${result.title}`);
-
+		result['isPlayer'] = true;
 		const game = new Game(gameRoom.roomid, gameRoom.speed);
 		game.joinAsPlayer(socket.id, user);
 		onlineGameMap[gameRoom.roomid] = game;
@@ -135,8 +135,7 @@ export class GameGatewayService {
 		await repo_gameMembership.joinGameRoomAs(user, gameRoom, position);
 		let result = await repo_gameRoom.getRoomInfoWithMemberlist(gameRoom.roomid);
 		this.log(`${user.nickname} has joined the GameRoom ${gameRoom.title} as ${position}`);
-
-
+		result['isPlayer'] = roomOptions.isPlayer;
 		const game = onlineGameMap[result.roomid];
 		if (position === 'normal')
 			game.joinAsPlayer(socketid, user); //add

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket"
 import { Friend, User } from "../../types/userTypes"
@@ -5,7 +6,6 @@ import { RootState } from "../../redux/rootReducer";
 import { updateUser } from "../../redux/userReducer";
 import Profile from "../../icons/Profile"
 import "./MenuGame.css"
-import { useState } from "react";
 
 export default function MenuGame(props:any){
 	const dispatch = useDispatch();
@@ -32,7 +32,6 @@ export default function MenuGame(props:any){
 
 	const OldList = (person: Friend, setClicked: Function) => {
 		const handleProfileClick = () => {
-			setClicked(person.userid);
 			socket.emit("opponentProfile", { userid: person.userid });
 		}
 		return (
