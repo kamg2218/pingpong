@@ -32,7 +32,6 @@ export default function ChatRoom(props:any){
 			console.log("chatHistroy on!");
 			dispatch(updateHistory(data));
 			setHistory(data);
-			socket.off("chatHistory");
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
@@ -50,7 +49,6 @@ export default function ChatRoom(props:any){
 					setHistory(hisChat);
 				}
 			}
-			socket.off("chatMessage");
 		})
 	}, [chatid, history, chat, dispatch, chatHistory]);
 

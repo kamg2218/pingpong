@@ -16,9 +16,8 @@ export default function PublicChatModal(){
 		socket.on("publicChatRoom", (data:ChatData)=>{
 			console.log("public chat room on!");
 			dispatch(updatePublic(data));
-			socket.off("publicChatRoom");
 		})
-	}, [pwd, checkedroom, publicroom]);
+	}, [pwd, checkedroom, publicroom, dispatch]);
 
 	const handleSubmit = () => {
 		let data:any = {

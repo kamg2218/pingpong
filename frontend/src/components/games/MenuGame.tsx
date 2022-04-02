@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket"
 import { Friend, User } from "../../types/userTypes"
@@ -7,11 +7,14 @@ import { updateUser } from "../../redux/userReducer";
 import Profile from "../../icons/Profile"
 import "./MenuGame.css"
 
-export default function MenuGame(props:any){
+export default function MenuGame(){
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const [userState, setUser] = useState<User>(user);
 
+	useEffect(()=>{
+		console.log("MenuGame");
+	}, []);
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
 			socket.emit("newFriend", { userid: person.userid, result: result });
@@ -30,7 +33,7 @@ export default function MenuGame(props:any){
 		);
 	}
 
-	const OldList = (person: Friend, setClicked: Function) => {
+	const OldList = (person: Friend) => {
 		const handleProfileClick = () => {
 			socket.emit("opponentProfile", { userid: person.userid });
 		}
@@ -48,13 +51,13 @@ export default function MenuGame(props:any){
 
 	return (
 		<div id="menuGame">
-			<img src={Profile(user?.profile ? user.profile : 0)} alt="profile" id="menuGameProfile"/>
-			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal" onClick={handleMyProfileClick}>{user?.nickname}</div>
+			<img src={Profile(userState?.profile ? userState.profile : 0)} alt="profile" id="menuGameProfile"/>
+			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal" onClick={handleMyProfileClick}>{userState?.nickname}</div>
 			<label id="menuRecord">WIN : LOSE</label>
-			<div className="h1" id="winLose">{user?.win} : {user?.lose}</div>
+			<div className="h1" id="winLose">{userState?.win} : {userState?.lose}</div>
 			<div id="friendList">
-				{user && user.newfriends?.map((people:Friend) => (NewList(people)))}
-				{user && user.friends?.map((people:Friend) => (OldList(people, props.setClicked)))}
+				{userState && userState.newfriends?.map((people:Friend) => (NewList(people)))}
+				{userState && userState.friends?.map((people:Friend) => (OldList(people)))}
 			</div>
 		</div>
 	);

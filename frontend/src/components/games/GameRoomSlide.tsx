@@ -16,7 +16,6 @@ export default function GameRoomSlide(props: any){
 			console.log("socket on! gameRoomList in gmaeRoomSlide!");
 			// console.log(msg);
 			setRoomList(msg);
-			socket.off("gameRoomList");
 		});
 	}, [idx, roomlist]);
 

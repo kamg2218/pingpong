@@ -1,25 +1,30 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User, Friend } from "../../types/userTypes";
-import { RootState } from "../../redux/rootReducer";
 import { initialize } from "../../redux/userReducer";
 import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
 
-export default function MyProfileModal() {
+export default function MyProfileModal(props:any) {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [num, setNum] = useState<string>("");
 	const [qrcode, setQrcode] = useState<string>("");
 	const [state, setState] = useState<boolean>(false);
-	const profile:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-	const [user, setUser] = useState<User>(profile);
+	const [user, setUser] = useState<User>(props.user);
 
-	useEffect(() => { console.log(`qr = `, qrcode)}, [qrcode, state, profile]);
+	useEffect(() => {
+		console.log("MyProfileModal");
+		socket.on("userInfo", (data:User)=>{
+			// console.log("userInfo - myprofileModal");
+			setUser(data);
+			// props.handleUser(data);
+		})
+	}, [qrcode, state, user]);
 
 	const handleInput = (event:any) => { setNum(event.target.value); }
 	const checkToken = ():boolean => {
@@ -76,12 +81,14 @@ export default function MyProfileModal() {
 			const tmp:User = user;
 			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
 			setUser(tmp);
+			props.handleUser(tmp);
 		}
 		const declineNewFriend = (userid: string)=>{
 			socket.emit("newFriend", { userid: userid, result: false });
 			const tmp:User = user;
 			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
 			setUser(tmp);
+			props.handleUser(tmp);
 		}
 		user.newfriends?.forEach((friend:Friend)=>{
 			list.push(
@@ -144,7 +151,7 @@ export default function MyProfileModal() {
 										<div className="row pt-2" id="modalTwofactorTitle">
 											<div className="col h5 text-center">2중 인증</div>
 											<div className="col-3 form-check form-switch">
-												<input className="form-check-input" type="checkbox" onClick={handleQrcode} defaultChecked={profile.twofactor}/>
+												<input className="form-check-input" type="checkbox" onClick={handleQrcode} defaultChecked={user.twofactor}/>
 											</div>
 										</div>
 										{ state && 

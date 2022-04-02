@@ -27,7 +27,6 @@ export default function MenuChat(){
 				dispatch(updateChat(tmp));
 				setRoom(tmp);
 			}
-			socket.off("enterChatRoom");
 		});
 	}, [dispatch, room]);
 	const handlePublic = () => { socket.emit("publicChatRoom"); }
