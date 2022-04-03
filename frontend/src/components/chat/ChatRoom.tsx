@@ -21,17 +21,13 @@ export default function ChatRoom(props:any){
 	const chatid:string = chatroom.order[props.idx];
 	const history:ChatHistory = useSelector((state:RootState) => state.chatReducer.history, shallowEqual);
 	const [chatHistory, setHistory] = useState<ChatHistory>(history);
-	// const chatInput = useRef<HTMLFormElement>(null);
 
 	useEffect(()=>{
-		// if (chatid && (!history || history.chatid !== chatid)){
-		// 	console.log("chat history emitted!")
-		// 	socket.emit("chatHistory", { chatid: chatid });
-		// }
 		socket.on("chatHistory", (data:ChatHistory)=>{
-			console.log("chatHistroy on!");
+			console.log("chatHistroy on!", data);
 			dispatch(updateHistory(data));
 			setHistory(data);
+			window.location.reload();
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
@@ -41,16 +37,14 @@ export default function ChatRoom(props:any){
 			}
 			console.log(data);
 			const hisChat:ChatHistory = chatHistory;
-			if (hisChat.chatid === history.chatid){
-				const idx:number = hisChat.list.findIndex((msg:ChatBlock)=>msg.createDate === data.createDate && msg.userid === data.userid);
-				if (idx === -1){
-					hisChat.list.push(data);
-					dispatch(updateHistory(hisChat));
-					setHistory(hisChat);
-				}
+			if (hisChat.chatid === chatHistory.chatid){
+				hisChat.list.push(data);
+				dispatch(updateHistory(hisChat));
+				setHistory(hisChat);
+				window.location.reload();
 			}
 		})
-	}, [chatid, history, chat, dispatch, chatHistory]);
+	}, [chatid, dispatch, chatHistory]);
 
 	const handleInputChange = (e :any) => { setChat(e.target.value); }
 	const handleSendBtn = () => {
@@ -64,12 +58,10 @@ export default function ChatRoom(props:any){
 		}, (result:boolean)=>{
 			if (result === false){
 				alert("mute!!!");
+				return ;
 			}
-			console.log("reload!!!");
-			setChat("");
-			window.location.reload();
-			// chatInput.current?.reset();
 		});
+		setChat("");
 	}
 	const handleInputKeypress = (event:any) => {
 		if (event.key === "Enter"){
@@ -109,7 +101,7 @@ export default function ChatRoom(props:any){
 				</div>
 				<div className="row d-flex m-0 mt-1 p-0" id="chatForm">
 					<input className="d-none" type="password"></input>
-					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
+					<input className="col" id="chatInput" value={chat} onChange={handleInputChange} onKeyPress={handleInputKeypress} autoFocus></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
 				</div>
 			</div>

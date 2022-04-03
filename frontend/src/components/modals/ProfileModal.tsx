@@ -9,21 +9,19 @@ import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
 
-export default function ProfileModal() {
+export default function ProfileModal(props:any) {
 	const history = useHistory();
 	const [profile, setProfile] = useState<ProfileUser>();
-	const user:User = useSelector((state:RootState)=>state.userReducer.user, shallowEqual);
-	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-	const disabled:boolean = profile ? profile.userid === user.userid : false;
+	const disabled:boolean = profile ? profile.userid === props.user.userid : false;
 	const button:string = "row w-75 my-1 btn modal-button";
 	let buttonFriend:string = button;
 	
 	useEffect(() => {
+		console.log("ProfileModal");
 		socket.on("opponentProfile", (data:ProfileUser) => {
-			console.log(`opponent = `, data);
 			setProfile(data);
 		});
-	}, [profile, user]);
+	}, [profile, props.user]);
 	
 	const handleChat = () => {
 		if (disabled || !profile){ return ; }
@@ -33,7 +31,7 @@ export default function ProfileModal() {
 		}, (chatid: string)=>{
 			console.log(chatid);
 			if (chatid !== ''){
-				history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`);
+				history.push(`/game/chat/${chatid}${props.gameroom ? `/waiting/${props.gameroom.roomid}`: ''}`);
 			}
 		})
 	}

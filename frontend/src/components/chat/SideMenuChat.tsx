@@ -49,49 +49,6 @@ export default function SideMenuChat(){
 			console.log(err);
 			history.replace("/");
 		});
-		socket.on("myChatRoom", (data:ChatData)=>{
-			console.log("my chat room!!");
-			// console.log(data);
-			dispatch(updateChat(data));
-			setRoom(data);
-		});
-		// socket.on("enterChatRoom", (data:chatRoom)=>{
-		// 	console.log("enter chat room!!");
-		// 	// console.log(data);
-		// 	const tmp:ChatData = room;
-		// 	if (tmp.order.indexOf(data.chatid) === -1){
-		// 		tmp.order.push(data.chatid);
-		// 		tmp.chatroom.push(data);
-		// 		dispatch(updateChat(tmp));
-		// 		setRoom(tmp);
-		// 	}
-		// });
-		socket.on("updateChatRoom", (data:InputChatRoom)=>{
-			console.log("update Chat Room!");
-			// console.log(data);
-			let tmp:ChatData = room;
-			const idx = tmp.order.indexOf(data.chatid);
-			if (idx === -1){
-				return ;
-			}
-			if (data.title){ tmp.chatroom[idx].title = data.title; }
-			if (data.lock){ tmp.chatroom[idx].lock = data.lock; }
-			if (data.type){ tmp.chatroom[idx].type = data.type; }
-			if (data.addManager){ data.addManager.map((man:string)=>{
-				let index:number = -1;
-				index = tmp.chatroom[idx].manager?.findIndex((p:string)=>p === man);
-				if (index === -1){ tmp.chatroom[idx].manager.push(man); }
-			}); }
-			if (data.deleteManager){ data.deleteManager.map(man=>tmp.chatroom[idx].manager = tmp.chatroom[idx].manager?.filter((person: string)=> man !== person)); }
-			if (data.enterUser){ data.enterUser.map((user:ChatUser)=>{
-				let index:number = -1;
-				index = tmp.chatroom[idx].members.findIndex((p:ChatUser)=>p.userid===user.userid);
-				if (index === -1){ tmp.chatroom[idx].members.push(user); }
-			}); }
-			if (data.exitUser){ data.exitUser.map(user=>tmp.chatroom[idx].members = tmp.chatroom[idx].members?.filter((person:ChatUser)=> user !== person.userid)); }
-			dispatch(updateChat(tmp));
-			setRoom(tmp);
-		});
 	}, [chatroom, checkUrl, dispatch, gameroom, history, room]);
 
 	const ChatRoomIdx = () => {
