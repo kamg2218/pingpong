@@ -132,7 +132,7 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [room, isOpen, matchData, userState]);
+	}, [room, isOpen, matchData, userState, user, dispatch, handleUser, history, handleGameRoom]);
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
@@ -146,9 +146,9 @@ export default function Game() {
 					</div>
 					<div className="col d-none d-sm-block m-0 p-0 border">
 						<Switch>
-							<Route path="/game/waiting/:id" render={()=><WaitingRoom user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}/>}></Route>
-							<Route path="/game/chat/:idx/waiting/:id" render={()=><WaitingRoom user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}/>}></Route>
-							<Route path="/game/chat/waiting/:id" render={()=><WaitingRoom user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}/>}></Route>
+							<Route path="/game/waiting/:id" component={WaitingRoom}></Route>
+							<Route path="/game/chat/:idx/waiting/:id" component={WaitingRoom}></Route>
+							<Route path="/game/chat/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game" component={Lobby}></Route>
 						</Switch>
 					</div>

@@ -11,15 +11,19 @@ export default function MenuGame(){
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const [userState, setUser] = useState<User>(user);
-
+	
 	useEffect(()=>{
 		console.log("MenuGame");
-	}, []);
+		socket.on("userInfo", (data:User)=>{
+			setUser(data);
+		});
+	});
+
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
 			socket.emit("newFriend", { userid: person.userid, result: result });
 			let tmp:User = userState;
-			tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
+			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
 			dispatch(updateUser(tmp));
 			setUser(tmp);
 		}

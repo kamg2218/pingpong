@@ -29,25 +29,25 @@ export default function MenuPlay(){
 		})
 	}, [s1, s2, dispatch]);
 
+	const handleEixt = () => {
+		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+		dispatch(initialize());
+		history.replace("/game");
+		socket.emit("gameRoomList");
+	}
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
 			<div className="m-1" id={id}>
-				<img className="row mx-auto img-fluid img-thumbnail" id="observerImg" src={profile} alt={id}></img>
+				<img className="row mx-auto img-fluid img-thumbnail" id="observer" src={profile} alt={id}></img>
 				<label className="row justify-content-center">{nick}</label>
 			</div>
 		);
-	}
-	const handleEixt = () => {
-		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-		socket.emit("gameRoomList");
-		dispatch(initialize());
-		history.replace("/game");
 	}
 	const observerProfileBox = (idx:number) => {
 		if (gameroom && gameroom.observer && gameroom.observer.length > idx){
 			return profileBox(gameroom.observer[idx].userid, Profile(gameroom.observer[idx].profile), gameroom.observer[idx].nickname, false);
 		}
-		return "";
+		return <div id="observer"></div>;
 	}
 	
 	return (
@@ -65,13 +65,13 @@ export default function MenuPlay(){
 				<label className="row mx-3 my-2 h3" id="menuScore">{playroom ? playroom.score : 0}</label>
 				<div className="row h1" id="winLose">{s1} : {s2}</div>
 				<div className="row mt-5 mx-1">
-					<div className="col mx-1" id="observer">{observerProfileBox(0)}</div>
-					<div className="col mx-1" id="observer">{observerProfileBox(1)}</div>
-					<div className="col mx-1" id="observer">{observerProfileBox(2)}</div>
+					<div className="col mx-1">{observerProfileBox(0)}</div>
+					<div className="col mx-1">{observerProfileBox(1)}</div>
+					<div className="col mx-1">{observerProfileBox(2)}</div>
 				</div>
 				<div className="row mt-4 mb-3 mx-3">
-					<div className="col mx-3" id="observer">{observerProfileBox(3)}</div>
-					<div className="col mx-3" id="observer">{observerProfileBox(4)}</div>
+					<div className="col mx-3">{observerProfileBox(3)}</div>
+					<div className="col mx-3">{observerProfileBox(4)}</div>
 				</div>
 				<button className="row btn btn-lg my-2" id="exitButton" onClick={handleEixt}>나가기</button>
 			</div>

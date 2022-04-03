@@ -76,30 +76,30 @@ export default function MyProfileModal(props:any) {
 	const friendList = () => {
 		let list:any = [];
 
-		const acceptNewFriend = (userid: string)=>{ 
-			socket.emit("newFriend", { userid: userid, result: true });
-			const tmp:User = user;
-			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
-			setUser(tmp);
-			props.handleUser(tmp);
-		}
-		const declineNewFriend = (userid: string)=>{
-			socket.emit("newFriend", { userid: userid, result: false });
-			const tmp:User = user;
-			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
-			setUser(tmp);
-			props.handleUser(tmp);
-		}
-		user.newfriends?.forEach((friend:Friend)=>{
-			list.push(
-				<div className="row mx-0 px-2" id="newFriendContent" key={`newFriend_${friend.userid}`}>
-					<div className="col p-0" key={`newFriend_${friend.userid}_img`}><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
-					<div className="col" key={`newFriend_${friend.userid}_nickname`}>{friend.nickname}</div>
-					<div className="col-2" key={`newFriend_${friend.userid}_check`}><i className="bi bi-check-lg" id="checkMark" onClick={()=>acceptNewFriend(friend.userid)}/></div>
-					<div className="col-2" key={`newFriend_${friend.userid}_cross`}><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
-				</div>
-			)
-		});
+		// const acceptNewFriend = (userid: string)=>{ 
+		// 	socket.emit("newFriend", { userid: userid, result: true });
+		// 	const tmp:User = user;
+		// 	tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
+		// 	setUser(tmp);
+		// 	props.handleUser(tmp);
+		// }
+		// const declineNewFriend = (userid: string)=>{
+		// 	socket.emit("newFriend", { userid: userid, result: false });
+		// 	const tmp:User = user;
+		// 	tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
+		// 	setUser(tmp);
+		// 	props.handleUser(tmp);
+		// }
+		// user.newfriends?.forEach((friend:Friend)=>{
+		// 	list.push(
+		// 		<div className="row mx-0 px-2" id="newFriendContent" key={`newFriend_${friend.userid}`}>
+		// 			<div className="col p-0" key={`newFriend_${friend.userid}_img`}><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
+		// 			<div className="col" key={`newFriend_${friend.userid}_nickname`}>{friend.nickname}</div>
+		// 			<div className="col-2" key={`newFriend_${friend.userid}_check`}><i className="bi bi-check-lg" id="checkMark" onClick={()=>acceptNewFriend(friend.userid)}/></div>
+		// 			<div className="col-2" key={`newFriend_${friend.userid}_cross`}><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
+		// 		</div>
+		// 	)
+		// });
 		user.friends?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row text-center align-items-center" id="friendContent" key={`friend_${friend.userid}`} data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>

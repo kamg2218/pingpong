@@ -43,6 +43,7 @@ export default function SideMenuGame(){
 			console.log(err);
 			history.replace("/");
 		});
+
 		socket.on("newFriend", (data:Friend)=>{
 			console.log("newFriend", data);
 			const tmp:User = userState;
@@ -87,7 +88,8 @@ export default function SideMenuGame(){
 			dispatch(updateUser(tmp));
 			setUser(tmp);
 		});
-	}, [checkUrl, dispatch, gameroom, history, userState]);
+	}, [checkUrl, dispatch, gameroom, history, userState, user]);
+
 	return (
 		<div id="gameTab">
 			<div className="row">

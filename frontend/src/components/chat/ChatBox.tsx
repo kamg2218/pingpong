@@ -1,24 +1,17 @@
 import { shallowEqual, useSelector } from "react-redux";
-import { ChatData } from "../../types/chatTypes"
-import { useEffect, useState } from "react";
+import { ChatData, chatRoom } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
-import Profile from "../../icons/Profile"
+import Profile from "../../icons/Profile";
 
 export default function ChatBox(props:any){
 	const chatRoom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
-	const room = chatRoom.chatroom.find(data => data.chatid === props.chatid);
-	const member = room?.members.find(person => person.userid === props.userid);
-	// const [time, setTime] = useState<string>(makeTime());
-
-	useEffect(()=>{
-		// if (time === "00:00"){
-		// 	setTime(makeTime());
-		// }
-	}, []);
+	const room = chatRoom.chatroom.find((data:chatRoom) => data.chatid === props.chatid);
+	const member = room?.members.find(person => person.userid === props.data.userid);
+	
 	const makeTime = () => {
 		if (!props.data || !props.data.createDate){ return "00:00"; }
 		let date:Date = new Date(props.data.createDate);
-		console.log(`time = ${date}, ${typeof date}`);
+		// console.log(`time = ${date}, ${typeof date}`);
 		const hour = String(date.getHours()).padStart(2, "0");
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return (`${hour}:${minutes}`);
