@@ -197,7 +197,8 @@ export class ChatGatewayService {
 	}
 
 	async hashing(password: string) {
-		const encodedPassword = await hash(password, ENV.parsed.SALTROUND);
+		console.log("env", ENV.parsed);
+		const encodedPassword = await hash(password, Number(ENV.parsed.SALTROUND));
 		return encodedPassword;
 	}
 
