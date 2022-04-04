@@ -66,7 +66,6 @@ export class GameGatewayService {
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const owner = gameRoom.owner;
 		await Promise.all([
-			repo_gameMembership.joinGameRoomAs(owner, gameRoom, 'owner'),
 			repo_gameMembership.joinGameRoomAs(user, gameRoom, 'normal'),
 			repo_gameRoom.update(gameRoom.roomid, { roomStatus: 'waiting' })
 		]);

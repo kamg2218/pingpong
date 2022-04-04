@@ -143,10 +143,16 @@ export class Game {
     }
     public joinAsPlayer(socketid : string, user : User) {
         const repo_user = getCustomRepository(UserRepository);
-        if (!this.left.onoff())
+        if (!this.left.onoff()) {
             this.left.id = user.userid;
-        else if (!this.right.onoff())
+            this.left.on();
+            this.left.ready = true;
+        }
+        else if (!this.right.onoff()) {
             this.right.id = user.userid;
+            this.right.on();
+            this.right.ready = true;
+        }
         else
             throw new Error("The room is already full");
         this.participants.push(socketid);
@@ -272,10 +278,16 @@ export class Game {
 
     /* 게임진행 */
     public checkIfItCanStart() {
-        if (!this.right.onoff() || !this.left.onoff() || !this.right.ready || !this.left.ready) {
+        if (!this.right.onoff() || !this.left.onoff()) {
+            console.log("not enough player");
+            return true;
+        }
+        if (!this.right.ready || !this.left.ready) {
+            console.log("players are ready")
             return false;
         }
         if (this.running) {
+            console.log("game is running")
             return false;
         }
         return true;
@@ -344,7 +356,7 @@ export class Game {
                     right : this.drawRight,
                     left : this.drawLeft,
                 });
-            }, 10);
+            }, 50);
         this._intervalId = code;
     }
 
