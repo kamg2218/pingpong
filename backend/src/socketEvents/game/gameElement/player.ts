@@ -16,7 +16,7 @@ export class Player extends Pos {
             dirY : DIRECTION.IDLE, 
             width : canvas.widthPercent(4),
             height : canvas.heightPercent(20),
-            speed : (canvas.heightPercent(5))});
+            speed : (canvas.heightPercent(2))});
         this.id = userid;
         this._onoff = false;
         this.score = 0;
@@ -30,7 +30,7 @@ export class Player extends Pos {
         this.dirY = DIRECTION.IDLE;
         this.width = canvas.widthPercent(4);
         this.height = canvas.heightPercent(20);
-        this.speed = (canvas.heightPercent(5));
+        this.speed = (canvas.heightPercent(2));
         this.score = 0;
     }
 

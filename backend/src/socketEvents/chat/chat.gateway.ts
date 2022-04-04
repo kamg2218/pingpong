@@ -219,7 +219,7 @@ export class ChatGateway {
       change["addManager"] = addManagerList;
     if (deleteManagerList && deleteManagerList.length)
       change["deleteManager"] = deleteManagerList;
-    onlineChatRoomManager.getRoomByid(payload.chatid).announce("updateChatRoom", change);
+    onlineChatRoomManager.getRoomByid(payload.chatid).announce("updateChatRoom", {change, "chatid" : payload.chatid});
     this.over("updateChatRoom");
   }
 
