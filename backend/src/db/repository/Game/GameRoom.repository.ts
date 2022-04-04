@@ -7,8 +7,9 @@ import { UserRepository } from "../User/User.repository";
 import { GameMembershipRepository } from "./GameCustomRepository";
 import {hash, compare} from 'bcrypt'
 import dotenv from 'dotenv'
+import { ENV_PATH } from "src/config/url";
 
-const ENV = dotenv.config();
+const ENV = dotenv.config({path : ENV_PATH});
 
 @EntityRepository(GameRoom)
 export class GameRoomRepository extends Repository<GameRoom> {
@@ -67,7 +68,7 @@ export class GameRoomRepository extends Repository<GameRoom> {
             if (key === "observer")
                 newRoom["maxObsCount"] = roomOption[key];
             else if (key === "password")
-                newRoom[key] = await hash(roomOption[key], ENV.parsed.SALTROUND);
+                newRoom[key] = await hash(roomOption[key], Number(ENV.parsed.SALTROUND));
             else
                 newRoom[key] = roomOption[key];
         }

@@ -16,7 +16,7 @@ export class Game {
     private participants : string[];
     private ball : Ball;
     private turn : string;
-    private running : boolean;
+    private _running : boolean;
     private _score : number;
     private _winner : string;
     private _loser : string;
@@ -46,7 +46,14 @@ export class Game {
         this.left = new Player(null, "left");
         this.right = new Player(null, "right");
     }
+    
 
+    get running() {
+        return this._running;
+    }
+    set running(value : boolean) {
+        this._running = value;
+    }
     set proxy(value) {
         this._proxy = value;
     }
@@ -126,12 +133,6 @@ export class Game {
 
     public onlineRoom(socketid : string, userid : string) {
         this.participants.push(socketid);
-        // if (this.left.id === userid)
-            
-        // else if (this.right.id === userid)
-        //     this.participants.push(socketid);
-        // else
-        //     this.participants.push(socketid);
     }
 
     public offlineRoom(socketid : string) {
@@ -248,7 +249,6 @@ export class Game {
             y : this.right.y,
             width : this.right.width,
             height : this.right.height,
-            // score: this.right.score,
         }
     };
 
@@ -259,7 +259,6 @@ export class Game {
             y : this.left.y,
             width : this.left.width,
             height : this.left.height,
-            // score : this.left.score
         }
     };
 
@@ -272,7 +271,6 @@ export class Game {
     };
 
     /* 게임진행 */
-    
     public checkIfItCanStart() {
         if (!this.right.onoff() || !this.left.onoff() || !this.right.ready || !this.left.ready) {
             return false;
@@ -281,7 +279,6 @@ export class Game {
             return false;
         }
         return true;
-        //방장 확인 필요
     }
     
     private resetGame() {
@@ -289,15 +286,24 @@ export class Game {
         this.running = false;
         this.winner = null;
         this.loser = null;
+        this.ball.reset(this.speed);
+    }
+
+    public async getInitialInfo() {
+        const repo_user = getCustomRepository(UserRepository);
+        const left = await repo_user.findOne(this.left.id);
+        const right = await repo_user.findOne(this.right.id);
+        return {
+            roomid : this.roomid,
+            score : this.score,
+            left : repo_user.getSimpleInfo(left),
+            right : repo_user.getSimpleInfo(right),
+        };
     }
     
     public async start() {
-        // this.right.y = 0;   //temp
-        // this.right.height = canvas.height; //temp
         this.resetGame();
-        this.ball.reset(this.speed);
         await this.sendInitialInfo();
-       
         this.running = true;
         this.startTime = new Date();
         await this.readyCount();
@@ -312,15 +318,8 @@ export class Game {
     }
 
     private async sendInitialInfo() {
-        const repo_user = getCustomRepository(UserRepository);
-        const left = await repo_user.findOne(this.left.id);
-        const right = await repo_user.findOne(this.right.id);
-        this.announce("startGame", {
-            roomid : this.roomid,
-            score : this.score,
-            left : repo_user.getSimpleInfo(left),
-            right : repo_user.getSimpleInfo(right),
-        });
+        const initialInfo = await this.getInitialInfo();
+        this.announce("startGame", initialInfo);
     }
 
     private counting(count : number) {
@@ -345,7 +344,7 @@ export class Game {
                     right : this.drawRight,
                     left : this.drawLeft,
                 });
-            }, 100);
+            }, 10);
         this._intervalId = code;
     }
 
@@ -493,8 +492,6 @@ export class Game {
         this.ball.reset(this.speed);
         this.turn = loser;
         this[winner].score++;
-        // //temp
-        // this.turn = "left"; 
     }
 
     private newServe() {

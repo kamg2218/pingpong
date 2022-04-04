@@ -391,7 +391,7 @@ export class ChatGateway {
     }
     else {
       console.log("room type2");
-      room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, contents : payload.contents, createdDate : time}); 
+      room.announce("chatMessage", {chatid : payload.chatid, userid: socket.userid, contents : payload.contents, createDate : time}); 
     }
     console.log("[chat4], ", new Date());
     const temp = await repo_chathistory.insertHistory(socket.userid, {...payload, time}, chatRoom);
