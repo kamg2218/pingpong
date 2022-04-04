@@ -4,8 +4,7 @@ import { Route, Switch, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes"
-import { ChatData } from "../../types/chatTypes"
-import { gameRoomDetail, GameUser, match, playRoom } from "../../types/gameTypes"
+import { gameRoomDetail, GameUser, match } from "../../types/gameTypes"
 import {updateUser} from "../../redux/userReducer"
 import {RootState} from "../../redux/rootReducer"
 import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
@@ -16,8 +15,9 @@ import SideMenuChat from "../../components/chat/SideMenuChat"
 import MatchRequestModal from "../../components/modals/MatchRequestModal"
 import MyProfileModal from "../../components/modals/MyProfileModal";
 import ProfileModal from "../../components/modals/ProfileModal";
-import "./Game.css"
+import LoadingModal from "../../components/modals/LoadingModal";
 import logo from "../../icons/logo_brown_profile.png"
+import "./Game.css"
 
 type message = {
 	message: string,
@@ -28,23 +28,14 @@ export default function Game() {
 	const history = useHistory();
 	const [matchData, setMatch] = useState<match>();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [loadingOpen, setLoadingOpen] = useState<boolean>(false);
+	const [content, setContent] = useState<string>("잠시만 기다려 주세요");
 	
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
-	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const dispatch = useDispatch();
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 	const [userState, setUser] = useState<User>(user);
-
-	const handleGameRoom = (data: gameRoomDetail) => {
-		setRoom(data);
-		dispatch(updateGameRoom(data));
-	}
-	const handleUser = (data: User) => {
-		dispatch(updateUser(data));
-		setUser(data);
-	}
 
 	useEffect(() => {
 		if (!user || user.nickname === "") {
@@ -55,25 +46,24 @@ export default function Game() {
 		console.log("Game - ", socket.disconnected);
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
-			// if (user.nickname === ""){
-			// 	window.location.reload();
-			// }
-			// dispatch(updateUser(data));
-			handleUser(data);
+			dispatch(updateUser(data));
+			setUser(data);
 		});
 
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
 			console.log(msg);
+			// if (loadingOpen){
+				setLoadingOpen(false);
+			// }
 			if ("message" in msg) {
 				alert("fail to enter the room!");
 				if (history.location.pathname.search("waiting")){
 					history.replace("/game");
 				}
 			}else {
-				// setRoom(msg);
-				// dispatch(updateGameRoom(msg));
-				handleGameRoom(msg);
+				setRoom(msg);
+				dispatch(updateGameRoom(msg));
 				// console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -108,14 +98,12 @@ export default function Game() {
 				const player:GameUser = msg.deletePlayer;
 				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
 			}
-			// setRoom(tmp);
-			// dispatch(updateGameRoom(tmp));
-			handleGameRoom(tmp);
+			setRoom(tmp);
+			dispatch(updateGameRoom(tmp));
 		});
 		socket.on("exitGameRoom", () => {
-			// dispatch(updateGameRoom(gameRoomInitialState));
-			// setRoom(gameRoomInitialState);
-			handleGameRoom(gameRoomInitialState);
+			dispatch(updateGameRoom(gameRoomInitialState));
+			setRoom(gameRoomInitialState);
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -132,7 +120,23 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [room, isOpen, matchData, userState, user, dispatch, handleUser, history, handleGameRoom]);
+	}, [dispatch, history, loadingOpen, room, user]);
+	
+	const handleGameRoom = (data: gameRoomDetail) => {
+		setRoom(data);
+		dispatch(updateGameRoom(data));
+	}
+	const handleUser = (data: User) => {
+		dispatch(updateUser(data));
+		setUser(data);
+	}
+	const handleCancelMatching = () => {
+		if (loadingOpen){
+			setLoadingOpen(false);
+			socket.emit("randomMatchingCancel");
+		}
+	}
+
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
@@ -149,13 +153,14 @@ export default function Game() {
 							<Route path="/game/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game/chat/:idx/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game/chat/waiting/:id" component={WaitingRoom}></Route>
-							<Route path="/game" component={Lobby}></Route>
+							<Route path="/game" render={()=><Lobby setIsOpen={setLoadingOpen} setContent={setContent}/>}></Route>
 						</Switch>
 					</div>
 				</div>
 			</div>
 			<ProfileModal user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}></ProfileModal>
 			<MyProfileModal user={user} handleUser={handleUser}></MyProfileModal>
+			<Modal isOpen={loadingOpen} style={customStyles}><LoadingModal setIsOpen={setLoadingOpen} content={content} handleCancelMatching={handleCancelMatching}/></Modal>
 			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>
 	);

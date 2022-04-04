@@ -18,8 +18,8 @@ export default function InputPwdModal(props: any){
 				return ;
 			}
 		}
-		if (props.handleOk){ props.handleOk(); }
 		props.setPwd(pwd);
+		if (props.handleOk){ props.handleOk(); }
 	}
 
 	return (
