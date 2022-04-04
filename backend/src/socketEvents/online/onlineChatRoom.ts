@@ -33,10 +33,10 @@ export class onlineChatRoom {
             console.log(`[saytoRoom] Sent to ${theOtherId}`)
             if (!await repo_blockList.amIBlockedByid(user, theOtherId))
                 onlineChatRoom.server.to(socketid).emit("chatMessage", {
-                    chatid : payload.chatid,
+                    chatid : this.id,
                     userid : socket.userid,
-                    content : payload.content,
-                    createdDate : payload.time
+                    contents : payload.contents,
+                    createDate : payload.time
                 });
         });
     }

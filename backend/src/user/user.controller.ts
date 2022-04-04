@@ -16,8 +16,10 @@ export class UserController {
     @Get('/check')
     async checkState(@Query('url') urlvalue : any, @Cookies('accessToken') at : string) {
         try {
+            console.log("token :", at);
             const payload = await this.jwtService.verify(at);
             const user = await this.authService.validate2FAJwt(payload);
+            console.log(payload);
             let state : string;
             if (user.isTwoFactorAuthenticationEnabled && !payload.isSecondFactorAuthenticated)
                 state = "2fa";
