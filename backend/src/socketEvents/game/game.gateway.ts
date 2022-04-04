@@ -99,6 +99,11 @@ export class GameGateway {
         const roomInfo = await this.gameGatewayService.enterGameRoom(socket.id, user, validateResult.gameRoom, payload);
         console.log("roominfo : ", roomInfo);
         this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
+        const game = onlineGameMap[roomInfo.roomid];
+        if (game.running) {
+            const initialInfo = await game.getInitialInfo();
+            socket.emit("startGame", initialInfo);
+        }
         return this.over("enterGameRoom");
     }
 
