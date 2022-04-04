@@ -1,30 +1,34 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom"
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes"
-import { RootState } from "../../redux/rootReducer";
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
 import "./waitingRoom.css"
 import Profile from "../../icons/Profile";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+
 
 export default function WaitingRoom(){
 	const history = useHistory();
 	const param:any = useParams();
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState)=>state.userReducer.user);
-	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
+	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
 	useEffect(()=>{
 		console.log("waitingRoom");
 		if (param.id && param.id !== room.roomid){
 			socket.emit("exitGameRoom", {roomid: room.roomid});
+			// props.handleGameRoom(gameRoomInitialState);
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
+			history.push("/game");
+			window.location.reload();
 		}
-	}, [dispatch, param.id, room.roomid]);
+	}, [dispatch, room, history, param]);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		const handleProfileClick = () => {
@@ -51,10 +55,11 @@ export default function WaitingRoom(){
 			return ;
 		}
 		socket.emit("exitGameRoom", { roomid: room.roomid });
+		// props.handleGameRoom(gameRoomInitialState);
 		dispatch(updateGameRoom(gameRoomInitialState));
 		setRoom(gameRoomInitialState);
+		socket.emit("gameRoomList");
 		history.push("/game");
-		//check!!!
 		window.location.reload();
 	}
 

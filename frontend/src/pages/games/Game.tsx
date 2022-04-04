@@ -35,6 +35,16 @@ export default function Game() {
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const dispatch = useDispatch();
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
+	const [userState, setUser] = useState<User>(user);
+
+	const handleGameRoom = (data: gameRoomDetail) => {
+		setRoom(data);
+		dispatch(updateGameRoom(data));
+	}
+	const handleUser = (data: User) => {
+		dispatch(updateUser(data));
+		setUser(data);
+	}
 
 	useEffect(() => {
 		if (!user || user.nickname === "") {
@@ -42,10 +52,16 @@ export default function Game() {
 			dispatch(undefinedList());
 			socket.emit("userInfo");
 		}
+		console.log("Game - ", socket.disconnected);
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
-			dispatch(updateUser(data));
+			// if (user.nickname === ""){
+			// 	window.location.reload();
+			// }
+			// dispatch(updateUser(data));
+			handleUser(data);
 		});
+
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
 			console.log(msg);
@@ -55,8 +71,9 @@ export default function Game() {
 					history.replace("/game");
 				}
 			}else {
-				setRoom(msg);
-				dispatch(updateGameRoom(msg));
+				// setRoom(msg);
+				// dispatch(updateGameRoom(msg));
+				handleGameRoom(msg);
 				// console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -91,12 +108,14 @@ export default function Game() {
 				const player:GameUser = msg.deletePlayer;
 				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
 			}
-			setRoom(tmp);
-			dispatch(updateGameRoom(tmp));
+			// setRoom(tmp);
+			// dispatch(updateGameRoom(tmp));
+			handleGameRoom(tmp);
 		});
 		socket.on("exitGameRoom", () => {
-			dispatch(updateGameRoom(gameRoomInitialState));
-			setRoom(gameRoomInitialState);
+			// dispatch(updateGameRoom(gameRoomInitialState));
+			// setRoom(gameRoomInitialState);
+			handleGameRoom(gameRoomInitialState);
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -113,7 +132,7 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [chatroom, room, history, playroom, user, dispatch]);
+	}, [room, isOpen, matchData, userState, user, dispatch, handleUser, history, handleGameRoom]);
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
@@ -135,8 +154,8 @@ export default function Game() {
 					</div>
 				</div>
 			</div>
-			<ProfileModal></ProfileModal>
-			<MyProfileModal></MyProfileModal>
+			<ProfileModal user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}></ProfileModal>
+			<MyProfileModal user={user} handleUser={handleUser}></MyProfileModal>
 			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>
 	);

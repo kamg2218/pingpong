@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { RootState } from "../../redux/rootReducer";
-import { chatRoom, ChatData } from "../../types/chatTypes";
+import { chatRoom, ChatData, InputChatRoom, ChatUser } from "../../types/chatTypes";
 import MenuChatBox from "./MenuChatBox";
 import AddChatModal from "../modals/AddChatModal";
 import PublicChatModal from "../modals/PublicChatModal"
@@ -18,15 +18,46 @@ export default function MenuChat(){
 		// console.log(chatroom);
 		socket.on("enterChatRoom", (data:chatRoom)=>{
 			console.log("enter chat room!!");
-			// console.log(data);
 			const tmp:ChatData = room;
 			console.log(tmp.order.indexOf(data.chatid));
 			if (tmp.order.indexOf(data.chatid) === -1){
 				tmp.order.push(data.chatid);
 				tmp.chatroom.push(data);
-				dispatch(updateChat(tmp));
 				setRoom(tmp);
+				dispatch(updateChat(tmp));
 			}
+		});
+		socket.on("myChatRoom", (data:ChatData)=>{
+			console.log("my chat room!!");
+			// console.log(data);
+			dispatch(updateChat(data));
+			setRoom(data);
+		});
+		socket.on("updateChatRoom", (data:InputChatRoom)=>{
+			console.log("update Chat Room!");
+			// console.log(data);
+			let tmp:ChatData = room;
+			const idx = tmp.order.indexOf(data.chatid);
+			if (idx === -1){
+				return ;
+			}
+			if (data.title){ tmp.chatroom[idx].title = data.title; }
+			if (data.lock){ tmp.chatroom[idx].lock = data.lock; }
+			if (data.type){ tmp.chatroom[idx].type = data.type; }
+			if (data.addManager){ data.addManager.forEach((man:string)=>{
+				let index:number = -1;
+				index = tmp.chatroom[idx].manager?.findIndex((p:string)=>p === man);
+				if (index === -1){ tmp.chatroom[idx].manager.push(man); }
+			}); }
+			if (data.deleteManager){ data.deleteManager.forEach(man=>tmp.chatroom[idx].manager = tmp.chatroom[idx].manager?.filter((person: string)=> man !== person)); }
+			if (data.enterUser){ data.enterUser.forEach((user:ChatUser)=>{
+				let index:number = -1;
+				index = tmp.chatroom[idx].members.findIndex((p:ChatUser)=>p.userid===user.userid);
+				if (index === -1){ tmp.chatroom[idx].members.push(user); }
+			}); }
+			if (data.exitUser){ data.exitUser.forEach(user=>tmp.chatroom[idx].members = tmp.chatroom[idx].members?.filter((person:ChatUser)=> user !== person.userid)); }
+			dispatch(updateChat(tmp));
+			setRoom(tmp);
 		});
 	}, [dispatch, room]);
 	const handlePublic = () => { socket.emit("publicChatRoom"); }

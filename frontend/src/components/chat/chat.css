@@ -64,8 +64,8 @@
     border: 1px solid lightgray;
     border-radius: 10px;
     min-height: 2.5em;
-    padding-left: .5em;
-    padding-right: .5em;
+    padding-left: .8em;
+    padding-right: .8em;
 }
 #mychatboxcontent{
     justify-content: start;
