@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {socket} from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { ChatBlock, ChatHistory, ChatData } from "../../types/chatTypes";
+import { ChatBlock, ChatHistory } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
-import { historyInitalState, updateChat, updateHistory } from "../../redux/chatReducer";
+import { historyInitalState, updateHistory } from "../../redux/chatReducer";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "./ChatRoom.css"
@@ -17,8 +17,7 @@ export default function ChatRoom(props:any){
 	const _history = useHistory();
 	const [chat, setChat] = useState("");
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
-	const chatid:string = chatroom.order[props.idx];
+	const chatid:string = props.room?.order[props.idx];
 	const history:ChatHistory = useSelector((state:RootState) => state.chatReducer.history, shallowEqual);
 	const [chatHistory, setHistory] = useState<ChatHistory>(history);
 
@@ -31,17 +30,18 @@ export default function ChatRoom(props:any){
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
-			if (data.result){
-				console.log(data.result);
-				return ;
-			}
-			console.log(data);
 			const hisChat:ChatHistory = chatHistory;
 			if (hisChat.chatid === chatHistory.chatid){
+				if (data.result){
+					console.log(data.result);
+					return ;
+				}
+				console.log(data);
+				
 				hisChat.list.push(data);
 				dispatch(updateHistory(hisChat));
 				setHistory(hisChat);
-				window.location.reload();
+				// window.location.reload();
 			}
 		})
 	}, [chatid, dispatch, chatHistory]);

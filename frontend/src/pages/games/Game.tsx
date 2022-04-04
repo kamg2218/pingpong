@@ -55,11 +55,8 @@ export default function Game() {
 		console.log("Game - ", socket.disconnected);
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
-			// if (user.nickname === ""){
-			// 	window.location.reload();
-			// }
-			// dispatch(updateUser(data));
-			handleUser(data);
+			dispatch(updateUser(data));
+			setUser(data);
 		});
 
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
@@ -71,9 +68,9 @@ export default function Game() {
 					history.replace("/game");
 				}
 			}else {
-				// setRoom(msg);
-				// dispatch(updateGameRoom(msg));
-				handleGameRoom(msg);
+				setRoom(msg);
+				dispatch(updateGameRoom(msg));
+				// handleGameRoom(msg);
 				// console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
@@ -108,14 +105,14 @@ export default function Game() {
 				const player:GameUser = msg.deletePlayer;
 				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
 			}
-			// setRoom(tmp);
-			// dispatch(updateGameRoom(tmp));
-			handleGameRoom(tmp);
+			setRoom(tmp);
+			dispatch(updateGameRoom(tmp));
+			// handleGameRoom(tmp);
 		});
 		socket.on("exitGameRoom", () => {
-			// dispatch(updateGameRoom(gameRoomInitialState));
-			// setRoom(gameRoomInitialState);
-			handleGameRoom(gameRoomInitialState);
+			dispatch(updateGameRoom(gameRoomInitialState));
+			setRoom(gameRoomInitialState);
+			// handleGameRoom(gameRoomInitialState);
 			history.push("/game");
 		});
 		socket.on("startGame", (msg:any) => {
@@ -132,7 +129,7 @@ export default function Game() {
 			setIsOpen(true);
 			setMatch(data);
 		})
-	}, [room, isOpen, matchData, userState, user, dispatch, handleUser, history, handleGameRoom]);
+	}, [room, isOpen, matchData, userState, user, dispatch, history]);
 	return (
 		<div className="container-fluid m-0 p-0" id="gamelobby">
 			<div className="col" id="gamelobbyCol">

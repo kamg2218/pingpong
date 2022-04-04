@@ -22,6 +22,7 @@ export type InputChatRoom = {
 	exitUser?: Array<string>,
 	lock?: boolean,
 	type?: string,
+	switchOwner?: string,
 }
 export type ChatData = {
 	order: Array<string>,
