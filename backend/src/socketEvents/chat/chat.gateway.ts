@@ -279,7 +279,7 @@ export class ChatGateway {
     await repo_chatmember.deleteChatUser(socket.userid, payload.chatid);
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
     room.leave(socket.id);
-    room.announce("updateChatRoom", {exitUser : [socket.userid]});
+    room.announce("updateChatRoom", {exitUser : [socket.userid],"chatid" : payload.chatid });
     if (await this.chatGatewayService.shouldDeleteRoom(payload.chatid)) {
       await this.chatGatewayService.deleteChatRoom(payload.chatid);
     }

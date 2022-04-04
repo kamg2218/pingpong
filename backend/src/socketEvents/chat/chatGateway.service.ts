@@ -31,6 +31,7 @@ export class ChatGatewayService {
 			payload["password"] = await this.hashing(payload["password"]);
 		const chatRoom = repo_chatRoom.createChatRoomInfo(payload);
 		const res = await repo_chatRoom.insert(chatRoom);
+		console.log("insert", res);
 		return res.generatedMaps[0].chatid;
 	}
 
@@ -123,7 +124,7 @@ export class ChatGatewayService {
 		const newOwner = await repo_chatmember.getNewOwner(chatid);
 		if (newOwner) {
 			await repo_chatmember.update(newOwner.index, { position: "owner" });
-			room.announce("updateChatRoom", { "switchOnwer": newOwner.member.userid }) // edit
+			room.announce("updateChatRoom", { "switchOnwer": newOwner.member.userid, "chatid" : chatid }) // edit
 		};
 	}
 	async onlineMyChatRoom(socket: AuthSocket) {
