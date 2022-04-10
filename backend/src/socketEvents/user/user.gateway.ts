@@ -89,7 +89,6 @@ export class UserGateway{
 			await this.userGatewayService.sendFriendRequest(user, payload.userid);
 			const sok_friend = onlineManager.socketIdOf(payload.userid);
 			this.server.to(sok_friend).emit("newFriend", repo_user.getSimpleInfo(user));
-			console.log("newFriend : ", sok_friend);
 			return this.over("addFriend");
 	}
 
@@ -124,7 +123,7 @@ export class UserGateway{
 			const {isAccepted, theOtherInfo, myInfo} = await this.userGatewayService.resepondToFriendRequest(user, payload.userid, payload.result);
 			if (isAccepted) {
 				const sok_friend = onlineManager.socketIdOf(payload.userid);
-				socket.emit('newFriend', theOtherInfo);
+				socket.emit('addFriend', theOtherInfo);
 				this.server.to(sok_friend).emit("addFriend", myInfo);
 			}
 			return this.over("newFriend");
