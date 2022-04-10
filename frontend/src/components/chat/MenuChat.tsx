@@ -16,7 +16,7 @@ export default function MenuChat(props:any){
 	useEffect(()=>{
 		console.log("MenuChat");
 		// console.log(chatroom);
-	}, [room]);
+	}, [room.order]);
 
 	const handlePublic = () => { socket.emit("publicChatRoom"); }
 	const handleExit = (id: string) => {

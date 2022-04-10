@@ -34,6 +34,10 @@ export default function PlayRoom() {
 			dispatch(updateGameResult(data.winner));
 			setWinner(data.winner);
 		});
+		return ()=>{
+			socket.off("draw");
+			socket.off("gameResult");
+		}
 	}, [drawState, start, canvas, win, dispatch, gameroom.isPlayer]);
 
 	const drawCanvas = () => {

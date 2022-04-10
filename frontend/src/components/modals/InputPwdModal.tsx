@@ -5,7 +5,10 @@ export default function InputPwdModal(props: any){
 	const [pwd, setPwd] = useState<String>("");
 	const failure:string = "비밀번호를 확인해주세요!!";
 
-	const handlePwd = (e :any) => { setPwd(e.target.value); }
+	const handlePwd = (e :any) => {
+		setPwd(e.target.value);
+		props.setPwd(e.target.value);
+	}
 	const handlePwdOK = ()=>{
 		if (pwd === "" || pwd.length !== 4){
 			alert(failure);
@@ -18,7 +21,6 @@ export default function InputPwdModal(props: any){
 				return ;
 			}
 		}
-		props.setPwd(pwd);
 		if (props.handleOk){ props.handleOk(); }
 	}
 
@@ -34,6 +36,7 @@ export default function InputPwdModal(props: any){
 					</div>
 					<div className="modal-body">
 						<div className="input-group p-2">
+							<input className="d-none" type="password"/>
 							<input className="form-control" type="password" placeholder="ex)1234" onChange={handlePwd}></input>
 							<button className="btn modal-button" data-dismiss="modal" onClick={handlePwdOK}>확인</button>
 						</div>

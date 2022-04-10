@@ -75,7 +75,6 @@ export default function SideMenuChat(){
 				return ;
 			}
 			if (data.title){ tmp.chatroom[idx].title = data.title; }
-			if (data.lock){ tmp.chatroom[idx].lock = data.lock; }
 			if (data.type){ tmp.chatroom[idx].type = data.type; }
 			if (data.addManager){ data.addManager.forEach((man:string)=>{
 				let index:number = -1;

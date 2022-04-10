@@ -44,51 +44,58 @@ export default function SideMenuGame(){
 			history.replace("/");
 		});
 
-		socket.on("newFriend", (data:Friend)=>{
-			console.log("newFriend", data);
-			const tmp:User = userState;
-			const idx:number = tmp.newfriends.findIndex((friend:Friend)=>friend.userid === data.userid);
-			if (idx === -1){
-				tmp.newfriends.push(data);
-				dispatch(updateUser(tmp));
-				setUser(tmp);
-			}
-		});
-		socket.on("addFriend", (data:Friend)=>{
-			console.log("addFriend", data);
-			const tmp:User = userState;
-			const idx:number = tmp.friends.findIndex((friend:Friend)=>friend.userid === data.userid);
-			if (idx === -1){
-				tmp.friends.push(data);
-				dispatch(updateUser(tmp));
-				setUser(tmp);
-			}
-		});
-		socket.on("deleteFriend", (data:Friend)=>{
-			console.log("deleteFriend", data);
-			const tmp:User = userState;
-			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
-			dispatch(updateUser(tmp));
-			setUser(tmp);
-		});
-		socket.on("blockFriend", (data:Friend)=>{
-			console.log("blockFriend", data);
-			const tmp:User = userState;
-			const idx:number = tmp.blacklist.findIndex((friend:Friend)=>friend.userid === data.userid);
-			if (idx === -1){
-				tmp.blacklist.push(data);
-				dispatch(updateUser(tmp));
-				setUser(tmp);
-			}
-		});
-		socket.on("updateProfile", (data:any)=>{
-			const tmp:User = userState;
-			if (data.nickname){ tmp.nickname = data.nickname; }
-			if (data.profile){ tmp.profile = data.profile; }
-			dispatch(updateUser(tmp));
-			setUser(tmp);
-		});
-	}, [checkUrl, dispatch, gameroom, history, userState, user]);
+		// socket.on("newFriend", (data:Friend)=>{
+		// 	console.log("newFriend", data);
+		// 	const tmp:User = userState;
+		// 	const idx:number = tmp.newfriends.findIndex((friend:Friend)=>friend.userid === data.userid);
+		// 	if (idx === -1){
+		// 		tmp.newfriends.push(data);
+		// 		dispatch(updateUser(tmp));
+		// 		setUser(tmp);
+		// 	}
+		// });
+		// socket.on("addFriend", (data:Friend)=>{
+		// 	console.log("addFriend", data);
+		// 	const tmp:User = userState;
+		// 	const idx:number = tmp.friends.findIndex((friend:Friend)=>friend.userid === data.userid);
+		// 	if (idx === -1){
+		// 		tmp.friends.push(data);
+		// 		dispatch(updateUser(tmp));
+		// 		setUser(tmp);
+		// 	}
+		// });
+		// socket.on("deleteFriend", (data:Friend)=>{
+		// 	console.log("deleteFriend", data);
+		// 	const tmp:User = userState;
+		// 	tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
+		// 	dispatch(updateUser(tmp));
+		// 	setUser(tmp);
+		// });
+		// socket.on("blockFriend", (data:Friend)=>{
+		// 	console.log("blockFriend", data);
+		// 	const tmp:User = userState;
+		// 	const idx:number = tmp.blacklist.findIndex((friend:Friend)=>friend.userid === data.userid);
+		// 	if (idx === -1){
+		// 		tmp.blacklist.push(data);
+		// 		dispatch(updateUser(tmp));
+		// 		setUser(tmp);
+		// 	}
+		// });
+		// socket.on("updateProfile", (data:any)=>{
+		// 	const tmp:User = userState;
+		// 	if (data.nickname){ tmp.nickname = data.nickname; }
+		// 	if (data.profile){ tmp.profile = data.profile; }
+		// 	dispatch(updateUser(tmp));
+		// 	setUser(tmp);
+		// });
+		// return ()=>{
+			// socket.off("newFriend");
+			// socket.off("addFriend");
+			// socket.off("deleteFriend");
+			// socket.off("blockFriend");
+			// socket.off("updateProfile");
+		// }
+	}, [checkUrl, dispatch, gameroom, history, userState, userState.newfriends, userState.friends, user]);
 
 	return (
 		<div id="gameTab">

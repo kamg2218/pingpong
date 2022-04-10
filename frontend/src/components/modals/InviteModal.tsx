@@ -29,7 +29,7 @@ export default function InviteModal(props:any){
 					</div>
 					<div className="modal-body">
 						<div className="rounded m-1" id="inviteDiv">
-							<InviteList setMembers={setMembers}></InviteList>
+							<InviteList setMembers={setMembers} info={props.info}></InviteList>
 						</div>
 					</div>
 					<div className="modal-footer">

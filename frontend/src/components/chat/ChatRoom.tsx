@@ -24,9 +24,9 @@ export default function ChatRoom(props:any){
 	useEffect(()=>{
 		socket.on("chatHistory", (data:ChatHistory)=>{
 			console.log("chatHistroy on!", data);
-			dispatch(updateHistory(data));
 			setHistory(data);
-			window.location.reload();
+			dispatch(updateHistory(data));
+			// window.location.reload();
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
@@ -39,12 +39,16 @@ export default function ChatRoom(props:any){
 				console.log(data);
 				
 				hisChat.list.push(data);
-				dispatch(updateHistory(hisChat));
 				setHistory(hisChat);
+				dispatch(updateHistory(hisChat));
 				// window.location.reload();
 			}
 		})
-	}, [chatid, dispatch, chatHistory]);
+		return ()=>{
+			socket.off("chatMessage");
+			socket.off("chatHistory");
+		}
+	}, [chatid, dispatch, chatHistory, chatHistory.list, chat]);
 
 	const handleInputChange = (e :any) => { setChat(e.target.value); }
 	const handleSendBtn = () => {
@@ -92,11 +96,11 @@ export default function ChatRoom(props:any){
 					<div className="col my-1">
 						{chatHistory && chatHistory.list && chatHistory.list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.contents}`);
-							if (data.userid === user.userid)
+							if (data.userid === user.userid){
 								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
-							else
+							}else{
 								return <ChatBox idx={idx} chatid={chatid} data={data}></ChatBox>
-						})}
+							}})}
 					</div>
 				</div>
 				<div className="row d-flex m-0 mt-1 p-0" id="chatForm">

@@ -1,4 +1,4 @@
-.modal-button, .modal-content, .form-control, .form-check-input, #inviteDiv, .form-control-sm, #mangerDiv{
+.modal-button, .modal-content, .form-control, .form-check-input, #inviteDiv, .form-control-sm, #mangerDiv, #memberList{
 	border: 1px solid #C9A641;
 	border-radius: 10px;
 }

@@ -13,7 +13,7 @@ import "./chat.css";
 export default function MenuChatDropdown(props :any){
 	const info:chatRoom = props.info;
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-	const [pwdDisabled] = useState( info.owner !== user.userid ? true : info.lock);
+	const [pwdDisabled] = useState( info.owner !== user.userid ? true : !info.lock);
 	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user.userid) !== -1 || info.owner === user.userid) ? false : true;
 	
 	//change chatroom title
