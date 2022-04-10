@@ -162,7 +162,6 @@ export class ChatGateway {
     socket.emit("enterChatRoom", res);
     return this.over("enterChatRoom");
   }
-
   @SubscribeMessage('updateChatRoom')
   async updateChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: UpdateChatRoomDTO) {
     this.log({gate : "updateChatRoom", ...payload});
@@ -183,11 +182,6 @@ export class ChatGateway {
     }
     if (type === "private")
       change["password"] = null;
-    // if (payload.lock === false) {
-    //   let room = await repo_chatroom.findOne(payload.chatid);
-    //   if (room.type === "public")
-    //     change["password"] = null;
-    // }
     if (change.password)
       change["password"] = await this.chatGatewayService.hashing(password);
     if (Object.keys(change).length)
@@ -212,9 +206,9 @@ export class ChatGateway {
         }
       }));
     }
-    // if (payload.lock !== undefined && change.password) {
-    if (change.password) {
-      change["lock"] = change.password ? true : false;
+    let room = await getCustomRepository(ChatRoomRepository).findOne({chatid : payload.chatid});
+    if (change.password && room.type === "public") {
+      change["lock"] = room.password ? true : false;
       console.log("lock : ", change["lock"]);
     }
     if (addManagerList && addManagerList.length)
