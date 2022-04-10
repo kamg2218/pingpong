@@ -43,13 +43,11 @@ export default function Game() {
 			dispatch(undefinedList());
 			socket.emit("userInfo");
 		}
-		console.log("Game - ", socket.disconnected);
 		socket.on("userInfo", (data:User) => {
 			console.log("user Info is changed!");
 			dispatch(updateUser(data));
 			setUser(data);
 		});
-
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
 			console.log(msg);
@@ -119,8 +117,25 @@ export default function Game() {
 		socket.on("matchResponse", (data:match) => {
 			setIsOpen(true);
 			setMatch(data);
-		})
-	}, [dispatch, history, loadingOpen, room, user]);
+		});
+		socket.on("updateProfile", (data:any)=>{
+			const tmp:User = userState;
+			if (data.nickname){ tmp.nickname = data.nickname; }
+			if (data.profile){ tmp.profile = data.profile; }
+			setUser(tmp);
+			dispatch(updateUser(tmp));
+		});
+
+		return ()=>{
+			socket.off("userInfo");
+			socket.off("enterGameRoom");
+			socket.off("changeGameRoom");
+			socket.off("exitGameRoom");
+			socket.off("startGame");
+			socket.off("matchResponse");
+			socket.off("updateProfile");
+		}
+	}, [dispatch, history, loadingOpen, room, user, userState]);
 	
 	const handleGameRoom = (data: gameRoomDetail) => {
 		setRoom(data);

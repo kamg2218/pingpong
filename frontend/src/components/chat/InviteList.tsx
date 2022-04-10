@@ -2,12 +2,17 @@ import { shallowEqual, useSelector } from "react-redux";
 import { Friend, User } from "../../types/userTypes";
 import { RootState } from "../../redux/rootReducer";
 import Profile from "../../icons/Profile";
+import { chatRoom, ChatUser } from "../../types/chatTypes";
 
 export default function InviteList(props:any){
 	let members:Array<string> = [];
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const checkbox = (data:Friend) => {
+		const info:chatRoom = props.info;
+		if (!info || info.members.findIndex((member:ChatUser)=>member.userid === data.userid) !== -1){
+			return ;
+		}
 		const handleClick = (data:Friend) => {
 			if (members.find(idx => idx === data.userid)) {
 				members.filter(idx => idx !== data.userid);

@@ -17,7 +17,52 @@ export default function MenuGame(){
 		socket.on("userInfo", (data:User)=>{
 			setUser(data);
 		});
-	});
+		socket.on("newFriend", (data:Friend)=>{
+			console.log("newFriend", data);
+			const tmp:User = userState;
+			const idx:number = tmp.newfriends.findIndex((friend:Friend)=>friend.userid === data.userid);
+			if (idx === -1){
+				tmp.newfriends.push(data);
+				setUser(tmp);
+				dispatch(updateUser(tmp));
+			}
+		});
+		socket.on("addFriend", (data:Friend)=>{
+			console.log("addFriend", data);
+			const tmp:User = userState;
+			const idx:number = tmp.friends.findIndex((friend:Friend)=>friend.userid === data.userid);
+			if (idx === -1){
+				tmp.friends.push(data);
+				setUser(tmp);
+				dispatch(updateUser(tmp));
+			}
+		});
+		socket.on("deleteFriend", (data:Friend)=>{
+			console.log("deleteFriend", data);
+			const tmp:User = userState;
+			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
+			setUser(tmp);
+			dispatch(updateUser(tmp));
+		});
+		socket.on("blockFriend", (data:Friend)=>{
+			console.log("blockFriend", data);
+			const tmp:User = userState;
+			const idx:number = tmp.blacklist.findIndex((friend:Friend)=>friend.userid === data.userid);
+			if (idx === -1){
+				tmp.blacklist.push(data);
+				setUser(tmp);
+				dispatch(updateUser(tmp));
+			}
+		});
+
+		return ()=>{
+			socket.off("userInfo");
+			socket.off("newFriend");
+			socket.off("addFriend");
+			socket.off("deleteFriend");
+			socket.off("blockFriend");
+		}
+	}, [dispatch, user, userState, userState.newfriends, userState.friends]);
 
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {

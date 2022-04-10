@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
@@ -7,23 +7,23 @@ import Profile from "../../icons/Profile";
 import "./MuteModal.css";
 
 export default function MuteModal(props: any) {
-	let thirtySeconds: Array<string> = [];
-	let tenMinutes: Array<string> = [];
-	const checkBoxTen = useRef(null);
-	const checkBoxThirty = useRef(null);
+	const thirtySeconds = useState<Array<string>>([]);
+	const tenMinutes = useState<Array<string>>([]);
+	const [checkedThirty, setCheckedThirty] = useState<boolean>(false);
+	const [checkedTen, setCheckedTen] = useState<boolean>(false);
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const handleSubmit = () => {
-		console.log(tenMinutes);
-		tenMinutes?.forEach((id: string) => {
+		console.log(tenMinutes[0]);
+		tenMinutes[0]?.forEach((id: string) => {
 			socket.emit("chatMute", {
 				chatid: props.info.chatid,
 				time: 600,
 				userid: id,
 			})
 		}, (result: boolean) => { console.log(result); });
-		console.log(thirtySeconds);
-		thirtySeconds?.forEach((id: string) => {
+		console.log(thirtySeconds[0]);
+		thirtySeconds[0]?.forEach((id: string) => {
 			socket.emit("chatMute", {
 				chatid: props.info.chatid,
 				time: 30,
@@ -31,34 +31,33 @@ export default function MuteModal(props: any) {
 			})
 		}, (result: boolean) => { console.log(result); });
 	}
-	const toggleList = (list: Array<string>, id: string) => {
-		const idx: number = list.indexOf(id);
-		if (idx === -1) {
-			console.log(id);
-			list.push(id);
-		} else {
-			list.slice(idx, 1);
+	const handleThirtyBox = (id: string) => {
+		if (checkedTen){
+			const tenIdx: number = tenMinutes[0].indexOf(id);
+			if (tenIdx !== -1) {tenMinutes[0].splice(tenIdx, 1);}
+			setCheckedTen(false);
 		}
+		const idx:number = thirtySeconds[0].indexOf(id);
+		if (idx === -1){
+			thirtySeconds[0].push(id);	
+		}else{
+			thirtySeconds[0].splice(idx, 1);
+		}
+		setCheckedThirty(!checkedThirty);
 	}
-	const handleCheckBox = (id: string, event:any) => {
-		console.log(event.target);
-		const value:string = event.target.value;
-		if (value === "10m") {
-			const thirtyIdx: number = thirtySeconds.indexOf(id);
-			if (thirtyIdx !== -1){
-				thirtySeconds.slice(thirtyIdx, 1);
-				console.log(checkBoxThirty);
-				// checkBoxThirty.checked = false;
-			}
-			toggleList(tenMinutes, id);
-		} else {
-			const tenIdx: number = tenMinutes.indexOf(id);
-			if (tenIdx !== -1){
-				tenMinutes.slice(tenIdx, 1);
-				console.log(checkBoxTen);
-			}
-			toggleList(thirtySeconds, id);
+	const handleTenBox = (id: string) => {
+		if (checkedThirty){
+			const thirtyIdx: number = thirtySeconds[0].indexOf(id);
+			if (thirtyIdx !== -1) {thirtySeconds[0].splice(thirtyIdx, 1);}
+			setCheckedThirty(false);
 		}
+		const idx:number = tenMinutes[0].indexOf(id);
+		if (idx === -1){
+			tenMinutes[0].push(id);	
+		}else{
+			tenMinutes[0].splice(idx, 1);
+		}
+		setCheckedTen(!checkedTen);
 	}
 	const muteListHeader = () => {
 		return (
@@ -82,8 +81,8 @@ export default function MuteModal(props: any) {
 				<div className="row" id="mutePerson" key={`mute_${person.userid}`}>
 					<div className="col p-0" key={`mute_${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="muteProfile" /></div>
 					<div className="col" key={`mute_${person.userid}_nickname`}>{person.nickname}</div>
-					<div className="col-2" key={`mute_${person.userid}_ten`}><input className="form-check-input" type="checkbox" value="10m" onClick={(e) => handleCheckBox(person.userid, e)} ref={checkBoxTen} /></div>
-					<div className="col-2" key={`mute_${person.userid}_thirty`}><input className="form-check-input" type="checkbox" value="30s" onClick={(e) => handleCheckBox(person.userid, e)} ref={checkBoxThirty}/></div>
+					<div className="col-2" key={`mute_${person.userid}_ten`}><input className="form-check-input" type="checkbox" value="10m" onClick={() => handleTenBox(person.userid)} checked={checkedTen}/></div>
+					<div className="col-2" key={`mute_${person.userid}_thirty`}><input className="form-check-input" type="checkbox" value="30s" onClick={() => handleThirtyBox(person.userid)} checked={checkedThirty}/></div>
 				</div>
 			);
 		});

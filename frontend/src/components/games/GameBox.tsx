@@ -13,7 +13,10 @@ export default function GameBox(props:any){
 	const [state, setState] = useState<boolean>(false);
 	const [pwd, setPwd] = useState<string>("");
 
-	const handleEnterGameRoom = (result: boolean) => {
+	const handleOk = () => {
+		handleEnterGameRoom(state);
+	}
+ 	const handleEnterGameRoom = (result: boolean) => {
 		let info:info = { roomid: props.info.roomid, isPlayer: result }
 		setState(result);
 		if (pwd !== ""){ info.password = pwd; }
@@ -58,7 +61,7 @@ export default function GameBox(props:any){
 					</div>
 				</div>
 			</div>
-			<InputPwdModal key={props.info.roomid} state={state} setPwd={setPwd} handleSubmit={handleEnterGameRoom}></InputPwdModal>
+			<InputPwdModal key={props.info.roomid} state={state} setPwd={setPwd} handleOk={handleOk}></InputPwdModal>
 		</div>
 	);
 }
