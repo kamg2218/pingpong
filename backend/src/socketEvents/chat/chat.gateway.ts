@@ -183,11 +183,11 @@ export class ChatGateway {
     }
     if (type === "private")
       change["password"] = null;
-    if (payload.lock === false) {
-      let room = await repo_chatroom.findOne(payload.chatid);
-      if (room.type === "public")
-        change["password"] = null;
-    }
+    // if (payload.lock === false) {
+    //   let room = await repo_chatroom.findOne(payload.chatid);
+    //   if (room.type === "public")
+    //     change["password"] = null;
+    // }
     if (change.password)
       change["password"] = await this.chatGatewayService.hashing(password);
     if (Object.keys(change).length)
@@ -212,14 +212,17 @@ export class ChatGateway {
         }
       }));
     }
-    if (payload.lock !== undefined && change.password) {
+    // if (payload.lock !== undefined && change.password) {
+    if (change.password) {
       change["lock"] = change.password ? true : false;
+      console.log("lock : ", change["lock"]);
     }
     if (addManagerList && addManagerList.length)
       change["addManager"] = addManagerList;
     if (deleteManagerList && deleteManagerList.length)
       change["deleteManager"] = deleteManagerList;
-    onlineChatRoomManager.getRoomByid(payload.chatid).announce("updateChatRoom", {change, "chatid" : payload.chatid});
+    delete change[password];
+    onlineChatRoomManager.getRoomByid(payload.chatid).announce("updateChatRoom", {...change, "chatid" : payload.chatid});
     this.over("updateChatRoom");
   }
 
