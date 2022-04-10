@@ -1,48 +1,46 @@
 import { useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
-import { shallowEqual, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
-import { gameRoom } from "../../types/gameTypes";
-import { ProfileUser } from "../../types/userTypes";
-import { RootState } from "../../redux/rootReducer";
+import { Friend, ProfileUser } from "../../types/userTypes";
 import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
 
-export default function ProfileModal(props: any) {
+export default function ProfileModal(props:any) {
 	const history = useHistory();
-	const userid:string = props.userid;
 	const [profile, setProfile] = useState<ProfileUser>();
+	const disabled:boolean = profile ? profile.userid === props.user.userid : false;
+	const chatDisabled:boolean = profile ? (props.user.friends.findIndex((friend:Friend)=>friend.userid === profile.userid) !== -1 ? false : true) : true;
 	const button:string = "row w-75 my-1 btn modal-button";
-	const gameroom:gameRoom = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	let buttonFriend:string = button;
-
+	
 	useEffect(() => {
-		if (userid && !profile) {
-			console.log("opponent Profile");
-			socket.emit("opponentProfile", { userid: userid });
-		}
+		console.log("ProfileModal");
 		socket.on("opponentProfile", (data:ProfileUser) => {
-			console.log(`opponent = `, data);
 			setProfile(data);
 		});
-	}, [profile, userid]);
+	}, [profile, props.user]);
 	
 	const handleChat = () => {
+		if (disabled || !profile){ return ; }
 		socket.emit("createChatRoom", {
 			type: "private",
 			member: [profile?.userid]
 		}, (chatid: string)=>{
 			console.log(chatid);
 			if (chatid !== ''){
-				history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`);
+				history.push(`/game/chat/${chatid}${props.gameroom ? `/waiting/${props.gameroom.roomid}`: ''}`);
 			}
 		})
 	}
-	const handleMatch = () => { socket.emit("matchRequest", { userid: profile?.userid }) }
+	const handleMatch = () => {
+		if (disabled || !profile){ return ; }
+		socket.emit("matchRequest", { userid: profile?.userid });
+	}
 	const handleFriend = () => {
+		if (disabled || !profile){ return ; }
 		if (profile?.friend){
-			socket.emit("deleteFriend", { userid: profile.userid })
+			socket.emit("deleteFriend", { userid: profile?.userid })
 			buttonFriend = button;
 		}else{
 			socket.emit("addFriend", { userid: profile?.userid })
@@ -50,9 +48,9 @@ export default function ProfileModal(props: any) {
 		}
 	}
 	const handleBlock = () => {
-		if (profile?.block){ socket.emit("unblockFriend", { userid: profile.userid }) }
+		if (disabled || !profile){ return ; }
+		if (profile?.block){ socket.emit("unblockFriend", { userid: profile?.userid }) }
 		else { socket.emit("blockFriend", { userid: profile?.userid }) }
-		socket.emit("opponentProfile", { userid: props.userid });
 	}
 	return (
 		<div className="modal fade" id="profileModal" role="dialog" tabIndex={-1} aria-labelledby="ProfileModalLabel" aria-hidden="true">
@@ -67,10 +65,10 @@ export default function ProfileModal(props: any) {
 							<div className="row text-center">
 								<div className="col-4">
 									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 0)} alt="profile" id="modalProfile"/></div>
-									<div className={button} onClick={handleChat} data-dismiss="modal"> 1 : 1 채팅</div>
-									<div className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#loadingModal">대전 신청</div>
-									<div className={buttonFriend} onClick={handleFriend} data-dismiss="modal">{profile?.friend ? "친구 삭제" : "친구 추가"}</div>
-									<div className={button} onClick={handleBlock} data-dismiss="modal">{profile?.block ? "차단 해제" : "차단"}</div>
+									<button className={button} onClick={handleChat} data-dismiss="modal" disabled={disabled || chatDisabled}> 1 : 1 채팅</button>
+									<button className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#loadingModal" disabled={disabled}>대전 신청</button>
+									<button className={buttonFriend} onClick={handleFriend} data-dismiss="modal" disabled={disabled}>{profile?.friend ? "친구 삭제" : "친구 추가"}</button>
+									<button className={button} onClick={handleBlock} data-dismiss="modal" disabled={disabled}>{profile?.block ? "차단 해제" : "차단"}</button>
 								</div>
 								<div className="col">
 									<div className="row h4"><div className="py-1" id="profileNickname">{profile ? profile.nickname : "unknown"}</div></div>

@@ -37,7 +37,12 @@
 #waitingRoomBtn:hover{
 	background-color: #C9A641;
 }
+.player > img:hover, .observer > img:hover{
+	border: 2px solid #C9A641;
+	box-shadow: #C9A641;
+}
 .player > img, .observer > img {
-	height: 8em;
+	border: 1px solid #C9A641;
 	border-radius: 25px;
+	height: 8em;
 }

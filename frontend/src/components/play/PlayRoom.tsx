@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { draw, gameRoomDetail, GameUser, playRoom } from "../../types/gameTypes";
+import { draw, gameRoomDetail, playRoom } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
 import { updateDraw, updateGameResult } from "../../redux/gameReducer";
 import "./PlayRoom.css"
@@ -18,62 +18,70 @@ export default function PlayRoom() {
 	const start = useState<boolean>(true);
 	const gameDoing = useRef<null | HTMLElement>(null);
 	const canvas = useRef<null | HTMLCanvasElement>(null);
+	const [drawState, setDraw] = useState<draw>(draw);
+	const [win, setWinner] = useState<string>(winner);
 
 	useEffect(() => {
-		console.log("PlayRoom");
+		// console.log("PlayRoom");
 		if (start[0] && gameDoing) { gameDoing.current?.focus(); }
-		socket.on("draw", (data: draw) => { dispatch(updateDraw(data)); });
-		socket.on("gameResult", (data: any) => { dispatch(updateGameResult(data.winner)); });
-	}, [draw, start, canvas, winner]);
+		socket.on("draw", (data: draw) => {
+			dispatch(updateDraw(data));
+			setDraw(data);
+		});
+		socket.on("gameResult", (data: any) => {
+			console.log("gameResult", gameroom.isPlayer);
+			console.log(data);
+			dispatch(updateGameResult(data.winner));
+			setWinner(data.winner);
+		});
+	}, [drawState, start, canvas, win, dispatch, gameroom.isPlayer]);
 
 	const drawCanvas = () => {
 		const ctx = canvas?.current?.getContext("2d");
 		if (ctx) {
 			//clear
-			ctx.clearRect(0, 0, draw.background.width, draw.background.height);
+			ctx.clearRect(0, 0, drawState.background.width, drawState.background.height);
 			//center
 			ctx.beginPath();
-			ctx.moveTo(draw.background.width / 2, draw.background.height);
-			ctx.lineTo(draw.background.width / 2, 0);
+			ctx.moveTo(drawState.background.width / 2, drawState.background.height);
+			ctx.lineTo(drawState.background.width / 2, 0);
 			ctx.lineWidth = 0.5;
 			ctx.stroke();
 
-			if (ctx && winner[0]) { drawWinner(ctx) }
+			if (ctx && win) { drawWinner(ctx) }
 			else { drawPlay(ctx) }
 		}
 
 		return (
 			<div className="row p-1" id="canvasBorder">
-				<canvas id="canvas" ref={canvas} width={draw.background?.width} height={draw.background?.height}></canvas>
+				<canvas id="canvas" ref={canvas} width={drawState.background?.width} height={drawState.background?.height}></canvas>
 			</div>
 		);
 	}
 	const drawWinner = (ctx: CanvasRenderingContext2D) => {
-		const win: string = winner;
-		const width: number = draw.background.width / 2;
-		const height: number = draw.background.height / 2;
-		const player = gameroom.players.find((user: GameUser) => user.userid === win);
+		const width: number = drawState.background?.width / 2;
+		const height: number = drawState.background?.height / 2;
 
 		ctx.textAlign = "center";
 		ctx.font = "80px verdana bold";
 		ctx.fillStyle = "steelblue";
 		if (user.userid === win) { ctx.fillText("WIN", width, height); }
 		else if (gameroom.isPlayer) { ctx.fillText("LOSE", width, height); }
-		else { ctx.fillText(win === gameroom.players[0].userid ? gameroom.players[0].nickname:gameroom.players[1].nickname, width, height); }
+		else { ctx.fillText(win === playroom.left.userid ? playroom.left.nickname : playroom.right.nickname, width, height); }
 	}
 	const drawPlay = (ctx: CanvasRenderingContext2D) => {
 		//ball
 		ctx.beginPath();
-		ctx.arc(draw.ball.x, draw.ball.y, draw.ball.r, 0, Math.PI * 2);
+		ctx.arc(drawState.ball?.x, drawState.ball?.y, drawState.ball?.r, 0, Math.PI * 2);
 		ctx.stroke();
 		ctx.fillStyle = "black";
 		ctx.fill();
 		//left
-		const left = draw.left;
+		const left = drawState.left;
 		ctx.fillStyle = "blue";
 		ctx.fillRect(left.x, left.y, left.width, left.height);
 		//right
-		const right = draw.right
+		const right = drawState.right
 		ctx.fillStyle = "red";
 		ctx.fillRect(right.x, right.y, right.width, right.height);
 	}
@@ -92,7 +100,7 @@ export default function PlayRoom() {
 	return (
 		<div className="container my-2 px-3" id="playRoom" onClick={() => { gameDoing.current?.focus() }}>
 			<input className="row-1" id="canvasInput" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
-			{draw && drawCanvas()}
+			{drawState && drawCanvas()}
 		</div>
 	);
 }

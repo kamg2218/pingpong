@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {socket} from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { ChatBlock, ChatHistory, ChatData } from "../../types/chatTypes";
+import { ChatBlock, ChatHistory } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
-import { historyInitalState, updateChat, updateHistory } from "../../redux/chatReducer";
+import { historyInitalState, updateHistory } from "../../redux/chatReducer";
 import ChatBox from "./ChatBox";
 import MyChatBox from "./MyChatBox";
 import "./ChatRoom.css"
@@ -17,50 +17,51 @@ export default function ChatRoom(props:any){
 	const _history = useHistory();
 	const [chat, setChat] = useState("");
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
-	const chatid:string = chatroom.order[props.idx];
+	const chatid:string = props.room?.order[props.idx];
 	const history:ChatHistory = useSelector((state:RootState) => state.chatReducer.history, shallowEqual);
-	// const chatInput = useRef<HTMLFormElement>(null);
+	const [chatHistory, setHistory] = useState<ChatHistory>(history);
 
 	useEffect(()=>{
-		// if (chatid && (!history || history.chatid !== chatid)){
-		// 	console.log("chat history emitted!")
-		// 	socket.emit("chatHistory", { chatid: chatid });
-		// }
 		socket.on("chatHistory", (data:ChatHistory)=>{
-			console.log("chatHistroy on!");
+			console.log("chatHistroy on!", data);
 			dispatch(updateHistory(data));
+			setHistory(data);
+			window.location.reload();
 		})
 		socket.on("chatMessage", (data:any)=>{
 			console.log("got chat message");
-			if (data.result){
-				console.log(data.result);
-				return ;
-			}
-			console.log(data);
-			const chat:ChatHistory = history;
-			if (chat){
-				chat.list.push(data);
-				dispatch(updateHistory(chat));
+			const hisChat:ChatHistory = chatHistory;
+			if (hisChat.chatid === chatHistory.chatid){
+				if (data.result){
+					console.log(data.result);
+					return ;
+				}
+				console.log(data);
+				
+				hisChat.list.push(data);
+				dispatch(updateHistory(hisChat));
+				setHistory(hisChat);
+				// window.location.reload();
 			}
 		})
-	}, [chatid, history, chat]);
+	}, [chatid, dispatch, chatHistory]);
 
 	const handleInputChange = (e :any) => { setChat(e.target.value); }
 	const handleSendBtn = () => {
 		if (chat === ""){
 			return ;
 		}
+		console.log("chatMessage emit!");
 		socket.emit("chatMessage", {
 			chatid: chatid,
 			contents: chat,
 		}, (result:boolean)=>{
 			if (result === false){
 				alert("mute!!!");
+				return ;
 			}
-			setChat("");
-			// chatInput.current?.reset();
 		});
+		setChat("");
 	}
 	const handleInputKeypress = (event:any) => {
 		if (event.key === "Enter"){
@@ -80,6 +81,7 @@ export default function ChatRoom(props:any){
 			_history.push("/game/chat");
 		}
 		dispatch(updateHistory(historyInitalState));
+		setHistory(historyInitalState);
 	}
 
 	return (
@@ -88,7 +90,7 @@ export default function ChatRoom(props:any){
 				<div className="row m-1 mt-2" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0 mt-3" id="chatlist">
 					<div className="col my-1">
-						{history && history.list && history.list.map((data:ChatBlock, idx:number)=>{
+						{chatHistory && chatHistory.list && chatHistory.list.map((data:ChatBlock, idx:number)=>{
 							console.log(`idx = ${idx}, data = ${data.contents}`);
 							if (data.userid === user.userid)
 								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
@@ -99,7 +101,7 @@ export default function ChatRoom(props:any){
 				</div>
 				<div className="row d-flex m-0 mt-1 p-0" id="chatForm">
 					<input className="d-none" type="password"></input>
-					<input className="col" id="chatInput" onChange={handleInputChange} onKeyPress={handleInputKeypress}></input>
+					<input className="col" id="chatInput" value={chat} onChange={handleInputChange} onKeyPress={handleInputKeypress} autoFocus></input>
 					<button className="col-2" id="chatSend" onClick={handleSendBtn}><i className="bi bi-play"/></button>
 				</div>
 			</div>

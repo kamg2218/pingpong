@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom"
 import { shallowEqual, useSelector } from "react-redux"
 import { socket } from "../../socket/socket"
 import { RootState } from "../../redux/rootReducer"
+import {User} from "../../types/userTypes"
 import { ChatUser, ChatData } from "../../types/chatTypes"
 import TitleInput from "./TitleInput"
 import MenuChatDropdown from "./MenuChatDropdown"
@@ -24,10 +25,14 @@ export default function MenuChatBox(props :any){
 	const size:number = props.info.members.length;
 	const [check, setChange] = useState<boolean>(false);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
+	const user:User = useSelector((state:RootState)=>state.userReducer.user, shallowEqual);
 
 	useEffect(()=>{
 		console.log("MenuChatBox!");
-	}, [check]);
+		if (props.info.onwer === user.userid){
+			console.log("I'm the owner");
+		}
+	}, [check, props.info.onwer, user.userid]);
 
 	const changeTitle = () => { setChange(!check); }
 	const handleDoubleClick = (chatid: string) => {
@@ -52,8 +57,10 @@ export default function MenuChatBox(props :any){
 					}
 				</div>
 				{ !check && <div className="font-weight-light member" id="boxMembers">{size}</div> }
+				{props.info.type === "private" ? <i className="]mx-1 px-2 bi bi-lock"/> : <i className="mx-1 px-2 bi bi-unlock"/>}
+				{props.info.lock ? <i className="mx-1 px-1 bi bi-key"/> : ""}
 			</div>
-			<MenuChatDropdown info={props.info} changeTitle={changeTitle}/>
+			<MenuChatDropdown info={props.info} changeTitle={changeTitle} handleExit={props.handleExit}/>
 		</li>
 	);
 }

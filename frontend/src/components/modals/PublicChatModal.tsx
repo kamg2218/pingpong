@@ -17,7 +17,7 @@ export default function PublicChatModal(){
 			console.log("public chat room on!");
 			dispatch(updatePublic(data));
 		})
-	}, [pwd, checkedroom, publicroom]);
+	}, [pwd, checkedroom, publicroom, dispatch]);
 
 	const handleSubmit = () => {
 		let data:any = {
