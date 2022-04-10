@@ -154,7 +154,7 @@ export default function MyProfileModal(props:any) {
 										<div className="row pt-2" id="modalTwofactorTitle">
 											<div className="col h5 text-center">2중 인증</div>
 											<div className="col-3 form-check form-switch">
-												<input className="form-check-input" type="checkbox" onClick={handleQrcode} defaultChecked={user.twofactor}/>
+												<input className="form-check-input" type="checkbox" onClick={handleQrcode} checked={user.twofactor}/>
 											</div>
 										</div>
 										{ state && 
