@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import {socket} from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { ChatData, chatRoom } from "../../types/chatTypes";
+import { chatRoom } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
-import { updateChat } from "../../redux/chatReducer";
 import PwdModal from "../modals/PwdModal";
 import MuteModal from "../modals/MuteModal";
 import InviteModal from "../modals/InviteModal";
+import ManagerModal from "../modals/ManagerModal";
 import "./chat.css";
 
 export default function MenuChatDropdown(props :any){
-	const dispatch = useDispatch();
 	const info:chatRoom = props.info;
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const [pwdDisabled] = useState( info.owner !== user.userid ? true : info.lock);
 	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user.userid) !== -1 || info.owner === user.userid) ? false : true;
 	
@@ -39,6 +37,9 @@ export default function MenuChatDropdown(props :any){
 				<li className="dropdown-item" key="pwd">
 					<button className="btn w-100" data-toggle="modal" data-target="#pwdModal" disabled={pwdDisabled}>Password</button>
 				</li>
+				<li className="dropdown-item" key="manager">
+					<button className="btn w-100" data-toggle="modal" data-target="#managerModal" disabled={info.owner !== user?.userid}>Manager</button>
+				</li>
 				<li className="dropdown-item" key="invite">
 					<button className="btn w-100" data-toggle="modal" data-target="#inviteModal">Invite</button>
 				</li>
@@ -52,6 +53,7 @@ export default function MenuChatDropdown(props :any){
 			<PwdModal info={info}></PwdModal>
 			<InviteModal info={info}></InviteModal>
 			<MuteModal info={info}></MuteModal>
+			<ManagerModal info={info}></ManagerModal>
 		</div>
 	);
 }

@@ -12,8 +12,11 @@ export default function MatchRequestModal(props:any){
 	
 	useEffect(()=>{
 		if (value < maxValue){ setTimeout(()=>setValue(value + 0.1), 100); }
-		else{ handleSubmit(false); }
-	}, [value]);
+		else{ 
+			socket.emit("matchResponse", { requestid: props.matchData?.requestid, result: false });
+			props.setIsOpen(false);
+		}
+	}, [props, value]);
 	
   return (
 		<div id="matchRequestModal">
