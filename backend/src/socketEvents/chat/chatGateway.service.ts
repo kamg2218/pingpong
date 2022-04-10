@@ -124,7 +124,7 @@ export class ChatGatewayService {
 		const newOwner = await repo_chatmember.getNewOwner(chatid);
 		if (newOwner) {
 			await repo_chatmember.update(newOwner.index, { position: "owner" });
-			room.announce("updateChatRoom", { "switchOnwer": newOwner.member.userid, "chatid" : chatid }) // edit
+			room.announce("updateChatRoom", { "switchOwner": newOwner.member.userid, "chatid" : chatid }) // edit
 		};
 	}
 	async onlineMyChatRoom(socket: AuthSocket) {
