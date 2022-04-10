@@ -3,14 +3,12 @@ import { shallowEqual, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
 import { RootState } from "../../redux/rootReducer";
-import Profile from "../../icons/Profile";
+import MuteList from "./MuteList";
 import "./MuteModal.css";
 
 export default function MuteModal(props: any) {
 	const thirtySeconds = useState<Array<string>>([]);
 	const tenMinutes = useState<Array<string>>([]);
-	const [checkedThirty, setCheckedThirty] = useState<boolean>(false);
-	const [checkedTen, setCheckedTen] = useState<boolean>(false);
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const handleSubmit = () => {
@@ -31,34 +29,6 @@ export default function MuteModal(props: any) {
 			})
 		}, (result: boolean) => { console.log(result); });
 	}
-	const handleThirtyBox = (id: string) => {
-		if (checkedTen){
-			const tenIdx: number = tenMinutes[0].indexOf(id);
-			if (tenIdx !== -1) {tenMinutes[0].splice(tenIdx, 1);}
-			setCheckedTen(false);
-		}
-		const idx:number = thirtySeconds[0].indexOf(id);
-		if (idx === -1){
-			thirtySeconds[0].push(id);	
-		}else{
-			thirtySeconds[0].splice(idx, 1);
-		}
-		setCheckedThirty(!checkedThirty);
-	}
-	const handleTenBox = (id: string) => {
-		if (checkedThirty){
-			const thirtyIdx: number = thirtySeconds[0].indexOf(id);
-			if (thirtyIdx !== -1) {thirtySeconds[0].splice(thirtyIdx, 1);}
-			setCheckedThirty(false);
-		}
-		const idx:number = tenMinutes[0].indexOf(id);
-		if (idx === -1){
-			tenMinutes[0].push(id);	
-		}else{
-			tenMinutes[0].splice(idx, 1);
-		}
-		setCheckedTen(!checkedTen);
-	}
 	const muteListHeader = () => {
 		return (
 			<div className="row" id="muteListHeader" key="muteListHeader">
@@ -69,22 +39,37 @@ export default function MuteModal(props: any) {
 			</div>
 		);
 	}
+	const handleThirtyBox = (id: string, state:boolean) => {
+		if (state){
+			const tenIdx: number = tenMinutes[0].indexOf(id);
+			if (tenIdx !== -1) {tenMinutes[0].splice(tenIdx, 1);}
+		}
+		const idx:number = thirtySeconds[0].indexOf(id);
+		if (idx === -1){
+			thirtySeconds[0].push(id);	
+		}else{
+			thirtySeconds[0].splice(idx, 1);
+		}
+	}
+	const handleTenBox = (id: string, state:boolean) => {
+		if (state){
+			const thirtyIdx: number = thirtySeconds[0].indexOf(id);
+			if (thirtyIdx !== -1) {thirtySeconds[0].splice(thirtyIdx, 1);}
+		}
+		const idx:number = tenMinutes[0].indexOf(id);
+		if (idx === -1){
+			tenMinutes[0].push(id);	
+		}else{
+			tenMinutes[0].splice(idx, 1);
+		}
+	}
 	const muteList = (info: Array<User>) => {
 		let list: JSX.Element[] = [];
-
+		
 		list.push(muteListHeader());
 		info.forEach((person: User) => {
-			if (person.userid === user.userid) {
-				return;
-			}
-			list.push(
-				<div className="row" id="mutePerson" key={`mute_${person.userid}`}>
-					<div className="col p-0" key={`mute_${person.userid}_img`}><img src={Profile(person.profile)} alt="profile" id="muteProfile" /></div>
-					<div className="col" key={`mute_${person.userid}_nickname`}>{person.nickname}</div>
-					<div className="col-2" key={`mute_${person.userid}_ten`}><input className="form-check-input" type="checkbox" value="10m" onClick={() => handleTenBox(person.userid)} checked={checkedTen}/></div>
-					<div className="col-2" key={`mute_${person.userid}_thirty`}><input className="form-check-input" type="checkbox" value="30s" onClick={() => handleThirtyBox(person.userid)} checked={checkedThirty}/></div>
-				</div>
-			);
+			if (person.userid === user.userid) { return; }
+			list.push(<MuteList person={person} handleTenBox={handleTenBox} handleThirtyBox={handleThirtyBox}></MuteList>);
 		});
 		return list;
 	}
