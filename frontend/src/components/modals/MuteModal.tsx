@@ -69,6 +69,7 @@ export default function MuteModal(props: any) {
 		list.push(muteListHeader());
 		info.forEach((person: User) => {
 			if (person.userid === user.userid) { return; }
+			else if (person.userid === props.info.owner) { return; }
 			list.push(<MuteList person={person} handleTenBox={handleTenBox} handleThirtyBox={handleThirtyBox}></MuteList>);
 		});
 		return list;

@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import { Route, Switch, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
-import { User } from "../../types/userTypes"
-import { gameRoomDetail, GameUser, match } from "../../types/gameTypes"
+import { Friend, User } from "../../types/userTypes"
+import { gameRoomDetail, GameUser, match, result } from "../../types/gameTypes"
 import {updateUser} from "../../redux/userReducer"
 import {RootState} from "../../redux/rootReducer"
 import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
@@ -29,6 +29,7 @@ export default function Game() {
 	const [matchData, setMatch] = useState<match>();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [loadingOpen, setLoadingOpen] = useState<boolean>(false);
+	const [matchingOpen, setMatchingOpen] = useState<boolean>(false);
 	const [content, setContent] = useState<string>("잠시만 기다려 주세요");
 	
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
@@ -51,9 +52,8 @@ export default function Game() {
 		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
 			console.log("enter game room");
 			console.log(msg);
-			// if (loadingOpen){
-				setLoadingOpen(false);
-			// }
+			setLoadingOpen(false);
+			setMatchingOpen(false);
 			if ("message" in msg) {
 				alert("fail to enter the room!");
 				if (history.location.pathname.search("waiting")){
@@ -62,7 +62,6 @@ export default function Game() {
 			}else {
 				setRoom(msg);
 				dispatch(updateGameRoom(msg));
-				// console.log("path = ", history.location.pathname);
 				if (history.location.pathname.indexOf("waiting") === -1){
 					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
 				}
@@ -71,8 +70,7 @@ export default function Game() {
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
 			console.log("changeGameRoom");
-			// console.log(room);
-			// console.log(msg);
+			console.log(msg);
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
 			if (msg.speed) {tmp.speed = msg.speed;}
@@ -96,10 +94,11 @@ export default function Game() {
 				const player:GameUser = msg.deletePlayer;
 				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
 			}
-			setRoom(tmp);
+			setRoom({...tmp});
 			dispatch(updateGameRoom(tmp));
 		});
 		socket.on("exitGameRoom", () => {
+			console.log("exitGameRoom");
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
 			history.push("/game");
@@ -115,15 +114,64 @@ export default function Game() {
 			}
 		});
 		socket.on("matchResponse", (data:match) => {
+			console.log("matchResponse", data);
 			setIsOpen(true);
 			setMatch(data);
 		});
+		socket.on("matchRequest", (data:result)=>{
+			console.log("matchRequest", data);
+			setMatchingOpen(false);
+		})
 		socket.on("updateProfile", (data:any)=>{
-			const tmp:User = userState;
+			const tmp:User = user;
 			if (data.nickname){ tmp.nickname = data.nickname; }
 			if (data.profile){ tmp.profile = data.profile; }
-			setUser(tmp);
+			setUser({...tmp});
 			dispatch(updateUser(tmp));
+		});
+		socket.on("newFriend", (data:Friend)=>{
+			console.log("newFriend", data);
+			const tmp:User = user;
+			const idx:number = tmp.newfriends.findIndex((friend:Friend)=>friend.userid === data.userid);
+			if (idx === -1){
+				tmp.newfriends.push(data);
+				dispatch(updateUser(tmp));
+				setUser({...tmp});
+			}
+		});
+		socket.on("addFriend", (data:Friend)=>{
+			const tmp:User = user;
+			const idx:number = tmp.friends.findIndex((friend:Friend)=>friend.userid === data.userid);
+			if (idx === -1){
+				console.log("addFriend", data);
+				tmp.friends.push(data);
+				dispatch(updateUser(tmp));
+				setUser({...tmp});
+			}
+		});
+		socket.on("deleteFriend", (data:Friend)=>{
+			console.log("deleteFriend", data);
+			const tmp:User = user;
+			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
+			dispatch(updateUser(tmp));
+			setUser({...tmp});
+		});
+		socket.on("blockFriend", (data:Friend)=>{
+			const tmp:User = user;
+			const idx:number = tmp.blacklist.findIndex((friend:Friend)=>friend.userid === data.userid);
+			if (idx === -1){
+				console.log("blockFriend", data);
+				tmp.blacklist.push(data);
+				dispatch(updateUser(tmp));
+				setUser({...tmp});
+			}
+		});
+		socket.on("updateProfile", (data:any)=>{
+			const tmp:User = user;
+			if (data.nickname){ tmp.nickname = data.nickname; }
+			if (data.profile){ tmp.profile = data.profile; }
+			dispatch(updateUser(tmp));
+			setUser({...tmp});
 		});
 
 		return ()=>{
@@ -134,8 +182,14 @@ export default function Game() {
 			socket.off("startGame");
 			socket.off("matchResponse");
 			socket.off("updateProfile");
+			socket.off("matchRequest");
+			socket.off("newFriend");
+			socket.off("addFriend");
+			socket.off("deleteFriend");
+			socket.off("blockFriend");
+			socket.off("updateProfile");
 		}
-	}, [dispatch, history, loadingOpen, room, user, userState]);
+	}, [dispatch, history, room, user, userState]);
 	
 	const handleGameRoom = (data: gameRoomDetail) => {
 		setRoom(data);
@@ -173,8 +227,9 @@ export default function Game() {
 					</div>
 				</div>
 			</div>
-			<ProfileModal user={user} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom}></ProfileModal>
-			<MyProfileModal user={user} handleUser={handleUser}></MyProfileModal>
+			<ProfileModal user={userState} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom} setIsOpen={setMatchingOpen}></ProfileModal>
+			<MyProfileModal user={userState} handleUser={handleUser}></MyProfileModal>
+			<Modal isOpen={matchingOpen} style={customStyles}><LoadingModal setIsOpen={setMatchingOpen} content={content}/></Modal>
 			<Modal isOpen={loadingOpen} style={customStyles}><LoadingModal setIsOpen={setLoadingOpen} content={content} handleCancelMatching={handleCancelMatching}/></Modal>
 			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>

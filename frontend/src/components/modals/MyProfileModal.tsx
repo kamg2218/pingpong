@@ -1,23 +1,22 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User, Friend } from "../../types/userTypes";
 import { initialize } from "../../redux/userReducer";
 import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
-import { RootState } from "../../redux/rootReducer";
 
-export default function MyProfileModal(props:any) {
+export default function MyProfileModal({user, handleUser}:{user:User, handleUser:Function}) {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [num, setNum] = useState<string>("");
 	const [qrcode, setQrcode] = useState<string>("");
 	const [state, setState] = useState<boolean>(false);
 	// const [user, setUser] = useState<User>(props.user);
-	const user:User = useSelector((state:RootState)=>state.userReducer.user);
+	// const user:User = useSelector((state:RootState)=>state.userReducer.user);
 
 	useEffect(() => {
 		console.log("MyProfileModal");
@@ -27,7 +26,7 @@ export default function MyProfileModal(props:any) {
 			// props.handleUser(data);
 		// })
 
-	}, [qrcode, state, user, user.friends, user.blacklist, user.history]);
+	}, [qrcode, state, user]);
 
 	const handleInput = (event:any) => { setNum(event.target.value); }
 	const checkToken = ():boolean => {
@@ -79,30 +78,6 @@ export default function MyProfileModal(props:any) {
 	const friendList = () => {
 		let list:any = [];
 
-		// const acceptNewFriend = (userid: string)=>{ 
-		// 	socket.emit("newFriend", { userid: userid, result: true });
-		// 	const tmp:User = user;
-		// 	tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
-		// 	setUser(tmp);
-		// 	props.handleUser(tmp);
-		// }
-		// const declineNewFriend = (userid: string)=>{
-		// 	socket.emit("newFriend", { userid: userid, result: false });
-		// 	const tmp:User = user;
-		// 	tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== userid);
-		// 	setUser(tmp);
-		// 	props.handleUser(tmp);
-		// }
-		// user.newfriends?.forEach((friend:Friend)=>{
-		// 	list.push(
-		// 		<div className="row mx-0 px-2" id="newFriendContent" key={`newFriend_${friend.userid}`}>
-		// 			<div className="col p-0" key={`newFriend_${friend.userid}_img`}><img src={Profile(friend.profile)} alt="profile" id="friendProfile"/></div>
-		// 			<div className="col" key={`newFriend_${friend.userid}_nickname`}>{friend.nickname}</div>
-		// 			<div className="col-2" key={`newFriend_${friend.userid}_check`}><i className="bi bi-check-lg" id="checkMark" onClick={()=>acceptNewFriend(friend.userid)}/></div>
-		// 			<div className="col-2" key={`newFriend_${friend.userid}_cross`}><i className="bi bi-x-lg" id="crossMark" onClick={()=>declineNewFriend(friend.userid)}/></div>
-		// 		</div>
-		// 	)
-		// });
 		user.friends?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row text-center align-items-center" id="friendContent" key={`friend_${friend.userid}`} data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>

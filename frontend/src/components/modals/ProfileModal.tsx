@@ -19,6 +19,7 @@ export default function ProfileModal(props:any) {
 		socket.on("opponentProfile", (data:ProfileUser) => {
 			setProfile(data);
 		});
+		return ()=>{socket.off("opponentProfile");}
 	}, [profile, props.user]);
 	
 	const handleChat = () => {
@@ -36,6 +37,7 @@ export default function ProfileModal(props:any) {
 	const handleMatch = () => {
 		if (disabled || !profile){ return ; }
 		socket.emit("matchRequest", { userid: profile?.userid });
+		props.setIsOpen(true);
 	}
 	const handleFriend = () => {
 		if (disabled || !profile){ return ; }
@@ -66,7 +68,7 @@ export default function ProfileModal(props:any) {
 								<div className="col-4">
 									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 0)} alt="profile" id="modalProfile"/></div>
 									<button className={button} onClick={handleChat} data-dismiss="modal" disabled={disabled || chatDisabled}> 1 : 1 채팅</button>
-									<button className={button} onClick={handleMatch} data-dismiss="modal" data-toggle="modal" data-target="#loadingModal" disabled={disabled}>대전 신청</button>
+									<button className={button} onClick={handleMatch} data-dismiss="modal" disabled={disabled}>대전 신청</button>
 									<button className={buttonFriend} onClick={handleFriend} data-dismiss="modal" disabled={disabled}>{profile?.friend ? "친구 삭제" : "친구 추가"}</button>
 									<button className={button} onClick={handleBlock} data-dismiss="modal" disabled={disabled}>{profile?.block ? "차단 해제" : "차단"}</button>
 								</div>

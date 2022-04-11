@@ -39,7 +39,7 @@ export default function ChatRoom(props:any){
 				console.log(data);
 				
 				hisChat.list.push(data);
-				setHistory(hisChat);
+				setHistory({...hisChat});
 				dispatch(updateHistory(hisChat));
 				// window.location.reload();
 			}
@@ -48,7 +48,7 @@ export default function ChatRoom(props:any){
 			socket.off("chatMessage");
 			socket.off("chatHistory");
 		}
-	}, [chatid, dispatch, chatHistory, chatHistory.list, chat]);
+	}, [chatid, dispatch, chatHistory, chat]);
 
 	const handleInputChange = (e :any) => { setChat(e.target.value); }
 	const handleSendBtn = () => {

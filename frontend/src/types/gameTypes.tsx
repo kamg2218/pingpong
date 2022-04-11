@@ -67,3 +67,6 @@ export type match = {
 	nickname : string,
 	requestid : string
 }
+export type result = {
+	result : boolean
+}
