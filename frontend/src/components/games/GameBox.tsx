@@ -2,12 +2,7 @@ import {useState} from "react"
 import {socket} from "../../socket/socket"
 import InputPwdModal from "../modals/InputPwdModal"
 import "../../css/GameBox.css"
-
-type info = {
-	roomid: string,
-	isPlayer: boolean,
-	password?: string
-}
+import { GameRequest } from "../../types/gameTypes";
 
 export default function GameBox(props:any){
 	const [state, setState] = useState<boolean>(false);
@@ -17,7 +12,7 @@ export default function GameBox(props:any){
 		handleEnterGameRoom(state);
 	}
  	const handleEnterGameRoom = (result: boolean) => {
-		let info:info = { roomid: props.info.roomid, isPlayer: result }
+		let info:GameRequest = { roomid: props.info.roomid, isPlayer: result }
 		setState(result);
 		if (pwd !== ""){ info.password = pwd; }
 		socket.emit("enterGameRoom", info);
@@ -61,7 +56,7 @@ export default function GameBox(props:any){
 					</div>
 				</div>
 			</div>
-			<InputPwdModal key={props.info.roomid} state={state} setPwd={setPwd} handleOk={handleOk}></InputPwdModal>
+			<InputPwdModal setPwd={setPwd} handleOk={handleOk}></InputPwdModal>
 		</div>
 	);
 }

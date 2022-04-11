@@ -4,7 +4,7 @@ import { gameRoom } from "../../types/gameTypes"
 import GameBox from "./GameBox"
 import "./GameRoomSlide.css";
 
-export default function GameRoomSlide(props: any){
+export default function GameRoomSlide({search}:{search:string}){
 	const [idx, setIdx] = useState<number>(0);
 	const [roomlist, setRoomList] = useState<Array<gameRoom>>();
 
@@ -46,7 +46,7 @@ export default function GameRoomSlide(props: any){
 		let searchRoom = roomlist;
 		if (searchRoom){
 			if (searchRoom.length > 0){
-				searchRoom = roomlist?.filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
+				searchRoom = roomlist?.filter((room:gameRoom) => room.title.indexOf(search) !== -1);
 			}
 			setRoomList(searchRoom);
 		}
@@ -57,7 +57,7 @@ export default function GameRoomSlide(props: any){
 		<div className="container h-100">
 			<div className="col h-100" id="slideFirstCol">
 				<div key="slide1Row" className="row">
-					{props.search === "" ? handleCarouselItem() : handleSearchItem()}
+					{search === "" ? handleCarouselItem() : handleSearchItem()}
 				</div>
 				<div className="row" id="slide2Row">
 					<span id="slidePrev" className="carousel-control-prev-icon mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>

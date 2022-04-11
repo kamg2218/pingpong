@@ -10,18 +10,17 @@ import InviteModal from "../modals/InviteModal";
 import ManagerModal from "../modals/ManagerModal";
 import "./chat.css";
 
-export default function MenuChatDropdown(props :any){
-	const info:chatRoom = props.info;
+export default function MenuChatDropdown({info, changeTitle, handleExit}:{info:chatRoom, changeTitle:Function, handleExit:Function}){
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const [pwdDisabled] = useState( info.owner !== user.userid ? true : !info.lock);
 	const muteDisables:boolean = (info.manager?.findIndex((man)=>man === user.userid) !== -1 || info.owner === user.userid) ? false : true;
 	
 	//change chatroom title
-	const handleTitle = () => { props.changeTitle(); }
+	const handleTitle = () => { changeTitle(); }
 	//exit the chatroom
-	const handleExit = () => {
+	const handleChatExit = () => {
 		socket.emit("exitChatRoom", { chatid: info.chatid }, (result:boolean)=>{
-			if (result === true){ props.handleExit(info.chatid); }
+			if (result === true){ handleExit(info.chatid); }
 		});
 	}
 
@@ -32,7 +31,7 @@ export default function MenuChatDropdown(props :any){
 			</button>
 			<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<li className="dropdown-item" key="title">
-					<button className="btn w-100" onClick={()=>handleTitle()} disabled={info.owner !== user?.userid}>Title</button>
+					<button className="btn w-100" onClick={handleTitle} disabled={info.owner !== user?.userid}>Title</button>
 				</li>
 				<li className="dropdown-item" key="pwd">
 					<button className="btn w-100" data-toggle="modal" data-target="#pwdModal" disabled={pwdDisabled}>Password</button>
@@ -47,7 +46,7 @@ export default function MenuChatDropdown(props :any){
 					<button className="btn w-100" data-toggle="modal" data-target="#muteModal" disabled={muteDisables}>Mute</button>
 				</li>
 				<li className="dropdown-item" key="exit">
-					<button className="btn w-100" onClick={() => handleExit()}>Exit</button>
+					<button className="btn w-100" onClick={handleChatExit}>Exit</button>
 				</li>
 			</ul>
 			<PwdModal info={info}></PwdModal>

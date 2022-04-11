@@ -14,63 +14,15 @@ export default function MenuGame(){
 	
 	useEffect(()=>{
 		console.log("MenuGame");
-		socket.on("userInfo", (data:User)=>{
-			setUser(data);
-		});
-		socket.on("newFriend", (data:Friend)=>{
-			console.log("newFriend", data);
-			const tmp:User = userState;
-			const idx:number = tmp.newfriends.findIndex((friend:Friend)=>friend.userid === data.userid);
-			if (idx === -1){
-				tmp.newfriends.push(data);
-				setUser(tmp);
-				dispatch(updateUser(tmp));
-			}
-		});
-		socket.on("addFriend", (data:Friend)=>{
-			console.log("addFriend", data);
-			const tmp:User = userState;
-			const idx:number = tmp.friends.findIndex((friend:Friend)=>friend.userid === data.userid);
-			if (idx === -1){
-				tmp.friends.push(data);
-				setUser(tmp);
-				dispatch(updateUser(tmp));
-			}
-		});
-		socket.on("deleteFriend", (data:Friend)=>{
-			console.log("deleteFriend", data);
-			const tmp:User = userState;
-			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
-			setUser(tmp);
-			dispatch(updateUser(tmp));
-		});
-		socket.on("blockFriend", (data:Friend)=>{
-			console.log("blockFriend", data);
-			const tmp:User = userState;
-			const idx:number = tmp.blacklist.findIndex((friend:Friend)=>friend.userid === data.userid);
-			if (idx === -1){
-				tmp.blacklist.push(data);
-				setUser(tmp);
-				dispatch(updateUser(tmp));
-			}
-		});
-
-		return ()=>{
-			socket.off("userInfo");
-			socket.off("newFriend");
-			socket.off("addFriend");
-			socket.off("deleteFriend");
-			socket.off("blockFriend");
-		}
-	}, [dispatch, user, userState, userState.newfriends, userState.friends]);
+	}, [userState]);
 
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
 			socket.emit("newFriend", { userid: person.userid, result: result });
-			let tmp:User = userState;
+			let tmp:User = user;
 			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
+			setUser({...tmp});
 			dispatch(updateUser(tmp));
-			setUser(tmp);
 		}
 		return (
 			<div id="newfriend" key={person.userid}>
@@ -100,13 +52,13 @@ export default function MenuGame(){
 
 	return (
 		<div id="menuGame">
-			<img src={Profile(userState?.profile ? userState.profile : 0)} alt="profile" id="menuGameProfile"/>
-			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal" onClick={handleMyProfileClick}>{userState?.nickname}</div>
+			<img src={Profile(user?.profile ? user.profile : 0)} alt="profile" id="menuGameProfile"/>
+			<div className="h2" id="menuNick" data-toggle="modal" data-target="#myProfileModal" onClick={handleMyProfileClick}>{user?.nickname}</div>
 			<label id="menuRecord">WIN : LOSE</label>
-			<div className="h1" id="winLose">{userState?.win} : {userState?.lose}</div>
+			<div className="h1" id="winLose">{user?.win} : {user?.lose}</div>
 			<div id="friendList">
-				{userState && userState.newfriends?.map((people:Friend) => (NewList(people)))}
-				{userState && userState.friends?.map((people:Friend) => (OldList(people)))}
+				{user.newfriends && user.newfriends.map((people:Friend) => (NewList(people)))}
+				{user.friends && user.friends.map((people:Friend) => (OldList(people)))}
 			</div>
 		</div>
 	);

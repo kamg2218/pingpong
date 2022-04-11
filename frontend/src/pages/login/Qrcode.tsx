@@ -31,7 +31,8 @@ export default function Qrcode(){
 			console.log(err);
 			history.push("/");
 		})
-	}, []);
+	}, [checkUrl, dispatch, gameroom.roomid, history]);
+	
 	const checkToken = ():boolean => {
 		if (token.length !== 6){ return false; }
 		for (let i = 0; i < token.length; i++){

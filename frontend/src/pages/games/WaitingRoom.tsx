@@ -4,10 +4,10 @@ import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
 import { gameRoomDetail } from "../../types/gameTypes"
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
-import "./waitingRoom.css"
-import Profile from "../../icons/Profile";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
+import "./waitingRoom.css"
+import Profile from "../../icons/Profile";
 
 
 export default function WaitingRoom(){
@@ -22,13 +22,13 @@ export default function WaitingRoom(){
 		console.log("waitingRoom");
 		if (param.id && param.id !== room.roomid){
 			socket.emit("exitGameRoom", {roomid: room.roomid});
-			// props.handleGameRoom(gameRoomInitialState);
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
 			history.push("/game");
+			// socket.emit("gameRoomList");
 			window.location.reload();
 		}
-	}, [dispatch, room, history, param]);
+	}, [dispatch, gameroom, room, history, param]);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		const handleProfileClick = () => {
@@ -55,11 +55,10 @@ export default function WaitingRoom(){
 			return ;
 		}
 		socket.emit("exitGameRoom", { roomid: room.roomid });
-		// props.handleGameRoom(gameRoomInitialState);
 		dispatch(updateGameRoom(gameRoomInitialState));
 		setRoom(gameRoomInitialState);
-		socket.emit("gameRoomList");
 		history.push("/game");
+		// socket.emit("gameRoomList");
 		window.location.reload();
 	}
 
