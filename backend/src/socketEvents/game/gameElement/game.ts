@@ -2,6 +2,7 @@ import { WsException } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { User } from "src/db/entity/User/UserEntity";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
+import { Emitter } from "src/socketEvents/auth/emitter";
 import { getCustomRepository } from "typeorm";
 import { onlineManager } from "../../online/onlineManager";
 import { Ball } from "./ball";
@@ -27,11 +28,15 @@ export class Game {
     private _intervalId;
     private _proxy;
 
-    private static server : Server;
+    private static _server : Server;
+    private emitter;
+    private server;
 
     static init(server : Server) {
-        if (!Game.server)
-            Game.server = server;
+        if (!Game._server) {
+            Game._server = server;
+        }
+            
     }
 
     constructor(gameid : string, speed : number = 1) {
@@ -45,6 +50,8 @@ export class Game {
         this.participants = [];
         this.left = new Player(null, "left");
         this.right = new Player(null, "right");
+        this.server = Game._server;
+        this.emitter = new Emitter(this);
     }
     
 
@@ -213,13 +220,13 @@ export class Game {
     public announceExceptMe(mySocketid : string, event : string, data : any) {
         this.participants.map(socketid=>{
             if (socketid != mySocketid)
-                Game.server.to(socketid).emit(event, data);
+                this.emitter.emitById(socketid, event, data);
         });     
     };
 
     public announce(event : string, data : any) {
         this.participants.map(socketid=>{
-             Game.server.to(socketid).emit(event, data);
+            this.emitter.emitById(socketid, event, data);
         })
     };
 
@@ -234,7 +241,7 @@ export class Game {
                 this.removeFromParticipants(socketid);
                 let updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
                 this.changeGameRoom(socketid, updateInfo);
-                Game.server.to(socketid).emit("exitGameRoom", {roomid : this.id});
+                this.emitter.emitById(socketid, "exitGameRoom", {roomid : this.id});
             }     
         });
     };

@@ -275,9 +275,9 @@ export class GameGatewayService {
 		return gameMembership?.gameRoom;
 	}
 
-	public respondToUser(socket: AuthSocket, event: string, data: any) {
-		socket.emit(event, data);
-	}
+	// public respondToUser(socket: AuthSocket, event: string, data: any) {
+	// 	socket.emit(event, data);
+	// }
 
 	public whyCantCreate(payload: any) {
 		if (payload.type === "private") {
@@ -399,7 +399,8 @@ export class GameGatewayService {
 			return ;
 		}
 		const game = onlineGameMap[myGamerom.gameRoom.roomid];
-		game.offlineRoom(socket.id);
+		if (game)
+			game.offlineRoom(socket.id);
 			
 	}
 }

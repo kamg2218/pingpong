@@ -13,6 +13,7 @@ import { onlineChatRoomManager } from '../online/onlineChatRoomManager';
 import { ChatHistoryDTO, ChatHistoryUpdateDTO, ChatMessageDTO, ChatMuteDTO, CreateChatRoomDTO, EnterChatRoomDTO, ExitChatRoomDTO, InviteChatRoomDTO, KickChatRoomDTO, UpdateChatRoomDTO } from './dto/chat.dto';
 import { WsGuard } from '../ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
+import { Emitter } from '../auth/emitter';
 
 const options = {
   cors : {
@@ -35,21 +36,18 @@ export class ChatGateway {
     private readonly chatGatewayService : ChatGatewayService,
     private readonly logger : Logger,
   ) {}
-
+	private readonly emitter = new Emitter(this);
+  
   afterInit(server: Server) : any {
     onlineChatRoom.init(server);
   }
+  
   private log(msg : any) {
     this.logger.log(msg, "UserGateway");
 }
-  private over(gateway : string) {
-    // console.log(`[${gateway} is over]---------\n`);
-  }
-  @SubscribeMessage('test')
-  async test(@ConnectedSocket() socket: AuthSocket) {
-    socket.emit("test", "hi")
-
-  }
+  // private over(gateway : string) {
+  //   // console.log(`[${gateway} is over]---------\n`);
+  // }
 
   // 유저가 참여한 채팅방 조회 : 현재 유저가 참여한 채팅방만 조회
   @SubscribeMessage('myChatRoom')
@@ -67,8 +65,9 @@ export class ChatGateway {
       order.push(myRoom.chatid);
       chatroom.push(info);
     }
-    socket.emit("myChatRoom", {order, chatroom});
-    return this.over("myChatRoom");
+    this.emitter.emit(socket, "myChatRoom", {order, chatroom});
+    // socket.emit("myChatRoom", {order, chatroom});
+    // return this.over("myChatRoom");
   }
 
   // 전체 채팅방 조회 : 생성되어 있는 전체 채팅방 조회(내가 들어가지 않은 채팅방 + private 제외)
@@ -94,8 +93,10 @@ export class ChatGateway {
       order.push(myRoom.chatid);
       chatroom.push(info);
     }
-    socket.emit("publicChatRoom", {order, chatroom});
-    return this.over("publicChatRoom");
+    this.emitter.emit(socket, "publicChatRoom", {order, chatroom});
+    return ;
+    // socket.emit("publicChatRoom", {order, chatroom});
+    // return this.over("publicChatRoom");
   }
 
 
@@ -131,7 +132,8 @@ export class ChatGateway {
     }
     const res = await repo_chatroom.getRoomInfo(chatroomInfo);
     newRoom.announce("enterChatRoom", res);
-    return this.over("enterChatRoom");
+    return ;
+    // return this.over("enterChatRoom");
   }
   
 
@@ -145,12 +147,14 @@ export class ChatGateway {
     const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
     const chatroom = await repo_chatroom.findOne({chatid: payload.chatid});
     if (!chatroom) {
-      this.log(`Bad Request : No such room`)
-      return this.over("enterChatRoom");
+      this.log(`Bad Request : No such room`);
+      return ;
+      // return this.over("enterChatRoom");
     }
     if (! await this.chatGatewayService.checkIfcanEnterRoom(user, chatroom, payload.password)) {
-      // this.log(`${user.nickname} can't enter chatroom`);
-      return this.over("enterChatRoom");
+      this.log(`${user.nickname} can't enter chatroom`);
+      return ;
+      // return this.over("enterChatRoom");
     }
     await this.chatGatewayService.enterChatRoom(user, chatroom);
     const room = onlineChatRoomManager.getRoomByid(payload.chatid);
@@ -159,8 +163,10 @@ export class ChatGateway {
       chatid : chatroom.chatid, 
       enterUser : [repo_user.getSimpleInfo(user)]});
     const res = await repo_chatroom.getRoomInfo(chatroom);
-    socket.emit("enterChatRoom", res);
-    return this.over("enterChatRoom");
+    this.emitter.emit(socket,"enterChatRoom", res);
+    return ;
+    // socket.emit("enterChatRoom", res);
+    // return this.over("enterChatRoom");
   }
   @SubscribeMessage('updateChatRoom')
   async updateChatRoom(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: UpdateChatRoomDTO) {
@@ -171,7 +177,7 @@ export class ChatGateway {
     const changer = await repo_chatmember.findOne({member : {userid : socket.userid}, chatroom: {chatid : payload.chatid}});
     if (changer === undefined || changer.position != "owner") {
       console.log("Not authorized");
-      this.over("updateChatRoom");
+      // this.over("updateChatRoom");
       return {chatid: payload.chatid, result: false};
     }
     const {title, type, password} = payload;
@@ -217,7 +223,8 @@ export class ChatGateway {
       change["deleteManager"] = deleteManagerList;
     delete change[password];
     onlineChatRoomManager.getRoomByid(payload.chatid).announce("updateChatRoom", {...change, "chatid" : payload.chatid});
-    this.over("updateChatRoom");
+    // this.over("updateChatRoom");
+    return ;
   }
 
   // 채팅방 유저 초대 :
@@ -232,7 +239,8 @@ export class ChatGateway {
   let chatRoom = await repo_chatRoom.findOne({chatid: payload.chatid});
   if (!await repo_chatmember.findOne({chatroom : {chatid : payload.chatid}, member : {userid : socket.userid}})) {
     this.log("not you exist chatroom");
-    return this.over("inviteChatRoom");
+    // return this.over("inviteChatRoom");
+    return ;
   }
   let invitedU = payload.user;
   const user = await repo_user.findOne(socket.userid);
@@ -246,7 +254,8 @@ export class ChatGateway {
     ]);
     if (res.findIndex(result=>result===true) !== -1) {
       //Error
-      this.over("inviteChatRoom");
+      // this.over("inviteChatRoom");
+      return ;
     }
     if (await this.chatGatewayService.enterChatRoom(theOther, chatRoom)) {
       chatRoom = await repo_chatRoom.findOne(payload.chatid);
@@ -254,10 +263,12 @@ export class ChatGateway {
       if (friendSocket) {
         room.join(friendSocket);
         const res = await repo_chatRoom.getRoomInfo(chatRoom);
-        this.server.to(friendSocket).emit("enterChatRoom", res);
+        this.emitter.emitById(friendSocket, "enterChatRoom", res);
+        // this.server.to(friendSocket).emit("enterChatRoom", res);
       }
       room.announceExceptMe(friendSocket, "updateChatRoom", {chatid : chatRoom.chatid, enterUser : [repo_user.getSimpleInfo(theOther)]});
-      this.over("inviteChatRoom");
+      // this.over("inviteChatRoom");
+      return ;
     }
   }));
   }
@@ -283,7 +294,7 @@ export class ChatGateway {
     else if (this.chatGatewayService.shouldDelegateOwner(chatUser)) {
       await this.chatGatewayService.delegateteOwner(payload.chatid);
     }
-    this.over("exitChatRoom");
+    // this.over("exitChatRoom");
     return true;
   }
 
@@ -297,11 +308,13 @@ export class ChatGateway {
     const setter = await repo_chatMember.findOne({chatroom : {chatid : payload.chatid}, member : {userid : socket.userid}});
     if (!setter || setter.position === "normal") {
       this.log("Not Authorized");
-      this.over("kickChatRoom");
+      // this.over("kickChatRoom");
+      return ;
     }
     if (!kickUser || kickUser.position !== "normal") {
       this.log("Can't kick this user");
-      this.over("kickChatRoom");
+      // this.over("kickChatRoom");
+      return ;
     }
     let exitUser = [kickUser.member.userid];
     await this.chatGatewayService.kickUserFromChatRoom(kickUser.member, payload.chatid);
@@ -309,11 +322,13 @@ export class ChatGateway {
     let socketid = onlineManager.socketIdOf(kickUser.member.userid);
     if (socketid) {
       room.leave(socketid);
-      this.server.to(socketid).emit("kickChatRoom", {chatid : payload.chatid});
+      this.emitter.emitById(socketid, "kickChatRoom", {chatid : payload.chatid});
+      // this.server.to(socketid).emit("kickChatRoom", {chatid : payload.chatid});
     }
     room.announce("updateChatRoom", {exitUser});
     this.log(`${setter.member.nickname} kicked ${kickUser.member.nickname}`);
-    this.over("kickChatRoom");
+    // this.over("kickChatRoom");
+    return ;
   }
 
   // 채팅방 내부 :
@@ -323,15 +338,18 @@ export class ChatGateway {
 
     if (!payload.chatid) {
       this.log("Bad Reqeust : chatid");
-      this.over("chatHistory");
+      // this.over("chatHistory");
+      return ;
     }
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
     const {lastIndex, histories} = repo_chathistory.amugeona(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
-    socket.emit("chatHistory", {chatid : payload.chatid, list : histories});
-    return this.over("chatHistory");
+    this.emitter.emit("chatHistory", {chatid : payload.chatid, list : histories});
+    // socket.emit("chatHistory", {chatid : payload.chatid, list : histories});
+    // return this.over("chatHistory");
+    return ;
   }
   
 
@@ -345,8 +363,10 @@ export class ChatGateway {
     const {lastIndex, histories} = repo_chathistory.amugeona(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
-    socket.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});
-    this.over("chatHistoryUpadate");
+    this.emitter.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});
+    // socket.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});
+    // this.over("chatHistoryUpadate");
+    return ;
   }
 
   // 채팅 메세지 :
@@ -364,7 +384,8 @@ export class ChatGateway {
     // 나머지 전부 보냄.
     if (!payload?.contents) {
       this.log("There is no content.");
-      return this.over("chatMessage");
+      // return this.over("chatMessage");
+      return ;
     }
     console.log("[chat1], ", new Date());
     const me = await repo_chatMember.findOne({chatroom: {chatid : payload.chatid}, member : {userid : socket.userid}});
@@ -421,7 +442,7 @@ export class ChatGateway {
       return true;
     await repo_chatMember.update(other.index, {muteUntil: time});
     this.log(`${other.member.nickname} is muted until ${time}`);
-    this.over("chatMute");
+    // this.over("chatMute");
     return true;
   }
 }
