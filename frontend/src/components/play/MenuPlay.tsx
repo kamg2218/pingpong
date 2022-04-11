@@ -27,6 +27,7 @@ export default function MenuPlay(){
 			s2[1](data.right);
 			dispatch(updateScore(data));
 		})
+		return ()=>{ socket.off("score"); }
 	}, [s1, s2, dispatch]);
 
 	const handleEixt = () => {

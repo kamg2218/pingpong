@@ -17,6 +17,7 @@ export default function GameRoomSlide(props: any){
 			// console.log(msg);
 			setRoomList(msg);
 		});
+		return ()=>{socket.off("gameRoomList");}
 	}, [idx, roomlist]);
 
 	const handleButton = (num: number) => {
@@ -45,7 +46,7 @@ export default function GameRoomSlide(props: any){
 		let searchRoom = roomlist;
 		if (searchRoom){
 			if (searchRoom.length > 0){
-			searchRoom = roomlist?.filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
+				searchRoom = roomlist?.filter((room:gameRoom) => room.title.indexOf(props.search) !== -1);
 			}
 			setRoomList(searchRoom);
 		}

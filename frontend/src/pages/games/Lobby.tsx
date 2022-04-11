@@ -9,7 +9,7 @@ export default function Lobby(props:any){
 
 	useEffect(()=>{
 		console.log("Lobby!");
-	}, []);
+	}, [search]);
 
 	const handleSearch = (event:any) => {
 		console.log(event.target.value);
