@@ -2,9 +2,8 @@ import { useEffect, useState } from "react"
 import { socket } from "../../socket/socket";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
-// import LoadingModal from "../../components/modals/LoadingModal";
 
-export default function Lobby(props:any){
+export default function Lobby({setContent, setIsOpen}:{setContent:Function, setIsOpen:Function}){
 	const [search, setSearch] = useState<string>("");
 
 	useEffect(()=>{
@@ -17,9 +16,9 @@ export default function Lobby(props:any){
 	}
 	const handleMatching = () => {
 		socket.emit("randomMatching", (result: boolean)=>{
-			if (!result){ props.setContent("매칭 가능한 게임 방이 없습니다."); }
+			if (!result){ setContent("매칭 가능한 게임 방이 없습니다."); }
 		});
-		props.setIsOpen(true);
+		setIsOpen(true);
 	}
 
 	return (

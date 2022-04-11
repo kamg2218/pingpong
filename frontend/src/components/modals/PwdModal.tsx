@@ -1,7 +1,8 @@
 import {useState} from "react";
 import {socket} from "../../socket/socket";
+import { chatRoom } from "../../types/chatTypes";
 
-export default function PwdModal(props: any){
+export default function PwdModal({info}:{info:chatRoom}){
 	const [pwd, setPwd] = useState("");
 	const success:string = "비밀번호가 변경되었습니다.";
 	const failure:string = "비밀번호를 확인해주세요!!";
@@ -20,7 +21,7 @@ export default function PwdModal(props: any){
 			}
 		}
 		socket.emit("updateChatRoom", {
-			chatid: props.info.chatid,
+			chatid: info.chatid,
 			password: pwd,
 		}, (result:boolean)=>{
 			if (result === true){ alert(success); }

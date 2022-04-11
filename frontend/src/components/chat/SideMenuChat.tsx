@@ -51,7 +51,7 @@ export default function SideMenuChat(){
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();
-		return <ChatRoom idx={idx.id} room={chatroom}></ChatRoom>
+		return <ChatRoom idx={idx.id ? idx.id.toString():""} room={chatroom}></ChatRoom>
 	}
 
 	return (

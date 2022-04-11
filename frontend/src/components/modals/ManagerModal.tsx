@@ -1,15 +1,15 @@
 import { socket } from "../../socket/socket";
-import { ChatUser } from "../../types/chatTypes";
+import { chatRoom, ChatUser } from "../../types/chatTypes";
 import ManagerList from "./ManagerList";
 
-export default function ManagerModal(props:any){
+export default function ManagerModal({info}:{info:chatRoom}){
 	let addManager:Array<string> = [];
 	let deleteManager:Array<string> = [];
 	const failure:string = "다시 시도해주세요.";
 
 	const handleManager = () => {
 		socket.emit("updateChatRoom", { 
-			chatid: props.info.chatid,
+			chatid: info.chatid,
 			addManager: addManager,
 			deleteManager: deleteManager
 		}, (result:boolean)=>{ if (result !== true){ alert(failure); } });
@@ -33,8 +33,8 @@ export default function ManagerModal(props:any){
 		}
 	}
 	const MemberList = (member: ChatUser) => {
-		if (member.userid === props.info.owner) return ;
-		return <ManagerList info={props.info} member={member} handleClick={handleClick}></ManagerList>
+		if (member.userid === info.owner) return ;
+		return <ManagerList info={info} member={member} handleClick={handleClick}></ManagerList>
 	}
 
 	return (
@@ -50,7 +50,7 @@ export default function ManagerModal(props:any){
 					<div className="modal-body">
 						<div className="rounded m-1" id="managerDiv">
 							<ul key="memberList">
-								{props.info.members.map((member:ChatUser)=>MemberList(member))}
+								{info.members.map((member:ChatUser)=>MemberList(member))}
 							</ul>
 						</div>
 					</div>

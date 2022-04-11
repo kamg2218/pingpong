@@ -14,7 +14,7 @@ export default function PublicChatList({chatroom, setPwd, checkRoom, handleSubmi
 				</div>
 				<div className="row m-2 px-1 justify-content-end" key={`publicchatMembers_${chatroom.chatid}`}>{chatroom.members.length} / {chatroom.max}</div>
 			</button>
-			<InputPwdModal id={chatroom.chatid} setPwd={setPwd} handleOk={handleSubmit}></InputPwdModal>
+			<InputPwdModal setPwd={setPwd} handleOk={handleSubmit}></InputPwdModal>
 			<CheckModal content="입장하시겠습니까?" handleOk={handleSubmit}></CheckModal>
 		</div>
 	);

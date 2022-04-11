@@ -70,3 +70,8 @@ export type match = {
 export type result = {
 	result : boolean
 }
+export type GameRequest = {
+	roomid: string,
+	isPlayer: boolean,
+	password?: string
+}

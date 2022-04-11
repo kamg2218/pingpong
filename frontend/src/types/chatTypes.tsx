@@ -41,3 +41,6 @@ export type ChatRequest = {
 	chatid: string,
 	password?: string,
 }
+export type message = {
+	message: string,
+};

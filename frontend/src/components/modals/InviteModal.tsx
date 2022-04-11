@@ -1,7 +1,8 @@
-import InviteList from "../chat/InviteList";
+import InviteList from "./InviteList";
 import { socket } from "../../socket/socket";
+import { chatRoom } from "../../types/chatTypes";
 
-export default function InviteModal(props:any){
+export default function InviteModal({info}:{info:chatRoom}){
 	let members:Array<string> = [];
 	const success:string = "초대되었습니다!";
 	const failure:string = "다시 시도해주세요.";
@@ -12,7 +13,7 @@ export default function InviteModal(props:any){
 			alert(failure);
 			return ;
 		}
-		socket.emit("inviteChatRoom", { chatid: props.info.chatid, user: members }, (result:boolean)=>{
+		socket.emit("inviteChatRoom", { chatid: info.chatid, user: members }, (result:boolean)=>{
 			if (result === true){ alert(success); }
 			else { alert(failure); }
 		});
@@ -29,7 +30,7 @@ export default function InviteModal(props:any){
 					</div>
 					<div className="modal-body">
 						<div className="rounded m-1" id="inviteDiv">
-							<InviteList setMembers={setMembers} info={props.info}></InviteList>
+							<InviteList setMembers={setMembers} info={info}></InviteList>
 						</div>
 					</div>
 					<div className="modal-footer">

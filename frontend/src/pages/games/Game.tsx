@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { Route, Switch, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
+import { message } from "../../types/chatTypes";
 import { Friend, User } from "../../types/userTypes"
 import { gameRoomDetail, GameUser, match, result } from "../../types/gameTypes"
 import {updateUser} from "../../redux/userReducer"
@@ -18,10 +19,6 @@ import ProfileModal from "../../components/modals/ProfileModal";
 import LoadingModal from "../../components/modals/LoadingModal";
 import logo from "../../icons/logo_brown_profile.png"
 import "./Game.css"
-
-type message = {
-	message: string,
-};
 
 Modal.setAppElement("#root");
 export default function Game() {
@@ -191,14 +188,6 @@ export default function Game() {
 		}
 	}, [dispatch, history, room, user, userState]);
 	
-	// const handleGameRoom = (data: gameRoomDetail) => {
-	// 	setRoom(data);
-	// 	dispatch(updateGameRoom(data));
-	// }
-	// const handleUser = (data: User) => {
-	// 	dispatch(updateUser(data));
-	// 	setUser(data);
-	// }
 	const handleCancelMatching = () => {
 		if (loadingOpen){
 			setLoadingOpen(false);
@@ -229,8 +218,8 @@ export default function Game() {
 			</div>
 			<ProfileModal gameroom={gameroom} setIsOpen={setMatchingOpen}></ProfileModal>
 			<MyProfileModal></MyProfileModal>
-			<Modal isOpen={matchingOpen} style={customStyles}><LoadingModal setIsOpen={setMatchingOpen} content={content}/></Modal>
-			<Modal isOpen={loadingOpen} style={customStyles}><LoadingModal setIsOpen={setLoadingOpen} content={content} handleCancelMatching={handleCancelMatching}/></Modal>
+			<Modal isOpen={matchingOpen} style={customStyles}><LoadingModal content={content}/></Modal>
+			<Modal isOpen={loadingOpen} style={customStyles}><LoadingModal content={content} handleCancelMatching={handleCancelMatching}/></Modal>
 			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
 		</div>
 	);

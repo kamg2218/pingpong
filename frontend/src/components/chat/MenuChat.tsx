@@ -15,13 +15,11 @@ export default function MenuChat(){
 
 	useEffect(()=>{
 		console.log("MenuChat");
-		// console.log(chatroom);
 
 		socket.on("enterChatRoom", (data:chatRoom)=>{
 			console.log("enter chat room!!");
 			const tmp:ChatData = chatroom;
 			if (tmp.order.indexOf(data.chatid) === -1){
-				// console.log(tmp.order.indexOf(data.chatid));
 				tmp.order.push(data.chatid);
 				tmp.chatroom.push(data);
 				setRoom({...tmp});
@@ -30,7 +28,6 @@ export default function MenuChat(){
 		});
 		socket.on("myChatRoom", (data:ChatData)=>{
 			console.log("my chat room!!");
-			// console.log(data);
 			setRoom(data);
 			dispatch(updateChat(data));
 		});
@@ -39,10 +36,10 @@ export default function MenuChat(){
 			console.log(data, room);
 			let tmp:ChatData = chatroom;
 			const idx = tmp.order.indexOf(data.chatid);
-			if (idx === -1){
-				console.log("I'm not there!");
-				return ;
-			}
+			// if (idx === -1){
+			// 	console.log("I'm not there!");
+			// 	return ;
+			// }
 			if (data.title){ tmp.chatroom[idx].title = data.title; }
 			if (data.type){ tmp.chatroom[idx].type = data.type; }
 			if (data.addManager){ data.addManager.forEach((man:string)=>{
@@ -60,7 +57,6 @@ export default function MenuChat(){
 			if (data.switchOwner){ tmp.chatroom[idx].owner = data.switchOwner; }
 			setRoom({...tmp});
 			dispatch(updateChat(tmp));
-			// console.log(tmp);
 		});
 
 		return ()=>{
@@ -88,7 +84,7 @@ export default function MenuChat(){
 			</div>
 			<div id="chatBoxList">
 				<ul id="chatBoxUl" className="col">
-					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox key={`menuchatbox_${info.chatid}`} info={info} handleExit={handleExit}/>)}
+					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox info={info} handleExit={handleExit}/>)}
 				</ul>
 			</div>
 			<AddChatModal></AddChatModal>
