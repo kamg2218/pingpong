@@ -399,7 +399,8 @@ export class GameGatewayService {
 			return ;
 		}
 		const game = onlineGameMap[myGamerom.gameRoom.roomid];
-		game.offlineRoom(socket.id);
+		if (game)
+			game.offlineRoom(socket.id);
 			
 	}
 }

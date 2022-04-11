@@ -39,19 +39,6 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   
 	@WebSocketServer() public server:Server;
 
-	// emit(socket : AuthSocket, event : string, data : any) {
-	// 	console.log(`Event : ${event}, to ${socket.userid}`);
-	// 	console.log(data);
-	// 	socket.emit(event, data);
-	// }
-
-	// emitById(socketid : string, event : string, data : any) {
-	// 	let userid = onlineManager.userIdOf(socketid);
-	// 	console.log(`Event : ${event}, to ${userid}`);
-	// 	console.log(data);
-	// 	this.server.to(socketid).emit(event, data);
-	// }
-
 	async afterInit(server: Server)  {
 		this.logger.log('AuthGateway init', "AuthGateway");
 		
@@ -124,7 +111,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			catch(err) {
 				console.log("Invalid Token");
 				this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
-				// socket.disconnect();
+				socket.disconnect();
 			}
 		}
   	}
@@ -145,11 +132,12 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		await this.gameGatewayService.deleteMyMatch(user.userid);
 		console.log("[auth5], ", new Date());
 		await this.chatGatewayService.offlineMyChatRoom(socket);
-		// await this.gameGatewayService.offlineMyGameRoom(socket);
+		await this.gameGatewayService.offlineMyGameRoom(socket);
 		console.log("[auth6], ", new Date());
 		onlineManager.offline(socket);
 		console.log("[auth7], ", new Date());
 		onlineManager.print();
+		delete socket.userid;
 		// let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
 		// if (gameRoom)
 			// gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
