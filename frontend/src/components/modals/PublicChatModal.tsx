@@ -3,13 +3,13 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {socket} from "../../socket/socket"
 import { RootState } from "../../redux/rootReducer";
 import { updatePublic } from "../../redux/chatReducer";
-import { ChatData, chatRoom } from "../../types/chatTypes"
+import { ChatData, ChatRequest, chatRoom } from "../../types/chatTypes"
 import PublicChatList from "../chat/PublicChatList"
 
 export default function PublicChatModal(){
+	const dispatch = useDispatch();
 	const [pwd, setPwd] = useState<string>("");
 	const [checkedroom, checkRoom] = useState<string>("");
-	const dispatch = useDispatch();
 	const publicroom:ChatData = useSelector((state:RootState) => state.chatReducer.publicroom, shallowEqual);
 
 	useEffect(() => {
@@ -17,10 +17,11 @@ export default function PublicChatModal(){
 			console.log("public chat room on!");
 			dispatch(updatePublic(data));
 		})
+		return ()=>{socket.off("publicChatRoom");}
 	}, [pwd, checkedroom, publicroom, dispatch]);
 
 	const handleSubmit = () => {
-		let data:any = {
+		let data:ChatRequest = {
 			chatid: checkedroom
 		};
 		if (pwd){
@@ -40,7 +41,7 @@ export default function PublicChatModal(){
 					<div className="modal-body">
 						<div className="container p-0">
 							<div className="row overflow-scroll justify-content-center">
-								{publicroom &&  publicroom.chatroom.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} key={`publicChatList_${room.chatid}`}/>)}
+								{publicroom &&  publicroom.chatroom.map((room:chatRoom)=> <PublicChatList chatroom={room} setPwd={setPwd} checkRoom={checkRoom} handleSubmit={handleSubmit}/>)}
 							</div>
 						</div>
 					</div>

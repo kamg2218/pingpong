@@ -41,7 +41,8 @@ export default function NickAndProfile(){
 			console.log(err);
 			history.push("/");
 		})
-	}, []);
+	}, [checkUrl, dispatch, gameroom.roomid, history]);
+	
 	const handleInput = (event: any) => {
 		setNickname(event.target.value);
 		if (btn && !btn.getAttribute("data-toggle")){

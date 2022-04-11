@@ -10,7 +10,7 @@ type info = {
 	password?: string
 }
 
-export default function AddGameRoomModal(props: any){
+export default function AddGameRoomModal(){
 	const [title, setTitle] = useState<string>("");
 	const [radio, setRadio] = useState<string>("public");
 	const [pwd, setPwd] = useState<string>("");

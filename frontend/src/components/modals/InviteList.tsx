@@ -4,13 +4,12 @@ import { RootState } from "../../redux/rootReducer";
 import Profile from "../../icons/Profile";
 import { chatRoom, ChatUser } from "../../types/chatTypes";
 
-export default function InviteList(props:any){
+export default function InviteList({setMembers, info}:{setMembers:Function, info?:chatRoom}){
 	let members:Array<string> = [];
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const checkbox = (data:Friend) => {
-		const info:chatRoom = props.info;
-		if (!info || info.members.findIndex((member:ChatUser)=>member.userid === data.userid) !== -1){
+		if (info && info.members.findIndex((member:ChatUser)=>member.userid === data.userid) !== -1){
 			return ;
 		}
 		const handleClick = (data:Friend) => {
@@ -19,7 +18,7 @@ export default function InviteList(props:any){
 			}else {
 				members.push(data.userid);
 			}
-			props.setMembers(members);
+			setMembers(members);
 		}
 
 		return (

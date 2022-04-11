@@ -4,7 +4,7 @@ import { shallowEqual, useSelector } from "react-redux"
 import { socket } from "../../socket/socket"
 import { RootState } from "../../redux/rootReducer"
 import {User} from "../../types/userTypes"
-import { ChatUser, ChatData } from "../../types/chatTypes"
+import { ChatUser, ChatData, chatRoom } from "../../types/chatTypes"
 import TitleInput from "./TitleInput"
 import MenuChatDropdown from "./MenuChatDropdown"
 
@@ -20,19 +20,19 @@ function memberlist(member: Array<ChatUser>) : string {
 	return list;
 }
 
-export default function MenuChatBox(props :any){
+export default function MenuChatBox({info, handleExit}:{info:chatRoom, handleExit:Function}){
 	const history = useHistory()
-	const size:number = props.info.members.length;
+	const size:number = info.members.length;
 	const [check, setChange] = useState<boolean>(false);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const user:User = useSelector((state:RootState)=>state.userReducer.user, shallowEqual);
 
 	useEffect(()=>{
 		console.log("MenuChatBox!");
-		if (props.info.onwer === user.userid){
-			console.log("I'm the owner");
-		}
-	}, [check, props.info.onwer, user.userid]);
+		// if (info.owner === user.userid){
+		// 	console.log("I'm the owner");
+		// }
+	}, [check, info, user.userid]);
 
 	const changeTitle = () => { setChange(!check); }
 	const handleDoubleClick = (chatid: string) => {
@@ -48,19 +48,19 @@ export default function MenuChatBox(props :any){
 	}
 
 	return(
-		<li key={`menuchatbox_${props.info.chatid}`} className="col-12 btn mt-2" id="chatBox" onDoubleClick={()=>handleDoubleClick(props.info.chatid)}>
-			<div key={`box_${props.info.chatid}`} className="d-flex">
-				<div key={`title_${props.info.chatid}`} className="h6 m-1 overflow-hidden" id="boxTitle">
+		<li key={`menuchatbox_${info.chatid}`} className="col-12 btn mt-2" id="chatBox" onDoubleClick={()=>handleDoubleClick(info.chatid)}>
+			<div key={`box_${info.chatid}`} className="d-flex">
+				<div key={`title_${info.chatid}`} className="h6 m-1 overflow-hidden" id="boxTitle">
 					{ check ?
-							<TitleInput changeTitle={changeTitle} info={props.info}/>
-							: (props.info.title !== "" ? props.info.title : memberlist(props.info.members))
+							<TitleInput changeTitle={changeTitle} info={info}/>
+							: (info.title !== "" ? info.title : memberlist(info.members))
 					}
 				</div>
 				{ !check && <div className="font-weight-light member" id="boxMembers">{size}</div> }
-				{props.info.type === "private" ? <i className="]mx-1 px-2 bi bi-lock"/> : <i className="mx-1 px-2 bi bi-unlock"/>}
-				{props.info.lock ? <i className="mx-1 px-1 bi bi-key"/> : ""}
+				{info.type === "private" ? <i className="]mx-1 px-2 bi bi-lock"/> : <i className="mx-1 px-2 bi bi-unlock"/>}
+				{info.lock ? <i className="mx-1 px-1 bi bi-key"/> : ""}
 			</div>
-			<MenuChatDropdown info={props.info} changeTitle={changeTitle} handleExit={props.handleExit}/>
+			<MenuChatDropdown info={info} changeTitle={changeTitle} handleExit={handleExit}/>
 		</li>
 	);
 }

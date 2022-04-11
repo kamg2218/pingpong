@@ -12,6 +12,7 @@ import "./Main.css";
 
 export default function Main(){
 	const login:string = BACK_URL + "/auth/login";
+	const logout:string = BACK_URL + "/auth/logout";
 	const check:string = BACK_URL + "/user/check";
 
 	const history = useHistory();
@@ -27,10 +28,13 @@ export default function Main(){
   		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
   		    dispatch(initialize());
-  		  }
+  		  } else if ( res.state === "login"){
+					axios.get(logout).then(res => console.log("Log out! " + res)).catch(err => {throw new Error(err)});
+					dispatch(initialize());
+				}
   		}
 		}).catch((err)=>{ console.log(err); })
-	}, [check, dispatch, gameroom]);
+	}, [check, dispatch, gameroom, logout]);
 
 	const handleInput = (event:any) => { setNick(event.target.value); }
 	const handleTest = () => {

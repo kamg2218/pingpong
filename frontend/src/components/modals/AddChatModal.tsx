@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { socket } from "../../socket/socket"
-import InviteList from '../chat/InviteList'
+import InviteList from './InviteList'
 import './AddChatModal.css';
 
 export default function AddChatModal(){

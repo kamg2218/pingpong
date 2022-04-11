@@ -1,13 +1,13 @@
 import {useState} from "react"
 import "./Modals.css"
 
-export default function InputPwdModal(props: any){
-	const [pwd, setPwd] = useState<String>("");
+export default function InputPwdModal({setPwd, handleOk}:{setPwd:Function, handleOk?:Function}){
+	const [pwd, setInputPwd] = useState<String>("");
 	const failure:string = "비밀번호를 확인해주세요!!";
 
 	const handlePwd = (e :any) => {
+		setInputPwd(e.target.value);
 		setPwd(e.target.value);
-		props.setPwd(e.target.value);
 	}
 	const handlePwdOK = ()=>{
 		if (pwd === "" || pwd.length !== 4){
@@ -21,7 +21,7 @@ export default function InputPwdModal(props: any){
 				return ;
 			}
 		}
-		if (props.handleOk){ props.handleOk(); }
+		if (handleOk){ handleOk(); }
 	}
 
 	return (
