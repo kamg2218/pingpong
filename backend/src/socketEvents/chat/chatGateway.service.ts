@@ -155,12 +155,12 @@ export class ChatGatewayService {
 	}
 
 	async checkIfIcanInvite(user: User, mem: User) {
-		const repo_friendList = getCustomRepository(FriendsRepository);
+		// const repo_friendList = getCustomRepository(FriendsRepository);
 		const repo_blockList = getCustomRepository(BlockedFriendsRepository);
 		let res = await Promise.all([
 			repo_blockList.amIBlockedBy(user, mem),
 			repo_blockList.didIBlock(user, mem),
-			repo_friendList.isNotMyFriend(user, mem)
+			// repo_friendList.isNotMyFriend(user, mem)
 		]);
 		if (res.findIndex(value => value === true) === -1)
 			return true;

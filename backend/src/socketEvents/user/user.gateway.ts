@@ -10,6 +10,7 @@ import { UserGatewayService } from './userGateway.service';
 import { UserInfoDTO, NewFriendDTO, UpdateProfileDTO } from './dto/user.dto';
 import { WsGuard } from '../ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
+import { Emitter } from '../auth/emitter';
 
 const options = {
   cors : {
@@ -22,12 +23,14 @@ const options = {
 export class UserGateway{
   
     constructor(
+		
     	private readonly logger : Logger,
     	private readonly userGatewayService : UserGatewayService) {
     }
 
     @WebSocketServer() public server:Server;
-  
+	private readonly emitter = new Emitter(this);
+
     afterInit(server: Server) : any {
       this.logger.log('UserGateway init');
     }
@@ -36,9 +39,9 @@ export class UserGateway{
       	this.logger.log(msg, "UserGateway");
   	}
 
-		private over(gateway : string) {
-      // console.log(`[${gateway} is over]---------\n`)
-    }
+	//private over(gateway : string) {
+    //   // console.log(`[${gateway} is over]---------\n`)
+    // }
 
     @SubscribeMessage('userInfo') 
     async sendUserInfo(@ConnectedSocket() socket : AuthSocket) {
@@ -54,8 +57,8 @@ export class UserGateway{
 				this.userGatewayService.getGamehistory(user),
 				this.userGatewayService.getBlocklist(user),
 			]);
-			socket.emit("userInfo", this.userGatewayService.arrOfObjToObj(all));
-			return this.over("userInfo");
+			this.emitter.emit(socket, "userInfo", this.userGatewayService.arrOfObjToObj(all));
+			// return this.over("userInfo");
     }
 
     @SubscribeMessage('opponentProfile')
@@ -66,15 +69,13 @@ export class UserGateway{
 				this.log("No such user");
 				return ;
 			}
-			if (!socket.userid)
-				return ;
 			const user = await getCustomRepository(UserRepository).findOne(socket.userid);
 			const all = await Promise.all([
 				this.userGatewayService.getTheOtherUSerInfo(user, theOther),
 				this.userGatewayService.getGamehistory(theOther)
 			]);
-			socket.emit("opponentProfile", this.userGatewayService.arrOfObjToObj(all));
-			return this.over("opponentProfile");
+			this.emitter.emit(socket, "opponentProfile", this.userGatewayService.arrOfObjToObj(all));
+			// return this.over("opponentProfile");
     }
 
     @SubscribeMessage('addFriend')
@@ -88,8 +89,9 @@ export class UserGateway{
 			}
 			await this.userGatewayService.sendFriendRequest(user, payload.userid);
 			const sok_friend = onlineManager.socketIdOf(payload.userid);
-			this.server.to(sok_friend).emit("newFriend", repo_user.getSimpleInfo(user));
-			return this.over("addFriend");
+			this.emitter.emitById(sok_friend, "newFriend", repo_user.getSimpleInfo(user))
+			// this.server.to(sok_friend).emit("newFriend", repo_user.getSimpleInfo(user));
+			// return this.over("addFriend");
 	}
 
     @SubscribeMessage('deleteFriend')
@@ -97,7 +99,7 @@ export class UserGateway{
 			this.log({gate : "deleteFriend", ...payload});
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			await this.userGatewayService.deleteFriend(user, payload.userid);
-			return this.over("deleteFriend");
+			// return this.over("deleteFriend");
     }
 
     @SubscribeMessage('blockFriend')
@@ -105,7 +107,7 @@ export class UserGateway{
 			this.log({gate : "blockFriend", ...payload});
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			await this.userGatewayService.block(user, payload.userid);
-			return this.over("blockFriend");
+			// return this.over("blockFriend");
     }
 
     @SubscribeMessage('unblockFriend')
@@ -113,7 +115,7 @@ export class UserGateway{
 			this.log({gate : "unblockFriend", ...payload});
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			await this.userGatewayService.unblock(user, payload.userid);
-			return this.over("unblockFriend");
+			// return this.over("unblockFriend");
     }
 
     @SubscribeMessage('newFriend')
@@ -123,18 +125,21 @@ export class UserGateway{
 			const {isAccepted, theOtherInfo, myInfo} = await this.userGatewayService.resepondToFriendRequest(user, payload.userid, payload.result);
 			if (isAccepted) {
 				const sok_friend = onlineManager.socketIdOf(payload.userid);
-				socket.emit('addFriend', theOtherInfo);
-				this.server.to(sok_friend).emit("addFriend", myInfo);
+				this.emitter.emit(socket, 'addFriend', theOtherInfo);
+				this.emitter.emitById(sok_friend, "addFriend", myInfo);
+				// socket.emit('addFriend', theOtherInfo);
+				// this.server.to(sok_friend).emit("addFriend", myInfo);
 			}
-			return this.over("newFriend");
+			// return this.over("newFriend");
     }
 
     @SubscribeMessage('updateProfile')
     async update(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : UpdateProfileDTO) {
 			this.log({gate : "updateProfile", ...payload});
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-			const updateResult = await this.userGatewayService.update(user, payload)
-			this.server.to(socket.id).emit("updateProfile", {...updateResult});
-			return this.over("updateProfile");
+			const updateResult = await this.userGatewayService.update(user, payload);
+			this.emitter.emit(socket, "updateProfile", {...updateResult});
+			// this.server.to(socket.id).emit("updateProfile", {...updateResult});
+			// return this.over("updateProfile");
 	}
 }

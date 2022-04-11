@@ -33,16 +33,28 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		private readonly logger : Logger,
 		private readonly jwtService : JwtService,
 		private readonly authService : AuthService,
-		private readonly userGatewayService : UserGatewayService,
 		private readonly gameGatewayService : GameGatewayService,
 		private readonly chatGatewayService : ChatGatewayService) {  
 	}
   
 	@WebSocketServer() public server:Server;
 
+	// emit(socket : AuthSocket, event : string, data : any) {
+	// 	console.log(`Event : ${event}, to ${socket.userid}`);
+	// 	console.log(data);
+	// 	socket.emit(event, data);
+	// }
+
+	// emitById(socketid : string, event : string, data : any) {
+	// 	let userid = onlineManager.userIdOf(socketid);
+	// 	console.log(`Event : ${event}, to ${userid}`);
+	// 	console.log(data);
+	// 	this.server.to(socketid).emit(event, data);
+	// }
+
 	async afterInit(server: Server)  {
 		this.logger.log('AuthGateway init', "AuthGateway");
-		Game.init(this.server);
+		
 		instrument(server, {
 		auth : false,
 		namespaceName: "/socket.io"
