@@ -191,14 +191,14 @@ export default function Game() {
 		}
 	}, [dispatch, history, room, user, userState]);
 	
-	const handleGameRoom = (data: gameRoomDetail) => {
-		setRoom(data);
-		dispatch(updateGameRoom(data));
-	}
-	const handleUser = (data: User) => {
-		dispatch(updateUser(data));
-		setUser(data);
-	}
+	// const handleGameRoom = (data: gameRoomDetail) => {
+	// 	setRoom(data);
+	// 	dispatch(updateGameRoom(data));
+	// }
+	// const handleUser = (data: User) => {
+	// 	dispatch(updateUser(data));
+	// 	setUser(data);
+	// }
 	const handleCancelMatching = () => {
 		if (loadingOpen){
 			setLoadingOpen(false);
@@ -227,8 +227,8 @@ export default function Game() {
 					</div>
 				</div>
 			</div>
-			<ProfileModal user={userState} handleUser={handleUser} gameroom={gameroom} handleGameRoom={handleGameRoom} setIsOpen={setMatchingOpen}></ProfileModal>
-			<MyProfileModal user={userState} handleUser={handleUser}></MyProfileModal>
+			<ProfileModal gameroom={gameroom} setIsOpen={setMatchingOpen}></ProfileModal>
+			<MyProfileModal></MyProfileModal>
 			<Modal isOpen={matchingOpen} style={customStyles}><LoadingModal setIsOpen={setMatchingOpen} content={content}/></Modal>
 			<Modal isOpen={loadingOpen} style={customStyles}><LoadingModal setIsOpen={setLoadingOpen} content={content} handleCancelMatching={handleCancelMatching}/></Modal>
 			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>

@@ -1,31 +1,25 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { User, Friend } from "../../types/userTypes";
 import { initialize } from "../../redux/userReducer";
 import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
+import { RootState } from "../../redux/rootReducer";
 
-export default function MyProfileModal({user, handleUser}:{user:User, handleUser:Function}) {
+export default function MyProfileModal() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [num, setNum] = useState<string>("");
 	const [qrcode, setQrcode] = useState<string>("");
 	const [state, setState] = useState<boolean>(false);
-	// const [user, setUser] = useState<User>(props.user);
-	// const user:User = useSelector((state:RootState)=>state.userReducer.user);
+	const user:User = useSelector((state:RootState)=>state.userReducer.user);
 
 	useEffect(() => {
 		console.log("MyProfileModal");
-		// socket.on("userInfo", (data:User)=>{
-			// console.log("userInfo - myprofileModal");
-			// setUser(data);
-			// props.handleUser(data);
-		// })
-
 	}, [qrcode, state, user]);
 
 	const handleInput = (event:any) => { setNum(event.target.value); }

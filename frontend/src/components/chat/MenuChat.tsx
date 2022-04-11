@@ -78,7 +78,6 @@ export default function MenuChat(){
 		tmp.chatroom = tmp.chatroom.filter((room:chatRoom) => room.chatid !== id);
 		setRoom({...tmp});
 		dispatch(updateChat(tmp));
-		// props.handleChat(tmp);
 	}
 
 	return (

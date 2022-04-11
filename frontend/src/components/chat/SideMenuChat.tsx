@@ -21,7 +21,6 @@ export default function SideMenuChat(){
 	const checkUrl:string = BACK_URL + "/user/check";
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
-	// const [room, setRoom] = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
 		console.log("sideMenuChat");
@@ -54,10 +53,6 @@ export default function SideMenuChat(){
 		let idx:param = useParams();
 		return <ChatRoom idx={idx.id} room={chatroom}></ChatRoom>
 	}
-	// const handleChat = (data:ChatData) => {
-	// 	setRoom(data);
-	// 	dispatch(updateChat(data));
-	// }
 
 	return (
 		<div id="chatTab">

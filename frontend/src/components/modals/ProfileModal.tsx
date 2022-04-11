@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import {useHistory} from "react-router-dom";
 import { socket } from "../../socket/socket";
-import { Friend, ProfileUser } from "../../types/userTypes";
+import { Friend, ProfileUser, User } from "../../types/userTypes";
 import MatchHistory from "../games/MatchHistory";
 import Profile from '../../icons/Profile'
 import "./profileModal.css"
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/rootReducer";
+import { gameRoomDetail } from "../../types/gameTypes";
 
-export default function ProfileModal(props:any) {
+export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDetail, setIsOpen:Function}) {
 	const history = useHistory();
 	const [profile, setProfile] = useState<ProfileUser>();
-	const disabled:boolean = profile ? profile.userid === props.user.userid : false;
-	const chatDisabled:boolean = profile ? (props.user.friends.findIndex((friend:Friend)=>friend.userid === profile.userid) !== -1 ? false : true) : true;
+	const user:User = useSelector((state:RootState)=>state.userReducer.user);
+	const disabled:boolean = profile ? profile.userid === user.userid : false;
+	const chatDisabled:boolean = profile ? (user.friends.findIndex((friend:Friend)=>friend.userid === profile.userid) !== -1 ? false : true) : true;
 	const button:string = "row w-75 my-1 btn modal-button";
 	let buttonFriend:string = button;
 	
@@ -20,7 +24,7 @@ export default function ProfileModal(props:any) {
 			setProfile(data);
 		});
 		return ()=>{socket.off("opponentProfile");}
-	}, [profile, props.user]);
+	}, [profile, user]);
 	
 	const handleChat = () => {
 		if (disabled || !profile){ return ; }
@@ -30,14 +34,14 @@ export default function ProfileModal(props:any) {
 		}, (chatid: string)=>{
 			console.log(chatid);
 			if (chatid !== ''){
-				history.push(`/game/chat/${chatid}${props.gameroom ? `/waiting/${props.gameroom.roomid}`: ''}`);
+				history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`);
 			}
 		})
 	}
 	const handleMatch = () => {
 		if (disabled || !profile){ return ; }
 		socket.emit("matchRequest", { userid: profile?.userid });
-		props.setIsOpen(true);
+		setIsOpen(true);
 	}
 	const handleFriend = () => {
 		if (disabled || !profile){ return ; }
