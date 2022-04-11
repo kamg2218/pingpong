@@ -7,3 +7,11 @@ export const socket = io(url, {
 	  polling: { extraHeaders: {  Authorization: `${document.cookie}` } },
   }
 });
+
+export function makeSocket(){
+	return io(url, {
+		transportOptions: {
+			polling: { extraHeaders: {  Authorization: `${document.cookie}` } },
+		}
+	});
+}

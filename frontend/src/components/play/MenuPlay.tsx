@@ -2,65 +2,76 @@ import { useEffect, useState } from "react"
 import {useHistory} from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { socket } from "../../socket/socket"
-import {draw, gameRoomDetail, GameUser, playRoom} from "../../types/gameTypes"
+import {gameRoomDetail, playRoom, score} from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer"
+import { initialize } from "../../redux/userReducer"
+import { updateScore } from "../../redux/gameReducer"
 import Profile from "../../icons/Profile"
 import "./MenuPlay.css";
-import { initialize } from "../../redux/userReducer"
 
 export default function MenuPlay(){
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const playroom:playRoom = useSelector((state:RootState) => state.gameReducer.playroom, shallowEqual);
-	const draw:draw = useSelector((state:RootState) => state.gameReducer.draw, shallowEqual);
-
-	const p1 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player1);
-	const p2 = gameroom.players.find((p:GameUser)=> p.userid === playroom.player2);
-	const s1 = useState<number>(draw.left ? draw.left.score : 0);
-	const s2 = useState<number>(draw.right ? draw.right.score : 0);
+	const score:score = useSelector((state:RootState) => state.gameReducer.score, shallowEqual);
+	const s1 = useState<number>(score.left ? score.left : 0);
+	const s2 = useState<number>(score.right ? score.right : 0);
 	
 	useEffect(()=>{
-		console.log("menu play");
-	}, [s1, s2, gameroom]);
+		// console.log("menu play");
+		socket.on("score", (data:score)=>{
+			console.log("score");
+			console.log(data);
+			s1[1](data.left);
+			s2[1](data.right);
+			dispatch(updateScore(data));
+		})
+	}, [s1, s2, dispatch]);
 
+	const handleEixt = () => {
+		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+		dispatch(initialize());
+		history.replace("/game");
+		socket.emit("gameRoomList");
+	}
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		return (
 			<div className="m-1" id={id}>
-				<img className="row mx-auto img-fluid img-thumbnail" id="observerImg" src={profile} alt={id}></img>
+				<img className="row mx-auto img-fluid img-thumbnail" id="observer" src={profile} alt={id}></img>
 				<label className="row justify-content-center">{nick}</label>
 			</div>
 		);
 	}
-	const handleEixt = () => {
-		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-		socket.emit("gameRoomList");
-		dispatch(initialize());
-		history.replace("/game");
+	const observerProfileBox = (idx:number) => {
+		if (gameroom && gameroom.observer && gameroom.observer.length > idx){
+			return profileBox(gameroom.observer[idx].userid, Profile(gameroom.observer[idx].profile), gameroom.observer[idx].nickname, false);
+		}
+		return <div id="observer"></div>;
 	}
 	
 	return (
 		<div className="container m-0 p-1" id="menuPlay">
 			<div className="col h-100">
 				<div className="row m-0 justify-content-center">
-					<img src={Profile(p1 ? p1.profile : 0)} alt="player1" id="player1"/>
-					<label className="h5 m-0">{p1 ? p1.nickname : "unknownskejfkss"}</label>
+					<img src={Profile(playroom.left ? playroom.left.profile : 0)} alt="player1" id="player1"/>
+					<label className="h5 m-0">{playroom.left ? playroom.left.nickname : "unknown"}</label>
 				</div>
 				<div className="row h3 m-2 justify-content-center">VS</div>
 				<div className="row m-0 justify-content-center">
-					<img src={Profile(p2 ? p2.profile : 0)} alt="player2" id="player2"/>
-					<label className="h5 m-0">{p2 ? p2.nickname : "unknownskejfkss"}</label>
+					<img src={Profile(playroom.right ? playroom.right.profile : 0)} alt="player2" id="player2"/>
+					<label className="h5 m-0">{playroom.right ? playroom.right.nickname : "unknown"}</label>
 				</div>
 				<label className="row mx-3 my-2 h3" id="menuScore">{playroom ? playroom.score : 0}</label>
 				<div className="row h1" id="winLose">{s1} : {s2}</div>
 				<div className="row mt-5 mx-1">
-					<div className="col mx-1" id="observer">{gameroom?.observer[0] ? profileBox(gameroom.observer[0].userid, Profile(gameroom.observer[0].profile), gameroom.observer[0].nickname, false):""}</div>
-					<div className="col mx-1" id="observer">{gameroom?.observer[1] ? profileBox(gameroom.observer[1].userid, Profile(gameroom.observer[1].profile), gameroom.observer[1].nickname, false):""}</div>
-					<div className="col mx-1" id="observer">{gameroom?.observer[2] ? profileBox(gameroom.observer[2].userid, Profile(gameroom.observer[2].profile), gameroom.observer[2].nickname, false):""}</div>
+					<div className="col mx-1">{observerProfileBox(0)}</div>
+					<div className="col mx-1">{observerProfileBox(1)}</div>
+					<div className="col mx-1">{observerProfileBox(2)}</div>
 				</div>
 				<div className="row mt-4 mb-3 mx-3">
-					<div className="col mx-3" id="observer">{gameroom?.observer[3] ? profileBox(gameroom.observer[3].userid, Profile(gameroom.observer[3].profile), gameroom.observer[3].nickname, false):""}</div>
-					<div className="col mx-3" id="observer">{gameroom?.observer[4] ? profileBox(gameroom.observer[4].userid, Profile(gameroom.observer[4].profile), gameroom.observer[4].nickname, false):""}</div>
+					<div className="col mx-3">{observerProfileBox(3)}</div>
+					<div className="col mx-3">{observerProfileBox(4)}</div>
 				</div>
 				<button className="row btn btn-lg my-2" id="exitButton" onClick={handleEixt}>나가기</button>
 			</div>

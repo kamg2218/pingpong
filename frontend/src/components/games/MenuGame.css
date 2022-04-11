@@ -7,13 +7,13 @@
 	align-items: start;
 	border: 1px solid #C9A641;
 	border-radius: 25px;
-	height: 42%;
+	height: 40%;
 	justify-content: center;
 	margin: auto;
 	overflow-y: scroll;
 	padding: .5em;
 }
-#friendList::-webkit-scrollbar{
+/* #friendList::-webkit-scrollbar{
 	border-radius: 15px;
 	overflow: hidden;
 	width: .4em;
@@ -24,7 +24,7 @@
 #friendList::-webkit-scrollbar-thumb{
 	background-color: #6D6162;
 	border-radius: 25px;
-}
+} */
 #oldfriend, #newfriend{
 	align-items: center;
 	display: flex;

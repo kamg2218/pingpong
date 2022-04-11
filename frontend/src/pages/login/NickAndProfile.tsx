@@ -6,9 +6,10 @@ import AlertModal from "../../components/modals/AlertModal";
 import ProfileCarousel from "../../components/login/ProfileCarousel";
 import { socket } from "../../socket/socket";
 import { User } from "../../types/userTypes";
+import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
-import { updateUser } from "../../redux/userReducer";
+import { initialize, updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
@@ -18,27 +19,24 @@ export default function NickAndProfile(){
 	const [checkModalText, setCheckModalText] = useState<string>("ERROR");
 	const nicknamePlaceholder:string = "2~12 characters only";
 	const btn = document.querySelector("#okBtn");
+	const checkUrl:string = BACK_URL + "/user/check";
+
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	
-	const checkUrl:string = "/user/check";
 	const doubleCheck:string = "중복 확인 해주세요!";
 	const possible:string = "사용 가능한 닉네임입니다.";
 	const impossible:string = "사용 불가능한 닉네임입니다.";
 
 	useEffect(()=>{
 		axios.get(checkUrl).then((res:any)=>{
-			if (res.state){
-				console.log(res.state)
-				if (res.state === "play" && gameroom.roomid){
-					socket.emit("exitGameRoom", {
-						roomid: gameroom.roomid,
-					});
-				}else if (res.state === "logout"){
-					history.replace("/");
-				}
-			}
+  		if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		    dispatch(initialize());
+  		  }
+  		}
 		}).catch((err)=>{
 			console.log(err);
 			history.push("/");
@@ -58,7 +56,7 @@ export default function NickAndProfile(){
 			setCheckModalText(impossible);
 			return ;
 		}
-		axios.get(`/auth/check?nickname=${nickname}`)
+		axios.get(BACK_URL + `/auth/check?nickname=${nickname}`)
 			.then(res=>{
 				console.log(res.data);
 				if (res.data.message === false){
@@ -78,7 +76,7 @@ export default function NickAndProfile(){
 			setCheckModalText(doubleCheck);
 			return ;
 		}
-		axios.post(`/auth/signup`, { nickname, profile })
+		axios.post(BACK_URL + `/auth/signup`, { nickname, profile })
 		.then(res=>{
 			console.log(res);
 			console.log(res.data);

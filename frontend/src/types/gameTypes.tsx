@@ -28,8 +28,8 @@ export type gameRoomDetail = {
 export type playRoom = {
 	roomid: string,
 	score: number,
-	player1: string,
-	player2: string
+	left: GameUser,
+	right: GameUser
 }
 export type move = {
 	roomid: string,
@@ -50,15 +50,17 @@ export type draw = {
 		y: number,
 		width: number,
 		height: number,
-		score: number
 	},
 	left: {
 		x: number,
 		y: number,
 		width: number,
 		height: number,
-		score: number
 	}
+}
+export type score = {
+	left: number,
+	right: number
 }
 export type match = {
 	userid : string,

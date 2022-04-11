@@ -28,7 +28,7 @@ export default function InviteModal(props:any){
 						</button>
 					</div>
 					<div className="modal-body">
-						<div className="border rounded m-1" id="inviteDiv">
+						<div className="rounded m-1" id="inviteDiv">
 							<InviteList setMembers={setMembers}></InviteList>
 						</div>
 					</div>
