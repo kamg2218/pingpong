@@ -190,7 +190,7 @@ export class ChatGatewayService {
 			this.log("not match password");
 			return false;
 		}
-		if (chatroom.memberCount === 100) {
+		if (chatroom.memberCount >= Number(ENV.parsed.MAXCHATMEMBER) ) {
 			this.log("room is full");
 			return false;
 		}
