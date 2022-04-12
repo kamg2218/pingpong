@@ -86,7 +86,7 @@ export class GameGateway {
             // return this.over("createGameRoom");
         }
         const roomInfo = await this.gameGatewayService.createAndEnterGameRoom(socket, user, payload);
-        console.log("roominfo : ", roomInfo);
+        // console.log("roominfo : ", roomInfo);
         this.emitter.emit(socket, "enterGameRoom", roomInfo);
         return ;
         // this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
@@ -120,6 +120,7 @@ export class GameGateway {
             this.emitter.emit(socket, "startGame", initialInfo);
             // socket.emit("startGame", initialInfo);
         }
+        game.print();
         // return this.over("enterGameRoom");
     }
 
@@ -314,7 +315,8 @@ export class GameGateway {
 		}
         // console.log("1-------");
 		const result = await this.gameGatewayService.enterMatch(socket, request, user);
-        this.emitter.emitById(theOtherSocketId, "enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
+        this.emitter.emitById(theOtherSocketId, "enterGameRoom", result);
+        // this.emitter.emitById(theOtherSocketId, "enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
 		// this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
         // console.log("2-------");
         this.emitter.emit(socket, "enterGameRoom", result);
@@ -329,14 +331,13 @@ export class GameGateway {
         this.log({gate : "matchRequest", ...payload});
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 		const theOtherSocketId = onlineManager.socketIdOf(payload.userid);
-        // 이미 요청했는지 확인 필요 &  게임중인지 등 확ㅇ인
+        // 이미 요청했는지 확인 필요 &  게임중인지 등 확인
         if (! await this.gameGatewayService.checkIfItIsAvailableRequest(user)) {
             this.emitter.emit(socket, "matchRequest", {result : false});
             // this.gameGatewayService.respondToUser(socket, "matchRequest", {result : false}); //요청한 쪽에 거절되었다고 보내기
             return ;
         }
         const requestid = await this.gameGatewayService.createMatchRoom(socket, user);
-        console.dir("in gateway :" , this.emitter);
         this.emitter.emitById(theOtherSocketId, "matchResponse", { 
 			userid : user.userid, 
 			nickname : user.nickname,
@@ -347,7 +348,10 @@ export class GameGateway {
 		// 	nickname : user.nickname,
 		// 	requestid : requestid,
 		// });
-        //matchresponse 처리 중에 타이머 되면 동작 안하도록 변경하기
+
+
+        // ! matchresponse 처리 중에 타이머 되면 동작 안하도록 변경하기
+        // 이미 처리가 된 경우?
 		setTimeout(()=>{
 			this.gameGatewayService.deleteMyMatch(user.userid);
             this.log(`Timeover : Match is deleted`);

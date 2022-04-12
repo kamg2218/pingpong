@@ -46,7 +46,7 @@ export class ChatHistoryRepository extends Repository<ChatHistory> {
 
     }
     // 히스토리 내역을 정제하는거
-    amugeona(histories : ChatHistory[]) {
+    refineHistory(histories : ChatHistory[]) {
         if (!histories.length) {
             return {lastIndex : -1, histories : []};
         }

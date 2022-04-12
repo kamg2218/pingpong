@@ -56,14 +56,14 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				.insert()
 				.into(User)
 				.values([
-				{email : "jikwon@student.42seoul.kr", nickname : "jikwon", status : "logout", profile : 1},
-				{email : "nahkim@student.42seoul.kr", nickname : "nahkim", status : "logout", profile : 2},
-				{email : "hyoon@student.42seoul.kr", nickname : "hyoon", status : "logout", profile : 3},
-				{email : "hyeyoo@student.42seoul.kr", nickname : "hyeyoo", status : "logout", profile : 2},
-				{email : "dong@student.42seoul.kr", nickname : "dong", status : "logout", profile : 2},
-				{email : "pangpang@student.42seoul.kr", nickname : "pangpang", status : "logout", profile : 1},
-				{email : "cat@student.42seoul.kr", nickname : "cat", status : "logout", profile : 3},
-				{email : "dog@student.42seoul.kr", nickname : "dog", status : "logout", profile : 4},
+				{email : "jikwon@student.42seoul.kr", userid : "jikwon", nickname : "jikwon", status : "logout", profile : 1},
+				{email : "nahkim@student.42seoul.kr", userid : "nahkim", nickname : "nahkim", status : "logout", profile : 2},
+				{email : "hyoon@student.42seoul.kr", userid : "hyoon", nickname : "hyoon", status : "logout", profile : 3},
+				{email : "hyeyoo@student.42seoul.kr", userid : "hyeyoo", nickname : "hyeyoo", status : "logout", profile : 2},
+				{email : "dong@student.42seoul.kr", userid : "dong", nickname : "dong", status : "logout", profile : 2},
+				{email : "pangpang@student.42seoul.kr", userid : "pangpang", nickname : "pangpang", status : "logout", profile : 1},
+				{email : "cat@student.42seoul.kr", userid : "cat", nickname : "cat", status : "logout", profile : 3},
+				{email : "dog@student.42seoul.kr", userid : "dog", nickname : "dog", status : "logout", profile : 4},
 				])
 				.execute();
 		}

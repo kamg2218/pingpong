@@ -73,6 +73,7 @@ export class GameGatewayService {
 		game.joinAsPlayer(socket.id, user);
 		this.log(`${user.nickname} has joined the GameRoom ${gameRoom.title}`);
 		let result = await this.getGameRoomInfo(gameRoom.roomid);
+		result['isPlayer'] = true;
 		return result;
 	}
 
@@ -149,6 +150,7 @@ export class GameGatewayService {
 		return gameMembership.gameRoom.roomid === roomid;
 	}
 
+	// owner : nahkim, observer : jikwon
 	public async exitGameRoom(socket: AuthSocket, user: User, roomid: string) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
@@ -162,30 +164,34 @@ export class GameGatewayService {
 
 		const game = onlineGameMap[gameRoom.roomid];
 		game.leave(socket.id, user); //add
+		game.print();
 		if (this.shoulAuthorityBeDelegated(gameRoom, user)) {
 			this.log(`The authority of ${gameRoom.title} should be delegated`);
 			const newOwner = await this.delegateAuthority(gameRoom);
-			if (!newOwner) {
-				game.makeObserversLeave();
-				this.deleteGameRoom(gameRoom);
-			}
+			// if (!newOwner) {
+			// 	this.log(`Obs should leave the GameRoom & The GameRoom ${gameRoom.title} should be deleted`);
+			// 	await game.makeObserversLeave();
+			// 	this.deleteGameRoom(gameRoom);
+			// }
+			// else
 			game.changeGameRoom(socket.id, { manager: newOwner.userid });
 		};
 		if (await this.checkIfRoomShouldBeDeleted(gameRoom)) {
-			game.makeObserversLeave();
 			await this.deleteGameRoom(gameRoom);
+			await game.makeObserversLeave();
+			delete onlineGameMap[gameRoom.roomid];
 		}
 		return gameRoom;
 	}
 
 	public shoulAuthorityBeDelegated(gameRoom: GameRoom, user: User) {
-		const isUserOwner = gameRoom.owner.userid === user.userid;
+		const isOwner = gameRoom.owner.userid === user.userid;
 		let isThereOtherUser = false;
 		gameRoom.members.map(function (membership) {
 			if (membership.position === 'normal')
 				isThereOtherUser = true;
 		})
-		if (isUserOwner && isThereOtherUser)
+		if (isOwner && isThereOtherUser)
 			return true;
 		return false;
 	}
@@ -216,7 +222,7 @@ export class GameGatewayService {
 	}
 
 	public async deleteGameRoom(gameRoom: GameRoom) {
-		delete onlineGameMap[gameRoom.roomid]; //add
+		// delete onlineGameMap[gameRoom.roomid]; //add
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		await repo_gameRoom.deleteGameRoom(gameRoom);
 	}

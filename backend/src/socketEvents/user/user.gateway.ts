@@ -98,15 +98,24 @@ export class UserGateway{
     async deleteFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : UserInfoDTO) {
 			this.log({gate : "deleteFriend", ...payload});
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-			await this.userGatewayService.deleteFriend(user, payload.userid);
+			const friend = await this.userGatewayService.checkValidateDeleteFriend(user, payload.userid);
+			if (!friend)
+				return ;
+			await this.userGatewayService.deleteFriend(user, friend);
+			this.emitter.emit(socket, "deleteFriend", {userid : friend.userid});
 			// return this.over("deleteFriend");
     }
 
     @SubscribeMessage('blockFriend')
     async blockFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : UserInfoDTO) {
 			this.log({gate : "blockFriend", ...payload});
-			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-			await this.userGatewayService.block(user, payload.userid);
+			const repo_user = getCustomRepository(UserRepository);
+			const user = await repo_user.findOne(onlineManager.userIdOf(socket.id));
+			const theOther = await this.userGatewayService.checkValidateBlockFriend(user, payload.userid);
+			if (!theOther)
+				return ;
+			await this.userGatewayService.block(user, theOther);
+			this.emitter.emit(socket, "blockFriend", repo_user.getSimpleInfo(theOther));
 			// return this.over("blockFriend");
     }
 
@@ -114,7 +123,8 @@ export class UserGateway{
     async unblockFriend(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : UserInfoDTO) {
 			this.log({gate : "unblockFriend", ...payload});
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
-			await this.userGatewayService.unblock(user, payload.userid);
+			const theOther = await this.userGatewayService.checkValidateUnblockFriend(user, payload.userid);
+			await this.userGatewayService.unblock(user, theOther);
 			// return this.over("unblockFriend");
     }
 
