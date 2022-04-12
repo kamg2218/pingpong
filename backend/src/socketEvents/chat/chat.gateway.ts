@@ -249,8 +249,8 @@ export class ChatGateway {
     let theOther = await repo_user.findOne(userid);
     let res = await Promise.all([
       repo_blockList.amIBlockedBy(user, theOther),
-      repo_blockList.didIBlock(user, theOther),
-      repo_friendList.isMyFriend(user, theOther)
+      repo_blockList.didIBlock(user, theOther)//,
+      // repo_friendList.isMyFriend(user, theOther)
     ]);
     if (res.findIndex(result=>result===true) !== -1) {
       //Error
@@ -343,7 +343,7 @@ export class ChatGateway {
     }
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
-    const {lastIndex, histories} = repo_chathistory.amugeona(lists);
+    const {lastIndex, histories} = repo_chathistory.refineHistory(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
     this.emitter.emit("chatHistory", {chatid : payload.chatid, list : histories});
@@ -360,7 +360,7 @@ export class ChatGateway {
 
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
-    const {lastIndex, histories} = repo_chathistory.amugeona(lists);
+    const {lastIndex, histories} = repo_chathistory.refineHistory(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
     this.emitter.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});

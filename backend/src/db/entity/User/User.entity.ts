@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, BeforeRemove, getCustomRepository, getRepository, BaseEntity} from "typeorm";
+import {Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, BeforeRemove, getCustomRepository, getRepository, BaseEntity, PrimaryColumn} from "typeorm";
 import {UserPosition, UserStatus, LadderLevel} from '../../../type/UserEntity.type'
 import { ChatBanList } from "../Chat/ChatBanList.entity";
 import { ChatMembership } from "../Chat/ChatMembership.entity";
@@ -11,7 +11,8 @@ import {ChatRoomRepository} from 'src/db/repository/Chat/ChatRoom.repository';
 @Entity()
 export class User extends BaseEntity {
     
-    @PrimaryGeneratedColumn('uuid')
+    // @PrimaryGeneratedColumn('uuid')
+    @PrimaryColumn()
     userid : string;
 
     @Column({ nullable : true})

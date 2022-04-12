@@ -178,7 +178,8 @@ export class Game {
 
     private removeFromParticipants(socketid : string) {
         let index = this.participants.findIndex(id=>id===socketid);
-        this.participants.splice(index, 1);
+        if (index != -1)
+            this.participants.splice(index, 1);
     }
 
     public leave(socketid : string, user : User) {
@@ -230,10 +231,12 @@ export class Game {
         })
     };
 
-    public makeObserversLeave() {
+    public async makeObserversLeave() {
         const except = [onlineManager.socketIdOf(this.rightPlayer.id), onlineManager.socketIdOf(this.leftPlayer.id)];
-        
-        this.participants.map(async socketid=>{
+        console.log(this.leftPlayer.id);
+        console.log(this.rightPlayer.id);
+        console.log(this.participants);
+        await Promise.all(this.participants.map(async socketid=>{
             if (except.findIndex(elem=>elem===socketid) === -1) {
                 const repo_user = getCustomRepository(UserRepository);
                 const userid = onlineManager.userIdOf(socketid);
@@ -242,8 +245,8 @@ export class Game {
                 let updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
                 this.changeGameRoom(socketid, updateInfo);
                 this.emitter.emitById(socketid, "exitGameRoom", {roomid : this.id});
-            }     
-        });
+            }
+        }));
     };
     
     get drawBall() {
@@ -580,5 +583,11 @@ export class Game {
             this.ball.speedUp();
         else if (type === "down")
             this.ball.speedDown();
+    }
+
+    public print() {
+        console.log("left : ", this.leftPlayer.id);
+        console.log("right : ", this.rightPlayer.id);
+        console.log("parti : ", this.participants);
     }
 }

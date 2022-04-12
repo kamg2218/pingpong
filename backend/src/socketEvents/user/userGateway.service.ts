@@ -96,18 +96,23 @@ export class UserGatewayService {
 		return { newfriends: res };
 	}
 
-	public async block(user: User, theOtherUserid: string) {
-		const theOther = await getCustomRepository(UserRepository).findOne(theOtherUserid);
+	public async checkValidateBlockFriend(user: User, theOtherUserid : string) {
 		const repo_block = getCustomRepository(BlockedFriendsRepository);
-		const repo_friend = getCustomRepository(FriendsRepository);
+		const theOther = await getCustomRepository(UserRepository).findOne(theOtherUserid);
 		if (!theOther) {
 			this.logger.log("no such user", "UserGatewayService");
-			throw new WsException("Bad Request");
+			return null;
 		}
 		if (await repo_block.didIBlock(user, theOther)) {
 			this.logger.log(`You already blocked ${theOther.nickname}`, "UserGatewayService");
-			throw new WsException(`You already blocked ${theOther.nickname}`);
+			return null;
 		}
+		return theOther;
+	}
+
+	public async block(user: User, theOther: User) {
+		const repo_block = getCustomRepository(BlockedFriendsRepository);
+		const repo_friend = getCustomRepository(FriendsRepository);
 		await Promise.all([
 			repo_friend.cancleSentFriendRequest(user, theOther),
 			repo_friend.rejectFriendRequest(user, theOther),
@@ -117,18 +122,23 @@ export class UserGatewayService {
 		this.logger.log(`${user.nickname} blocked ${theOther.nickname}`, "UserGatewayService");
 	}
 
-	public async unblock(user: User, theOtherUserid: string) {
+	public async checkValidateUnblockFriend(user : User, theOtherUserid : string) {
 		const repo_block = getCustomRepository(BlockedFriendsRepository);
 		const repo_user = getCustomRepository(UserRepository);
 		const theOther = await repo_user.findOne(theOtherUserid);
 		if (!theOther) {
 			this.logger.log("no such user", "UserGatewayService")
-			throw new WsException("Bad Request");
+			return null;
 		}
 		if (!await repo_block.didIBlock(user, theOther)) {
 			this.logger.log(`You didn't block ${theOther.nickname}`, "UserGatewayService");
-			throw new WsException(`You didn't block ${theOther.nickname}`);
+			return null;
 		}
+		return theOther;
+	}
+
+	public async unblock(user: User, theOther: User) {
+		const repo_block = getCustomRepository(BlockedFriendsRepository);
 		await repo_block.unblock(user, theOther);
 		this.logger.log(`${user.nickname} unblocked ${theOther.nickname}`, "UserGatewayService");
 	}
@@ -167,18 +177,23 @@ export class UserGatewayService {
 		}
 	}
 
-	public async deleteFriend(user: User, theOtherUserid: string) {
+	public async checkValidateDeleteFriend(user : User, theOtherUserid : string) {
 		const repo_user = getCustomRepository(UserRepository);
 		const repo_friend = getCustomRepository(FriendsRepository);
 		const friend = await repo_user.findOne(theOtherUserid);
 		if (!friend) {
 			this.logger.log("no such user");
-			throw new WsException("Bad Request");
+			return null;
 		}
 		if (await repo_friend.isNotMyFriend(user, friend)) {
 			this.logger.log(`You are not friend of ${friend.nickname}`, "UserGatewayService");
-			throw new WsException(`You are not friend of ${friend.nickname}`);
+			return null;
 		}
+		return friend;
+	}
+	
+	public async deleteFriend(user: User, friend : User) {
+		const repo_friend = getCustomRepository(FriendsRepository);	
 		await repo_friend.deleteFriendRelation(user, friend);
 		this.logger.log(`${user.nickname} deleted ${friend.nickname} from friend lists`, "UserGatewayService");
 	}
