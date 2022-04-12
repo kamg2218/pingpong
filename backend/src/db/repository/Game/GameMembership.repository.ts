@@ -48,7 +48,7 @@ export class GameMembershipRepository extends Repository<GameMembership> {
 
     public async setPlayerAsNewOwner(gameRoom : GameRoom, indexNewOwner : number) {
         const repo_gameRoom = getCustomRepository(GameRoomRepository);
-        const updateResult = await this.update(indexNewOwner, {position : 'owner'});
+        await this.update(indexNewOwner, {position : 'owner'});
         const newOwner = (await this.findOne({where : [{index : indexNewOwner}], relations : ["member"]}));
         await repo_gameRoom.update(gameRoom.roomid, {owner : newOwner.member});
         return newOwner.member;
