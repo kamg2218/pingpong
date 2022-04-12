@@ -40,27 +40,17 @@ export default function PlayRoom() {
 		}
 	}, [drawState, start, canvas, win, dispatch, gameroom.isPlayer]);
 
-	const drawCanvas = () => {
-		const ctx = canvas?.current?.getContext("2d");
-		if (ctx) {
-			//clear
-			ctx.clearRect(0, 0, drawState.background.width, drawState.background.height);
-			//center
-			ctx.beginPath();
-			ctx.moveTo(drawState.background.width / 2, drawState.background.height);
-			ctx.lineTo(drawState.background.width / 2, 0);
-			ctx.lineWidth = 0.5;
-			ctx.stroke();
-
-			if (ctx && win) { drawWinner(ctx) }
-			else { drawPlay(ctx) }
+	const handleKeyDown = (e: any) => {
+		if (e.key === "ArrowDown") {
+			socket.emit("move", { roomid: playroom.roomid, direction: "down" });
+		} else if (e.key === "ArrowUp") {
+			socket.emit("move", { roomid: playroom.roomid, direction: "up" });
 		}
-
-		return (
-			<div className="row p-1" id="canvasBorder">
-				<canvas id="canvas" ref={canvas} width={drawState.background?.width} height={drawState.background?.height}></canvas>
-			</div>
-		);
+	}
+	const handleKeyUp = (e: any) => {
+		if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+			socket.emit("move", { roomid: playroom.roomid, direction: "idle" })
+		}
 	}
 	const drawWinner = (ctx: CanvasRenderingContext2D) => {
 		const width: number = drawState.background?.width / 2;
@@ -89,20 +79,30 @@ export default function PlayRoom() {
 		ctx.fillStyle = "red";
 		ctx.fillRect(right.x, right.y, right.width, right.height);
 	}
-	const handleKeyDown = (e: any) => {
-		if (e.key === "ArrowDown") {
-			socket.emit("move", { roomid: playroom.roomid, direction: "down" });
-		} else if (e.key === "ArrowUp") {
-			socket.emit("move", { roomid: playroom.roomid, direction: "up" });
+	const drawCanvas = () => {
+		const ctx = canvas?.current?.getContext("2d");
+		if (ctx) {
+			//clear
+			ctx.clearRect(0, 0, drawState.background.width, drawState.background.height);
+			//center
+			ctx.beginPath();
+			ctx.moveTo(drawState.background.width / 2, drawState.background.height);
+			ctx.lineTo(drawState.background.width / 2, 0);
+			ctx.lineWidth = 0.5;
+			ctx.stroke();
+			if (ctx && win) { drawWinner(ctx) }
+			else { drawPlay(ctx) }
 		}
+
+		return (
+			<div className="row" id="canvasBorder">
+				<canvas id="canvas" ref={canvas} width={drawState.background?.width} height={drawState.background?.height}></canvas>
+			</div>
+		);
 	}
-	const handleKeyUp = (e: any) => {
-		if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-			socket.emit("move", { roomid: playroom.roomid, direction: "idle" })
-		}
-	}
+
 	return (
-		<div className="container my-2 px-3" id="playRoom" onClick={() => { gameDoing.current?.focus() }}>
+		<div className="container" id="playRoom" onClick={() => { gameDoing.current?.focus() }}>
 			<input className="row-1" id="canvasInput" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
 			{drawState && drawCanvas()}
 		</div>
