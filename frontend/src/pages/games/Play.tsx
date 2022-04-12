@@ -43,8 +43,8 @@ export default function Play(){
 			<div className="col h-100">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
 				<div className="row m-0 p-1" id="gameScreen">
-					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block"><SideMenuPlay/></div>
-					<div className="col"><PlayRoom/></div>
+					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block"><SideMenuPlay></SideMenuPlay></div>
+					<div className="col p-0"><PlayRoom></PlayRoom></div>
 				</div>
 			</div>
 		</div>
