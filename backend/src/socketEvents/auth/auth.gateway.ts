@@ -7,7 +7,7 @@ import { getConnection, getCustomRepository } from 'typeorm';
 import { onlineManager } from '../online/onlineManager';
 import { instrument } from '@socket.io/admin-ui';
 import { GameGatewayService } from '../game/gameGateway.service';
-import { User } from 'src/db/entity/User/UserEntity';
+import { Friends, User } from 'src/db/entity/User/UserEntity';
 import { Game } from 'src/socketEvents/game/gameElement/game';
 import { ormconfig } from 'src/config/ormconfig';
 import { MatchingManager } from '../online/matchingManager';
@@ -64,6 +64,16 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				{email : "pangpang@student.42seoul.kr", userid : "pangpang", nickname : "pangpang", status : "logout", profile : 1},
 				{email : "cat@student.42seoul.kr", userid : "cat", nickname : "cat", status : "logout", profile : 3},
 				{email : "dog@student.42seoul.kr", userid : "dog", nickname : "dog", status : "logout", profile : 4},
+				])
+				.execute();
+			const jikwon = await getCustomRepository(UserRepository).findOne({nickname : "jikwon"});
+			const nahkim = await getCustomRepository(UserRepository).findOne({nickname : "nahkim"});
+			await connection
+				.createQueryBuilder()
+				.insert()
+				.into(Friends)
+				.values([
+					{requestStatus : "friend", requestFrom : jikwon, requestTo : nahkim}
 				])
 				.execute();
 		}
