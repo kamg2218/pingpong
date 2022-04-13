@@ -11,7 +11,7 @@ export default function Lobby({setContent, setIsOpen}:{setContent:Function, setI
 	});
 
 	const handleSearch = (event:any) => {
-		console.log(event.target.value);
+		// console.log(event.target.value);
 		setSearch(event.target.value);
 	}
 	const handleMatching = () => {
