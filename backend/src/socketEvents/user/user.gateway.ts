@@ -102,7 +102,10 @@ export class UserGateway{
 			if (!friend)
 				return ;
 			await this.userGatewayService.deleteFriend(user, friend);
+			const friendScoketID = onlineManager.socketIdOf(friend.userid);
 			this.emitter.emit(socket, "deleteFriend", {userid : friend.userid});
+			if (friendScoketID)
+				this.emitter.emitById(friendScoketID, "deleteFriend", {userid : user.userid});
 			// return this.over("deleteFriend");
     }
 

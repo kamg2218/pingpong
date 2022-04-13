@@ -1,11 +1,11 @@
 import { RoomStatus } from "src/type/RoomStatus.type";
-import { Column, Entity, CreateDateColumn, OneToMany, OneToOne, JoinColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, CreateDateColumn, OneToMany, OneToOne, JoinColumn, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
 import { RoomMode } from "../../../type/RoomMode.type";
 import { GameMembership } from "src/db/entity/Game/GameMembership.entity";
 import { User } from "../User/User.entity";
 
 @Entity()
-export class GameRoom {
+export class GameRoom  extends BaseEntity {
     
     @PrimaryGeneratedColumn('uuid')
     roomid : string;

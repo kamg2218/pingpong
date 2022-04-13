@@ -83,7 +83,8 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
             chatid : chatroom.chatid, 
             title: chatroom.title,
             type: chatroom.type, 
-            members, lock, owner, manager
+            members, lock, owner, manager,
+            max : Number(ENV.parsed.MAXCHATMEMBER),
         };
     }
 }
