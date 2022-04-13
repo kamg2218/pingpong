@@ -14,7 +14,6 @@ export default function GameRoomSlide({search}:{search:string}){
 		}
 		socket.on("gameRoomList", (msg:Array<gameRoom>)=>{
 			console.log("socket on! gameRoomList in gmaeRoomSlide!");
-			// console.log(msg);
 			setRoomList(msg);
 		});
 		return ()=>{socket.off("gameRoomList");}
@@ -30,34 +29,32 @@ export default function GameRoomSlide({search}:{search:string}){
 			setIdx(idx - 1);
 		}
 	}
-	const handleCarouselItem = () => {
+	const handleCarouselItem = (list:Array<gameRoom>) => {
 		let i:number = idx * 6;
 		let carousel:Array<JSX.Element> = [];
 		
-		if (!roomlist || !roomlist.length){ return []; }
-		for (;i < roomlist.length; i++){
+		if (!list || !list.length){ return []; }
+		for (;i < list.length; i++){
 			if (i >= (idx * 6) + 6)
 				break ;
-			carousel.push(<GameBox info={roomlist[i]}></GameBox>);
+			carousel.push(<GameBox key={`GameBox_${list[i].roomid}`} info={list[i]}></GameBox>);
 		}
 		return carousel;
 	}
 	const handleSearchItem = () => {
-		let searchRoom = roomlist;
-		if (searchRoom){
-			if (searchRoom.length > 0){
-				searchRoom = roomlist?.filter((room:gameRoom) => room.title.indexOf(search) !== -1);
-			}
-			setRoomList(searchRoom);
+		let searchRoom:Array<gameRoom> | undefined = roomlist;
+		if (searchRoom && searchRoom.length > 0){
+			searchRoom = searchRoom.filter((room:gameRoom) => room.title.indexOf(search) !== -1);
+			return handleCarouselItem(searchRoom);
 		}
-		return handleCarouselItem();
+		return [];
 	}
 
 	return (
 		<div className="container h-100">
 			<div className="col h-100" id="slideFirstCol">
 				<div key="slide1Row" className="row">
-					{search === "" ? handleCarouselItem() : handleSearchItem()}
+					{handleSearchItem()}
 				</div>
 				<div className="row" id="slide2Row">
 					<span id="slidePrev" className="carousel-control-prev-icon mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
