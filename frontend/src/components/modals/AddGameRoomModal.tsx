@@ -1,14 +1,7 @@
 import {useState} from 'react'
-import './Modals.css'
 import { socket } from "../../socket/socket";
-
-type info = {
-	title: string,
-	speed: number,
-	observer: number,
-	type: string,
-	password?: string
-}
+import { NewGameRoomRequest } from '../../types/gameTypes';
+import './Modals.css'
 
 export default function AddGameRoomModal(){
 	const [title, setTitle] = useState<string>("");
@@ -43,7 +36,7 @@ export default function AddGameRoomModal(){
 		else{setOkBtn(true);}
 	}
 	const handleSubmit = () => {
-		let info:info = { title: title, observer: observer, type: radio, speed: speed }
+		let info:NewGameRoomRequest = { title: title, observer: observer, type: radio, speed: speed }
 		if (radio === "private"){ info.password = pwd; }
 		socket.emit("createGameRoom", info);
 	}

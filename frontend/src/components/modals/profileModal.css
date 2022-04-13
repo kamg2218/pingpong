@@ -79,3 +79,11 @@
 #modalTwofactorTitle{
     border-bottom: .5px solid #C9A641;
 }
+#logoutBtn{
+	position: absolute;
+	margin-right: 75%;
+	border: 2px solid orangered;
+}
+#logoutBtn:hover{
+	background-color: orangered;
+}

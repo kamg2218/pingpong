@@ -70,7 +70,7 @@ export default function MyProfileModal() {
 	}
 	const handleClick = (userid: string) => { socket.emit("opponentProfile", {userid: userid}); }
 	const friendList = () => {
-		let list:any = [];
+		let list:Array<JSX.Element> = [];
 
 		user.friends?.forEach((friend:Friend)=>{
 			list.push(
@@ -84,7 +84,7 @@ export default function MyProfileModal() {
 		return list;
 	}
 	const blockList = () => {
-		let list:any = [];
+		let list:Array<JSX.Element> = [];
 		user.blacklist?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
@@ -148,7 +148,7 @@ export default function MyProfileModal() {
 												<button className="nav-link" id="nav-block-tab" data-bs-toggle="tab" data-bs-target="#nav-block" type="button" role="tab" aria-controls="nav-block" aria-selected="false">차단목록</button>
 											</div>
 										</nav>
-										<div className="tab-content border border-top-0" id="myprofile-nav-tabContent">
+										<div className="tab-content" id="myprofile-nav-tabContent">
 											<div className="tab-pane fade show active" id="nav-friend" role="tabpanel" aria-labelledby="nav-friend-tab">{friendList()}</div>
 											<div className="tab-pane fade" id="nav-block" role="tabpanel" aria-labelledby="nav-block-tab">{blockList()}</div>
 										</div>
@@ -161,7 +161,7 @@ export default function MyProfileModal() {
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="btn modal-button mr-auto" data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
+						<button type="button" className="btn modal-button" id="logoutBtn" data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
 						<button type="button" className="btn modal-button" data-dismiss="modal">닫기</button>
 					</div>
 				</div>

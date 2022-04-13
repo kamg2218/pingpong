@@ -78,6 +78,7 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 		const url:string = _history.location.pathname;
 		const idx:number = url.search("waiting");
 		
+		socket.emit("myChatRoom");
 		if (idx !== -1){
 			let result:string = url.slice(0, url.search("chat") + 5);
 			result += url.slice(idx);
