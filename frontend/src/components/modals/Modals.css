@@ -2,3 +2,11 @@
 	z-index: 1080;
 	/* !important */
 }
+#logoutBtn{
+	position: absolute;
+	margin-right: 75%;
+	border: 2px solid orangered;
+}
+#logoutBtn:hover{
+	background-color: orangered;
+}

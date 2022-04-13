@@ -161,7 +161,7 @@ export default function MyProfileModal() {
 						</div>
 					</div>
 					<div className="modal-footer">
-						<button type="button" className="btn modal-button mr-auto" data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
+						<button type="button" className="btn modal-button" id="logoutBtn" data-dismiss="modal" onClick={handleLogout}>로그아웃</button>
 						<button type="button" className="btn modal-button" data-dismiss="modal">닫기</button>
 					</div>
 				</div>
