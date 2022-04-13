@@ -11,12 +11,14 @@ export default function Lobby({setContent, setIsOpen}:{setContent:Function, setI
 	});
 
 	const handleSearch = (event:any) => {
-		// console.log(event.target.value);
 		setSearch(event.target.value);
 	}
 	const handleMatching = () => {
 		socket.emit("randomMatching", (result: boolean)=>{
-			if (!result){ setContent("매칭 가능한 게임 방이 없습니다."); }
+			if (!result){
+				setIsOpen(false);
+				alert("매칭 가능한 게임 방이 없습니다.");
+			}
 		});
 		setIsOpen(true);
 	}

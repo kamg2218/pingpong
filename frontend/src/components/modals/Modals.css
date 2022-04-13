@@ -31,3 +31,9 @@
 	z-index: 1080;
 	/* !important */
 }
+#loadingModal{
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
