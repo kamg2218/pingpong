@@ -65,7 +65,7 @@ export default function MuteModal({info}:{info:chatRoom}) {
 		}
 	}
 	const muteList = (people: Array<ChatUser>) => {
-		let list: JSX.Element[] = [];
+		let list: Array<JSX.Element> = [];
 		
 		list.push(muteListHeader());
 		people.forEach((person: ChatUser) => {

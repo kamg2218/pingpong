@@ -32,7 +32,7 @@ export default function GameRoomSlide({search}:{search:string}){
 	}
 	const handleCarouselItem = () => {
 		let i:number = idx * 6;
-		let carousel = [];
+		let carousel:Array<JSX.Element> = [];
 		
 		if (!roomlist || !roomlist.length){ return []; }
 		for (;i < roomlist.length; i++){

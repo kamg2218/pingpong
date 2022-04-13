@@ -4,7 +4,7 @@ import { History } from "../../types/userTypes";
 
 export default function MatchHistory({userid, matchHistory}:{userid?:string, matchHistory?:Array<History>}) {
 	const createHistory = () => {
-		let list: Array<any> = [];
+		let list: Array<JSX.Element> = [];
 
 		matchHistory?.forEach((history: any) => {
 			list.push(

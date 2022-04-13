@@ -70,7 +70,7 @@ export default function MyProfileModal() {
 	}
 	const handleClick = (userid: string) => { socket.emit("opponentProfile", {userid: userid}); }
 	const friendList = () => {
-		let list:any = [];
+		let list:Array<JSX.Element> = [];
 
 		user.friends?.forEach((friend:Friend)=>{
 			list.push(
@@ -84,7 +84,7 @@ export default function MyProfileModal() {
 		return list;
 	}
 	const blockList = () => {
-		let list:any = [];
+		let list:Array<JSX.Element> = [];
 		user.blacklist?.forEach((friend:Friend)=>{
 			list.push(
 				<div className="row" id="friendContent" data-dismiss="modal" data-toggle="modal" data-target="#profileModal" onClick={()=>handleClick(friend.userid)}>
