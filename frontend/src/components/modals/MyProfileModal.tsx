@@ -148,7 +148,7 @@ export default function MyProfileModal() {
 												<button className="nav-link" id="nav-block-tab" data-bs-toggle="tab" data-bs-target="#nav-block" type="button" role="tab" aria-controls="nav-block" aria-selected="false">차단목록</button>
 											</div>
 										</nav>
-										<div className="tab-content border border-top-0" id="myprofile-nav-tabContent">
+										<div className="tab-content" id="myprofile-nav-tabContent">
 											<div className="tab-pane fade show active" id="nav-friend" role="tabpanel" aria-labelledby="nav-friend-tab">{friendList()}</div>
 											<div className="tab-pane fade" id="nav-block" role="tabpanel" aria-labelledby="nav-block-tab">{blockList()}</div>
 										</div>
