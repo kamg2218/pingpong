@@ -38,7 +38,7 @@ export default function GameRoomSlide({search}:{search:string}){
 		for (;i < roomlist.length; i++){
 			if (i >= (idx * 6) + 6)
 				break ;
-			carousel.push(<GameBox key={`${roomlist[i].roomid}box`} info={roomlist[i]} idx={i}></GameBox>);
+			carousel.push(<GameBox info={roomlist[i]}></GameBox>);
 		}
 		return carousel;
 	}
