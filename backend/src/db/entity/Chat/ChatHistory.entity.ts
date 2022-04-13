@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { ChatRoom } from "./ChatRoom.entity";
 
 @Entity()
-export class ChatHistory {
+export class ChatHistory extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     index : number;
