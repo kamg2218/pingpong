@@ -346,7 +346,7 @@ export class ChatGateway {
     const {lastIndex, histories} = repo_chathistory.refineHistory(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
-    this.emitter.emit("chatHistory", {chatid : payload.chatid, list : histories});
+    this.emitter.emit(socket, "chatHistory", {chatid : payload.chatid, list : histories});
     // socket.emit("chatHistory", {chatid : payload.chatid, list : histories});
     // return this.over("chatHistory");
     return ;
@@ -363,7 +363,7 @@ export class ChatGateway {
     const {lastIndex, histories} = repo_chathistory.refineHistory(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
-    this.emitter.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});
+    this.emitter.emit(socket, "chatHistoryUpdate", {chatid : payload.chatid, list : histories});
     // socket.emit("chatHistoryUpdate", {chatid : payload.chatid, list : histories});
     // this.over("chatHistoryUpadate");
     return ;

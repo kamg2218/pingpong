@@ -3,6 +3,10 @@ import { EntityRepository, getCustomRepository, getRepository, Repository } from
 import { ChatMembershipRepository } from "./ChatCustomRepository";
 import { UserRepository } from "../User/UserCustomRepository";
 import { User } from "src/db/entity/User/UserEntity";
+import dotenv from 'dotenv'
+import { ENV_PATH } from "src/config/url";
+
+const ENV = dotenv.config({path : ENV_PATH});
 
 @EntityRepository(ChatRoom)
 export class ChatRoomRepository extends Repository<ChatRoom> {
@@ -79,7 +83,7 @@ export class ChatRoomRepository extends Repository<ChatRoom> {
             chatid : chatroom.chatid, 
             title: chatroom.title,
             type: chatroom.type, 
-            members, lock, owner, manager, 
-            max : 100 };
+            members, lock, owner, manager
+        };
     }
 }
