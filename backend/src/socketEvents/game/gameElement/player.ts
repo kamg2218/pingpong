@@ -76,7 +76,7 @@ export class Player extends Pos {
         this._onoff = false;
     }
 
-    public onoff(){
+    get onoff(){
         return this._onoff;
     }
 

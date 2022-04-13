@@ -15,6 +15,7 @@ import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
 import dotenv from 'dotenv'
 import { ENV_PATH } from "src/config/url";
+import { RoomStatus } from "src/type/RoomStatus.type";
 
 const ENV = dotenv.config({path : ENV_PATH});
 
@@ -408,5 +409,10 @@ export class GameGatewayService {
 		if (game)
 			game.offlineRoom(socket.id);
 			
+	}
+
+	async switchGameRoomStatus(roomid : string, roomStatus : RoomStatus) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		await repo_gameRoom.update({roomid : roomid}, {roomStatus : roomStatus});
 	}
 }

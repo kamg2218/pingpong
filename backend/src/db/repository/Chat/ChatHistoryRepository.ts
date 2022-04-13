@@ -28,7 +28,7 @@ export class ChatHistoryRepository extends Repository<ChatHistory> {
         let histoyList;
         if (lastPoint) {
             histoyList = await this.find({
-                skip:0, take:3, 
+                skip:0, take:30, 
                 select:["index", "userid", "contents", "createDate"],
                 where:[{chatRoom:{chatid: chatid}, index : LessThan(lastPoint)}],
                 order : {"createDate" : "DESC"}
@@ -36,7 +36,7 @@ export class ChatHistoryRepository extends Repository<ChatHistory> {
         }
         else {
             histoyList = await this.find({
-                skip:0, take:3, 
+                skip:0, take:30, 
                 select:["index", "userid", "contents", "createDate"],
                 where:[{chatRoom:{chatid: chatid}}],
                 order : {"createDate" : "DESC"}

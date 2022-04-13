@@ -7,6 +7,7 @@ import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/typeorm';
 import { BlockedFriends, Friends, User } from './db/entity/User/UserEntity';
+import { ChatRoom, ChatHistory } from './db/entity/Chat/ChatEntity';
 
 const { instrument } = require("@socket.io/admin-ui");
 
@@ -14,7 +15,7 @@ AdminJS.registerAdapter({Database, Resource});
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const adminJs = new AdminJS({
-    resources : [User, Friends, BlockedFriends],
+    resources : [User, Friends, BlockedFriends, ChatRoom, ChatHistory],
     rootPath : '/admin',
   });
   const ADMIN = {
