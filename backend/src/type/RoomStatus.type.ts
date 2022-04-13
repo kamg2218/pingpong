@@ -1,1 +1,1 @@
-export type RoomStatus =  "waiting" | "creating" | "running" ;
+export type RoomStatus =  "waiting" | "creating" | "running";

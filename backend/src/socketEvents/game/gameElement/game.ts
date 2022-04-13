@@ -150,12 +150,12 @@ export class Game {
     }
     public joinAsPlayer(socketid : string, user : User) {
         const repo_user = getCustomRepository(UserRepository);
-        if (!this.left.onoff()) {
+        if (!this.left.onoff) {
             this.left.id = user.userid;
             this.left.on();
             this.left.ready = true;
         }
-        else if (!this.right.onoff()) {
+        else if (!this.right.onoff) {
             this.right.id = user.userid;
             this.right.on();
             this.right.ready = true;
@@ -186,11 +186,11 @@ export class Game {
         const userid = user.userid;
         const repo_user = getCustomRepository(UserRepository);
         let isPlayer = true;
-        if (this.right.onoff() && this.right.id === userid) {
+        if (this.right.onoff && this.right.id === userid) {
             this.right.direction = DIRECTION.IDLE;
             this.right.off();
         }
-        else if (this.left.onoff() && this.left.id === userid) {
+        else if (this.left.onoff && this.left.id === userid) {
             this.left.direction = DIRECTION.IDLE;
             this.left.off();
         }
@@ -288,7 +288,7 @@ export class Game {
 
     /* 게임진행 */
     public checkIfItCanStart() {
-        if (!this.right.onoff() || !this.left.onoff()) {
+        if (!this.right.onoff || !this.left.onoff) {
             console.log("not enough player");
             return true;
         }
@@ -531,11 +531,11 @@ export class Game {
 
     private forceGameOver() {
         console.log("Force game over")
-        if (!this.right.onoff()) {
+        if (!this.right.onoff) {
             this.winner = this.left.id;
             this.loser = this.right.id;
         }
-        else if (!this.left.onoff()) {
+        else if (!this.left.onoff) {
             this.winner = this.right.id;
             this.loser = this.left.id;
         }

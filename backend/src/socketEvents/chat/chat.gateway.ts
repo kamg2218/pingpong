@@ -334,7 +334,7 @@ export class ChatGateway {
   // 채팅방 내부 :
   @SubscribeMessage('chatHistory')
   async chatHistory(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: ChatHistoryDTO) {
-    this.log({gate : "chatHistory", ...payload});
+    this.log({gate : "chatHistory", index :socket.historyIndex, ...payload});
 
     if (!payload.chatid) {
       this.log("Bad Reqeust : chatid");
@@ -342,10 +342,11 @@ export class ChatGateway {
       return ;
     }
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
-    const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
+    const lists = await repo_chathistory.bringHistory(0, payload.chatid);
     const {lastIndex, histories} = repo_chathistory.refineHistory(lists);
     if (lastIndex !== -1)
       socket.historyIndex = lastIndex;
+    console.log("Lst index : ", lastIndex);
     this.emitter.emit(socket, "chatHistory", {chatid : payload.chatid, list : histories});
     // socket.emit("chatHistory", {chatid : payload.chatid, list : histories});
     // return this.over("chatHistory");
@@ -356,7 +357,7 @@ export class ChatGateway {
   // 채팅 히스토리 업데이트 : 얼마나 어떻게 보여줄지 (최근 30줄 표시, 스크롤 위로 올리면 30줄씩 업데이트)
   @SubscribeMessage('chatHistoryUpdate')
   async chatHistoryUpdate(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: ChatHistoryUpdateDTO) {
-    this.log({gate : "chatHistoryUpdate", ...payload});
+    this.log({gate : "chatHistoryUpdate",  index :socket.historyIndex, ...payload});
 
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);

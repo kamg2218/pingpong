@@ -1,11 +1,11 @@
 import { RoomMode } from "src/type/RoomMode.type";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ChatBanList } from "./ChatBanList.entity";
 import { ChatHistory } from "./ChatHistory.entity";
 import { ChatMembership } from "./ChatMembership.entity";
 
 @Entity()
-export class ChatRoom {
+export class ChatRoom extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
     chatid : string;

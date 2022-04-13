@@ -190,17 +190,14 @@ export class GameGateway {
         if (!game) {
             this.log("No such gameRoom");
             return ;
-            // return this.over('startGame');
         }
         if (!await this.gameGatewayService.validationAuthority(user, game.id)) {
             this.log(`${user.nickname} has no authority to start game.`);
             return ;
-            // return this.over('startGame');
         }
         if (!game.checkIfItCanStart()) {
             this.log("This room can't start the game");
             return ;
-            // return this.over('startGame');
         }
         let proxy = new Proxy(game, {
         	set : (target, prop, value) => {
@@ -211,6 +208,7 @@ export class GameGateway {
           	}
         });
         game.proxy = proxy;
+        await this.gameGatewayService.switchGameRoomStatus(game.id, "running");
         await game.start();
     }
 
