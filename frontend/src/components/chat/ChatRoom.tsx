@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {socket} from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { ChatBlock, ChatData, ChatHistory } from "../../types/chatTypes";
+import { ChatBlock, ChatData, ChatHistory, ChatResult } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
 import { historyInitalState, updateHistory } from "../../redux/chatReducer";
 import ChatBox from "./ChatBox";
@@ -26,21 +26,25 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 			console.log("chatHistroy on!", data);
 			setHistory(data);
 			dispatch(updateHistory(data));
-		})
+		});
 		socket.on("chatMessage", (data:any)=>{
-			console.log("got chat message");
-			console.log(data);
 			const hisChat:ChatHistory = chatHistory;
-			if (hisChat.chatid === chatHistory.chatid){
+			if (hisChat.chatid === data.chatid){
+				console.log("got chat message");
+				console.log(data);
 				if (data.result){
 					console.log(data.result);
 					return ;
 				}
-				hisChat.list = data;
+				hisChat.list.push({
+					userid: data.userid,
+					contents: data.contents,
+					createDate: data.createDate,
+				});
 				setHistory({...hisChat});
 				dispatch(updateHistory(hisChat));
 			}
-		})
+		});
 		return ()=>{
 			socket.off("chatMessage");
 			socket.off("chatHistory");
@@ -91,8 +95,8 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 				<div className="row m-1 mt-2" onClick={handleUrl}><i className="bi bi-arrow-left" id="leftArrow"></i></div>
 				<div className="row m-0 mt-3" id="chatlist">
 					<div className="col my-1">
-						{chatHistory && chatHistory.list && chatHistory.list?.map((data:ChatBlock, idx:number)=>{
-							console.log(`idx = ${idx}, data = ${data.contents}`);
+						{chatHistory && chatHistory.list?.map((data:ChatBlock, idx:number)=>{
+							// console.log(`idx = ${idx}, data = ${data}`);
 							if (data.userid === user.userid){
 								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
 							}else{
