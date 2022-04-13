@@ -44,3 +44,7 @@ export type ChatRequest = {
 export type message = {
 	message: string,
 };
+export type ChatResult = {
+	chatid: string,
+	result: string,
+}
