@@ -159,8 +159,9 @@ export default function Game() {
 			if (idx === -1){
 				console.log("blockFriend", data);
 				tmp.blacklist.push(data);
+				tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
 				dispatch(updateUser(tmp));
-				setUser({...tmp});
+				setUser({...tmp});				
 			}
 		});
 		socket.on("updateProfile", (data:any)=>{
