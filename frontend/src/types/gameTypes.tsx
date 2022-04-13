@@ -75,3 +75,10 @@ export type GameRequest = {
 	isPlayer: boolean,
 	password?: string
 }
+export type NewGameRoomRequest = {
+	title: string,
+	speed: number,
+	observer: number,
+	type: string,
+	password?: string
+}

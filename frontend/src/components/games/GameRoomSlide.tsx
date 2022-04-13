@@ -32,13 +32,13 @@ export default function GameRoomSlide({search}:{search:string}){
 	}
 	const handleCarouselItem = () => {
 		let i:number = idx * 6;
-		let carousel = [];
+		let carousel:Array<JSX.Element> = [];
 		
 		if (!roomlist || !roomlist.length){ return []; }
 		for (;i < roomlist.length; i++){
 			if (i >= (idx * 6) + 6)
 				break ;
-			carousel.push(<GameBox key={`${roomlist[i].roomid}box`} info={roomlist[i]} idx={i}></GameBox>);
+			carousel.push(<GameBox info={roomlist[i]}></GameBox>);
 		}
 		return carousel;
 	}
