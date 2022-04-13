@@ -357,7 +357,7 @@ export class ChatGateway {
   // 채팅 히스토리 업데이트 : 얼마나 어떻게 보여줄지 (최근 30줄 표시, 스크롤 위로 올리면 30줄씩 업데이트)
   @SubscribeMessage('chatHistoryUpdate')
   async chatHistoryUpdate(@ConnectedSocket() socket: AuthSocket, @MessageBody() payload: ChatHistoryUpdateDTO) {
-    this.log({gate : "chatHistoryUpdate",  index :socket.historyIndex, ...payload});
+    this.log({gate : "chatHistoryUpdate", index :socket.historyIndex, ...payload});
 
     const repo_chathistory = getCustomRepository(ChatHistoryRepository);
     const lists = await repo_chathistory.bringHistory(socket.historyIndex, payload.chatid);
