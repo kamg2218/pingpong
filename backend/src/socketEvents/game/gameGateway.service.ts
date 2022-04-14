@@ -37,6 +37,8 @@ export class GameGatewayService {
 		const repo_blockList = getCustomRepository(BlockedFriendsRepository);
 		const repo_user = getCustomRepository(UserRepository);
 		const theOther = await repo_user.findOne(theOtherId);
+		if (!onlineManager.isOnline(theOtherId))
+			return false;
 		const res = await Promise.all([
 			repo_blockList.amIBlockedBy(user, theOther),
 			repo_blockList.didIBlock(user, theOther),
