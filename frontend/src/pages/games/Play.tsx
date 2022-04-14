@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { socket } from "../../socket/socket";
 import SideMenuPlay from "./SideMenuPlay"
 import PlayRoom from "../../components/play/PlayRoom"
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +11,6 @@ import { RootState } from "../../redux/rootReducer";
 import { initialize } from "../../redux/userReducer";
 import "./Play.css";
 import logo from '../../icons/logo_brown_profile.png'
-import { socket } from "../../socket/socket";
 
 export default function Play(){
 	const checkUrl:string = BACK_URL + "/user/check";

@@ -6,9 +6,10 @@
 }
 #gameTab, #chatTab, #playTab{
 	height: 100%;
-	margin: 1%;
+	margin: 0%;
 	padding-left: 2%;
 	padding-right: 2%;
+	/* border: 1px solid black; */
 }
 #tab-game, #tab-chat{
 	border: 1px solid whitesmoke;
@@ -41,9 +42,10 @@
 	padding: 0%;
 }
 #gamelobbySide, #gamelobbyPad{
-	padding: 0%;
+	padding: 1%;
+	margin: 0%;
 	height: 100%;
-	/* border: 10px solid black; */
+	/* border: 1px solid black; */
 }
 #gamePad{
 	margin: 0%;
@@ -73,27 +75,29 @@
 	box-shadow: none;
 }
 #lobbyPad{
-	height: 86%;
-	margin-top: 2.5em;
+	height: 100%;
+	margin-top: .2em;
 	padding: 0;
+	padding-top: 2em;
 }
 #lobbyPadRow{
 	border: 1px solid #C9A641;
 	border-radius: 25px;
 	height: 100%;
-	margin-left: .1em;
+	margin: 0%;
+	padding-left: 2%;
+	padding-right: 2%;
 }
 #lobbyPadBtn{
 	align-items: center;
 	display: flex;
 	height: 15%;
-	margin: .3em;
-	margin-left: auto;
 	padding: .5em;
 }
 #lobbySlide{
-	height: 75%;
-	margin: .5em;
+	height: 85%;
+	/* height: 100%; */
+	/* margin: .5em; */
 	padding: .2em;
 }
 #lobbySearch{

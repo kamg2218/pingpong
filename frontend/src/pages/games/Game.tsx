@@ -155,7 +155,7 @@ export default function Game() {
 	}
 
 	return (
-		<div className="container-fluid border" id="gamelobby">
+		<div className="container-fluid" id="gamelobby">
 			<div className="col" id="gamelobbyCol">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
 				<div className="row" id="gamePad">
@@ -165,7 +165,7 @@ export default function Game() {
 							<Route path="/game" component={SideMenuGame}></Route>
 						</Switch>
 					</div>
-					<div className="col d-none d-sm-block m-0 p-0" id="gamelobbyPad">
+					<div className="col d-none d-sm-block" id="gamelobbyPad">
 						<Switch>
 							<Route path="/game/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game/chat/:idx/waiting/:id" component={WaitingRoom}></Route>

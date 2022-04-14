@@ -1,9 +1,15 @@
 #waitingRoom{
-	border: 1px solid #C9A641;
-	border-radius: 25px;
 	height: 100%;
 	margin: 0%;
 	padding: 0%;
+	padding-left: 1%;
+	padding-right: 1%;
+	border: 1px solid black;
+}
+#waitingRoomCol{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	height: 100%;
 }
 #waitingRoomTitle{
 	background-color: #C9A641;
