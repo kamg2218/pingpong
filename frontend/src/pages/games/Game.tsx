@@ -64,51 +64,11 @@ export default function Game() {
 				}
 			}
 		});
-		socket.on("changeGameRoom", (msg:any) => {
-			const tmp:gameRoomDetail = room;
-			console.log("changeGameRoom");
-			console.log(msg);
-			if (msg.manager) {tmp.manager = msg.manager;}
-			if (msg.title) {tmp.title = msg.title;}
-			if (msg.speed) {tmp.speed = msg.speed;}
-			if (msg.status) {tmp.status = msg.status;}
-			if (msg.type) {tmp.type = msg.type;}
-			if (msg.addObserver) {
-				const observer:GameUser = msg.addObserver;
-				const idx:number = tmp.observer.findIndex((person:GameUser)=>person.userid===observer.userid);
-				if (idx === -1){ tmp.observer.push(observer) }
-			}
-			if (msg.deleteObserver) {
-				const observer:GameUser = msg.deleteObserver;
-				tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid !== observer.userid);
-			}
-			if (msg.addPlayer) {
-				const player:GameUser = msg.addPlayer;
-				const idx:number = tmp.players.findIndex((person:GameUser)=>person.userid === player.userid);
-				if (idx === -1){ tmp.players.push(player); }
-			}
-			if (msg.deletePlayer) {
-				const player:GameUser = msg.deletePlayer;
-				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
-			}
-			setRoom({...tmp});
-			dispatch(updateGameRoom(tmp));
-		});
 		socket.on("exitGameRoom", () => {
 			console.log("exitGameRoom");
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
 			history.push("/game");
-		});
-		socket.on("startGame", (msg:any) => {
-			console.log("start game!");
-			console.log(msg);
-			if (msg.result) {
-				alert("failed to play the game!");
-			} else {
-				dispatch(updatePlayRoom(msg));
-				history.push(`/game/play/${msg.roomid}`);
-			}
 		});
 		socket.on("matchResponse", (data:match) => {
 			console.log("matchResponse", data);
@@ -175,9 +135,7 @@ export default function Game() {
 		return ()=>{
 			socket.off("userInfo");
 			socket.off("enterGameRoom");
-			socket.off("changeGameRoom");
 			socket.off("exitGameRoom");
-			socket.off("startGame");
 			socket.off("matchResponse");
 			socket.off("updateProfile");
 			socket.off("matchRequest");
