@@ -6,7 +6,7 @@ import { gameRoomDetail } from "../../types/gameTypes"
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
-import "./waitingRoom.css"
+import "./WaitingRoom.css"
 import Profile from "../../icons/Profile";
 
 

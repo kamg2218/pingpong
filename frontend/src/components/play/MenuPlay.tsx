@@ -53,26 +53,26 @@ export default function MenuPlay(){
 	
 	return (
 		<div className="container m-0 p-1" id="menuPlay">
-			<div className="col h-100">
+			<div className="col">
 				<div className="row m-0 justify-content-center">
 					<img src={Profile(playroom.left ? playroom.left.profile : 0)} alt="player1" id="player1"/>
 					<label className="h5 m-0">{playroom.left ? playroom.left.nickname : "unknown"}</label>
 				</div>
-				<div className="row h3 m-2 justify-content-center">VS</div>
+				<div className="row h3 my-4 justify-content-center">VS</div>
 				<div className="row m-0 justify-content-center">
 					<img src={Profile(playroom.right ? playroom.right.profile : 0)} alt="player2" id="player2"/>
 					<label className="h5 m-0">{playroom.right ? playroom.right.nickname : "unknown"}</label>
 				</div>
-				<label className="row mx-3 my-2 h3" id="menuScore">{playroom ? playroom.score : 0}</label>
+				<label className="row mb-2 mt-4 h3" id="menuScore">{playroom ? playroom.score : 0}</label>
 				<div className="row h1" id="winLose">{s1} : {s2}</div>
-				<div className="row mt-5 mx-1">
-					<div className="col mx-1">{observerProfileBox(0)}</div>
-					<div className="col mx-1">{observerProfileBox(1)}</div>
-					<div className="col mx-1">{observerProfileBox(2)}</div>
+				<div className="row" id="observerFirst">
+					<div className="col" id="observerFirstContent">{observerProfileBox(0)}</div>
+					<div className="col" id="observerFirstContent">{observerProfileBox(1)}</div>
+					<div className="col" id="observerFirstContent">{observerProfileBox(2)}</div>
 				</div>
-				<div className="row mt-4 mb-3 mx-3">
-					<div className="col mx-3">{observerProfileBox(3)}</div>
-					<div className="col mx-3">{observerProfileBox(4)}</div>
+				<div className="row" id="observerSecond">
+					<div className="col" id="observerSecondContent">{observerProfileBox(3)}</div>
+					<div className="col" id="observerSecondContent">{observerProfileBox(4)}</div>
 				</div>
 				<button className="row btn btn-lg my-2" id="exitButton" onClick={handleEixt}>나가기</button>
 			</div>
