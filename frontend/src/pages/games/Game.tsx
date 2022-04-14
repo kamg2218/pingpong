@@ -3,12 +3,11 @@ import { useEffect, useState } from "react"
 import { Route, Switch, useHistory } from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
-import { message } from "../../types/chatTypes";
 import { Friend, User } from "../../types/userTypes"
 import { gameRoomDetail, match, result } from "../../types/gameTypes"
 import {updateUser} from "../../redux/userReducer"
 import {RootState} from "../../redux/rootReducer"
-import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
+import { gameRoomInitialState, undefinedList, updateGameRoom } from "../../redux/gameReducer"
 import Lobby from "./Lobby"
 import WaitingRoom from "./WaitingRoom"
 import SideMenuGame from "./SideMenuGame"
@@ -46,24 +45,24 @@ export default function Game() {
 			dispatch(updateUser(data));
 			setUser(data);
 		});
-		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
-			console.log("enter game room");
-			console.log(msg);
-			setLoadingOpen(false);
-			setMatchingOpen(false);
-			if ("message" in msg) {
-				alert("fail to enter the room!");
-				if (history.location.pathname.search("waiting")){
-					history.replace("/game");
-				}
-			}else {
-				setRoom(msg);
-				dispatch(updateGameRoom(msg));
-				if (history.location.pathname.indexOf("waiting") === -1){
-					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
-				}
-			}
-		});
+		// socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
+		// 	console.log("enter game room");
+		// 	console.log(msg);
+		// 	setLoadingOpen(false);
+		// 	setMatchingOpen(false);
+		// 	if ("message" in msg) {
+		// 		alert("fail to enter the room!");
+		// 		if (history.location.pathname.search("waiting")){
+		// 			history.replace("/game");
+		// 		}
+		// 	}else {
+		// 		setRoom(msg);
+		// 		dispatch(updateGameRoom(msg));
+		// 		if (history.location.pathname.indexOf("waiting") === -1){
+		// 			history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
+		// 		}
+		// 	}
+		// });
 		socket.on("exitGameRoom", () => {
 			console.log("exitGameRoom");
 			dispatch(updateGameRoom(gameRoomInitialState));
@@ -134,7 +133,7 @@ export default function Game() {
 
 		return ()=>{
 			socket.off("userInfo");
-			socket.off("enterGameRoom");
+			// socket.off("enterGameRoom");
 			socket.off("exitGameRoom");
 			socket.off("matchResponse");
 			socket.off("updateProfile");
@@ -170,7 +169,7 @@ export default function Game() {
 							<Route path="/game/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game/chat/:idx/waiting/:id" component={WaitingRoom}></Route>
 							<Route path="/game/chat/waiting/:id" component={WaitingRoom}></Route>
-							<Route path="/game" render={()=><Lobby setIsOpen={setLoadingOpen} setContent={setContent}/>}></Route>
+							<Route path="/game" render={()=><Lobby setIsOpen={setLoadingOpen} setLoadingOpen={setLoadingOpen} setMatchingOpen={setMatchingOpen}/>}></Route>
 						</Switch>
 					</div>
 				</div>

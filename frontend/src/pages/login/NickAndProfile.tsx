@@ -30,9 +30,10 @@ export default function NickAndProfile(){
 	const impossible:string = "사용 불가능한 닉네임입니다.";
 
 	useEffect(()=>{
-		axios.get(checkUrl).then((res:any)=>{
-  		if (res.state){
-  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+		axios.get(checkUrl + "?url=nickandprofile").then((res:any)=>{
+			console.log("----->", res.data.state);
+  		if (res.data.state){
+  		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
   		    dispatch(initialize());
   		  }

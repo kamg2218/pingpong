@@ -6,11 +6,11 @@ import { gameRoomDetail, GameUser } from "../../types/gameTypes"
 import { updateGameRoom, updatePlayRoom } from "../../redux/gameReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
-import "./WaitingRoom.css"
-import Profile from "../../icons/Profile";
-import { initialize } from "../../redux/userReducer";
 import axios from "axios";
 import { BACK_URL } from "../../types/urlTypes";
+import { initialize } from "../../redux/userReducer";
+import Profile from "../../icons/Profile";
+import "./WaitingRoom.css"
 
 
 export default function WaitingRoom(){
@@ -20,27 +20,29 @@ export default function WaitingRoom(){
 	const user:User = useSelector((state:RootState)=>state.userReducer.user);
 	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
-
 	const checkUrl:string = BACK_URL + "/user/check";
 
 	useEffect(()=>{
 		console.log("waitingRoom");
 		axios.get(checkUrl + "?url=waitingroom").then((res:any)=>{
-  		if (res.state){
-  		  if (res.state === "playing" && gameroom.roomid){
+			console.log("----->", res.data.state);
+  		if (res.data.state){
+				console.log(param.id, room.roomid);
+				console.log(param.id === room.roomid);
+  		  if (res.data.state === "playing" && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-				}else if (res.state === "playing"){
+				}else if (res.data.state === "playing"){
 					dispatch(initialize());
 					history.replace("/game");
-				}else if (res.state === "waiting" && room.roomid === ""){
+				}else if (res.data.state === "waiting" && room.roomid === ""){
 					dispatch(initialize());
 					history.replace("/game");
-  		  }else if (res.state === "waiting" && param.id !== room.roomid){
+  		  }else if (res.data.state === "waiting" && param.id !== room.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		  }else if (res.state === "login"){
+  		  }else if (res.data.state === "login"){
 					dispatch(initialize());
 					history.replace("/game");
-  		  }else if (res.state === "logout"){
+  		  }else if (res.data.state === "logout"){
   		    history.replace("/");
   		  }
   		}
