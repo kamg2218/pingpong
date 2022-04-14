@@ -64,6 +64,7 @@ export class GameRoomRepository extends Repository<GameRoom> {
     public async createGameRoom(owner : User, roomOption : any) {
         const newRoom = this.create();
         newRoom.owner = owner;
+        console.log("type : ", typeof(roomOption['password']));
         for (let key in roomOption) {
             if (key === "observer")
                 newRoom["maxObsCount"] = roomOption[key];
@@ -133,17 +134,35 @@ export class GameRoomRepository extends Repository<GameRoom> {
             return false;
         return true;
     }
-
+    public async whyItIsntAvailableJoin(gameRoom : GameRoom, position : GamePosition, password : string) {
+        const checker = {
+            'normal' : this.checkPlayerCount,
+            'observer' : this.checkObserverCount,
+        }
+        console.log("isAvali : ", typeof(password));
+        if (!checker[position](gameRoom))
+            return "It is full";
+        if (gameRoom.password && !await compare(password, gameRoom.password))
+            return "Password is wrong";
+        if (position != 'observer' && gameRoom.roomStatus != 'waiting')
+            return "The game is already running"
+        if (gameRoom.roomStatus == 'creating')
+            return "temporary game room"
+        return "NULL";
+    }
     public async isAvaliableToJoinAs(gameRoom : GameRoom, position : GamePosition, password : string) {
         const checker = {
             'normal' : this.checkPlayerCount,
             'observer' : this.checkObserverCount,
         }
+        console.log("isAvali : ", typeof(password));
         if (!checker[position](gameRoom))
             return false;
         if (gameRoom.password && !await compare(password, gameRoom.password))
             return false;
-        if (gameRoom.roomStatus !== 'waiting')
+        if (position != 'observer' && gameRoom.roomStatus != 'waiting')
+            return false;
+        if (gameRoom.roomStatus == 'creating')
             return false;
         return true;
     }

@@ -132,7 +132,8 @@ export class GameGatewayService {
 			return { result: false, gameRoom: null };
 		}
 		if (!await repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password)) {
-			this.log(`It isn't available to join the GameRoom ${gameRoom.title} as ${position}`);
+			const reason = await repo_gameRoom.whyItIsntAvailableJoin(gameRoom, position, roomOptions.password);
+			this.log(`It isn't available to join the GameRoom ${gameRoom.title} as ${position} because : ${reason}`);
 			return { result: false, gameRoom: null };
 		}
 		this.log(`It is available to join the GameRoom ${gameRoom.title} as ${position}`)
