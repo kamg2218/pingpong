@@ -41,6 +41,7 @@ export class GameGatewayService {
 			repo_blockList.amIBlockedBy(user, theOther),
 			repo_blockList.didIBlock(user, theOther),
 			this.amIinGameRoom(user),
+			this.amIinGameRoom(theOther),	
 		]);
 		if (res.findIndex(elem=>elem===true) != -1)
 			return false;
