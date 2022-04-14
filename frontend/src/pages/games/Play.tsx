@@ -44,12 +44,12 @@ export default function Play(){
 	}, [checkUrl, dispatch, gameroom.roomid, history, param.id]);
 
 	return (
-		<div className="container-fluid m-0 p-0" id="playroom">
+		<div className="container-fluid" id="playroom">
 			<div className="col h-100">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
-				<div className="row m-0 p-1" id="gameScreen">
-					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block"><SideMenuPlay></SideMenuPlay></div>
-					<div className="col p-0"><PlayRoom></PlayRoom></div>
+				<div className="row" id="gameScreen">
+					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block" id="sideMenuPlay"><SideMenuPlay/></div>
+					<div className="col" id="playRoom"><PlayRoom/></div>
 				</div>
 			</div>
 		</div>

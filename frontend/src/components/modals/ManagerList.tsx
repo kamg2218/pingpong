@@ -13,9 +13,9 @@ export default function ManagerList({info, member, handleClick}:{info:chatRoom, 
 
   return (
     <li className="form-check" key={`memberList_${member.userid}`}>
-      <input className="form-check-input" type="checkbox" onClick={handleManagerClick} checked={checked}></input>
-      <img src={Profile(member.profile)} className="col-1 mx-1 rounded-cricle" alt="..."></img>
-      <label className="form-check-label mx-1">{member.nickname}</label>
+      <input className="form-check-input" type="checkbox" onChange={handleManagerClick} checked={checked}  key={`memberInput_${member.userid}`}></input>
+      <img src={Profile(member.profile)} className="col-1 mx-1 rounded-cricle" alt="..."  key={`memberImg_${member.userid}`}></img>
+      <label className="form-check-label mx-1"  key={`memberLabel_${member.userid}`}>{member.nickname}</label>
     </li>
   );
 }
