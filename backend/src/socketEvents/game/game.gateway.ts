@@ -66,6 +66,7 @@ export class GameGateway {
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : CreateGameRoomDTO) {
         this.log({gate : "createGameRoom", ...payload});
+        console.log("enter : ", typeof(payload.password));
         if (!socket.userid) {
             this.log("Something wrong : Authenticate");
             return ;
@@ -96,6 +97,7 @@ export class GameGateway {
     @SubscribeMessage('enterGameRoom')
     async enterGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : EnterGameRoomDTO) {
         this.log({gate : "enterGameRoom", ...payload});
+        console.log("enter : ", typeof(payload.password));
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
         if (await this.gameGatewayService.amIinGameRoom(user)) {
             this.emitter.emit(socket, "enterGameRoom", {message : "You are already in the game room"});
@@ -144,6 +146,7 @@ export class GameGateway {
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 		if (! (await this.gameGatewayService.isThisMyGameRoom(user, payload.roomid))) {
 			this.log(`${user.nickname} isn't in the GameRoom ${payload.roomid}`);
+            return ;
             // return this.over('exitGameRoom');
 		}
         const roomid = await this.gameGatewayService.exitGameRoom(socket, user, payload.roomid);
@@ -259,6 +262,8 @@ export class GameGateway {
 			const theOthersocketId : string = onlineManager.socketIdOf(theOtherId);
             roomInfo = await this.gameGatewayService.enterGameRoom(theOthersocketId, theOther, validateResult.gameRoom, {isPlayer : true});
 			this.emitter.emitById(theOthersocketId, "enterGameRoom", roomInfo);
+            const game = onlineGameMap[roomInfo.roomid];
+            console.log(game);
             // this.server.to(theOthersocketId).emit("enterGameRoom", roomInfo);
             return ;
             // return this.over('randomMatching');

@@ -11,7 +11,6 @@ import MenuChat from "../../components/chat/MenuChat"
 import ChatRoom from "../../components/chat/ChatRoom"
 import "./chat.css";
 import { ChatData } from "../../types/chatTypes";
-import { updateChat } from "../../redux/chatReducer";
 
 type param = { id?: String }
 
