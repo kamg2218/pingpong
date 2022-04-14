@@ -4,5 +4,5 @@ export const PORT = "4242";
 export const FRONT_PORT = "3000";
 
 export const BACK_SOCKET = LOCAL_URL + ":" + PORT; //backend address
-export const BACK_URL = ""; //same port
-// export const BACK_URL = LOCAL_URL + ":" + PORT;
+// export const BACK_URL = ""; //same port
+export const BACK_URL = LOCAL_URL + ":" + PORT;

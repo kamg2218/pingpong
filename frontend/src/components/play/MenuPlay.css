@@ -27,6 +27,18 @@
 #observerImg{
 	height: 60%;
 }
+#observerFirst, #observerSecond{
+	margin: auto;
+	margin-top: 10%;
+	width: 100%;
+}
+#observerSecond{
+	margin-bottom: 15%;
+}
+#observerFirstContent, #observerSecondContent{
+	display: flex;
+	justify-content: center;
+}
 #exitButton{
 	background-color: #6D6162;
 	border: 1px solid #C9A641;

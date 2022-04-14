@@ -6,7 +6,7 @@ import { gameRoomDetail } from "../../types/gameTypes"
 import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
-import "./waitingRoom.css"
+import "./WaitingRoom.css"
 import Profile from "../../icons/Profile";
 
 
@@ -55,11 +55,6 @@ export default function WaitingRoom(){
 			return ;
 		}
 		socket.emit("exitGameRoom", { roomid: room.roomid });
-		// dispatch(updateGameRoom(gameRoomInitialState));
-		// setRoom(gameRoomInitialState);
-		// history.push("/game");
-		// socket.emit("gameRoomList");
-		// window.location.reload();
 	}
 
 	return (

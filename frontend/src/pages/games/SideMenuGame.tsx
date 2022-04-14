@@ -22,7 +22,6 @@ export default function SideMenuGame(){
   		const idx:number = url.search("wait");
 
   		if (res.state){
-				console.log(res.state);
   		  if (res.state === "playing" && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
 					dispatch(initialize());

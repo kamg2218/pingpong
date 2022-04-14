@@ -5,7 +5,7 @@
 #canvasInput{
     background-color: #6D6162;
     border: 0px;
-    height: 2em;
+    height: 2.6em;
 }
 #canvasInput:focus{
     color: transparent;
