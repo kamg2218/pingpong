@@ -8,6 +8,7 @@ import { GameMembershipRepository } from "./GameCustomRepository";
 import {hash, compare} from 'bcrypt'
 import dotenv from 'dotenv'
 import { ENV_PATH } from "src/config/url";
+import { onlineGameMap } from "src/socketEvents/online/onlineGameMap";
 
 const ENV = dotenv.config({path : ENV_PATH});
 
@@ -143,10 +144,13 @@ export class GameRoomRepository extends Repository<GameRoom> {
             return "It is full";
         if (gameRoom.password && !await compare(password, gameRoom.password))
             return "Password is wrong";
+        if (onlineGameMap[gameRoom.roomid].over)
+            return "Game is already over.";
         if (position != 'observer' && gameRoom.roomStatus != 'waiting')
-            return "The game is already running"
+            return "The game is already running";
         if (gameRoom.roomStatus == 'creating')
-            return "temporary game room"
+            return "temporary game room";
+        
         return "NULL";
     }
     public async isAvaliableToJoinAs(gameRoom : GameRoom, position : GamePosition, password : string) {
@@ -154,15 +158,18 @@ export class GameRoomRepository extends Repository<GameRoom> {
             'normal' : this.checkPlayerCount,
             'observer' : this.checkObserverCount,
         }
-        console.log("isAvali : ", typeof(password));
+        // console.log("isAvali : ", typeof(password));
         if (!checker[position](gameRoom))
             return false;
         if (gameRoom.password && !await compare(password, gameRoom.password))
+            return false;
+        if (onlineGameMap[gameRoom.roomid].over)
             return false;
         if (position != 'observer' && gameRoom.roomStatus != 'waiting')
             return false;
         if (gameRoom.roomStatus == 'creating')
             return false;
+        
         return true;
     }
 }

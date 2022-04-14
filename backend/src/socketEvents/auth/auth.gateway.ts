@@ -17,6 +17,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { ChatGatewayService } from '../chat/chatGateway.service';
 import { WsGuard } from '../ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
+import { GameMembershipRepository } from 'src/db/repository/Game/GameMembership.repository';
 
 const options = {
     cors : {
@@ -157,9 +158,24 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		onlineManager.offline(socket);
 		console.log("[auth7], ", new Date());
 		onlineManager.print();
-		delete socket.userid;
+		
 		// let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
 		// if (gameRoom)
 			// gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
+		setTimeout(async ()=>{
+			const userid = socket.userid;
+			const socketid = socket.id;
+			console.log(`${userid} has been disconnected. : 10sec`);
+			const repo_user = getCustomRepository(UserRepository);
+			if (!onlineManager.isOnline(userid)) {
+				repo_user.logout(user);
+				//delete gameroom
+				const membership = await getCustomRepository(GameMembershipRepository).getMyRoom(user);
+				if (membership)
+					await this.gameGatewayService.exitGameRoom(socketid, user, membership.gameRoom.roomid);
+				delete socket.userid;
+			}
+			console.log("-------SETIMEOUT OVER");
+		}, 5000);
 	}
 }

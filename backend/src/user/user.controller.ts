@@ -23,13 +23,16 @@ export class UserController {
                 state = "2fa";
             else
                 state = await this.userService.findState(user);
+            console.log("state : ", state);
             return {state};
         }
         catch (e) {
             if (urlvalue === "main") {
+                console.log("state : logout");
                 return {state : "logout"};  
             }
             else {
+                console.log("state : 401");
                 throw new UnauthorizedException();
             }
                 
