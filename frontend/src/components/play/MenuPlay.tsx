@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import {useHistory} from "react-router-dom"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { socket } from "../../socket/socket"
-import {gameRoomDetail, playRoom, score} from "../../types/gameTypes"
+import {gameRoomDetail, playRoom, score, GameUser} from "../../types/gameTypes"
 import { RootState } from "../../redux/rootReducer"
 import { initialize } from "../../redux/userReducer"
-import { updateScore } from "../../redux/gameReducer"
+import { updateScore, updateGameRoom } from "../../redux/gameReducer"
 import Profile from "../../icons/Profile"
 import "./MenuPlay.css";
 
@@ -17,6 +17,7 @@ export default function MenuPlay(){
 	const score:score = useSelector((state:RootState) => state.gameReducer.score, shallowEqual);
 	const s1 = useState<number>(score.left ? score.left : 0);
 	const s2 = useState<number>(score.right ? score.right : 0);
+	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 	
 	useEffect(()=>{
 		// console.log("menu play");
@@ -26,12 +27,45 @@ export default function MenuPlay(){
 			s1[1](data.left);
 			s2[1](data.right);
 			dispatch(updateScore(data));
-		})
-		return ()=>{ socket.off("score"); }
-	}, [s1, s2, dispatch]);
+		});
+		socket.on("changeGameRoom", (msg:any) => {
+			const tmp:gameRoomDetail = room;
+			console.log("changeGameRoom - in menuPlay");
+			console.log(msg);
+			if (msg.manager) {tmp.manager = msg.manager;}
+			if (msg.title) {tmp.title = msg.title;}
+			if (msg.speed) {tmp.speed = msg.speed;}
+			if (msg.status) {tmp.status = msg.status;}
+			if (msg.type) {tmp.type = msg.type;}
+			if (msg.addObserver) {
+				const observer:GameUser = msg.addObserver;
+				const idx:number = tmp.observer.findIndex((person:GameUser)=>person.userid===observer.userid);
+				if (idx === -1){ tmp.observer.push(observer) }
+			}
+			if (msg.deleteObserver) {
+				const observer:GameUser = msg.deleteObserver;
+				tmp.observer = tmp.observer?.filter((ob: GameUser) => ob.userid !== observer.userid);
+			}
+			if (msg.addPlayer) {
+				const player:GameUser = msg.addPlayer;
+				const idx:number = tmp.players.findIndex((person:GameUser)=>person.userid === player.userid);
+				if (idx === -1){ tmp.players.push(player); }
+			}
+			if (msg.deletePlayer) {
+				const player:GameUser = msg.deletePlayer;
+				tmp.players = tmp.players?.filter((person: GameUser) => person.userid !== player.userid);
+			}
+			setRoom({...tmp});
+			dispatch(updateGameRoom(tmp));
+		});
+		return ()=>{
+			socket.off("score");
+			socket.off("changeGameRoom");
+		}
+	}, [s1, s2, dispatch, room]);
 
 	const handleEixt = () => {
-		socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+		socket.emit("exitGameRoom", { roomid: room.roomid });
 		dispatch(initialize());
 		history.replace("/game");
 		socket.emit("gameRoomList");
@@ -45,8 +79,8 @@ export default function MenuPlay(){
 		);
 	}
 	const observerProfileBox = (idx:number) => {
-		if (gameroom && gameroom.observer && gameroom.observer.length > idx){
-			return profileBox(gameroom.observer[idx].userid, Profile(gameroom.observer[idx].profile), gameroom.observer[idx].nickname, false);
+		if (room && room.observer && room.observer.length > idx){
+			return profileBox(room.observer[idx].userid, Profile(room.observer[idx].profile), room.observer[idx].nickname, false);
 		}
 		return <div id="observer"></div>;
 	}
