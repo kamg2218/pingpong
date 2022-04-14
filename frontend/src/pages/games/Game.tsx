@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { message } from "../../types/chatTypes";
 import { Friend, User } from "../../types/userTypes"
-import { gameRoomDetail, GameUser, match, result } from "../../types/gameTypes"
+import { gameRoomDetail, match, result } from "../../types/gameTypes"
 import {updateUser} from "../../redux/userReducer"
 import {RootState} from "../../redux/rootReducer"
 import { gameRoomInitialState, undefinedList, updateGameRoom, updatePlayRoom } from "../../redux/gameReducer"
