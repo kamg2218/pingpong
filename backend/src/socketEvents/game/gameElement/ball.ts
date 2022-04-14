@@ -2,7 +2,7 @@ import { canvas } from "./canvas";
 import { DIRECTION } from "./direction";
 import { Pos } from "./pos";
 
-const speedPercent : Array<number> = [1,2,3];
+const speedPercent : Array<number> = [1,2,3,4];
 export class Ball extends Pos {
     constructor(speed : number) {
         const r =  (canvas.heightPercent(1));

@@ -64,7 +64,6 @@ export class GameRoomRepository extends Repository<GameRoom> {
     public async createGameRoom(owner : User, roomOption : any) {
         const newRoom = this.create();
         newRoom.owner = owner;
-        console.log("type : ", typeof(roomOption['password']));
         for (let key in roomOption) {
             if (key === "observer")
                 newRoom["maxObsCount"] = roomOption[key];
