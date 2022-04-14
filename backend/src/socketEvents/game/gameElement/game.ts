@@ -52,6 +52,8 @@ export class Game {
         this.right = new Player(null, "right");
         this.server = Game._server;
         this.emitter = new Emitter(this);
+        this.left.speedUp(speed);
+        this.right.speedUp(speed);
     }
     
 

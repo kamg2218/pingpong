@@ -146,6 +146,7 @@ export class GameGateway {
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 		if (! (await this.gameGatewayService.isThisMyGameRoom(user, payload.roomid))) {
 			this.log(`${user.nickname} isn't in the GameRoom ${payload.roomid}`);
+            return ;
             // return this.over('exitGameRoom');
 		}
         const roomid = await this.gameGatewayService.exitGameRoom(socket, user, payload.roomid);
@@ -261,6 +262,8 @@ export class GameGateway {
 			const theOthersocketId : string = onlineManager.socketIdOf(theOtherId);
             roomInfo = await this.gameGatewayService.enterGameRoom(theOthersocketId, theOther, validateResult.gameRoom, {isPlayer : true});
 			this.emitter.emitById(theOthersocketId, "enterGameRoom", roomInfo);
+            const game = onlineGameMap[roomInfo.roomid];
+            console.log(game);
             // this.server.to(theOthersocketId).emit("enterGameRoom", roomInfo);
             return ;
             // return this.over('randomMatching');

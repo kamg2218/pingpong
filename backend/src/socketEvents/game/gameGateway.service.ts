@@ -368,11 +368,11 @@ export class GameGatewayService {
 
 	public async backToGameRoom(user: User, game: Game) {
 		if (game.rightPlayer.id === user.userid) {
-			game.rightPlayer.reset("right");
+			game.rightPlayer.reset("right", game.speed);
 			game.rightPlayer.ready = true;
 		}
 		else if (game.leftPlayer.id === user.userid) {
-			game.leftPlayer.reset("left");
+			game.leftPlayer.reset("left", game.speed);
 			game.leftPlayer.ready = true;
 
 		}

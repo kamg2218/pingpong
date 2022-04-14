@@ -2,6 +2,7 @@ import { canvas } from "./canvas";
 import { DIRECTION } from "./direction";
 import { Pos } from "./pos";
 
+const speedPercent : Array<number> = [1,2,3,4];
 export class Player extends Pos {
     private userid : string;
     private _score : number;
@@ -16,21 +17,23 @@ export class Player extends Pos {
             dirY : DIRECTION.IDLE, 
             width : canvas.widthPercent(4),
             height : canvas.heightPercent(20),
-            speed : (canvas.heightPercent(2))});
+            speed :  0});
         this.id = userid;
         this._onoff = false;
         this.score = 0;
         this.ready = true;
     }
 
-    public reset(side : string) {
+    public reset(side : string, speedTimes : number) {
         this.x = side === 'left' ? canvas.widthPercent(4) : canvas.width - canvas.widthPercent(8);
         this.y = (canvas.height / 2) - canvas.heightPercent(20);
         this.dirX = DIRECTION.IDLE;
         this.dirY = DIRECTION.IDLE;
-        this.width = canvas.widthPercent(4);
-        this.height = canvas.heightPercent(20);
-        this.speed = (canvas.heightPercent(2));
+        this.speed = 0;
+        this.speedUp(speedTimes);
+        // this.width = canvas.widthPercent(4);
+        // this.height = canvas.heightPercent(20);
+        // this.speed = (canvas.heightPercent(2));
         this.score = 0;
     }
 
@@ -78,6 +81,10 @@ export class Player extends Pos {
 
     get onoff(){
         return this._onoff;
+    }
+
+    public speedUp(times : number) {
+        this.speed = canvas.heightPercent(1 * times);
     }
 
     public move({x, y, radius}) {
