@@ -163,7 +163,7 @@ export class GameGatewayService {
 	}
 
 	// owner : nahkim, observer : jikwon
-	public async exitGameRoom(socket: AuthSocket, user: User, roomid: string) {
+	public async exitGameRoom(socketid : string, user : User, roomid : string) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const gameRoom = await repo_gameRoom.findOne({ where: [{ roomid: roomid }], relations: ["members"] });
@@ -176,7 +176,7 @@ export class GameGatewayService {
 		this.log(`${user.nickname} left the GameRoom ${gameRoom.title}`);
 
 		const game = onlineGameMap[gameRoom.roomid];
-		game.leave(socket.id, user); //add
+		game.leave(socketid, user); //add
 		game.print();
 		if (this.shoulAuthorityBeDelegated(gameRoom, user)) {
 			this.log(`The authority of ${gameRoom.title} should be delegated`);
@@ -187,7 +187,7 @@ export class GameGatewayService {
 			// 	this.deleteGameRoom(gameRoom);
 			// }
 			// else
-			game.changeGameRoom(socket.id, { manager: newOwner.userid });
+			game.changeGameRoom(socketid, { manager: newOwner.userid });
 		};
 		if (await this.checkIfRoomShouldBeDeleted(gameRoom)) {
 			await this.deleteGameRoom(gameRoom);

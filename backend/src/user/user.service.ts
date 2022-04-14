@@ -21,7 +21,7 @@ export class UserService {
             result = "login";
         else {
             const game = onlineGameMap[gameMembership.gameRoom.roomid];
-            if (game.start)
+            if (game.running)
                 result = "playing";
             else
                 result = "waiting"

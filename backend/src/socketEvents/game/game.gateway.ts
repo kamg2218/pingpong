@@ -149,7 +149,7 @@ export class GameGateway {
             return ;
             // return this.over('exitGameRoom');
 		}
-        const roomid = await this.gameGatewayService.exitGameRoom(socket, user, payload.roomid);
+        const roomid = await this.gameGatewayService.exitGameRoom(socket.id, user, payload.roomid);
         this.emitter.emit(socket, "exitGameRoom", {roomid : roomid});
         // this.gameGatewayService.respondToUser(socket, "exitGameRoom", {roomid : gameRoom.roomid});
         // return this.over("exitGameRoom");
