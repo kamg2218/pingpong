@@ -121,6 +121,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 					throw new UnauthorizedException("no such user");
 				}
 				socket['userid'] = res.userid;
+				console.log("socket set userid : ", user.userid);
 				onlineManager.online(socket);
 				onlineManager.print();
 				socket.historyIndex = 0;

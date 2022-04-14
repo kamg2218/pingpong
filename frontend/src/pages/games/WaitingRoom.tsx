@@ -55,11 +55,11 @@ export default function WaitingRoom(){
 			return ;
 		}
 		socket.emit("exitGameRoom", { roomid: room.roomid });
-		dispatch(updateGameRoom(gameRoomInitialState));
-		setRoom(gameRoomInitialState);
-		history.push("/game");
+		// dispatch(updateGameRoom(gameRoomInitialState));
+		// setRoom(gameRoomInitialState);
+		// history.push("/game");
 		// socket.emit("gameRoomList");
-		window.location.reload();
+		// window.location.reload();
 	}
 
 	return (

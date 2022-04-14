@@ -118,7 +118,10 @@ export class UserGateway{
 			if (!theOther)
 				return ;
 			await this.userGatewayService.block(user, theOther);
+			const theOtherScoketID = onlineManager.socketIdOf(theOther.userid);
 			this.emitter.emit(socket, "blockFriend", repo_user.getSimpleInfo(theOther));
+			if (theOtherScoketID)
+				this.emitter.emitById(theOtherScoketID, "deleteFriend", {userid : user.userid});
 			// return this.over("blockFriend");
     }
 
