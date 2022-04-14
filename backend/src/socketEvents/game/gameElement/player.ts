@@ -43,7 +43,9 @@ export class Player extends Pos {
     }
     
     get id() {
-        return this.userid;
+        if  (this.onoff)
+            return this.userid;
+        return null;
     }
 
     set id(value : string) {

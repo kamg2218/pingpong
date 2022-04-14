@@ -131,6 +131,7 @@ export class GameGateway {
         if (!membership)
             return ;
         const roomInfo = await getCustomRepository(GameRoomRepository).getRoomInfoWithMemberlist(payload.roomid);
+        console.log("[]-----------------");
         this.emitter.emit(socket, "enterGameRoom", roomInfo);
         // this.gameGatewayService.respondToUser(socket, "enterGameRoom", roomInfo);
 
@@ -145,8 +146,8 @@ export class GameGateway {
 			this.log(`${user.nickname} isn't in the GameRoom ${payload.roomid}`);
             // return this.over('exitGameRoom');
 		}
-        const gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, payload.roomid);
-        this.emitter.emit(socket, "exitGameRoom", {roomid : gameRoom.roomid});
+        const roomid = await this.gameGatewayService.exitGameRoom(socket, user, payload.roomid);
+        this.emitter.emit(socket, "exitGameRoom", {roomid : roomid});
         // this.gameGatewayService.respondToUser(socket, "exitGameRoom", {roomid : gameRoom.roomid});
         // return this.over("exitGameRoom");
     }
@@ -307,20 +308,11 @@ export class GameGateway {
 			this.log("You are already in the gameroom OR you rejected");
             this.gameGatewayService.deleteMatch(request);
             this.emitter.emitById(theOtherSocketId, "matchRequest",  {result : false});
-			// this.server.to(theOtherSocketId).emit("matchRequest",  {result : false});
             return ;
-			// return this.over("matchResponse");
 		}
-        // console.log("1-------");
 		const result = await this.gameGatewayService.enterMatch(socket, request, user);
         this.emitter.emitById(theOtherSocketId, "enterGameRoom", result);
-        // this.emitter.emitById(theOtherSocketId, "enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
-		// this.server.to(theOtherSocketId).emit("enterGameRoom", await this.gameGatewayService.getGameRoomInfo(request.roomid));
-        // console.log("2-------");
         this.emitter.emit(socket, "enterGameRoom", result);
-        // this.gameGatewayService.respondToUser(socket, "enterGameRoom", result);
-        // console.log("3-------");
-        // return this.over("matchResponse")
         return ;
 	}
 	
@@ -330,7 +322,7 @@ export class GameGateway {
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 		const theOtherSocketId = onlineManager.socketIdOf(payload.userid);
         // 이미 요청했는지 확인 필요 &  게임중인지 등 확인
-        if (! await this.gameGatewayService.checkIfItIsAvailableRequest(user)) {
+        if (! await this.gameGatewayService.checkIfItIsAvailableRequest(user, payload.userid)) {
             this.emitter.emit(socket, "matchRequest", {result : false});
             // this.gameGatewayService.respondToUser(socket, "matchRequest", {result : false}); //요청한 쪽에 거절되었다고 보내기
             return ;
@@ -341,12 +333,6 @@ export class GameGateway {
 			nickname : user.nickname,
 			requestid : requestid,
 		});
-		// this.server.to(theOtherSocketId).emit("matchResponse", { 
-		// 	userid : user.userid, 
-		// 	nickname : user.nickname,
-		// 	requestid : requestid,
-		// });
-
 
         // ! matchresponse 처리 중에 타이머 되면 동작 안하도록 변경하기
         // 이미 처리가 된 경우?
@@ -354,12 +340,11 @@ export class GameGateway {
 			this.gameGatewayService.deleteMyMatch(user.userid);
             this.log(`Timeover : Match is deleted`);
             this.emitter.emit(socket, "matchRequest", {result : false});
-            // this.gameGatewayService.respondToUser(socket, "matchRequest", {result : false}); //요청한 쪽에 거절되었다고 보내기
 		}, 30000);
         // return this.over("matchRequest")
         return ;
 	}
-
+/*
     @SubscribeMessage('backToGameRoom')
     async backToGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : GameRoomInfoDTO) {
         this.log({gate : "backToGameRoom", ...payload});
@@ -377,7 +362,7 @@ export class GameGateway {
         // return this.over("backToGameRoom");
     }
 
-    /*
+    
     @SubscribeMessage('pauseGame')
     async pause(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : GameRoomInfoDTO) {
         this.log({gate : "pauseGame", ...payload});
