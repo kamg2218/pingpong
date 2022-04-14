@@ -2,12 +2,38 @@ import { useEffect, useState } from "react"
 import { socket } from "../../socket/socket";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
+import axios from "axios";
+import { useHistory } from "react-router";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { BACK_URL } from "../../types/urlTypes";
+import { gameRoomDetail } from "../../types/gameTypes";
+import { RootState } from "../../redux/rootReducer";
+import { initialize } from "../../redux/userReducer";
 
 export default function Lobby({setContent, setIsOpen}:{setContent:Function, setIsOpen:Function}){
 	const [search, setSearch] = useState<string>("");
+	const history = useHistory();
+	const dispatch = useDispatch();
+	const checkUrl:string = BACK_URL + "/user/check";
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
 		console.log("Lobby!");
+		axios.get(checkUrl + "?url=lobby").then((res:any)=>{
+			if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+				}else if (res.state === "playing" || res.state === "waiting"){
+					dispatch(initialize());
+					history.replace("/game");
+  		  }else if (res.state === "logout"){
+  		    history.replace("/");
+  		  }
+  		}
+		}).catch((err)=>{
+			console.log(err);
+			history.replace("/");
+		});
 	});
 
 	const handleSearch = (event:any) => {

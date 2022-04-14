@@ -15,38 +15,12 @@ import { ChatData } from "../../types/chatTypes";
 type param = { id?: String }
 
 export default function SideMenuChat(){
-	const history = useHistory();
-	const dispatch = useDispatch();
-	const checkUrl:string = BACK_URL + "/user/check";
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 
 	useEffect(()=>{
 		console.log("sideMenuChat");
-		const url:string = history.location.pathname;
-		const idx:number = url.search("wait");
-
-		axios.get(checkUrl + "?url=sideMenuChat").then((res:any)=>{
-			if (res.state){
-  		  if (res.state === "playing" && gameroom.roomid){
-  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-					dispatch(initialize());
-					history.replace("/game");
-  		  }else if (res.state === "waiting" && idx === -1){
-  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-					dispatch(initialize());
-  		  }else if (res.state === "login" && idx !== -1){
-					dispatch(initialize());	
-					history.replace("/game");
-  		  }else if (res.state === "logout"){
-  		    history.replace("/");
-  		  }
-  		}
-		}).catch((err)=>{
-			console.log(err);
-			history.replace("/");
-		});
-	}, [checkUrl, dispatch, gameroom, history]);
+	});
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();

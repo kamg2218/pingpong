@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 import "./WaitingRoom.css"
 import Profile from "../../icons/Profile";
+import { initialize } from "../../redux/userReducer";
+import axios from "axios";
+import { BACK_URL } from "../../types/urlTypes";
 
 
 export default function WaitingRoom(){
@@ -18,11 +21,34 @@ export default function WaitingRoom(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 
+	const checkUrl:string = BACK_URL + "/user/check";
+
 	useEffect(()=>{
 		console.log("waitingRoom");
-		if (param.id && param.id !== room.roomid){
-			socket.emit("exitGameRoom", {roomid: room.roomid});
-		}
+		axios.get(checkUrl + "?url=waitingroom").then((res:any)=>{
+  		if (res.state){
+  		  if (res.state === "playing" && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+				}else if (res.state === "playing"){
+					dispatch(initialize());
+					history.replace("/game");
+				}else if (res.state === "waiting" && room.roomid === ""){
+					dispatch(initialize());
+					history.replace("/game");
+  		  }else if (res.state === "waiting" && param.id !== room.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		  }else if (res.state === "login"){
+					dispatch(initialize());
+					history.replace("/game");
+  		  }else if (res.state === "logout"){
+  		    history.replace("/");
+  		  }
+  		}
+		}).catch((err)=>{
+			console.log(err);
+			history.replace("/");
+		});
+	
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
 			console.log("changeGameRoom");
