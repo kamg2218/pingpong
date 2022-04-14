@@ -22,11 +22,11 @@ export default function WaitingRoom(){
 		console.log("waitingRoom");
 		if (param.id && param.id !== room.roomid){
 			socket.emit("exitGameRoom", {roomid: room.roomid});
-			dispatch(updateGameRoom(gameRoomInitialState));
-			setRoom(gameRoomInitialState);
-			history.push("/game");
+			// dispatch(updateGameRoom(gameRoomInitialState));
+			// setRoom(gameRoomInitialState);
+			// history.push("/game");
 			// socket.emit("gameRoomList");
-			window.location.reload();
+			// window.location.reload();
 		}
 	}, [dispatch, gameroom, room, history, param]);
 
