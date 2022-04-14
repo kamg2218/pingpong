@@ -66,6 +66,7 @@ export class GameGateway {
     @SubscribeMessage('createGameRoom') 
     async createGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : CreateGameRoomDTO) {
         this.log({gate : "createGameRoom", ...payload});
+        console.log("enter : ", typeof(payload.password));
         if (!socket.userid) {
             this.log("Something wrong : Authenticate");
             return ;
@@ -96,6 +97,7 @@ export class GameGateway {
     @SubscribeMessage('enterGameRoom')
     async enterGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : EnterGameRoomDTO) {
         this.log({gate : "enterGameRoom", ...payload});
+        console.log("enter : ", typeof(payload.password));
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
         if (await this.gameGatewayService.amIinGameRoom(user)) {
             this.emitter.emit(socket, "enterGameRoom", {message : "You are already in the game room"});
