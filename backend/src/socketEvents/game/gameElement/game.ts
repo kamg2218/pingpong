@@ -233,18 +233,19 @@ export class Game {
 
     public async makeObserversLeave() {
         const except = [onlineManager.socketIdOf(this.rightPlayer.id), onlineManager.socketIdOf(this.leftPlayer.id)];
+        const id = this.id;
         console.log(this.leftPlayer.id);
         console.log(this.rightPlayer.id);
         console.log(this.participants);
         await Promise.all(this.participants.map(async socketid=>{
             if (except.findIndex(elem=>elem===socketid) === -1) {
-                const repo_user = getCustomRepository(UserRepository);
-                const userid = onlineManager.userIdOf(socketid);
-                const user = await repo_user.findOne(userid);
+                // const repo_user = getCustomRepository(UserRepository);
+                // const userid = onlineManager.userIdOf(socketid);
+                // const user = await repo_user.findOne(userid);
                 this.removeFromParticipants(socketid);
-                let updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
-                this.changeGameRoom(socketid, updateInfo);
-                this.emitter.emitById(socketid, "exitGameRoom", {roomid : this.id});
+                // let updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
+                // this.changeGameRoom(socketid, updateInfo);
+                this.emitter.emitById(socketid, "exitGameRoom", {roomid : id});
             }
         }));
     };

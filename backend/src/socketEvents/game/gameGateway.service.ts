@@ -33,9 +33,16 @@ export class GameGatewayService {
 		return res;
 	}
 
-	public async checkIfItIsAvailableRequest(user: User) {
-		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		if (await repo_gameMembership.findOne({ member: { userid: user.userid } }))
+	public async checkIfItIsAvailableRequest(user: User, theOtherId : string) {
+		const repo_blockList = getCustomRepository(BlockedFriendsRepository);
+		const repo_user = getCustomRepository(UserRepository);
+		const theOther = await repo_user.findOne(theOtherId);
+		const res = await Promise.all([
+			repo_blockList.amIBlockedBy(user, theOther),
+			repo_blockList.didIBlock(user, theOther),
+			this.amIinGameRoom(user),
+		]);
+		if (res.findIndex(elem=>elem===true) != -1)
 			return false;
 		return true;
 	}
@@ -156,6 +163,7 @@ export class GameGatewayService {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const gameRoom = await repo_gameRoom.findOne({ where: [{ roomid: roomid }], relations: ["members"] });
+	
 		if (!gameRoom) {
 			this.log("No such game room");
 			throw new WsException("No such game room");
@@ -182,7 +190,7 @@ export class GameGatewayService {
 			await game.makeObserversLeave();
 			delete onlineGameMap[gameRoom.roomid];
 		}
-		return gameRoom;
+		return roomid;
 	}
 
 	public shoulAuthorityBeDelegated(gameRoom: GameRoom, user: User) {
