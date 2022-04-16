@@ -57,6 +57,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				.insert()
 				.into(User)
 				.values([
+				{email : "jj@student.42seoul.kr", userid : "jj", nickname : "jj", status : "logout", profile : 3},
 				{email : "jikwon@student.42seoul.kr", userid : "jikwon", nickname : "jikwon", status : "logout", profile : 1},
 				{email : "jikwon1@student.42seoul.kr", userid : "jikwon1", nickname : "jikwon1", status : "logout", profile : 1},
 				{email : "jikwon2@student.42seoul.kr", userid : "jikwon2", nickname : "jikwon2", status : "logout", profile : 1},

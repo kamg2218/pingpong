@@ -303,10 +303,14 @@ export class GameGateway {
         this.log({gate : "matchResponse", ...payload});
         const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 		const request = await this.gameGatewayService.validateRequestStatus(payload.requestid);
-        if (!request || !onlineManager.isOnline(request.owner.userid)) {
+        if (!request) {
             this.log("Bad Reqeust")
             return ;
             // return this.over("matchResponse");
+        }
+        if (!onlineManager.isOnline(request.owner.userid)) {
+            this.log("Owner is not online.");
+            return ;
         }
     	const theOtherSocketId = onlineManager.socketIdOf(request.owner.userid);
 		if (await this.gameGatewayService.amIinGameRoom(user) || payload.result === false) {
