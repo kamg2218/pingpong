@@ -1,12 +1,11 @@
-import {combineReducers} from "redux"
-import {userReducer} from "./userReducer"
-import {gameReducer} from "./gameReducer"
-import {chatReducer} from "./chatReducer"
+import {combineReducers} from 'redux';
+import {userReducer} from './userReducer';
+import {gameReducer} from './gameReducer';
+import {chatReducer} from './chatReducer';
 import storage from 'redux-persist/lib/storage';
-// import storageSession from 'redux-persist/lib/storage/session';
-import {persistReducer} from "redux-persist";
+import {persistReducer} from 'redux-persist';
 
-const persistConfig = { key: "root", storage: storage };
+const persistConfig = { key: 'root', storage: storage };
 
 const rootReducer = combineReducers({
   userReducer,

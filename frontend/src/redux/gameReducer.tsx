@@ -1,8 +1,8 @@
-import {gameRoomDetail, playRoom, draw, score} from "../types/gameTypes"
+import {gameRoomDetail, playRoom, draw, score} from '../types/gameTypes';
 
-export const gameRoomInitialState:gameRoomDetail = { title: "", roomid: "", manager: "", speed: 0, observer: [],	type: "",	status: false, players: [], isPlayer: true }
-export const playRoomInitialState:playRoom = { roomid: "",	score: 0, left: {userid: "", nickname: "", profile: 0}, right: {userid: "", nickname: "", profile: 0} };
-export const gameResultInitialState:string = "";
+export const gameRoomInitialState:gameRoomDetail = { title: '', roomid: '', manager: '', speed: 0, observer: [],	type: '',	status: false, players: [], isPlayer: true }
+export const playRoomInitialState:playRoom = { roomid: '',	score: 0, left: {userid: '', nickname: '', profile: 0}, right: {userid: '', nickname: '', profile: 0} };
+export const gameResultInitialState:string = '';
 export const drawInitialState:draw = { background: { width: 0, height: 0 }, ball: { x: 0, y: 0, r: 0 }, right: { x: 0, y: 0, width: 0, height: 0 }, left: { x: 0, y: 0, width: 0, height: 0 }};
 export const scoreInitialState:score = { left: 0, right: 0 };
 
@@ -14,13 +14,13 @@ export const gameInitialState = {
   score: scoreInitialState
 }
 
-const GAMEROOMUPDATE:string = "game/gameroom";
-const PLAYROOMUPDATE:string = "game/playroom";
-const GAMERESULTUPDATE:string = "game/result";
-const DRAWUPDATE:string = "game/draw";
-const SCOREUPDATE:string = "game/score";
-const DELETE:string = "DELETE";
-const UNDEFINED:string = "UNDEFINED";
+const GAMEROOMUPDATE:string = 'game/gameroom';
+const PLAYROOMUPDATE:string = 'game/playroom';
+const GAMERESULTUPDATE:string = 'game/result';
+const DRAWUPDATE:string = 'game/draw';
+const SCOREUPDATE:string = 'game/score';
+const DELETE:string = 'DELETE';
+const UNDEFINED:string = 'UNDEFINED';
 
 export const updateGameRoom = (data:gameRoomDetail) => ({type: GAMEROOMUPDATE, payload: data});
 export const updatePlayRoom = (data:playRoom) => ({type: PLAYROOMUPDATE, payload: data});
@@ -30,8 +30,6 @@ export const updateScore = (data:score) => ({type: SCOREUPDATE, payload: data});
 export const undefinedList = () => ({type: UNDEFINED});
 
 export const gameReducer = (state = gameInitialState, action: any) => {
-  // console.log(typeof action.payload);
-  // console.log(action.type);
   switch (action.type){
     case GAMEROOMUPDATE:
       return {...state, gameroom: action.payload};

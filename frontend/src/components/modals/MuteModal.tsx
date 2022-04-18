@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
-import { socket } from "../../socket/socket";
-import { User } from "../../types/userTypes";
-import { chatRoom, ChatUser } from "../../types/chatTypes";
-import { RootState } from "../../redux/rootReducer";
-import MuteList from "./MuteList";
-import "./MuteModal.css";
+import { useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
+import { socket } from '../../socket/socket';
+import { User } from '../../types/userTypes';
+import { chatRoom, ChatUser } from '../../types/chatTypes';
+import { RootState } from '../../redux/rootReducer';
+import MuteList from './MuteList';
+import './MuteModal.css';
 
 export default function MuteModal({info}:{info:chatRoom}) {
 	const thirtySeconds = useState<Array<string>>([]);
@@ -15,7 +15,7 @@ export default function MuteModal({info}:{info:chatRoom}) {
 	const handleSubmit = () => {
 		console.log(tenMinutes[0]);
 		tenMinutes[0]?.forEach((id: string) => {
-			socket.emit("chatMute", {
+			socket.emit('chatMute', {
 				chatid: info.chatid,
 				time: 600,
 				userid: id,
@@ -23,7 +23,7 @@ export default function MuteModal({info}:{info:chatRoom}) {
 		}, (result: boolean) => { console.log(result); });
 		console.log(thirtySeconds[0]);
 		thirtySeconds[0]?.forEach((id: string) => {
-			socket.emit("chatMute", {
+			socket.emit('chatMute', {
 				chatid: info.chatid,
 				time: 30,
 				userid: id,
@@ -32,11 +32,11 @@ export default function MuteModal({info}:{info:chatRoom}) {
 	}
 	const muteListHeader = () => {
 		return (
-			<div className="row" id="muteListHeader" key="muteListHeader">
-				<div className="col p-0" key="mute_profile">프로필</div>
-				<div className="col" key="mute_nickname">닉네임</div>
-				<div className="col-2" key="mute_ten">10분</div>
-				<div className="col-2" key="mute_thirty">30초</div>
+			<div className='row' id='muteListHeader' key='muteListHeader'>
+				<div className='col p-0' key='mute_profile'>프로필</div>
+				<div className='col' key='mute_nickname'>닉네임</div>
+				<div className='col-2' key='mute_ten'>10분</div>
+				<div className='col-2' key='mute_thirty'>30초</div>
 			</div>
 		);
 	}
@@ -76,19 +76,19 @@ export default function MuteModal({info}:{info:chatRoom}) {
 		return list;
 	}
 	return (
-		<div className="modal fade" id="muteModal" role="dialog" tabIndex={-1} aria-labelledby="MuteModalLabel" aria-hidden="true">
-			<div className="modal-dialog modal-dialog-centered" role="document">
-				<div className="modal-content">
-					<div className="modal-header">
-						<h5 id="MuteModalLabel" className="modal-title">음소거</h5>
-						<button type="button" className="btn modal-button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<div className='modal fade' id='muteModal' role='dialog' tabIndex={-1} aria-labelledby='MuteModalLabel' aria-hidden='true'>
+			<div className='modal-dialog modal-dialog-centered' role='document'>
+				<div className='modal-content'>
+					<div className='modal-header'>
+						<h5 id='MuteModalLabel' className='modal-title'>음소거</h5>
+						<button type='button' className='btn modal-button' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
 					</div>
-					<div className="modal-body">
-						<div className="container col" id="muteList">{info && muteList(info.members)}</div>
+					<div className='modal-body'>
+						<div className='container col' id='muteList'>{info && muteList(info.members)}</div>
 					</div>
-					<div className="modal-footer">
-						<button type="button" className="btn modal-button" data-dismiss="modal" onClick={handleSubmit}>확인</button>
-						<button type="button" className="btn modal-button " data-dismiss="modal" aria-label="Close">취소</button>
+					<div className='modal-footer'>
+						<button type='button' className='btn modal-button' data-dismiss='modal' onClick={handleSubmit}>확인</button>
+						<button type='button' className='btn modal-button ' data-dismiss='modal' aria-label='Close'>취소</button>
 					</div>
 				</div>
 			</div>
