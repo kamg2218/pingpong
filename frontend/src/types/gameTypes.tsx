@@ -63,7 +63,7 @@ export type score = {
 	right: number
 }
 export type match = {
-	userid : string,
+	userid? : string,
 	nickname : string,
 	requestid : string
 }

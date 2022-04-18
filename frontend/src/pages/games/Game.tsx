@@ -26,6 +26,7 @@ export default function Game() {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [loadingOpen, setLoadingOpen] = useState<boolean>(false);
 	const [matchingOpen, setMatchingOpen] = useState<boolean>(false);
+	const [namespace, setNamespace] = useState<string>("matchResponse");
 	const content:string = "잠시만 기다려 주세요";
 	
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
@@ -54,6 +55,13 @@ export default function Game() {
 		socket.on("matchResponse", (data:match) => {
 			console.log("matchResponse", data);
 			setIsOpen(true);
+			setNamespace("matchResponse");
+			setMatch(data);
+		});
+		socket.on("inviteGameRoomResponse", (data:match) => {
+			console.log("inviteGameRoomResponse", data);
+			setIsOpen(true);
+			setNamespace("inviteGameRoomResponse");
 			setMatch(data);
 		});
 		socket.on("matchRequest", (data:result)=>{
@@ -117,6 +125,7 @@ export default function Game() {
 			socket.off("userInfo");
 			socket.off("exitGameRoom");
 			socket.off("matchResponse");
+			socket.off("inviteGameRoomResponse");
 			socket.off("updateProfile");
 			socket.off("matchRequest");
 			socket.off("newFriend");
@@ -159,7 +168,7 @@ export default function Game() {
 			<MyProfileModal></MyProfileModal>
 			<Modal isOpen={matchingOpen} style={customStyles}><LoadingModal content={content}/></Modal>
 			<Modal isOpen={loadingOpen} style={customStyles}><LoadingModal content={content} handleCancelMatching={handleCancelMatching}/></Modal>
-			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData}/></Modal>
+			<Modal isOpen={isOpen} style={customStyles}><MatchRequestModal setIsOpen={setIsOpen} matchData={matchData} namespace={namespace}/></Modal>
 		</div>
 	);
 }
