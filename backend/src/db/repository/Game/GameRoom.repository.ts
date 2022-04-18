@@ -9,6 +9,7 @@ import {hash, compare} from 'bcrypt'
 import dotenv from 'dotenv'
 import { ENV_PATH } from "src/config/url";
 import { onlineGameMap } from "src/socketEvents/online/onlineGameMap";
+import { MatchingManager } from "src/socketEvents/online/matchingManager";
 
 const ENV = dotenv.config({path : ENV_PATH});
 
@@ -74,7 +75,7 @@ export class GameRoomRepository extends Repository<GameRoom> {
                 newRoom[key] = roomOption[key];
         }
         const insertResult = await this.insert(newRoom);
-        return insertResult.identifiers[0].roomid;
+        return insertResult.generatedMaps[0];
     }
 
     public async increaseCount(gameRoom : GameRoom, position : GamePosition) {
@@ -172,5 +173,7 @@ export class GameRoomRepository extends Repository<GameRoom> {
         
         return true;
     }
+
+    
 }
     

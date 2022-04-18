@@ -1,24 +1,28 @@
 import { Logger, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
+import { ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, WebSocketGateway, WebSocketServer, WsException } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { Friends, User } from 'src/db/entity/User/UserEntity';
+import {GameRoom, GameMembership} from 'src/db/entity/Game/GameEntity';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
+import { GameMembershipRepository, GameRoomRepository } from 'src/db/repository/Game/GameCustomRepository';
 import { AuthSocket } from 'src/type/AuthSocket.interface';
 import { getConnection, getCustomRepository } from 'typeorm';
-import { onlineManager } from '../online/onlineManager';
 import { instrument } from '@socket.io/admin-ui';
-import { GameGatewayService } from '../game/gameGateway.service';
-import { Friends, User } from 'src/db/entity/User/UserEntity';
 import { Game } from 'src/socketEvents/game/gameElement/game';
 import { ormconfig } from 'src/config/ormconfig';
+import { onlineGameMap } from '../online/onlineGameMap';
+import { onlineManager } from '../online/onlineManager';
 import { MatchingManager } from '../online/matchingManager';
-import { UserGatewayService } from '../user/userGateway.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
+import { GameGatewayService } from '../game/gameGateway.service';
 import { ChatGatewayService } from '../chat/chatGateway.service';
 import { WsGuard } from '../ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
-import { GameMembershipRepository } from 'src/db/repository/Game/GameMembership.repository';
+// import { CHECKER } from './test';
 
+
+// const checker = new CHECKER();
 const options = {
     cors : {
         origin : ["https://admin.socket.io"],
@@ -40,6 +44,80 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   
 	@WebSocketServer() public server:Server;
 
+	private async initUserDate() {
+		const connection = getConnection();
+		await connection
+			.createQueryBuilder()
+			.insert()
+			.into(User)
+			.values([
+			{email : "jikwon@student.42seoul.kr", userid : "jikwon", nickname : "jikwon", status : "logout", profile : 1},
+			{email : "jikwon1@student.42seoul.kr", userid : "jikwon1", nickname : "jikwon1", status : "logout", profile : 1},
+			{email : "jikwon2@student.42seoul.kr", userid : "jikwon2", nickname : "jikwon2", status : "logout", profile : 1},
+			{email : "jikwon3@student.42seoul.kr", userid : "jikwon3", nickname : "jikwon3", status : "logout", profile : 1},
+			{email : "nahkim@student.42seoul.kr", userid : "nahkim", nickname : "nahkim", status : "logout", profile : 2},
+			{email : "nahkim1@student.42seoul.kr", userid : "nahkim1", nickname : "nahkim1", status : "logout", profile : 2},
+			{email : "nahkim2@student.42seoul.kr", userid : "nahkim2", nickname : "nahkim2", status : "logout", profile : 2},
+			{email : "nahkim3@student.42seoul.kr", userid : "nahkim3", nickname : "nahkim3", status : "logout", profile : 2},
+			{email : "hyoon@student.42seoul.kr", userid : "hyoon", nickname : "hyoon", status : "logout", profile : 3},
+			{email : "hyoon1@student.42seoul.kr", userid : "hyoon1", nickname : "hyoon1", status : "logout", profile : 3},
+			{email : "hyoon2@student.42seoul.kr", userid : "hyoon2", nickname : "hyoon2", status : "logout", profile : 3},
+			{email : "hyoon3@student.42seoul.kr", userid : "hyoon3", nickname : "hyoon3", status : "logout", profile : 3},
+			{email : "hyeyoo@student.42seoul.kr", userid : "hyeyoo", nickname : "hyeyoo", status : "logout", profile : 2},
+			{email : "dong@student.42seoul.kr", userid : "dong", nickname : "dong", status : "logout", profile : 2},
+			{email : "pangpang@student.42seoul.kr", userid : "pangpang", nickname : "pangpang", status : "logout", profile : 1},
+			{email : "cat@student.42seoul.kr", userid : "cat", nickname : "cat", status : "logout", profile : 3},
+			{email : "dog@student.42seoul.kr", userid : "dog", nickname : "dog", status : "logout", profile : 4},
+			])
+			.execute();
+	}
+
+	private async initFriend() {
+		const connection = getConnection();
+		const jikwon = await getCustomRepository(UserRepository).findOne({nickname : "jikwon"});
+		const nahkim = await getCustomRepository(UserRepository).findOne({nickname : "nahkim"});
+		await connection
+			.createQueryBuilder()
+			.insert()
+			.into(Friends)
+			.values([
+				{requestStatus : "friend", requestFrom : jikwon, requestTo : nahkim},
+			])
+			.execute();
+	}
+
+	private async initGameRoom() {
+		const connection = getConnection();
+		const dog = await getCustomRepository(UserRepository).findOne({nickname : "dog"});
+		const cat = await getCustomRepository(UserRepository).findOne({nickname : "cat"});
+		await connection
+		.createQueryBuilder()
+		.insert()
+		.into(GameRoom)
+		.values([
+			{title : "[test] dog", type : "public", speed : 1, maxObsCount : 5, owner : dog, roomStatus : "waiting", playerCount : 1, obsCount : 0, createDate : new Date() },
+			{title : "[test] cat", type : "public", speed : 1, maxObsCount : 5, owner : cat, roomStatus : "waiting", playerCount : 1, obsCount : 0, createDate : new Date() }
+		])
+		.execute();
+
+		const dogroom = await getCustomRepository(GameRoomRepository).findOne({title : "[test] dog"});
+		const catroom = await getCustomRepository(GameRoomRepository).findOne({title : "[test] cat"});
+		await connection
+		.createQueryBuilder()
+		.insert()
+		.into(GameMembership)
+		.values([
+			{gameRoom : dogroom, member : dog, position : "owner"},
+			{gameRoom : catroom, member : cat, position : "owner"},
+		])
+		.execute();
+
+		const game1 = new Game(dogroom.roomid, dogroom.speed);
+		const game2 = new Game(catroom.roomid, catroom.speed);
+		onlineGameMap[dogroom.roomid] = game1;
+		onlineGameMap[catroom.roomid] = game2;
+
+	}
 	async afterInit(server: Server)  {
 		this.logger.log('AuthGateway init', "AuthGateway");
 		
@@ -49,43 +127,11 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 
 		/**/
-		// if (process.env.NODE_ENV === "dev" && ormconfig.dropSchema) {
 		if (ormconfig.dropSchema) {
-			const connection = getConnection();
-			await connection
-				.createQueryBuilder()
-				.insert()
-				.into(User)
-				.values([
-				{email : "jikwon@student.42seoul.kr", userid : "jikwon", nickname : "jikwon", status : "logout", profile : 1},
-				{email : "jikwon1@student.42seoul.kr", userid : "jikwon1", nickname : "jikwon1", status : "logout", profile : 1},
-				{email : "jikwon2@student.42seoul.kr", userid : "jikwon2", nickname : "jikwon2", status : "logout", profile : 1},
-				{email : "jikwon3@student.42seoul.kr", userid : "jikwon3", nickname : "jikwon3", status : "logout", profile : 1},
-				{email : "nahkim@student.42seoul.kr", userid : "nahkim", nickname : "nahkim", status : "logout", profile : 2},
-				{email : "nahkim1@student.42seoul.kr", userid : "nahkim1", nickname : "nahkim1", status : "logout", profile : 2},
-				{email : "nahkim2@student.42seoul.kr", userid : "nahkim2", nickname : "nahkim2", status : "logout", profile : 2},
-				{email : "nahkim3@student.42seoul.kr", userid : "nahkim3", nickname : "nahkim3", status : "logout", profile : 2},
-				{email : "hyoon@student.42seoul.kr", userid : "hyoon", nickname : "hyoon", status : "logout", profile : 3},
-				{email : "hyoon1@student.42seoul.kr", userid : "hyoon1", nickname : "hyoon1", status : "logout", profile : 3},
-				{email : "hyoon2@student.42seoul.kr", userid : "hyoon2", nickname : "hyoon2", status : "logout", profile : 3},
-				{email : "hyoon3@student.42seoul.kr", userid : "hyoon3", nickname : "hyoon3", status : "logout", profile : 3},
-				{email : "hyeyoo@student.42seoul.kr", userid : "hyeyoo", nickname : "hyeyoo", status : "logout", profile : 2},
-				{email : "dong@student.42seoul.kr", userid : "dong", nickname : "dong", status : "logout", profile : 2},
-				{email : "pangpang@student.42seoul.kr", userid : "pangpang", nickname : "pangpang", status : "logout", profile : 1},
-				{email : "cat@student.42seoul.kr", userid : "cat", nickname : "cat", status : "logout", profile : 3},
-				{email : "dog@student.42seoul.kr", userid : "dog", nickname : "dog", status : "logout", profile : 4},
-				])
-				.execute();
-			const jikwon = await getCustomRepository(UserRepository).findOne({nickname : "jikwon"});
-			const nahkim = await getCustomRepository(UserRepository).findOne({nickname : "nahkim"});
-			await connection
-				.createQueryBuilder()
-				.insert()
-				.into(Friends)
-				.values([
-					{requestStatus : "friend", requestFrom : jikwon, requestTo : nahkim}
-				])
-				.execute();
+			await this.initUserDate();
+			await this.initFriend();
+			await this.initGameRoom();
+			
 		}
 	}
 
@@ -103,79 +149,66 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
-    	this.logger.log(`${socket.id} socket connected`, "AuthGateway");
+    	this.logger.log(`${socket.id} socket iis trying to connect`, "AuthGateway");
 		const x = socket?.handshake?.headers["authorization"];
 		if (!x) {
-			console.log("No Authorization header");
-			this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
+			this.logger.log(`${socket.id} socket disconnected - force : No Authorization header`, "AuthGateway");
+			socket.disconnect();
 			return ;
-			// socket.disconnect();
 		}
 		else {
 			try {
 				let tokenValue = this.getAccessToken(x);
-				// console.log("token : ", tokenValue);
 				let res = await this.jwtService.verify(tokenValue);
-				// console.log("res : ", res);
 				let user = await this.authService.validate2FAJwt(res);
 				if (!user) {
 					throw new UnauthorizedException("no such user");
 				}
 				socket['userid'] = res.userid;
-				console.log("socket set userid : ", user.userid);
 				onlineManager.online(socket);
 				onlineManager.print();
 				socket.historyIndex = 0;
 				this.chatGatewayService.onlineMyChatRoom(socket);
 				this.gameGatewayService.onlineMyGameRoom(socket);
+				// checker.online(res.userid, new Date);
+				// checker.print();
 			}
 			catch(err) {
-				console.log("Invalid Token");
-				this.logger.log(`${socket.id} socket disconnected - force`, "AuthGateway");
+				this.logger.log(`${socket.id} socket disconnected - force : Invalid Token`, "AuthGateway");
 				socket.disconnect();
+				return ;
 			}
 		}
   	}
 
 	async handleDisconnect(@ConnectedSocket() socket: AuthSocket) {
-		console.log("[auth], ", new Date());
 		this.logger.log(`${socket.id} socket disconnected`, "AuthGateway");
 		const userid = onlineManager.userIdOf(socket.id);
-		console.log("[auth2], ", new Date());
 		const user = await getCustomRepository(UserRepository).findOne(userid);
-		console.log("[auth3], ", new Date());
 		if (!user)
-			return ; //test
+			return ;
 		/* ----- */
 		/* game : Exit game room*/
-		console.log("[auth4], ", new Date());
 		MatchingManager.cancle(userid);
 		await this.gameGatewayService.deleteMyMatch(user.userid);
-		console.log("[auth5], ", new Date());
 		await this.chatGatewayService.offlineMyChatRoom(socket);
 		await this.gameGatewayService.offlineMyGameRoom(socket);
-		console.log("[auth6], ", new Date());
 		onlineManager.offline(socket);
-		console.log("[auth7], ", new Date());
 		onlineManager.print();
-		
-		// let gameRoom = await this.gameGatewayService.getMyGameRoomList(user);
-		// if (gameRoom)
-			// gameRoom = await this.gameGatewayService.exitGameRoom(socket, user, gameRoom.roomid);
+		// checker.offline(socket.userid, new Date);
 		setTimeout(async ()=>{
 			const userid = socket.userid;
 			const socketid = socket.id;
-			console.log(`${userid} has been disconnected. : 10sec`);
+			console.log(`${userid} has been disconnected. : 3sec`);
 			const repo_user = getCustomRepository(UserRepository);
 			if (!onlineManager.isOnline(userid)) {
 				repo_user.logout(user);
-				//delete gameroom
-				const membership = await getCustomRepository(GameMembershipRepository).getMyRoom(user);
+				const membership = await getCustomRepository(GameMembershipRepository).getMyRoom(userid);
 				if (membership)
-					await this.gameGatewayService.exitGameRoom(socketid, user, membership.gameRoom.roomid);
+					await this.gameGatewayService.exitGameRoom(socketid, userid, membership.gameRoom.roomid);
 				delete socket.userid;
 			}
 			console.log("-------SETIMEOUT OVER");
-		}, 5000);
+		}, 3000);
 	}
 }

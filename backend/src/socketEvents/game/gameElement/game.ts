@@ -45,15 +45,15 @@ export class Game {
         this.over = false;
         this.ball = new Ball(speed);
         this._score = 10;
-        this.turn = null;
-        this._speed = speed;
+        this.turn = null; 
+        this._speed = 1;/* test */
         this.participants = [];
         this.left = new Player(null, "left");
         this.right = new Player(null, "right");
         this.server = Game._server;
         this.emitter = new Emitter(this);
-        this.left.speedUp(speed);
-        this.right.speedUp(speed);
+        this.left.speedUp(1);/* test */
+        this.right.speedUp(1); /* test */
     }
     
 
@@ -150,7 +150,27 @@ export class Game {
             this.participants.splice(index, 1);
         }
     }
-    public joinAsPlayer(socketid : string, user : User) {
+
+    public noticeTo(socketid : string, event : string, data : any) {
+        this.emitter.emitById(socketid, event, data);
+    }
+
+    public joinTwoPlayers(user : User, theOther : User, roomInfo : any) {
+        let userSocketid = onlineManager.socketIdOf(user.userid);
+        let theOthersocketId = onlineManager.socketIdOf(theOther.userid);
+        this.left.id = user.userid;
+        this.left.on();
+        this.left.ready = true;
+        this.right.id = theOther.userid;
+        this.right.on();
+        this.right.ready = true;
+        this.participants.push(userSocketid);
+        this.participants.push(theOthersocketId);
+        this.noticeTo(userSocketid, "enterGameRoom", roomInfo);
+        this.noticeTo(theOthersocketId, "enterGameRoom", roomInfo);
+    }
+    
+    public joinAsPlayer(socketid : string, user : User, roomInfo : any) {
         const repo_user = getCustomRepository(UserRepository);
         if (!this.left.onoff) {
             this.left.id = user.userid;
@@ -165,14 +185,16 @@ export class Game {
         else
             throw new Error("The room is already full");
         this.participants.push(socketid);
+        this.noticeTo(socketid, "enterGameRoom", roomInfo);
         this.changeGameRoom(socketid, {
             addPlayer : {...repo_user.getSimpleInfo(user)},
         });
     }
 
-    public joinAsObserver(socketid : string, user : User) {
+    public joinAsObserver(socketid : string, user : User, roomInfo : any ) {
         const repo_user = getCustomRepository(UserRepository);
         this.participants.push(socketid);
+        this.noticeTo(socketid, "enterGameRoom", roomInfo);
         this.changeGameRoom(socketid, {
             addObserver : {...repo_user.getSimpleInfo(user)},
         });
@@ -236,17 +258,9 @@ export class Game {
     public async makeObserversLeave() {
         const except = [onlineManager.socketIdOf(this.rightPlayer.id), onlineManager.socketIdOf(this.leftPlayer.id)];
         const id = this.id;
-        console.log(this.leftPlayer.id);
-        console.log(this.rightPlayer.id);
-        console.log(this.participants);
         await Promise.all(this.participants.map(async socketid=>{
             if (except.findIndex(elem=>elem===socketid) === -1) {
-                // const repo_user = getCustomRepository(UserRepository);
-                // const userid = onlineManager.userIdOf(socketid);
-                // const user = await repo_user.findOne(userid);
                 this.removeFromParticipants(socketid);
-                // let updateInfo = {deleteObserver : repo_user.getSimpleInfo(user)};
-                // this.changeGameRoom(socketid, updateInfo);
                 this.emitter.emitById(socketid, "exitGameRoom", {roomid : id});
             }
         }));
@@ -290,20 +304,14 @@ export class Game {
     };
 
     /* 게임진행 */
-    public checkIfItCanStart() {
-        if (!this.right.onoff || !this.left.onoff) {
-            console.log("not enough player");
-            return true;
-        }
-        if (!this.right.ready || !this.left.ready) {
-            console.log("players are ready")
-            return false;
-        }
-        if (this.running) {
-            console.log("game is running")
-            return false;
-        }
-        return true;
+    public whyCantStartGame() {
+        if (!this.right.onoff || !this.left.onoff)
+            return "Not enough player";
+        if (!this.right.ready || !this.left.ready)
+            return "Players are not ready"
+        if (this.running)
+            return "Game is alredy running"
+        return ""
     }
     
     private resetGame() {
@@ -355,6 +363,7 @@ export class Game {
     }
 
     private run() {
+        const times = 60 / this.speed / 2;
         const code = setInterval(async ()=>{   
             if (this.over) {
                 this.proxy.over = true;
@@ -369,7 +378,7 @@ export class Game {
                     right : this.drawRight,
                     left : this.drawLeft,
                 });
-            }, 50);
+            }, times);
         this._intervalId = code;
     }
 
@@ -494,12 +503,14 @@ export class Game {
         const code = {"up" : DIRECTION.UP, "down" : DIRECTION.DOWN, "idle" : DIRECTION.IDLE}
         
         if (this.over || !this.running) {
-            console.log("The game is not running")
-            throw new WsException("The game is not running")
+            console.log("The game is not running");
+            return ;// throw new WsException("The game is not running")
         }
         let codeDir = code[direction];
-        if (codeDir === undefined)
-            throw new WsException("wrong direction");
+        if (codeDir === undefined) {
+            console.log("Wrong direction"); // throw new WsException("wrong direction");
+            return ;
+        }
         if (this.right.id === userid)
             this.right.direction = codeDir;
         else if (this.left.id === userid)

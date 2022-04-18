@@ -2,7 +2,7 @@ import { canvas } from "./canvas";
 import { DIRECTION } from "./direction";
 import { Pos } from "./pos";
 
-const speedPercent : Array<number> = [1,2,3,4];
+// const speedPercent : Array<number> = [4,5,6,7];
 export class Player extends Pos {
     private userid : string;
     private _score : number;
@@ -84,7 +84,7 @@ export class Player extends Pos {
     }
 
     public speedUp(times : number) {
-        this.speed = canvas.heightPercent(1 * times);
+        this.speed = canvas.heightPercent(1 * times + 3);
     }
 
     public move({x, y, radius}) {

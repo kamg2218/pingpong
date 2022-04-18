@@ -7,18 +7,19 @@ import { GameRoomRepository } from "./GameCustomRepository";
 @EntityRepository(GameMembership)
 export class GameMembershipRepository extends Repository<GameMembership> {
 
-    async getMyRoom(user : User) {
+    async getMyRoom(userid : string) {
         const room = await this.findOne({
             where : [{
-                member : {userid : user.userid}
+                member : {userid : userid}
             }],
             relations : ["gameRoom"]
         })
         return room;
     }
 
-    async joinGameRoomAs(member : User, gameRoom : GameRoom, position : GamePosition) {
+    async joinGameRoomAs(member : User, roomid : string, position : GamePosition) {
         const repo_gameroom = getCustomRepository(GameRoomRepository);
+        const gameRoom = await repo_gameroom.findOne(roomid);
         const newMember = this.create();
         newMember.gameRoom = gameRoom;
         newMember.member = member;
@@ -29,14 +30,11 @@ export class GameMembershipRepository extends Repository<GameMembership> {
         ]);
     }
 
-    async leaveGameRoom(member : User, gameRoom : GameRoom) {
+    async leaveGameRoom(memberid : string, gameRoom : GameRoom) {
         const repo_gameroom = getCustomRepository(GameRoomRepository);
-        const membership = await this.findOne({member: {userid : member.userid}});
-        console.log("userid : ", member.userid);
-        console.log("membership : ", membership);
-        await this.delete({member : {userid : member.userid}, gameRoom : gameRoom });
+        const membership = await this.findOne({member: {userid : memberid}});
+        await this.delete({member : {userid : memberid}, gameRoom : gameRoom });
         await repo_gameroom.decreaseCount(gameRoom, membership.position);
-        return membership.position;
     }
 
     async isTherePlayer(gameRoom : GameRoom) {
