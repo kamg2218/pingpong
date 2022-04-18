@@ -2,22 +2,22 @@ import { useEffect, useState } from "react";
 import { socket } from "../../socket/socket";
 import { match } from "../../types/gameTypes";
 
-export default function MatchRequestModal({setIsOpen, matchData}:{setIsOpen:Function, matchData?:match}){
+export default function MatchRequestModal({setIsOpen, matchData, namespace}:{setIsOpen:Function, matchData?:match, namespace:string}){
 	const maxValue:number = 10;
 	const [value, setValue] = useState<number>(0);
 	
 	const handleSubmit = (result:boolean) => {
-		socket.emit("matchResponse", { requestid: matchData?.requestid, result: result });
+		socket.emit(namespace, { requestid: matchData?.requestid, result: result });
 		setIsOpen(false);
 	};
 	
 	useEffect(()=>{
 		if (value < maxValue){ setTimeout(()=>setValue(value + 0.1), 100); }
 		else{ 
-			socket.emit("matchResponse", { requestid: matchData?.requestid, result: false });
+			socket.emit(namespace, { requestid: matchData?.requestid, result: false });
 			setIsOpen(false);
 		}
-	}, [matchData?.requestid, setIsOpen, value]);
+	}, [matchData?.requestid, namespace, setIsOpen, value]);
 	
   return (
 		<div id="matchRequestModal">
