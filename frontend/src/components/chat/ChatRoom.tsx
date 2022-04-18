@@ -22,6 +22,11 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 	const [chatHistory, setHistory] = useState<ChatHistory>(history);
 
 	useEffect(()=>{
+		if (!chatid){
+			const path: string = _history.location.pathname;
+			const id: number = path.search('chat');
+			_history.replace(path.slice(0, id + 4) + path.slice(path.indexOf('/', id + 5)));
+		}
 		socket.on("chatHistory", (data:ChatHistory)=>{
 			console.log("chatHistroy on!", data);
 			setHistory(data);
@@ -49,7 +54,7 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 			socket.off("chatMessage");
 			socket.off("chatHistory");
 		}
-	}, [chatid, dispatch, chatHistory, chat]);
+	}, [chatid, dispatch, chatHistory, chat, _history]);
 
 	const handleInputChange = (e :any) => { setChat(e.target.value); }
 	const handleSendBtn = () => {
