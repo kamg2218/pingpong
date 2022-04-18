@@ -2,6 +2,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { ChatBlock, ChatData, chatRoom } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
 import Profile from "../../icons/Profile";
+import { socket } from "../../socket/socket";
 
 export default function ChatBox({idx, chatid, data}:{idx:number, chatid:string, data:ChatBlock}){
 	const chatRoom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
@@ -16,9 +17,13 @@ export default function ChatBox({idx, chatid, data}:{idx:number, chatid:string, 
 		const minutes = String(date.getMinutes()).padStart(2, "0");
 		return (`${hour}:${minutes}`);
 	}
+	const handleProfileClick = () => {
+		socket.emit("opponentProfile", { userid: data?.userid });
+	}
+
 	return (
 		<div className="container p-0" key={`${chatid}chatbox${idx}`} id={idx.toString()}>
-			<div className="row align-items-start">
+			<div className="row align-items-start" data-toggle="modal" data-target="#profileModal" onClick={handleProfileClick}>
 				<img src={Profile(member?.profile ? member.profile : 0)} className="col-2 rounded-circle m-1" alt="..."/>
 				<div className="col">
 					<div className="row col-12">{member ? member.nickname : "unknown"}</div>
