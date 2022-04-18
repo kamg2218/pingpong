@@ -9,6 +9,7 @@ import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
 import { initialize } from "../../redux/userReducer";
+import { gameRoomInitialState, updateGameRoom } from "../../redux/gameReducer";
 import "./Play.css";
 import logo from '../../icons/logo_brown_profile.png'
 
@@ -21,7 +22,6 @@ export default function Play(){
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=play").then((res:any)=>{
-			console.log("----->", res.data.state);
   		if (res.data.state){
 				if (res.data.state === "playing" && gameroom.roomid !== param.id){
 					socket.emit("exitGameRoom", {roomid: gameroom.roomid});
@@ -39,6 +39,13 @@ export default function Play(){
 			console.log(err);
 			history.replace("/");
 		});
+
+		socket.on("exitGameRoom", () => {
+			console.log("exitGameRoom");
+			dispatch(updateGameRoom(gameRoomInitialState));
+			history.push("/game");
+		});
+		return () => { socket.off("exitGameRoom"); }
 	}, [checkUrl, dispatch, gameroom.roomid, history, param.id]);
 
 	return (

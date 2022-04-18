@@ -1,8 +1,8 @@
+import axios from "axios";
 import { useEffect, useState } from "react"
 import { socket } from "../../socket/socket";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
-import axios from "axios";
 import { useHistory } from "react-router";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BACK_URL } from "../../types/urlTypes";
@@ -22,11 +22,13 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 	useEffect(()=>{
 		console.log("Lobby!");
 		axios.get(checkUrl + "?url=lobby").then((res:any)=>{
-			console.log("----->", res.data.state);
+			const path:string = history.location.pathname;
 			if (res.data.state){
-  		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
-  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		  }else if (res.data.state === "logout"){
+				if (res.data.state === "playing" && path.search("play") === -1 && gameroom.roomid){
+					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+				} else if (res.data.state === "waiting" && path.search("waiting") === -1 && gameroom.roomid){
+					socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		  } else if (res.data.state === "logout"){
   		    history.replace("/");
   		  }
   		}

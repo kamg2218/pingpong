@@ -26,7 +26,7 @@ export default function Game() {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [loadingOpen, setLoadingOpen] = useState<boolean>(false);
 	const [matchingOpen, setMatchingOpen] = useState<boolean>(false);
-	const [content, setContent] = useState<string>("잠시만 기다려 주세요");
+	const content:string = "잠시만 기다려 주세요";
 	
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
@@ -115,7 +115,6 @@ export default function Game() {
 
 		return ()=>{
 			socket.off("userInfo");
-			// socket.off("enterGameRoom");
 			socket.off("exitGameRoom");
 			socket.off("matchResponse");
 			socket.off("updateProfile");
