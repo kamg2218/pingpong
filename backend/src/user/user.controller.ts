@@ -24,14 +24,14 @@ export class UserController {
             else
                 state = await this.userService.findState(user);
             console.log("state : ", state);
-            // return {state};
-            return state;
+            return {state};
+            // return state;
         }
         catch (e) {
             if (urlvalue === "main") {
                 console.log("state : logout");
-                // return {state : "logout"};
-                return "logout"
+                return {state : "logout"};
+                // return "logout"
             }
             else {
                 console.log("state : 401");
