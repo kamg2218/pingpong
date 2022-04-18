@@ -2,12 +2,58 @@ import { useEffect, useState } from "react"
 import { socket } from "../../socket/socket";
 import AddGameRoomModal from "../../components/modals/AddGameRoomModal";
 import GameRoomSlide from "../../components/games/GameRoomSlide";
+import axios from "axios";
+import { useHistory } from "react-router";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { BACK_URL } from "../../types/urlTypes";
+import { gameRoomDetail } from "../../types/gameTypes";
+import { RootState } from "../../redux/rootReducer";
+import { message } from "../../types/chatTypes";
+import { updateGameRoom } from "../../redux/gameReducer";
 
-export default function Lobby({setContent, setIsOpen}:{setContent:Function, setIsOpen:Function}){
+
+export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setIsOpen:Function, setLoadingOpen:Function, setMatchingOpen:Function}){
 	const [search, setSearch] = useState<string>("");
+	const history = useHistory();
+	const dispatch = useDispatch();
+	const checkUrl:string = BACK_URL + "/user/check";
+	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
 		console.log("Lobby!");
+		axios.get(checkUrl + "?url=lobby").then((res:any)=>{
+			console.log("----->", res.state);
+			if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		  }else if (res.state === "logout"){
+  		    history.replace("/");
+  		  }
+  		}
+		}).catch((err)=>{
+			console.log(err);
+			history.replace("/");
+		});
+		socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
+			console.log("enter game room");
+			console.log(msg);
+			setLoadingOpen(false);
+			setMatchingOpen(false);
+			if ("message" in msg) {
+				alert("fail to enter the room!");
+				if (history.location.pathname.search("waiting")){
+					history.replace("/game");
+				}
+			}else {
+				dispatch(updateGameRoom(msg));
+				if (history.location.pathname.indexOf("waiting") === -1){
+					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
+				}
+			}
+		});
+		return ()=>{
+			socket.off("enterGameRoom");
+		}
 	});
 
 	const handleSearch = (event:any) => {

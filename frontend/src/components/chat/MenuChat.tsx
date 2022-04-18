@@ -36,10 +36,6 @@ export default function MenuChat(){
 			console.log(data, room);
 			let tmp:ChatData = chatroom;
 			const idx = tmp.order.indexOf(data.chatid);
-			// if (idx === -1){
-			// 	console.log("I'm not there!");
-			// 	return ;
-			// }
 			if (data.title){ tmp.chatroom[idx].title = data.title; }
 			if (data.type){ tmp.chatroom[idx].type = data.type; }
 			if (data.addManager){ data.addManager.forEach((man:string)=>{
@@ -84,7 +80,7 @@ export default function MenuChat(){
 			</div>
 			<div id="chatBoxList">
 				<ul id="chatBoxUl" className="col">
-					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox info={info} handleExit={handleExit}/>)}
+					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox info={info} handleExit={handleExit} key={`MenuChatBox_${info.chatid}`}/>)}
 				</ul>
 			</div>
 			<AddChatModal></AddChatModal>

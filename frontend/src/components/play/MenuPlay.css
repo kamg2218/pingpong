@@ -18,6 +18,9 @@
 	width: 3em;
 }
 #menuPlay{
+	height: 100%;
+	margin: 0%;
+	padding: 0%;
 	text-align: center;
 }
 #menuScore{
@@ -31,6 +34,7 @@
 	margin: auto;
 	margin-top: 10%;
 	width: 100%;
+	align-items: center;
 }
 #observerSecond{
 	margin-bottom: 15%;
@@ -45,7 +49,13 @@
 	border-radius: 15px;
 	color: whitesmoke;
 	justify-content: center;
+	margin: auto;
 }
 #exitButton:hover{
 	background-color: #C9A641;
+}
+#profileLabel{
+	margin: 0%;
+	width: 100%;
+	word-break: break-all;
 }

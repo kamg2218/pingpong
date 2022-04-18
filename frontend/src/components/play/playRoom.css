@@ -5,7 +5,7 @@
 #canvasInput{
     background-color: #6D6162;
     border: 0px;
-    height: 2.6em;
+    height: 2.4em;
 }
 #canvasInput:focus{
     color: transparent;
@@ -16,6 +16,7 @@
 }
 #canvasBorder{
     height: 95%;
+    min-height: 500px;
     border: 1px solid #C9A641;
     border-radius: 25px;
     background-color: whitesmoke;

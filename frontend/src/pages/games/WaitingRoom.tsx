@@ -6,8 +6,11 @@ import { gameRoomDetail, GameUser } from "../../types/gameTypes"
 import { updateGameRoom, updatePlayRoom } from "../../redux/gameReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
-import "./WaitingRoom.css"
+import axios from "axios";
+import { BACK_URL } from "../../types/urlTypes";
+import { initialize } from "../../redux/userReducer";
 import Profile from "../../icons/Profile";
+import "./WaitingRoom.css"
 
 
 export default function WaitingRoom(){
@@ -17,12 +20,31 @@ export default function WaitingRoom(){
 	const user:User = useSelector((state:RootState)=>state.userReducer.user);
 	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
+	const checkUrl:string = BACK_URL + "/user/check";
 
 	useEffect(()=>{
 		console.log("waitingRoom");
-		if (param.id && param.id !== room.roomid){
-			socket.emit("exitGameRoom", {roomid: room.roomid});
-		}
+		axios.get(checkUrl + "?url=waitingroom").then((res:any)=>{
+			console.log("----->", res.state);
+  		if (res.state){
+				console.log(param.id, room.roomid);
+				console.log(param.id === room.roomid);
+  		  if (res.state === "playing" && gameroom.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		  }else if (res.state === "waiting" && param.id !== room.roomid){
+  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+  		  }else if (res.state === "login"){
+					dispatch(initialize());
+					history.replace("/game");
+  		  }else if (res.state === "logout"){
+  		    history.replace("/");
+  		  }
+  		}
+		}).catch((err)=>{
+			console.log(err);
+			history.replace("/");
+		});
+	
 		socket.on("changeGameRoom", (msg:any) => {
 			const tmp:gameRoomDetail = room;
 			console.log("changeGameRoom");
@@ -67,7 +89,7 @@ export default function WaitingRoom(){
 			socket.off("changeGameRoom");
 			socket.off("startGame");
 		}
-	}, [dispatch, gameroom, room, history, param]);
+	}, [dispatch, gameroom, room, history, param, checkUrl]);
 
 	const profileBox = (id:string, profile:string, nick:string, player:boolean) => {
 		const handleProfileClick = () => {
@@ -98,25 +120,27 @@ export default function WaitingRoom(){
 
 	return (
 		<div className="container" id="waitingRoom">
-			<div className="row-2 h2" id="waitingRoomTitle">{room.title}</div>
-			<div className="row-4 px-2 mt-3" id="waitingroombox">
-				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{room.players[0] ? profileBox(room.players[0].userid, Profile(room.players[0]?.profile), room.players[0]?.nickname, true) : ""}
+			<div className="col" id="waitingRoomCol">
+				<div className="row-2 h2" id="waitingRoomTitle">{room.title}</div>
+				<div className="row-4 px-2 mt-3" id="waitingroombox">
+					<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
+						{room.players[0] ? profileBox(room.players[0].userid, Profile(room.players[0]?.profile), room.players[0]?.nickname, true) : ""}
+					</div>
+					<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
+						{room.players[1] ? profileBox(room.players[1].userid, Profile(room.players[1]?.profile), room.players[1]?.nickname, true): ""}
+					</div>
 				</div>
-				<div className="col-3 mx-5 px-3" id="waitingRoomProfile">
-					{room.players[1] ? profileBox(room.players[1].userid, Profile(room.players[1]?.profile), room.players[1]?.nickname, true): ""}
+				<div className="row-4 px-3 my-5 d-flex">
+					<div className="col mx-1" id="waitingRoomObserver">{room.observer[0] ? profileBox(room.observer[0].userid, Profile(room.observer[0].profile), room.observer[0].nickname, false):""}</div>
+					<div className="col mx-1" id="waitingRoomObserver">{room.observer[1] ? profileBox(room.observer[1].userid, Profile(room.observer[1].profile), room.observer[1].nickname, false):""}</div>
+					<div className="col mx-1" id="waitingRoomObserver">{room.observer[2] ? profileBox(room.observer[2].userid, Profile(room.observer[2].profile), room.observer[2].nickname, false):""}</div>
+					<div className="col mx-1" id="waitingRoomObserver">{room.observer[3] ? profileBox(room.observer[3].userid, Profile(room.observer[3].profile), room.observer[3].nickname, false):""}</div>
+					<div className="col mx-1" id="waitingRoomObserver">{room.observer[4] ? profileBox(room.observer[4].userid, Profile(room.observer[4].profile), room.observer[4].nickname, false):""}</div>
 				</div>
-			</div>
-			<div className="row-4 px-3 my-5 d-flex">
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[0] ? profileBox(room.observer[0].userid, Profile(room.observer[0].profile), room.observer[0].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[1] ? profileBox(room.observer[1].userid, Profile(room.observer[1].profile), room.observer[1].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[2] ? profileBox(room.observer[2].userid, Profile(room.observer[2].profile), room.observer[2].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[3] ? profileBox(room.observer[3].userid, Profile(room.observer[3].profile), room.observer[3].nickname, false):""}</div>
-				<div className="col mx-1" id="waitingRoomObserver">{room.observer[4] ? profileBox(room.observer[4].userid, Profile(room.observer[4].profile), room.observer[4].nickname, false):""}</div>
-			</div>
-			<div className="row mx-3 my-2" id="waitingRoomBtns">
-				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>
-				<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
+				<div className="row mx-3 my-2" id="waitingRoomBtns">
+					<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleStart} disabled={checkStartButton()}>Start</button>
+					<button className="col mx-5 my-2 btn" id="waitingRoomBtn" onClick={handleExit}>Exit</button>
+				</div>
 			</div>
 		</div>
 	);

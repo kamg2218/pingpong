@@ -51,12 +51,12 @@ export default function GameRoomSlide({search}:{search:string}){
 	}
 
 	return (
-		<div className="container h-100">
+		<div className="container h-100 p-0">
 			<div className="col h-100" id="slideFirstCol">
-				<div key="slide1Row" className="row">
+				<div className="row p-0 m-0" id="slide1Row">
 					{handleSearchItem()}
 				</div>
-				<div className="row" id="slide2Row">
+				<div className="row-1" id="slide2Row">
 					<span id="slidePrev" className="carousel-control-prev-icon mx-5" aria-hidden="true" onClick={()=>handleButton(-1)}></span>
 					<span id="slideNext" className="carousel-control-next-icon mx-5" aria-hidden="true" onClick={()=>handleButton(1)}></span>
 				</div>
