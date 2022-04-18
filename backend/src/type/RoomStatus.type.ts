@@ -1,0 +1,1 @@
+export type RoomStatus =  "waiting" | "creating" | "running";
