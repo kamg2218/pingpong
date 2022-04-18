@@ -17,6 +17,7 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 	const chatDisabled:boolean = profile ? (user.friends.findIndex((friend:Friend)=>friend.userid === profile.userid) !== -1 ? false : true) : true;
 	const button:string = "row w-75 my-1 btn modal-button";
 	let buttonFriend:string = button;
+	const myState:boolean = history.location.pathname.search('waiting') !== -1; 
 	
 	useEffect(() => {
 		console.log("ProfileModal");
@@ -39,9 +40,20 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 		})
 	}
 	const handleMatch = () => {
-		if (disabled || !profile){ return ; }
-		socket.emit("matchRequest", { userid: profile?.userid });
-		setIsOpen(true);
+		if (disabled || !profile){
+			return ;
+		} else if (myState) {
+			return handleInvite();
+		} else {
+			socket.emit("matchRequest", { userid: profile?.userid });
+			setIsOpen(true);
+		}
+	}
+	const handleInvite = () => {
+		socket.emit("inviteGameRoom", {
+			userid: profile?.userid,
+			roomid: gameroom?.roomid,
+		});
 	}
 	const handleFriend = () => {
 		if (disabled || !profile){ return ; }
@@ -58,6 +70,7 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 		if (profile?.block){ socket.emit("unblockFriend", { userid: profile?.userid }) }
 		else { socket.emit("blockFriend", { userid: profile?.userid }) }
 	}
+
 	return (
 		<div className="modal fade" id="profileModal" role="dialog" tabIndex={-1} aria-labelledby="ProfileModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered" role="document">
@@ -72,7 +85,7 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 								<div className="col-4">
 									<div className="row mb-2 p-0 justify-content-center"><img src={Profile(profile ? profile.profile : 0)} alt="profile" id="modalProfile"/></div>
 									<button className={button} onClick={handleChat} data-dismiss="modal" disabled={disabled || chatDisabled}> 1 : 1 채팅</button>
-									<button className={button} onClick={handleMatch} data-dismiss="modal" disabled={disabled}>대전 신청</button>
+									<button className={button} onClick={handleMatch} data-dismiss="modal" disabled={disabled}>{myState ? "초대하기" : "대전 신청"}</button>
 									<button className={buttonFriend} onClick={handleFriend} data-dismiss="modal" disabled={disabled}>{profile?.friend ? "친구 삭제" : "친구 추가"}</button>
 									<button className={button} onClick={handleBlock} data-dismiss="modal" disabled={disabled}>{profile?.block ? "차단 해제" : "차단"}</button>
 								</div>
