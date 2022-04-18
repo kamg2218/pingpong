@@ -12,7 +12,6 @@ import { initialize } from "../../redux/userReducer";
 import Profile from "../../icons/Profile";
 import "./WaitingRoom.css"
 
-
 export default function WaitingRoom(){
 	const history = useHistory();
 	const param:any = useParams();
@@ -25,10 +24,10 @@ export default function WaitingRoom(){
 	useEffect(()=>{
 		console.log("waitingRoom");
 		axios.get(checkUrl + "?url=waitingroom").then((res:any)=>{
-  		if (res.data.state){
-  		  if (res.data.state === "playing" && gameroom.roomid){
-  		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		  }else if (res.data.state === "waiting" && param.id !== room.roomid){
+      if (res.data.state){
+        if (res.data.state === "playing" && gameroom.roomid){
+          socket.emit("exitGameRoom", { roomid: gameroom.roomid });
+        }else if (res.data.state === "waiting" && param.id !== room.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
   		  }else if (res.data.state === "login"){
 					dispatch(initialize());

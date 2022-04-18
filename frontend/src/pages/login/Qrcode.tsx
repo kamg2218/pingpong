@@ -15,7 +15,7 @@ export default function Qrcode(){
 	const [alertState, setAlert] = useState<boolean>(false);
 	const checkUrl:string = BACK_URL + "/user/check";
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-
+	
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=qrcode").then((res:any)=>{
 			console.log("----->", res.data.state);
