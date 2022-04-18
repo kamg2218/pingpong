@@ -25,24 +25,18 @@ export default function WaitingRoom(){
 	useEffect(()=>{
 		console.log("waitingRoom");
 		axios.get(checkUrl + "?url=waitingroom").then((res:any)=>{
-			console.log("----->", res.data.state);
-  		if (res.data.state){
+			console.log("----->", res.state);
+  		if (res.state){
 				console.log(param.id, room.roomid);
 				console.log(param.id === room.roomid);
-  		  if (res.data.state === "playing" && gameroom.roomid){
+  		  if (res.state === "playing" && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-				}else if (res.data.state === "playing"){
-					dispatch(initialize());
-					history.replace("/game");
-				}else if (res.data.state === "waiting" && room.roomid === ""){
-					dispatch(initialize());
-					history.replace("/game");
-  		  }else if (res.data.state === "waiting" && param.id !== room.roomid){
+  		  }else if (res.state === "waiting" && param.id !== room.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		  }else if (res.data.state === "login"){
+  		  }else if (res.state === "login"){
 					dispatch(initialize());
 					history.replace("/game");
-  		  }else if (res.data.state === "logout"){
+  		  }else if (res.state === "logout"){
   		    history.replace("/");
   		  }
   		}

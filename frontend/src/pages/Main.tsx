@@ -21,21 +21,21 @@ export default function Main(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
-		// console.log(socket);
-		dispatch(initialize());
 		axios.get(check + "?url=main").then((res:any)=>{
 			console.log(res);
-			console.log("----->", res.data.state);
-  		if (res.data.state){
-  		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
+			console.log("----->", res.state);
+  		if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		    dispatch(initialize());
-  		  } else if ( res.data.state === "login"){
+  		  } else if ( res.state === "login"){
 					axios.get(logout).then(res => console.log("Log out! " + res)).catch(err => {throw new Error(err)});
-					dispatch(initialize());
 				}
+				dispatch(initialize());
   		}
-		}).catch((err)=>{ console.log(err); });
+		}).catch((err)=>{
+			console.log(err);
+			dispatch(initialize());
+		});
 	}, [check, dispatch, gameroom, logout]);
 
 	const handleInput = (event:any) => { setNick(event.target.value); }

@@ -19,14 +19,15 @@ export default function Qrcode(){
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=qrcode").then((res:any)=>{
-			console.log("----->", res.data.state);
-  		if (res.data.state){
-  		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
+			console.log("----->", res.state);
+  		if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		    dispatch(initialize());
-  		  }else if (res.data.state === "login"){
-  		    history.replace("/game");
-  		  }
+  		  }else if (res.state === "login"){
+					history.replace("/game");
+  		  }else if (res.state === "logout"){
+					history.replace("/");
+				}
   		}
 		}).catch((err)=>{
 			console.log(err);

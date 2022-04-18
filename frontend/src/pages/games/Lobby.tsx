@@ -23,14 +23,11 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 	useEffect(()=>{
 		console.log("Lobby!");
 		axios.get(checkUrl + "?url=lobby").then((res:any)=>{
-			console.log("----->", res.data.state);
-			if (res.data.state){
-  		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
+			console.log("----->", res.state);
+			if (res.state){
+  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-				}else if (res.data.state === "playing" || res.data.state === "waiting"){
-					dispatch(initialize());
-					history.replace("/game");
-  		  }else if (res.data.state === "logout"){
+  		  }else if (res.state === "logout"){
   		    history.replace("/");
   		  }
   		}
