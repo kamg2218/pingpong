@@ -38,6 +38,7 @@
 	margin-left: 1em;
 	margin-right: 1em;
 	padding: 0.25em;
+	word-break: break-all;
 }
 #menuNick:hover{
 	box-shadow: 1px 1px 1px 1px #C9A641 inset;
