@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { socket } from "../../socket/socket";
-import { Switch, Route, Link, useParams } from "react-router-dom";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { gameRoomDetail } from "../../types/gameTypes";
-import { ChatData, ChatUser, InputChatRoom } from "../../types/chatTypes";
-import { RootState } from "../../redux/rootReducer";
-import { updateChat } from "../../redux/chatReducer";
-import MenuChat from "../../components/chat/MenuChat";
-import ChatRoom from "../../components/chat/ChatRoom";
-import "./chat.css";
+import { useEffect, useState } from 'react';
+import { socket } from '../../socket/socket';
+import { Switch, Route, Link, useParams } from 'react-router-dom';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { gameRoomDetail } from '../../types/gameTypes';
+import { ChatData, ChatUser, InputChatRoom } from '../../types/chatTypes';
+import { RootState } from '../../redux/rootReducer';
+import { updateChat } from '../../redux/chatReducer';
+import MenuChat from '../../components/chat/MenuChat';
+import ChatRoom from '../../components/chat/ChatRoom';
+import './chat.css';
 
 type param = { id?: String }
 
@@ -19,9 +19,9 @@ export default function SideMenuChat(){
 	const chat = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
-		console.log("sideMenuChat");
-		socket.on("updateChatRoom", (data:InputChatRoom)=>{
-			console.log("update Chat Room!");
+		console.log('sideMenuChat');
+		socket.on('updateChatRoom', (data:InputChatRoom)=>{
+			console.log('update Chat Room!');
 			// console.log(data, chat[0]);
 			let tmp:ChatData = chatroom;
 			const idx = tmp.order.indexOf(data.chatid);
@@ -43,29 +43,29 @@ export default function SideMenuChat(){
 			chat[1]({...tmp});
 			dispatch(updateChat(tmp));
 		});
-		return ()=>{ socket.off("updateChatRoom"); }
+		return ()=>{ socket.off('updateChatRoom'); }
 	});
 
 	const ChatRoomIdx = () => {
 		let idx:param = useParams();
-		return <ChatRoom idx={idx.id ? idx.id.toString():""} room={chatroom}></ChatRoom>
+		return <ChatRoom idx={idx.id ? idx.id.toString():''} room={chatroom}></ChatRoom>
 	}
 
 	return (
-		<div id="chatTab">
-			<div className="row">
-				<div className="col-3 btn" id="tab-game">
-					<Link to={`/game${gameroom.roomid !== "" ? `/waiting/${gameroom.roomid}`: ""}`} className="text-decoration-none text-reset">game</Link>
+		<div id='chatTab'>
+			<div className='row'>
+				<div className='col-3 btn' id='tab-game'>
+					<Link to={`/game${gameroom.roomid !== '' ? `/waiting/${gameroom.roomid}`: ''}`} className='text-decoration-none text-reset'>game</Link>
 				</div>
-				<div className="col-3 btn" id="tab-chat-active">
-					<Link to={`/game/chat${gameroom.roomid !== "" ? `/waiting/${gameroom.roomid}`: ""}`} className="text-decoration-none text-reset">chat</Link>
+				<div className='col-3 btn' id='tab-chat-active'>
+					<Link to={`/game/chat${gameroom.roomid !== '' ? `/waiting/${gameroom.roomid}`: ''}`} className='text-decoration-none text-reset'>chat</Link>
 				</div>
 			</div>
-			<div className="row" id="nav-chat">
+			<div className='row' id='nav-chat'>
 				<Switch>
-					<Route path="/game/chat/waiting/:id" component={MenuChat}></Route>
-					<Route path="/game/chat/:id" component={ChatRoomIdx}></Route>
-					<Route path="/game/chat" component={MenuChat}></Route>
+					<Route path='/game/chat/waiting/:id' component={MenuChat}></Route>
+					<Route path='/game/chat/:id' component={ChatRoomIdx}></Route>
+					<Route path='/game/chat' component={MenuChat}></Route>
 				</Switch>
 			</div>
 		</div>

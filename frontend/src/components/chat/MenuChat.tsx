@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { socket } from "../../socket/socket";
-import { RootState } from "../../redux/rootReducer";
-import { updateChat } from "../../redux/chatReducer";
-import { chatRoom, ChatData } from "../../types/chatTypes";
-import MenuChatBox from "./MenuChatBox";
-import AddChatModal from "../modals/AddChatModal";
-import PublicChatModal from "../modals/PublicChatModal"
+import { useEffect, useState } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { socket } from '../../socket/socket';
+import { RootState } from '../../redux/rootReducer';
+import { updateChat } from '../../redux/chatReducer';
+import { chatRoom, ChatData } from '../../types/chatTypes';
+import MenuChatBox from './MenuChatBox';
+import AddChatModal from '../modals/AddChatModal';
+import PublicChatModal from '../modals/PublicChatModal';
 
 export default function MenuChat(){
 	const dispatch = useDispatch();
@@ -14,10 +14,10 @@ export default function MenuChat(){
 	const [room, setRoom] = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
-		console.log("MenuChat");
+		console.log('MenuChat');
 
-		socket.on("enterChatRoom", (data:chatRoom)=>{
-			console.log("enter chat room!!");
+		socket.on('enterChatRoom', (data:chatRoom)=>{
+			console.log('enter chat room!!');
 			const tmp:ChatData = chatroom;
 			if (tmp.order.indexOf(data.chatid) === -1){
 				tmp.order.push(data.chatid);
@@ -26,20 +26,20 @@ export default function MenuChat(){
 				dispatch(updateChat(tmp));
 			}
 		});
-		socket.on("myChatRoom", (data:ChatData)=>{
-			console.log("my chat room!!");
+		socket.on('myChatRoom', (data:ChatData)=>{
+			console.log('my chat room!!');
 			setRoom(data);
 			dispatch(updateChat(data));
 		});
 		return ()=>{
-			socket.off("enterChatRoom");
-			socket.off("myChatRoom");
+			socket.off('enterChatRoom');
+			socket.off('myChatRoom');
 		}
 	}, [chatroom, dispatch, room]);
 
-	const handlePublic = () => { socket.emit("publicChatRoom"); }
+	const handlePublic = () => { socket.emit('publicChatRoom'); }
 	const handleExit = (id: string) => {
-		console.log("exitChatRoom");
+		console.log('exitChatRoom');
 		const tmp:ChatData = room;
 		tmp.order = tmp.order.filter((str:string) => str !== id);
 		tmp.chatroom = tmp.chatroom.filter((room:chatRoom) => room.chatid !== id);
@@ -48,13 +48,13 @@ export default function MenuChat(){
 	}
 
 	return (
-		<div key="menuchat" className="container" id="menuChatList">
-			<div className="d-flex justify-content-end my-2">
-				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#addChatModal"><i className="bi bi-chat"/></button>
-				<button type="button" className="btn" id="chatButton" data-toggle="modal" data-target="#publicChatModal" onClick={handlePublic}><i className="bi bi-unlock"/></button>
+		<div key='menuchat' className='container' id='menuChatList'>
+			<div className='d-flex justify-content-end my-2'>
+				<button type='button' className='btn' id='chatButton' data-toggle='modal' data-target='#addChatModal'><i className='bi bi-chat'/></button>
+				<button type='button' className='btn' id='chatButton' data-toggle='modal' data-target='#publicChatModal' onClick={handlePublic}><i className='bi bi-unlock'/></button>
 			</div>
-			<div id="chatBoxList">
-				<ul id="chatBoxUl" className="col">
+			<div id='chatBoxList'>
+				<ul id='chatBoxUl' className='col'>
 					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox info={info} handleExit={handleExit} key={`MenuChatBox_${info.chatid}`}/>)}
 				</ul>
 			</div>
