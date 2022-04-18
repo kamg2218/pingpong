@@ -28,6 +28,7 @@ export const MatchingManager = {
         return {
             title,
             type : "public",
+            maxObsCount : 5,
             speed : 1
         };
     },

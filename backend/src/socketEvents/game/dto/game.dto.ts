@@ -6,5 +6,4 @@ import { EnterGameRoomDTO } from "./enterGameRoom.dto"
 import { MatchRequestDTO } from "./matchReqeust.dto"
 import { MatchResponseDTO } from "./matchResponse.dto"
 
-
 export {GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchRequestDTO, MatchResponseDTO};

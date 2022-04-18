@@ -16,6 +16,8 @@ import { onlineManager } from "../online/onlineManager";
 import dotenv from 'dotenv'
 import { ENV_PATH } from "src/config/url";
 import { RoomStatus } from "src/type/RoomStatus.type";
+import { randomInt } from "crypto";
+import {GameMoveDTO, MatchResponseDTO, EnterGameRoomDTO, CreateGameRoomDTO } from './dto/game.dto'
 
 const ENV = dotenv.config({path : ENV_PATH});
 
@@ -29,16 +31,149 @@ export class GameGatewayService {
 	public async amIinGameRoom(user: User) {
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const res = await repo_gameMembership.amIinGameRoom(user);
-		this.log(`Is ${user.nickname} in the gameRoom ? : ` + res);
 		return res;
 	}
 
-	public async checkIfItIsAvailableRequest(user: User, theOtherId : string) {
+	public async checkIfItIsAvailableCreate(userid : string, payload : CreateGameRoomDTO) {
+		const repo_user = getCustomRepository(UserRepository);
+		const user = await repo_user.findOne(userid);
+		let result = false;
+		let reason = "";
+		if (!user)
+			reason = "No such user";
+		else if (await this.amIinGameRoom(user))
+            reason = "You are already in the Game Room.";
+		else if (payload.type === "private" && payload.password === "") {
+			reason = "Prvate room should have a password";
+		}
+		else if (payload.observer < 0 || payload.observer > 5)
+			reason = "Wrong observer option"
+		else if (payload.speed < 0 || payload.speed > 3)
+			reason = "Wrong speed option";
+		else
+			result = true;
+		return {result, reason, user};
+	}
+
+	public async createAndEnterGameRoom(socketid: string, user: User, roomOptions: any) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
+		let gameRoom
+		let reason : string;
+		let game : Game;
+		try {
+			gameRoom = await repo_gameRoom.createGameRoom(user, roomOptions);
+			game = new Game(gameRoom.roomid, gameRoom.speed);
+			onlineGameMap[gameRoom.roomid] = game;
+		}
+		catch (e) {
+			reason = "Failed to create game room";
+			return {result : false, reason};
+		}
+		try {
+			await repo_gameMembership.joinGameRoomAs(user, gameRoom.roomid, 'owner');
+			let result = await this.getGameRoomInfo(gameRoom.roomid);
+			result['isPlayer'] = true;
+			game.joinAsPlayer(socketid, user, result);
+		}
+		catch (e) {
+			reason = "Failed to join room";
+			repo_gameRoom.deleteGameRoom(gameRoom);
+			delete onlineGameMap[gameRoom.roomid];
+			return {result : false, reason};
+		}
+		return {result : true, reason};
+	}
+
+	public async checkIfItIsAvailableToJoin(userid : string, roomOptions : EnterGameRoomDTO) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		const repo_user = getCustomRepository(UserRepository);
+		const user = await repo_user.findOne(userid);
+		const gameRoom = await repo_gameRoom.findOne(roomOptions.roomid);
+		let position: GamePosition = roomOptions.isPlayer ? 'normal' : 'observer';
+		let result = false;
+		let reason = "";
+		try {
+			if (!user)
+				reason = "No such user";
+			else if (!gameRoom)
+				reason = "No such Game Room";
+			else if (! await repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password))
+				reason = await repo_gameRoom.whyItIsntAvailableJoin(gameRoom, position, roomOptions.password);
+			else
+				result = true;
+		}
+		catch (e) {
+			reason = "Something is wrong in checking validality";
+			console.log(e);
+		}
+		return {result, reason, user, gameRoom};
+	}
+
+
+	public async enterGameRoom(socketid: string, user: User, gameRoom: GameRoom, roomOptions: any) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
+		let position: GamePosition = roomOptions.isPlayer ? 'normal' : 'observer';
+		try {
+			await repo_gameMembership.joinGameRoomAs(user, gameRoom.roomid, position);
+		}
+		catch (e) {
+			return null;
+		}
+		let result = await repo_gameRoom.getRoomInfoWithMemberlist(gameRoom.roomid);
+		result['isPlayer'] = roomOptions.isPlayer;
+		const game = onlineGameMap[gameRoom.roomid];
+		if (position === "observer")
+			game.joinAsObserver(socketid, user, result);
+		else
+			game.joinAsPlayer(socketid, user, result);
+		return gameRoom.roomid
+	}
+
+	public async getMyGameRoomInfoWithMemberList(roomid : string) {
+		const repo_gameRoom =  getCustomRepository(GameRoomRepository)
+		try {
+			const roomInfo = await repo_gameRoom.getRoomInfoWithMemberlist(roomid);
+			return roomInfo;
+		}
+		catch (e) {
+			this.log("Something is wrong");
+			console.log(e);
+		}
+		return null;
+	}
+
+	public async isThereGameRoomWithId(roomid : string) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		const gameRoom = await repo_gameRoom.findOne(roomid);
+		if (gameRoom)
+			return true;
+		return false;
+	}
+
+	public async checkIfItIsAvailableExit(userid : string, roomid : string) {
+		if (! await this.isThereGameRoomWithId(roomid))
+			return {result : false, reason : "No such Game Room."}
+		else if (! await this.isThisMyGameRoom(userid, roomid))
+			return {result : false, reason : "You are not in the Game Room."};
+		return {result : true, reason : ""}
+	}
+
+	public async checkIfItIsAvailableRequest(userid: string, theOtherId : string) {
 		const repo_blockList = getCustomRepository(BlockedFriendsRepository);
 		const repo_user = getCustomRepository(UserRepository);
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+
 		const theOther = await repo_user.findOne(theOtherId);
+		const user = await repo_user.findOne(userid);
+		if (!theOther)
+			return {result : false, reason : "No such user", user : null}
 		if (!onlineManager.isOnline(theOtherId))
-			return false;
+			return {result : false, reason : "He/She is not online", user : null};
+		const match = await repo_gameRoom.findOne({ owner: { userid: userid }, roomStatus: "creating" });
+		if (match)
+			return {result : false, reason : "You already requested", user : null};
 		const res = await Promise.all([
 			repo_blockList.amIBlockedBy(user, theOther),
 			repo_blockList.didIBlock(user, theOther),
@@ -46,22 +181,16 @@ export class GameGatewayService {
 			this.amIinGameRoom(theOther),	
 		]);
 		if (res.findIndex(elem=>elem===true) != -1)
-			return false;
-		return true;
+			return {result : false, reason : "Blocked/Block or Already in ther Game Room", user : null}
+		return {result : true, reason : "", user}
 	}
 
-	public async createMatchRoom(socket: AuthSocket, user: User) {
+	public async createMatchRoom(user: User) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
-		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const roomOptions = MatchingManager.generateGameRoomOptions();
 		roomOptions['roomStatus'] = "creating";
-		const requestId = await repo_gameRoom.createGameRoom(user, roomOptions);
-		const game = new Game(requestId, roomOptions.speed);
-		game.joinAsPlayer(socket.id, user);
-		const gameRoom = await repo_gameRoom.findOne(requestId);
-		await repo_gameMembership.joinGameRoomAs(user, gameRoom, 'owner'),
-			onlineGameMap[requestId] = game;
-		return requestId;
+		const gameRoom = await repo_gameRoom.createGameRoom(user, roomOptions);
+		return {userid : user.userid, nickname : user.nickname, requestid : gameRoom.roomid};
 	}
 
 	public async validateRequestStatus(requestid: string) {
@@ -70,22 +199,6 @@ export class GameGatewayService {
 		if (!request || request.roomStatus != "creating")
 			return null;
 		return request;
-	}
-
-	public async enterMatch(socket: AuthSocket, gameRoom: GameRoom, user: User) {
-		const repo_gameRoom = getCustomRepository(GameRoomRepository);
-		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		const owner = gameRoom.owner;
-		await Promise.all([
-			repo_gameMembership.joinGameRoomAs(user, gameRoom, 'normal'),
-			repo_gameRoom.update(gameRoom.roomid, { roomStatus: 'waiting' })
-		]);
-		const game = onlineGameMap[gameRoom.roomid];
-		game.joinAsPlayer(socket.id, user);
-		this.log(`${user.nickname} has joined the GameRoom ${gameRoom.title}`);
-		let result = await this.getGameRoomInfo(gameRoom.roomid);
-		result['isPlayer'] = true;
-		return result;
 	}
 
 	public async getGameRoomInfo(roomid: string) {
@@ -102,102 +215,117 @@ export class GameGatewayService {
 	public async deleteMyMatch(userid: string) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const match = await repo_gameRoom.findOne({ owner: { userid: userid }, roomStatus: "creating" });
+		let result = true;
 		if (match)
 			await repo_gameRoom.remove(match);
-	}
-
-	public async createAndEnterGameRoom(socket: AuthSocket, user: User, roomOptions: any) {
-		const repo_gameRoom = getCustomRepository(GameRoomRepository);
-		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		const roomid = await repo_gameRoom.createGameRoom(user, roomOptions);
-		const gameRoom = await repo_gameRoom.findOne(roomid);
-		await repo_gameMembership.joinGameRoomAs(user, gameRoom, 'owner');
-		let result = await this.getGameRoomInfo(gameRoom.roomid);
-		this.log(`${user.nickname} has created the GameRoom ${result.title}`);
-		result['isPlayer'] = true;
-		const game = new Game(gameRoom.roomid, gameRoom.speed);
-		game.joinAsPlayer(socket.id, user);
-		onlineGameMap[gameRoom.roomid] = game;
-
-
-		return result;
-	}
-
-	public async checkIfItIsAvailableToJoinAs(roomOptions: any) {
-		const repo_gameRoom = getCustomRepository(GameRoomRepository);
-		const gameRoom = await repo_gameRoom.findOne(roomOptions.roomid);
-		let position: GamePosition = roomOptions.isPlayer ? 'normal' : 'observer';
-		if (!gameRoom) {
-			this.log(`There is no such GameRoom`);
-			return { result: false, gameRoom: null };
-		}
-		if (!await repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password)) {
-			const reason = await repo_gameRoom.whyItIsntAvailableJoin(gameRoom, position, roomOptions.password);
-			this.log(`It isn't available to join the GameRoom ${gameRoom.title} as ${position} because : ${reason}`);
-			return { result: false, gameRoom: null };
-		}
-		this.log(`It is available to join the GameRoom ${gameRoom.title} as ${position}`)
-		return { result: true, gameRoom: gameRoom };
-	}
-
-	public async enterGameRoom(socketid: string, user: User, gameRoom: GameRoom, roomOptions: any) {
-		const repo_gameRoom = getCustomRepository(GameRoomRepository);
-		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		let position: GamePosition = roomOptions.isPlayer ? 'normal' : 'observer';
-		await repo_gameMembership.joinGameRoomAs(user, gameRoom, position);
-		let result = await repo_gameRoom.getRoomInfoWithMemberlist(gameRoom.roomid);
-		this.log(`${user.nickname} has joined the GameRoom ${gameRoom.title} as ${position}`);
-		result['isPlayer'] = roomOptions.isPlayer;
-		const game = onlineGameMap[result.roomid];
-		if (position === 'normal')
-			game.joinAsPlayer(socketid, user); //add
 		else
-			game.joinAsObserver(socketid, user); //add
+			result = false;
 		return result;
 	}
 
-	public async isThisMyGameRoom(user: User, roomid: string) {
+	public async checkIfItIsAvailableResponseMatchRQ(userid : string, payload : MatchResponseDTO) {
+		const repo_user = getCustomRepository(UserRepository);
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		let result = false;
+		let reason = "";
+		const user = await repo_user.findOne(userid);
+		const request = await repo_gameRoom.findOne({where : {roomid : payload.requestid}, relations : ["owner"]});
+		try {
+			if (!request)
+				reason = "No such request."
+			else if (await this.amIinGameRoom(user))
+				reason = "You are already in the Game Room"
+			else if (!onlineManager.isOnline(request.owner.userid))
+				reason = "Who sent request is not online now.";
+			else
+				result = true;
+		}
+		catch (e) {
+			reason = "Something is wrong in checking validality";
+		}
+		return {result, reason, user, request};
+	}
+
+	public async isItrejected(payload : MatchResponseDTO, request : GameRoom) {
+		const rpeo_user = getCustomRepository(UserRepository);
+		if (payload.result === false)
+			return true;
+		let theOther = await rpeo_user.findOne(request.owner.userid);
+		if (await this.amIinGameRoom(theOther))
+			return true;
+		return false;
+	}
+
+	public rejectReqesut(request : GameRoom) {
+		this.deleteMatch(request);
+	}
+
+	public async acceptRequest(gameRoom : GameRoom, user : User) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		const gameMembership = await repo_gameMembership.getMyRoom(user);
+		const theOther = gameRoom.owner;
+		try {
+			await repo_gameMembership.joinGameRoomAs(theOther, gameRoom.roomid, 'owner');
+			await repo_gameMembership.joinGameRoomAs(user, gameRoom.roomid, 'normal');
+			await repo_gameRoom.update(gameRoom.roomid, { roomStatus: 'waiting' });
+		}
+		catch (e) {
+			this.log("Failed to join Game Room");
+			return false;
+		}
+		try {
+			const game = new Game(gameRoom.roomid, gameRoom.speed);
+			onlineGameMap[gameRoom.roomid] = game;
+			let roomInfo = await repo_gameRoom.getRoomInfoWithMemberlist(gameRoom.roomid);
+			roomInfo['isPlayer'] = true;
+			game.joinTwoPlayers(theOther, user, roomInfo);
+		}
+		catch (e) {
+			this.log("Failed to create online game obj");
+			delete onlineGameMap[gameRoom.roomid];
+			return false;
+		}
+		return true;
+	}
+
+	public async isThisMyGameRoom(userid: string, roomid: string) {
+		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
+		const gameMembership = await repo_gameMembership.getMyRoom(userid);
+		if (!gameMembership)
+			return false;
 		return gameMembership.gameRoom.roomid === roomid;
 	}
-
-	// owner : nahkim, observer : jikwon
-	public async exitGameRoom(socketid : string, user : User, roomid : string) {
+	
+	public async exitGameRoom(socketid : string, userid : string, roomid : string) {
+		const repo_user = getCustomRepository(UserRepository);
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		const gameRoom = await repo_gameRoom.findOne({ where: [{ roomid: roomid }], relations: ["members"] });
-	
-		if (!gameRoom) {
-			this.log("No such game room");
-			throw new WsException("No such game room");
+		const user = await repo_user.findOne(userid);
+		try {
+			await repo_gameMembership.leaveGameRoom(userid, gameRoom);
 		}
-		const position = await repo_gameMembership.leaveGameRoom(user, gameRoom);
-		this.log(`${user.nickname} left the GameRoom ${gameRoom.title}`);
-
+		catch (e) {
+			this.log("Somethig is wrong.");
+			return null;
+		}
 		const game = onlineGameMap[gameRoom.roomid];
-		game.leave(socketid, user); //add
-		game.print();
+		game.leave(socketid, user);
 		if (this.shoulAuthorityBeDelegated(gameRoom, user)) {
 			this.log(`The authority of ${gameRoom.title} should be delegated`);
 			const newOwner = await this.delegateAuthority(gameRoom);
-			// if (!newOwner) {
-			// 	this.log(`Obs should leave the GameRoom & The GameRoom ${gameRoom.title} should be deleted`);
-			// 	await game.makeObserversLeave();
-			// 	this.deleteGameRoom(gameRoom);
-			// }
-			// else
 			game.changeGameRoom(socketid, { manager: newOwner.userid });
 		};
 		if (await this.checkIfRoomShouldBeDeleted(gameRoom)) {
+			this.log(`Obs should leave the GameRoom & The GameRoom ${gameRoom.title} should be deleted`);
 			await this.deleteGameRoom(gameRoom);
 			await game.makeObserversLeave();
 			delete onlineGameMap[gameRoom.roomid];
 		}
 		return roomid;
 	}
-
-	public shoulAuthorityBeDelegated(gameRoom: GameRoom, user: User) {
+	
+	private shoulAuthorityBeDelegated(gameRoom: GameRoom, user: User) {
 		const isOwner = gameRoom.owner.userid === user.userid;
 		let isThereOtherUser = false;
 		gameRoom.members.map(function (membership) {
@@ -209,7 +337,7 @@ export class GameGatewayService {
 		return false;
 	}
 
-	public async delegateAuthority(gameRoom: GameRoom) {
+	private async delegateAuthority(gameRoom: GameRoom) {
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
 		let indexNewOwner;
 		gameRoom.members.map(member => {
@@ -221,40 +349,36 @@ export class GameGatewayService {
 		return newOwner;
 	}
 
-	public async checkIfRoomShouldBeDeleted(gameRoom: GameRoom) {
+	private async checkIfRoomShouldBeDeleted(gameRoom: GameRoom) {
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		if (!await repo_gameMembership.isTherePlayer(gameRoom)) {
-			this.log(`Obs should leave the GameRoom & The GameRoom ${gameRoom.title} should be deleted`);
+		if (!await repo_gameMembership.isTherePlayer(gameRoom))
 			return true;
-		}
-		else {
-			this.log(`No need to delete the GameRoom ${gameRoom.title}`)
+		else
 			return false;
-		}
-
 	}
 
-	public async deleteGameRoom(gameRoom: GameRoom) {
-		// delete onlineGameMap[gameRoom.roomid]; //add
+	private async deleteGameRoom(gameRoom: GameRoom) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		await repo_gameRoom.deleteGameRoom(gameRoom);
 	}
 
-	public async validationAuthority(user: User, roomid: string): Promise<boolean> {
+	public async validationAuthority(userid: string, roomid: string) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const gameRoom = await repo_gameRoom.findOne({
 			where: [{ roomid: roomid }],
 			relations: ["owner"]
 		})
-		if (gameRoom.owner.userid === user.userid)
-			return true;
-		return false
+		if (!gameRoom)
+			return false;
+		if (gameRoom.owner.userid !== userid)
+			return false;
+		return true;
 	}
 
 	public async checkIfItIsAvailableChangeOptions(roomid: string): Promise<boolean> {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const gameRoom = await repo_gameRoom.findOne(roomid);
-		if (gameRoom.roomStatus === 'waiting') // check! : onlinegame 에서 확인 해도 되지 않을까? 
+		if (gameRoom.roomStatus === 'waiting')
 			return true;
 		return false;
 	}
@@ -278,6 +402,52 @@ export class GameGatewayService {
 		onlineGameMap[roomid].changeGameRoom(null, updateInfo); //add
 	}
 
+	public async checkIfItIsAvailableStartGame(userid : string, roomid : string) {
+		let reason = "";
+		let result = false;
+		const game = onlineGameMap[roomid];
+		if (!game)
+			reason = "No such Game Room";
+		else if (!await this.isThisMyGameRoom(userid, roomid))
+			reason = "You are not the member of the Game Room"
+        else if (!await this.validationAuthority(userid, roomid))
+            reason = "You don't have authority to start game";
+        else
+			reason = game.whyCantStartGame();
+		if (!reason)
+			result = true;
+		return {result, reason};
+	}
+
+	public async startGame(roomid : string) {
+		const game = onlineGameMap[roomid];
+		if (!game) {
+			console.log("Something is wrong");
+			return ;
+		}
+		let proxy = new Proxy(game, {
+        	set : (target, prop, value) => {
+            	target.over = true;
+            	if (value)
+              		this.recordGameHistory(game.id);
+            	return true;
+          	}
+        });
+        game.proxy = proxy;
+        await this.switchGameRoomStatus(game.id, "running");
+        await game.start();
+	}
+
+	public async movePlayers(userid : string, payload : GameMoveDTO) {
+		const game = onlineGameMap[payload.roomid];
+        if (!game) {
+            this.log("No such gameRoom");
+            return ;
+        }
+        game.chagnePlayersDirection(userid, payload.direction);
+        return ;
+	}
+
 	public async getAllGameRoomList() {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const resultlist = [];
@@ -286,40 +456,6 @@ export class GameGatewayService {
 			resultlist.push(repo_gameRoom.getRoomInfo(elem));
 		})
 		return resultlist;
-	}
-
-	public async getMyGameRoomList(user: User) {
-		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		const gameMembership = await repo_gameMembership.getMyRoom(user);
-		return gameMembership?.gameRoom;
-	}
-
-	// public respondToUser(socket: AuthSocket, event: string, data: any) {
-	// 	socket.emit(event, data);
-	// }
-
-	public whyCantCreate(payload: any) {
-		if (payload.type === "private") {
-			if (!payload?.password || payload.password === "")
-				return "Prvate room should have a password"
-		}
-		if (!payload?.observer || payload.observer < 0 || payload.observer > 5)
-			return "Wrong observer option"
-		if (!payload?.speed)
-			return "Wrong speed option";
-		return "No reason";
-	}
-
-	public validateOptions(payload: any) {
-		if (payload.type === "private") {
-			if (!payload?.password || payload.password === "")
-				return false;
-		}
-		if (!payload?.observer || payload.observer < 0 || payload.observer > 5)
-			return false;
-		if (!payload?.speed)
-			return false;
-		return true;
 	}
 
 	public async recordGameHistory(gameid: string) {
@@ -349,23 +485,155 @@ export class GameGatewayService {
 		]);
 	}
 
-	public async validateMatchRequest(user: User, theOtherId: string) {
-		const repo_blockList = getCustomRepository(BlockedFriendsRepository);
+
+	public async onlineMyGameRoom(socket: AuthSocket) {
+		if (!socket.userid)
+			return;
+		const repo_gamemember = getCustomRepository(GameMembershipRepository);
+		const myGamerom = await repo_gamemember.findOne({
+			where : {member : {userid : socket.userid}},
+			relations :["gameRoom"]
+		});
+		if (!myGamerom) {
+			return ;
+		}
+		const game = onlineGameMap[myGamerom.gameRoom.roomid];
+		game.onlineRoom(socket.id, socket.userid);
+	}
+
+	public async offlineMyGameRoom(socket: AuthSocket) {
+		if (!socket.userid)
+		return;
+		const repo_gamemember = getCustomRepository(GameMembershipRepository);
+		const myGamerom = await repo_gamemember.findOne({
+			where : {member : {userid : socket.userid}},
+			relations :["gameRoom"]
+			});
+		if (!myGamerom) {
+			return ;
+		}
+		const game = onlineGameMap[myGamerom.gameRoom.roomid];
+		if (game)
+			game.offlineRoom(socket.id);
+			
+	}
+
+	private async switchGameRoomStatus(roomid : string, roomStatus : RoomStatus) {
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		await repo_gameRoom.update({roomid : roomid}, {roomStatus : roomStatus});
+	}
+
+	public async enterExistingGameRoom(socketid : string, userid : string) {
 		const repo_user = getCustomRepository(UserRepository);
-		const theOther = await repo_user.findOne(theOtherId);
-		const result = await Promise.all([
-			repo_blockList.amIBlockedBy(user, theOther),
-			repo_blockList.didIBlock(user, theOther),
-			!onlineManager.isOnline(theOtherId),
-			this.amIinGameRoom(user),
-			this.amIinGameRoom(theOther),
-			user.userid === theOtherId
-		]);
-		if (result.findIndex(res => res === true) !== -1)
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		const user = await repo_user.findOne(userid);
+		let lists = await repo_gameRoom.getWaitingGameRoom();
+		let reason = "";
+		let isEntered = false;
+		if (await this.amIinGameRoom(user)) {
+			reason = "You are already in the game room";
+		}
+		else if (lists.length) {
+			let history = [];
+			let randomizedIndex = MatchingManager.getRandomInt(0, lists.length);
+			history.push(lists[randomizedIndex].roomid);
+			let res = await this.checkIfItIsAvailableToJoin(userid, {roomid : lists[randomizedIndex].roomid, isPlayer : true});
+			while (!res.result) {
+				if (history.length === lists.length)
+					break;
+				while (history.findIndex(elem=>elem === lists[randomizedIndex].roomid) !== -1)
+					randomizedIndex = MatchingManager.getRandomInt(0, lists.length);
+				history.push(lists[randomizedIndex].roomid);
+				res = await this.checkIfItIsAvailableToJoin(userid, {roomid : lists[randomizedIndex].roomid, isPlayer : true});
+			}
+			if (res.result) {
+				const roomid = await this.enterGameRoom(socketid, user, res.gameRoom, {isPlayer : true});
+				if (roomid)
+					isEntered = true;
+			}
+		}
+		return {reason, isEntered};
+	}
+
+	public async enterExsitingMatch(userid : string) {
+		const repo_user = getCustomRepository(UserRepository);
+		const user = await repo_user.findOne(userid);
+		let isEntered = false;
+		if (await this.amIinGameRoom(user))
+			return {reason : "You are already in the Game Room", isEntered};
+		if (!MatchingManager.isThereWaitingUser())
+			return {reason : "", isEntered};
+		const theOtherId = MatchingManager.getOne();
+		const theOther = await repo_user.findOne({userid : theOtherId});
+		if (await this.amIinGameRoom(theOther))
+			return {reason : "", isEntered};
+		let gameRoom = this.createEmptyRoom();
+		let enterResult = await this.enterEmptyGameRoom(gameRoom, user, theOther);
+		if (!enterResult)
+			return {reason : "Something wrong", isEntered};
+		isEntered = true;
+		return {isEntered, reason : ""};
+
+	}
+
+	public createEmptyRoom() {
+        const repo_gameRoom = getCustomRepository(GameRoomRepository);
+        const options = MatchingManager.generateGameRoomOptions();
+        let gameRoom = repo_gameRoom.create();
+        for (let option in options)
+            gameRoom[option] = options[option];
+        return gameRoom;
+    }
+
+	public putOntheList(userid : string) {
+		MatchingManager.putOnTheWaitingList(userid);
+	}
+
+	public async enterEmptyGameRoom(gameRoom : GameRoom, user : User, theOther : User) {
+		console.log("Enter empty gameROom");
+		const repo_gameRoom = getCustomRepository(GameRoomRepository);
+		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
+		let game : Game;
+		let random = randomInt(1);
+		let owner = random ? user : theOther;
+		let normal = random ? theOther : user;
+		gameRoom.owner = owner;
+		let roomid;
+		try {
+			let insertResult = await repo_gameRoom.insert(gameRoom);
+			roomid = insertResult.identifiers[0].roomid;
+			game = new Game(gameRoom.roomid, gameRoom.speed);
+			onlineGameMap[gameRoom.roomid] = game;
+		}
+		catch(e) {
+			this.log("Failed to create Game Room");
 			return false;
+		}
+		gameRoom = await repo_gameRoom.findOne(roomid);
+		try {
+			await repo_gameMembership.joinGameRoomAs(owner, gameRoom.roomid, "owner");
+			await repo_gameMembership.joinGameRoomAs(normal, gameRoom.roomid, "normal");
+		}
+		catch (e) {
+			this.log("Failed to join Game Room");
+			await repo_gameRoom.deleteGameRoom(gameRoom);
+			return false;
+		}
+		try {
+			let roomInfo = await repo_gameRoom.getRoomInfoWithMemberlist(gameRoom.roomid);
+			roomInfo['isPlayer'] = true;
+			onlineGameMap[gameRoom.roomid];
+			game.joinTwoPlayers(user, theOther, roomInfo);
+		}
+		catch (e) {
+			this.log("Failed to create online game obj");
+			delete onlineGameMap[gameRoom.roomid];
+			return false;
+		}
 		return true;
 	}
 
+	/*
 	public async backToGameRoom(user: User, game: Game) {
 		if (game.rightPlayer.id === user.userid) {
 			game.rightPlayer.reset("right", game.speed);
@@ -386,45 +654,9 @@ export class GameGatewayService {
 				relations: ["member"]
 			});
 			observersList.map(async (observerInfo) => {
-				repo_gameMembership.leaveGameRoom(observerInfo.member, gameRoom);
+				repo_gameMembership.leaveGameRoom(observerInfo.member.userid, gameRoom);
 			})
 		}
 	}
-
-	async onlineMyGameRoom(socket: AuthSocket) {
-		if (!socket.userid)
-			return;
-		const repo_gamemember = getCustomRepository(GameMembershipRepository);
-		const myGamerom = await repo_gamemember.findOne({
-			where : {member : {userid : socket.userid}},
-			relations :["gameRoom"]
-		});
-		if (!myGamerom) {
-			return ;
-		}
-		const game = onlineGameMap[myGamerom.gameRoom.roomid];
-		game.onlineRoom(socket.id, socket.userid);
-	}
-
-	async offlineMyGameRoom(socket: AuthSocket) {
-		if (!socket.userid)
-		return;
-		const repo_gamemember = getCustomRepository(GameMembershipRepository);
-		const myGamerom = await repo_gamemember.findOne({
-			where : {member : {userid : socket.userid}},
-			relations :["gameRoom"]
-			});
-		if (!myGamerom) {
-			return ;
-		}
-		const game = onlineGameMap[myGamerom.gameRoom.roomid];
-		if (game)
-			game.offlineRoom(socket.id);
-			
-	}
-
-	async switchGameRoomStatus(roomid : string, roomStatus : RoomStatus) {
-		const repo_gameRoom = getCustomRepository(GameRoomRepository);
-		await repo_gameRoom.update({roomid : roomid}, {roomStatus : roomStatus});
-	}
+	*/
 }
