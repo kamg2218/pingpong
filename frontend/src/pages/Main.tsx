@@ -23,11 +23,11 @@ export default function Main(){
 	useEffect(()=>{
 		axios.get(check + "?url=main").then((res:any)=>{
 			console.log(res);
-			console.log("----->", res.state);
-  		if (res.state){
-  		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
+			console.log("----->", res.data.state);
+  		if (res.data.state){
+  		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		  } else if ( res.state === "login"){
+  		  } else if ( res.data.state === "login"){
 					axios.get(logout).then(res => console.log("Log out! " + res)).catch(err => {throw new Error(err)});
 				}
 				dispatch(initialize());

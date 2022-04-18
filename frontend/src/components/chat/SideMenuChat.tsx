@@ -1,16 +1,12 @@
-import axios from "axios";
-import { useEffect, useState } from "react"
-import { Switch, Route, Link, useParams, useHistory } from "react-router-dom"
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { socket } from "../../socket/socket";
-import { BACK_URL } from "../../types/urlTypes";
+import { useEffect } from "react"
+import { Switch, Route, Link, useParams } from "react-router-dom"
+import { shallowEqual, useSelector } from "react-redux";
+import { ChatData } from "../../types/chatTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
-import { initialize } from "../../redux/userReducer";
 import MenuChat from "../../components/chat/MenuChat"
 import ChatRoom from "../../components/chat/ChatRoom"
 import "./chat.css";
-import { ChatData } from "../../types/chatTypes";
 
 type param = { id?: String }
 

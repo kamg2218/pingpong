@@ -21,16 +21,16 @@ export default function Play(){
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=play").then((res:any)=>{
-			console.log("----->", res.state);
-  		if (res.state){
-				if (res.state === "playing" && gameroom.roomid !== param.id){
+			console.log("----->", res.data.state);
+  		if (res.data.state){
+				if (res.data.state === "playing" && gameroom.roomid !== param.id){
 					socket.emit("exitGameRoom", {roomid: gameroom.roomid});
-				}else if (res.state === "waiting" && gameroom.roomid){
+				}else if (res.data.state === "waiting" && gameroom.roomid){
 					socket.emit("exitGameRoom", {roomid: gameroom.roomid});
-				}else if (res.state === "login"){
+				}else if (res.data.state === "login"){
 					dispatch(initialize());
 					history.replace("/game");
-				}else if (res.state === "logout"){
+				}else if (res.data.state === "logout"){
 					dispatch(initialize());
 					history.replace("/");
 				}
