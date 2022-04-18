@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { Link, useHistory } from "react-router-dom"
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom"
+import { shallowEqual, useSelector } from "react-redux";
 import { socket } from "../../socket/socket";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";

@@ -45,24 +45,6 @@ export default function Game() {
 			dispatch(updateUser(data));
 			setUser(data);
 		});
-		// socket.on("enterGameRoom", (msg: gameRoomDetail | message) => {
-		// 	console.log("enter game room");
-		// 	console.log(msg);
-		// 	setLoadingOpen(false);
-		// 	setMatchingOpen(false);
-		// 	if ("message" in msg) {
-		// 		alert("fail to enter the room!");
-		// 		if (history.location.pathname.search("waiting")){
-		// 			history.replace("/game");
-		// 		}
-		// 	}else {
-		// 		setRoom(msg);
-		// 		dispatch(updateGameRoom(msg));
-		// 		if (history.location.pathname.indexOf("waiting") === -1){
-		// 			history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
-		// 		}
-		// 	}
-		// });
 		socket.on("exitGameRoom", () => {
 			console.log("exitGameRoom");
 			dispatch(updateGameRoom(gameRoomInitialState));

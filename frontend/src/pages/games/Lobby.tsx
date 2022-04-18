@@ -8,7 +8,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
-import { initialize } from "../../redux/userReducer";
 import { message } from "../../types/chatTypes";
 import { updateGameRoom } from "../../redux/gameReducer";
 

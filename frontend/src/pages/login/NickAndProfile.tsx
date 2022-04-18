@@ -9,7 +9,7 @@ import { User } from "../../types/userTypes";
 import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
-import { initialize, updateUser } from "../../redux/userReducer";
+import { updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){

@@ -6,7 +6,6 @@ import { socket } from "../../socket/socket";
 import { BACK_URL } from '../../types/urlTypes';
 import {gameRoomDetail} from "../../types/gameTypes";
 import { RootState } from '../../redux/rootReducer';
-import { initialize } from '../../redux/userReducer';
 import "./Qrcode.css";
 
 export default function Qrcode(){
