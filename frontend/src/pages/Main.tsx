@@ -22,8 +22,8 @@ export default function Main(){
 
 	useEffect(()=>{
 		axios.get(check + "?url=main").then((res:any)=>{
-			console.log(res);
-			console.log("----->", res.data.state);
+			// console.log(res);
+			// console.log("----->", res.data.state);
   		if (res.data.state){
   		  if ((res.data.state === "playing" || res.data.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { socket } from "../../socket/socket";
 import { chatRoom, ChatUser } from "../../types/chatTypes";
 import ManagerList from "./ManagerList";
@@ -7,6 +8,12 @@ export default function ManagerModal({info}:{info:chatRoom}){
 	let deleteManager:Array<string> = [];
 	const failure:string = "다시 시도해주세요.";
 
+	useEffect(()=>{
+		return ()=>{
+			addManager.splice(0, addManager.length);
+			deleteManager.splice(0, deleteManager.length);
+		}
+	});
 	const handleManager = () => {
 		socket.emit("updateChatRoom", { 
 			chatid: info.chatid,
