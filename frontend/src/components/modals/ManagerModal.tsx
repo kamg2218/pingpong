@@ -34,7 +34,7 @@ export default function ManagerModal({info}:{info:chatRoom}){
 	}
 	const MemberList = (member: ChatUser) => {
 		if (member.userid === info.owner) return ;
-		return <ManagerList info={info} member={member} handleClick={handleClick}></ManagerList>
+		return <ManagerList info={info} member={member} handleClick={handleClick}  key={`managerModal_${member.userid}`}></ManagerList>
 	}
 
 	return (

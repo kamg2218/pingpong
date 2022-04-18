@@ -9,7 +9,7 @@ import { User } from "../../types/userTypes";
 import { BACK_URL } from "../../types/urlTypes";
 import { gameRoomDetail } from "../../types/gameTypes";
 import { RootState } from "../../redux/rootReducer";
-import { initialize, updateUser } from "../../redux/userReducer";
+import { updateUser } from "../../redux/userReducer";
 import "./NickAndProfile.css";
 
 export default function NickAndProfile(){
@@ -30,12 +30,14 @@ export default function NickAndProfile(){
 	const impossible:string = "사용 불가능한 닉네임입니다.";
 
 	useEffect(()=>{
-		axios.get(checkUrl).then((res:any)=>{
+		axios.get(checkUrl + "?url=nickandprofile").then((res:any)=>{
+			console.log("----->", res.state);
   		if (res.state){
   		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		    dispatch(initialize());
-  		  }
+  		  } else if (res.state === "logout"){
+					history.replace("/");
+				}
   		}
 		}).catch((err)=>{
 			console.log(err);

@@ -1,8 +1,8 @@
 import {useState} from "react"
 import {socket} from "../../socket/socket"
 import InputPwdModal from "../modals/InputPwdModal"
-import "../../css/GameBox.css"
 import { GameRequest, gameRoom } from "../../types/gameTypes";
+import "./GameBox.css"
 
 export default function GameBox({info}:{info:gameRoom}){
 	const [state, setState] = useState<boolean>(false);
@@ -39,18 +39,18 @@ export default function GameBox({info}:{info:gameRoom}){
 	}
 
 	return (
-		<div key={`${info.roomid}gamebox`} className="col-6 m-0 p-2">
-			<div key={`${info.roomid}gameBoxBorder`} className="p-3" id="gameBox">
-				<div key={`${info.roomid}BoxInfo`} className="row align-items-start h3 p-1 px-4">
+		<div className="col-6 m-0 p-2" key={`${info.roomid}gamebox`}>
+			<div className="p-3" id="gameBox" key={`${info.roomid}gameBoxBorder`}>
+				<div className="row align-items-start h3 p-1 px-4" key={`${info.roomid}BoxInfo`}>
 					{info.title}
 					{handleLock()}
 				</div>
-				<div key={`${info.roomid}BoxButtonRow`} className="d-flex">
-					<div key={`${info.roomid}BoxWatchingBlock`} className="col mx-2">
+				<div className="d-flex" key={`${info.roomid}BoxButtonRow`}>
+					<div className="col mx-2" key={`${info.roomid}BoxWatchingBlock`}>
 						<div key={`${info.roomid}BoxWatchingPeople`}>{`${info.observer}/${info.maxObserver}`}</div>
 						{handlePwd(false)}
 					</div>
-					<div key={`${info.roomid}BoxPlayingBlock`} className="col mx-2">
+					<div className="col mx-2" key={`${info.roomid}BoxPlayingBlock`}>
 						<div key={`${info.roomid}BoxPlayingPeople`}>{`${info.player}/2`}</div>
 						{handlePwd(true)}
 					</div>

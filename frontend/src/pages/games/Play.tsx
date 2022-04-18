@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { socket } from "../../socket/socket";
 import SideMenuPlay from "./SideMenuPlay"
 import PlayRoom from "../../components/play/PlayRoom"
 import { useDispatch, useSelector } from "react-redux";
@@ -14,16 +15,18 @@ import logo from '../../icons/logo_brown_profile.png'
 export default function Play(){
 	const checkUrl:string = BACK_URL + "/user/check";
 	const history = useHistory();
+	const param:any = useParams();
 	const dispatch = useDispatch();
 	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 
 	useEffect(()=>{
 		axios.get(checkUrl + "?url=play").then((res:any)=>{
+			console.log("----->", res.state);
   		if (res.state){
-				if (res.state === "playing"){
-					return ;
-				}else if (res.state === "waiting"){
-					history.replace("/game/waiting/" + gameroom.roomid);
+				if (res.state === "playing" && gameroom.roomid !== param.id){
+					socket.emit("exitGameRoom", {roomid: gameroom.roomid});
+				}else if (res.state === "waiting" && gameroom.roomid){
+					socket.emit("exitGameRoom", {roomid: gameroom.roomid});
 				}else if (res.state === "login"){
 					dispatch(initialize());
 					history.replace("/game");
@@ -36,15 +39,15 @@ export default function Play(){
 			console.log(err);
 			history.replace("/");
 		});
-	}, [checkUrl, dispatch, gameroom.roomid, history]);
+	}, [checkUrl, dispatch, gameroom.roomid, history, param.id]);
 
 	return (
-		<div className="container-fluid m-0 p-0" id="playroom">
+		<div className="container-fluid" id="playroom">
 			<div className="col h-100">
 				<img className="row" id="gameLogo" src={logo} alt="header"/>
-				<div className="row m-0 p-1" id="gameScreen">
-					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block"><SideMenuPlay></SideMenuPlay></div>
-					<div className="col p-0"><PlayRoom></PlayRoom></div>
+				<div className="row" id="gameScreen">
+					<div className="col-md-4 col-lg-3 d-none d-sm-none d-md-block" id="sideMenuPlay"><SideMenuPlay/></div>
+					<div className="col" id="playRoom"><PlayRoom/></div>
 				</div>
 			</div>
 		</div>

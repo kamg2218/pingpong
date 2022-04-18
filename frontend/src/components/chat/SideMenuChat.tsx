@@ -15,9 +15,6 @@ import { ChatData } from "../../types/chatTypes";
 type param = { id?: String }
 
 export default function SideMenuChat(){
-	const history = useHistory();
-	const dispatch = useDispatch();
-	const checkUrl:string = BACK_URL + "/user/check";
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 

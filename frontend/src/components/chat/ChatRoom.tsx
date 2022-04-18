@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {socket} from "../../socket/socket";
 import { User } from "../../types/userTypes";
-import { ChatBlock, ChatData, ChatHistory, ChatResult } from "../../types/chatTypes";
+import { ChatBlock, ChatData, ChatHistory } from "../../types/chatTypes";
 import { RootState } from "../../redux/rootReducer";
 import { historyInitalState, updateHistory } from "../../redux/chatReducer";
 import ChatBox from "./ChatBox";
@@ -99,9 +99,9 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 						{chatHistory && chatHistory.list?.map((data:ChatBlock, idx:number)=>{
 							// console.log(`idx = ${idx}, data = ${data}`);
 							if (data.userid === user.userid){
-								return <MyChatBox idx={idx} chatid={chatid} data={data}></MyChatBox>
+								return <MyChatBox idx={idx} chatid={chatid} data={data} key={idx}></MyChatBox>
 							}else{
-								return <ChatBox idx={idx} chatid={chatid} data={data}></ChatBox>
+								return <ChatBox idx={idx} chatid={chatid} data={data} key={idx}></ChatBox>
 							}})}
 					</div>
 				</div>

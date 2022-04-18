@@ -6,7 +6,6 @@ import { socket } from "../../socket/socket";
 import { BACK_URL } from '../../types/urlTypes';
 import {gameRoomDetail} from "../../types/gameTypes";
 import { RootState } from '../../redux/rootReducer';
-import { initialize } from '../../redux/userReducer';
 import "./Qrcode.css";
 
 export default function Qrcode(){
@@ -18,14 +17,16 @@ export default function Qrcode(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 	
 	useEffect(()=>{
-		axios.get(checkUrl).then((res:any)=>{
+		axios.get(checkUrl + "?url=qrcode").then((res:any)=>{
+			console.log("----->", res.state);
   		if (res.state){
   		  if ((res.state === "playing" || res.state === "waiting") && gameroom.roomid){
   		    socket.emit("exitGameRoom", { roomid: gameroom.roomid });
-  		    dispatch(initialize());
   		  }else if (res.state === "login"){
-  		    history.replace("/game");
-  		  }
+					history.replace("/game");
+  		  }else if (res.state === "logout"){
+					history.replace("/");
+				}
   		}
 		}).catch((err)=>{
 			console.log(err);

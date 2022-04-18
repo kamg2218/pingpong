@@ -71,7 +71,7 @@ export default function MuteModal({info}:{info:chatRoom}) {
 		people.forEach((person: ChatUser) => {
 			if (person.userid === user.userid) { return; }
 			else if (person.userid === info.owner) { return; }
-			list.push(<MuteList person={person} handleTenBox={handleTenBox} handleThirtyBox={handleThirtyBox}></MuteList>);
+			list.push(<MuteList person={person} handleTenBox={handleTenBox} handleThirtyBox={handleThirtyBox} key={`MuteList_${person.userid}`}></MuteList>);
 		});
 		return list;
 	}

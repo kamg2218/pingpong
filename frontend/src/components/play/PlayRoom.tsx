@@ -22,7 +22,7 @@ export default function PlayRoom() {
 	const [win, setWinner] = useState<string>(winner);
 
 	useEffect(() => {
-		// console.log("PlayRoom");
+		console.log("PlayRoom");
 		if (start[0] && gameDoing) { gameDoing.current?.focus(); }
 		socket.on("draw", (data: draw) => {
 			dispatch(updateDraw(data));
@@ -103,7 +103,7 @@ export default function PlayRoom() {
 
 	return (
 		<div className="container" id="playRoom" onClick={() => { gameDoing.current?.focus() }}>
-			<input className="row-1" id="canvasInput" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
+			<input className="row" id="canvasInput" ref={gameDoing as any} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></input>
 			{drawState && drawCanvas()}
 		</div>
 	);
