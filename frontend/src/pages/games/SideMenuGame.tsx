@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { socket } from '../../socket/socket';
@@ -8,11 +7,7 @@ import MenuGame from '../../components/games/MenuGame';
 
 export default function SideMenuGame(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
-
-	useEffect(()=>{
-		console.log('side menu game here!!');
-	});
-
+	
 	const handleClick = () => {
 		socket.emit('myChatRoom');
 	}

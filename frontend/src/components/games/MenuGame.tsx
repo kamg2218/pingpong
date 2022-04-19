@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { socket } from '../../socket/socket';
 import { Friend, User } from '../../types/userTypes'
@@ -10,18 +10,14 @@ import './MenuGame.css';
 export default function MenuGame(){
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
-	const [userState, setUser] = useState<User>(user);
+	const userState = useState<User>(user);
 	
-	useEffect(()=>{
-		console.log('MenuGame');
-	}, [userState]);
-
 	const NewList = (person: Friend) => {
 		const handleNewFriend = (result: boolean) => {
 			socket.emit('newFriend', { userid: person.userid, result: result });
 			let tmp:User = user;
 			tmp.newfriends = tmp.newfriends.filter((friend:Friend)=>friend.userid !== person.userid);
-			setUser({...tmp});
+			userState[1]({...tmp});
 			dispatch(updateUser(tmp));
 		}
 		return (

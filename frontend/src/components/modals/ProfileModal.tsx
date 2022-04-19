@@ -20,7 +20,7 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 	const myState:boolean = history.location.pathname.search('waiting') !== -1; 
 	
 	useEffect(() => {
-		console.log('ProfileModal');
+		// console.log('ProfileModal');
 		socket.on('opponentProfile', (data:ProfileUser) => {
 			setProfile(data);
 		});
@@ -33,7 +33,7 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 			type: 'private',
 			member: [profile?.userid]
 		}, (chatid: string)=>{
-			console.log(chatid);
+			// console.log(chatid);
 			if (chatid !== ''){
 				history.push(`/game/chat/${chatid}${gameroom ? `/waiting/${gameroom.roomid}`: ''}`);
 			}

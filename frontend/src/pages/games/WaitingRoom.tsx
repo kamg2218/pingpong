@@ -1,14 +1,14 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { socket } from '../../socket/socket';
 import { User } from '../../types/userTypes';
-import { gameRoomDetail, GameUser } from '../../types/gameTypes';
-import { updateGameRoom, updatePlayRoom } from '../../redux/gameReducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/rootReducer';
-import axios from 'axios';
 import { BACK_URL } from '../../types/urlTypes';
+import { gameRoomDetail, GameUser } from '../../types/gameTypes';
+import { RootState } from '../../redux/rootReducer';
 import { initialize } from '../../redux/userReducer';
+import { updateGameRoom, updatePlayRoom } from '../../redux/gameReducer';
 import Profile from '../../icons/Profile';
 import './WaitingRoom.css';
 
@@ -22,7 +22,7 @@ export default function WaitingRoom(){
 	const checkUrl:string = BACK_URL + '/user/check';
 
 	useEffect(()=>{
-		console.log('waitingRoom');
+		// console.log('waitingRoom');
 		axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
   		if (res.data.state){
   		  if (res.data.state === 'playing' && gameroom.roomid){
@@ -43,8 +43,8 @@ export default function WaitingRoom(){
 	
 		socket.on('changeGameRoom', (msg:any) => {
 			const tmp:gameRoomDetail = room;
-			console.log('changeGameRoom');
-			console.log(msg);
+			// console.log('changeGameRoom');
+			// console.log(msg);
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
 			if (msg.speed) {tmp.speed = msg.speed;}
@@ -72,8 +72,8 @@ export default function WaitingRoom(){
 			dispatch(updateGameRoom(tmp));
 		});
 		socket.on('startGame', (msg:any) => {
-			console.log('start game!');
-			console.log(msg);
+			// console.log('start game!');
+			// console.log(msg);
 			if (msg.result) {
 				alert('failed to play the game!');
 			} else {

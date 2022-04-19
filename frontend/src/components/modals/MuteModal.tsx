@@ -13,22 +13,30 @@ export default function MuteModal({info}:{info:chatRoom}) {
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
 
 	const handleSubmit = () => {
-		console.log(tenMinutes[0]);
+		// console.log(tenMinutes[0]);
 		tenMinutes[0]?.forEach((id: string) => {
 			socket.emit('chatMute', {
 				chatid: info.chatid,
 				time: 600,
 				userid: id,
 			})
-		}, (result: boolean) => { console.log(result); });
-		console.log(thirtySeconds[0]);
+		}, (result: boolean) => {
+			if (!result) {
+				console.log(result);
+			}
+		});
+		// console.log(thirtySeconds[0]);
 		thirtySeconds[0]?.forEach((id: string) => {
 			socket.emit('chatMute', {
 				chatid: info.chatid,
 				time: 30,
 				userid: id,
 			})
-		}, (result: boolean) => { console.log(result); });
+		}, (result: boolean) => {
+			if (!result) {
+				console.log(result);
+			}
+		});
 	}
 	const muteListHeader = () => {
 		return (
@@ -41,32 +49,32 @@ export default function MuteModal({info}:{info:chatRoom}) {
 		);
 	}
 	const handleThirtyBox = (id: string, state:boolean) => {
-		if (state){
+		if (state) {
 			const tenIdx: number = tenMinutes[0].indexOf(id);
 			if (tenIdx !== -1) {tenMinutes[0].splice(tenIdx, 1);}
 		}
 		const idx:number = thirtySeconds[0].indexOf(id);
-		if (idx === -1){
+		if (idx === -1) {
 			thirtySeconds[0].push(id);	
-		}else{
+		} else {
 			thirtySeconds[0].splice(idx, 1);
 		}
 	}
 	const handleTenBox = (id: string, state:boolean) => {
-		if (state){
+		if (state) {
 			const thirtyIdx: number = thirtySeconds[0].indexOf(id);
 			if (thirtyIdx !== -1) {thirtySeconds[0].splice(thirtyIdx, 1);}
 		}
 		const idx:number = tenMinutes[0].indexOf(id);
-		if (idx === -1){
+		if (idx === -1) {
 			tenMinutes[0].push(id);	
-		}else{
+		} else {
 			tenMinutes[0].splice(idx, 1);
 		}
 	}
 	const muteList = (people: Array<ChatUser>) => {
 		let list: Array<JSX.Element> = [];
-		
+
 		list.push(muteListHeader());
 		people.forEach((person: ChatUser) => {
 			if (person.userid === user.userid) { return; }
