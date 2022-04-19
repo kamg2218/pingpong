@@ -26,8 +26,8 @@ export default function WaitingRoom(){
 		// console.log('waitingRoom');
 		const path:string = history.location.pathname;
 		axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
-  		if (res.data.state){
-  		  if (res.data.state === 'playing' && path.search('play') === -1 && gameroom.roomid){
+  		if (res.data.state && path.search('waiting') !== -1){
+  		  if (res.data.state === 'playing' && gameroom.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
   		  }else if (res.data.state === 'waiting' && param.id !== room.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
@@ -101,7 +101,7 @@ export default function WaitingRoom(){
 		);
 	}
 	const checkStartButton = () => {
-		// console.log('checkStartBtn', room);
+		// console.log('checkStartBtn');
 		if (room.manager !== user.userid){
 			return true;
 		} else if (room.players.length !== 2){

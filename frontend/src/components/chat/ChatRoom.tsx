@@ -26,8 +26,9 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 			const path: string = _history.location.pathname;
 			const id: number = path.search('chat');
 			let tmp: string = path.slice(0, id + 4);
-			if (path.length > id + 5){
-				tmp += path.slice(path.indexOf('/', id + 5));
+			const num: number = path.indexOf('/', id + 6);
+			if (num !== -1) {
+				tmp += path.slice(num);
 			}
 			_history.replace(tmp);
 		}
