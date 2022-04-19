@@ -10,7 +10,11 @@ export default function TitleInput({changeTitle, info}:{changeTitle:Function, in
 		socket.emit('updateChatRoom', {
 			chatid: info.chatid,
 			title: title
-		}, (result:boolean)=>{ console.log(result); });
+		}, (result:boolean)=>{
+			if (!result) {
+				console.log(result);
+			}
+		});
 		changeTitle();
 	}
 	const handleKeyPress = (e :any) => {

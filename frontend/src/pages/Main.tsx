@@ -1,8 +1,8 @@
 import axios from 'axios';
+import { socket } from '../socket/socket';
 import { useHistory } from 'react-router';
 import { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { socket } from '../socket/socket';
 import { BACK_URL } from '../types/urlTypes';
 import { gameRoomDetail } from '../types/gameTypes';
 import { RootState } from '../redux/rootReducer';
@@ -40,7 +40,7 @@ export default function Main(){
 
 	const handleInput = (event:any) => { setNick(event.target.value); }
 	const handleTest = () => {
-		console.log(nick);
+		// console.log(nick);
 		axios.post('/auth/force_login', {
 			nickname: nick
 		}).then((res)=>{

@@ -22,15 +22,15 @@ export default function PlayRoom() {
 	const [win, setWinner] = useState<string>(winner);
 
 	useEffect(() => {
-		console.log('PlayRoom');
+		// console.log('PlayRoom');
 		if (start[0] && gameDoing) { gameDoing.current?.focus(); }
 		socket.on('draw', (data: draw) => {
 			dispatch(updateDraw(data));
 			setDraw(data);
 		});
 		socket.on('gameResult', (data: any) => {
-			console.log('gameResult', gameroom.isPlayer);
-			console.log(data);
+			// console.log('gameResult', gameroom.isPlayer);
+			// console.log(data);
 			dispatch(updateGameResult(data.winner));
 			setWinner(data.winner);
 		});

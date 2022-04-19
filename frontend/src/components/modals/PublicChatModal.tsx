@@ -14,7 +14,7 @@ export default function PublicChatModal(){
 
 	useEffect(() => {
 		socket.on('publicChatRoom', (data:ChatData)=>{
-			console.log('public chat room on!');
+			// console.log('public chat room on!');
 			dispatch(updatePublic(data));
 		})
 		return ()=>{socket.off('publicChatRoom');}

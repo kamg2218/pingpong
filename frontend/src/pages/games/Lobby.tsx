@@ -19,7 +19,7 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
-		console.log('Lobby!');
+		// console.log('Lobby!');
 		axios.get(checkUrl + '?url=lobby').then((res:any)=>{
 			const path:string = history.location.pathname;
 			if (res.data.state){
@@ -37,8 +37,8 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 			history.replace('/');
 		});
 		socket.on('enterGameRoom', (msg: gameRoomDetail | message) => {
-			console.log('enter game room');
-			console.log(msg);
+			// console.log('enter game room');
+			// console.log(msg);
 			setLoadingOpen(false);
 			setMatchingOpen(false);
 			if ('message' in msg) {

@@ -14,10 +14,10 @@ export default function MenuChat(){
 	const [room, setRoom] = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
-		console.log('MenuChat');
+		// console.log('MenuChat');
 
 		socket.on('enterChatRoom', (data:chatRoom)=>{
-			console.log('enter chat room!!');
+			// console.log('enter chat room!!');
 			const tmp:ChatData = chatroom;
 			if (tmp.order.indexOf(data.chatid) === -1){
 				tmp.order.push(data.chatid);
@@ -27,7 +27,7 @@ export default function MenuChat(){
 			}
 		});
 		socket.on('myChatRoom', (data:ChatData)=>{
-			console.log('my chat room!!');
+			// console.log('my chat room!!');
 			setRoom(data);
 			dispatch(updateChat(data));
 		});
@@ -39,7 +39,7 @@ export default function MenuChat(){
 
 	const handlePublic = () => { socket.emit('publicChatRoom'); }
 	const handleExit = (id: string) => {
-		console.log('exitChatRoom');
+		// console.log('exitChatRoom');
 		const tmp:ChatData = room;
 		tmp.order = tmp.order.filter((str:string) => str !== id);
 		tmp.chatroom = tmp.chatroom.filter((room:chatRoom) => room.chatid !== id);
