@@ -23,9 +23,10 @@ export default function WaitingRoom(){
 
 	useEffect(()=>{
 		// console.log('waitingRoom');
+		const path:string = history.location.pathname;
 		axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
   		if (res.data.state){
-  		  if (res.data.state === 'playing' && gameroom.roomid){
+  		  if (res.data.state === 'playing' && path.search('play') === -1 && gameroom.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
   		  }else if (res.data.state === 'waiting' && param.id !== room.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
