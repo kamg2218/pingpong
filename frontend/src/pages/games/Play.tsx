@@ -21,11 +21,15 @@ export default function Play(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 
 	useEffect(()=>{
+		const path: string = history.location.pathname;
 		axios.get(checkUrl + '?url=play').then((res:any)=>{
-  		if (res.data.state){
+  		if (res.data.state && path.search('play') !== -1){
+				console.log('userCheck', res.data.state);
 				if (res.data.state === 'playing' && gameroom.roomid !== param.id){
+					console.log('playing -  but roomid is different.');
 					socket.emit('exitGameRoom', {roomid: gameroom.roomid});
 				}else if (res.data.state === 'waiting' && gameroom.roomid){
+					console.log('waiting...');
 					socket.emit('exitGameRoom', {roomid: gameroom.roomid});
 				}else if (res.data.state === 'login'){
 					dispatch(initialize());

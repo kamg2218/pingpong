@@ -6,10 +6,10 @@ import GameRoomSlide from '../../components/games/GameRoomSlide';
 import { useHistory } from 'react-router';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { BACK_URL } from '../../types/urlTypes';
-import { gameRoomDetail } from '../../types/gameTypes';
-import { RootState } from '../../redux/rootReducer';
 import { message } from '../../types/chatTypes';
-import { updateGameRoom } from '../../redux/gameReducer';
+import { gameRoomDetail, playRoom, playRoomDetail } from '../../types/gameTypes';
+import { RootState } from '../../redux/rootReducer';
+import { updateGameRoom, updatePlayRoom } from '../../redux/gameReducer';
 
 export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setIsOpen:Function, setLoadingOpen:Function, setMatchingOpen:Function}){
 	const [search, setSearch] = useState<string>('');
@@ -20,9 +20,9 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 
 	useEffect(()=>{
 		// console.log('Lobby!');
-		axios.get(checkUrl + '?url=lobby').then((res:any)=>{
+		axios.get(checkUrl + '?url=lobby').then((res:any) => {
 			const path:string = history.location.pathname;
-			if (res.data.state){
+			if (res.data.state) {
 				// console.log(res.data.state);
 				if (res.data.state === 'playing' && path.search('play') === -1 && gameroom.roomid){
 					socket.emit('exitGameRoom', { roomid: gameroom.roomid });
@@ -43,18 +43,48 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 			setMatchingOpen(false);
 			if ('message' in msg) {
 				alert('fail to enter the room!');
-				if (history.location.pathname.search('waiting')){
-					history.replace('/game');
-				}
+				// if (history.location.pathname.search('waiting')){
+				// 	history.replace('/game');
+				// }
 			}else {
 				dispatch(updateGameRoom(msg));
-				if (history.location.pathname.indexOf('waiting') === -1){
-					history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
-				}
+				history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
+				// if (history.location.pathname.indexOf('waiting') === -1){
+				// 	history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
+				// }
+			}
+		});
+		socket.on('enterPlayRoom', (msg: playRoomDetail | message) => {
+			setLoadingOpen(false);
+			setMatchingOpen(false);
+			if ('message' in msg) {
+				alert('fail to enter the room!');
+			} else {
+				const game: gameRoomDetail = {
+					roomid: msg.roomid,
+					manager: msg.manager,
+					title: msg.title,
+					speed: msg.speed,
+					observer: msg.observer,
+					type: msg.type,
+					players: msg.players,
+					isPlayer: msg.isPlayer,
+					status: msg.status,
+				};
+				const play: playRoom = {
+					roomid: msg.roomid,
+					score: msg.score,
+			    left: msg.left,
+			    right: msg.right,
+				};
+				dispatch(updateGameRoom(game));
+				dispatch(updatePlayRoom(play));
+				history.push(`/game/play/${msg.roomid}`);
 			}
 		});
 		return ()=>{
 			socket.off('enterGameRoom');
+			socket.off('enterPlayRoom');
 		}
 	});
 

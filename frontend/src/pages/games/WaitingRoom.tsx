@@ -5,12 +5,13 @@ import { useHistory, useParams } from 'react-router-dom';
 import { socket } from '../../socket/socket';
 import { User } from '../../types/userTypes';
 import { BACK_URL } from '../../types/urlTypes';
-import { gameRoomDetail, GameUser } from '../../types/gameTypes';
+import { gameRoomDetail, GameUser, playRoom } from '../../types/gameTypes';
 import { RootState } from '../../redux/rootReducer';
 import { initialize } from '../../redux/userReducer';
 import { updateGameRoom, updatePlayRoom } from '../../redux/gameReducer';
 import Profile from '../../icons/Profile';
 import './WaitingRoom.css';
+import { message } from '../../types/chatTypes';
 
 export default function WaitingRoom(){
 	const history = useHistory();
@@ -23,8 +24,9 @@ export default function WaitingRoom(){
 
 	useEffect(()=>{
 		// console.log('waitingRoom');
+		const path:string = history.location.pathname;
 		axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
-  		if (res.data.state){
+  		if (res.data.state && path.search('waiting') !== -1){
   		  if (res.data.state === 'playing' && gameroom.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
   		  }else if (res.data.state === 'waiting' && param.id !== room.roomid){
@@ -71,10 +73,10 @@ export default function WaitingRoom(){
 			setRoom({...tmp});
 			dispatch(updateGameRoom(tmp));
 		});
-		socket.on('startGame', (msg:any) => {
+		socket.on('startGame', (msg:playRoom | message) => {
 			// console.log('start game!');
 			// console.log(msg);
-			if (msg.result) {
+			if ('message' in msg) {
 				alert('failed to play the game!');
 			} else {
 				dispatch(updatePlayRoom(msg));
@@ -99,12 +101,14 @@ export default function WaitingRoom(){
 		);
 	}
 	const checkStartButton = () => {
+		// console.log('checkStartBtn');
 		if (room.manager !== user.userid){
 			return true;
-		}else if (room.players.length !== 2){
+		} else if (room.players.length !== 2){
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 	const handleStart = () => { socket.emit('startGame', { roomid: room.roomid }); }
 	const handleExit = () => {
