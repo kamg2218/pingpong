@@ -4,8 +4,8 @@ import { User, BlockedFriends } from "../../entity/User/UserEntity";
 @EntityRepository(BlockedFriends)
 export class BlockedFriendsRepository extends Repository<BlockedFriends> {
     
-    async amIBlockedByid(me: User, theOtherid : string) : Promise<boolean> {
-        const list = await this.find({me : {userid : theOtherid} , block : me});
+    async amIBlockedById(userid: string, theOtherid : string) : Promise<boolean> {
+        const list = await this.find({me : {userid : theOtherid} , block : {userid : userid}});
         if (list.length)
             return true;
         return false;
@@ -20,6 +20,13 @@ export class BlockedFriendsRepository extends Repository<BlockedFriends> {
 
     async didIBlock(me : User, theOther : User) : Promise<boolean> {
         const list = await this.find({me : me, block : theOther});
+        if (list.length)
+            return true;
+        return false;
+    }
+
+    async didIBlockId(userid : string, theOtherid : string) : Promise<boolean> {
+        const list = await this.find({me : {userid : userid}, block : {userid : theOtherid}});
         if (list.length)
             return true;
         return false;

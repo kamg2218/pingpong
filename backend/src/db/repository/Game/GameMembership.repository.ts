@@ -52,8 +52,8 @@ export class GameMembershipRepository extends Repository<GameMembership> {
         return newOwner.member;
     }
 
-    public async amIinGameRoom(user : User) : Promise<boolean> {
-        const findResult = await this.find({member : {userid : user.userid}});
+    public async amIinGameRoom(userid : string) : Promise<boolean> {
+        const findResult = await this.find({member : {userid : userid}});
         if (findResult.length)
             return true;
         return false;

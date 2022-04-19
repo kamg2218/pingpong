@@ -249,7 +249,7 @@ export class ChatGateway {
     let theOther = await repo_user.findOne(userid);
     let res = await Promise.all([
       repo_blockList.amIBlockedBy(user, theOther),
-      repo_blockList.didIBlock(user, theOther)//,
+      repo_blockList.didIBlock(user, theOther),//,
       // repo_friendList.isMyFriend(user, theOther)
     ]);
     if (res.findIndex(result=>result===true) !== -1) {
@@ -418,7 +418,7 @@ export class ChatGateway {
     this.log(`Message from ${me.member.nickname} has been sent.`);
     this.log(`Message is ${temp.contents} .`);
     console.log("[chat6], ", new Date());
-    // return true;
+    return true;
   }
 
   // 채팅 음소거 :

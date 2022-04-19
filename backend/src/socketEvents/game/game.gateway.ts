@@ -6,7 +6,7 @@ import { GameGatewayService } from "./gameGateway.service";
 import { MatchingManager } from "../online/matchingManager";
 import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
-import { GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchResponseDTO, MatchRequestDTO } from "./dto/game.dto";
+import { GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchResponseDTO, MatchRequestDTO, InviteGameRoomResponseDTO, InviteGameRoomDTO } from "./dto/game.dto";
 import { ApiTags } from "@nestjs/swagger";
 import { WsGuard } from "../ws.guard";
 import { CORS_ORIGIN } from "src/config/url";
@@ -90,6 +90,45 @@ export class GameGateway {
             this.emitter.emit(socket, "startGame", initialInfo);
         }
     }
+    
+    /* payload : userid : string, roomid : string */
+    @SubscribeMessage('inviteGameRoom')
+    async inviteGameRoom(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : InviteGameRoomDTO) {
+        this.log({gate : "inviteGameRoom", ...payload});
+
+        const {result, reason} = await this.gameGatewayService.checkIfItIsAvailableInvite(socket.userid, payload);
+        if (!result) {
+            this.log(`${socket.userid} can't invite. : ${reason}`);
+            // this.emitter.emit(socket, "inviteGameRoom", {result : false});
+            return ;
+        }
+        const requestInfo = await this.gameGatewayService.getInviteRequestInfo(socket.userid, payload.roomid);
+        const theOtherSocketId = onlineManager.socketIdOf(payload.userid);
+        if (requestInfo)
+            this.emitter.emitById(theOtherSocketId, "inviteGameRoomResponse", requestInfo);
+        return ;
+    }
+    
+    /* payload : requestid : string, result : boolean */
+    @SubscribeMessage('inviteGameRoomResponse')
+    async inviteGameRoomResponse(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : InviteGameRoomResponseDTO) {
+        this.log({gate : "inviteGameRoomResponse", ...payload});
+        
+        if (!payload.result)
+            return ;
+        const {result, reason, user, gameRoom} = await this.gameGatewayService.checkIfItIsAvailableToJoin(socket.userid, {roomid : payload.requestid, isPlayer : true, password : "*"});
+        if (!result) {
+            this.log(`${socket.userid}, abnormal request : ${reason}`);
+            return ;
+        }
+        const roomid = await this.gameGatewayService.enterGameRoom(socket.id, user, gameRoom, {roomid : payload.requestid, isPlayer : true, password : "*"});
+        if (!roomid) {
+            this.log(`${socket.userid} can't enter the GameRoom : Something wrong`);
+            return ;  
+        }
+    }
+
+
 
     /* ok */
     @SubscribeMessage('updateGameRoom')
