@@ -162,7 +162,7 @@ export class GameRoomRepository extends Repository<GameRoom> {
         // console.log("isAvali : ", typeof(password));
         if (!checker[position](gameRoom))
             return false;
-        if (gameRoom.password && !await compare(password, gameRoom.password))
+        if (gameRoom.password && password !== "*" && !await compare(password, gameRoom.password)) 
             return false;
         if (onlineGameMap[gameRoom.roomid].over)
             return false;

@@ -36,7 +36,7 @@ export class onlineChatRoom {
         this.members.map(async (socketid) => {
             let theOtherId = onlineManager.userIdOf(socketid);
             console.log(`[saytoRoom] Sent to ${theOtherId}`)
-            if (!await repo_blockList.amIBlockedByid(user, theOtherId))
+            if (!await repo_blockList.amIBlockedById(user.userid, theOtherId) && !await repo_blockList.didIBlock(user, theOtherId))
                 this.emitter.emitById(socketid, "chatMessage", {
                     chatid : this.id,
                     userid : socket.userid,

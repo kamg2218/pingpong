@@ -13,5 +13,6 @@ export const ormconfig : TypeOrmModuleOptions= {
    "synchronize": true,
    "logging" : false,
    "dropSchema" : true, //나중에는 지우기
+   "connectTimeoutMS" : 10000,
    "entities": [ __dirname + "/../db/entity/**/*.entity.{js,ts}" ],
 }

@@ -17,7 +17,7 @@ import dotenv from 'dotenv'
 import { ENV_PATH } from "src/config/url";
 import { RoomStatus } from "src/type/RoomStatus.type";
 import { randomInt } from "crypto";
-import {GameMoveDTO, MatchResponseDTO, EnterGameRoomDTO, CreateGameRoomDTO } from './dto/game.dto'
+import {GameMoveDTO, MatchResponseDTO, EnterGameRoomDTO, CreateGameRoomDTO, InviteGameRoomDTO } from './dto/game.dto'
 
 const ENV = dotenv.config({path : ENV_PATH});
 
@@ -28,9 +28,9 @@ export class GameGatewayService {
 		this.logger.log(msg, "GameGatewayService");
 	}
 
-	public async amIinGameRoom(user: User) {
+	public async amIinGameRoom(userid: string) {
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		const res = await repo_gameMembership.amIinGameRoom(user);
+		const res = await repo_gameMembership.amIinGameRoom(userid);
 		return res;
 	}
 
@@ -41,7 +41,7 @@ export class GameGatewayService {
 		let reason = "";
 		if (!user)
 			reason = "No such user";
-		else if (await this.amIinGameRoom(user))
+		else if (await this.amIinGameRoom(userid))
             reason = "You are already in the Game Room.";
 		else if (payload.type === "private" && payload.password === "") {
 			reason = "Prvate room should have a password";
@@ -110,6 +110,14 @@ export class GameGatewayService {
 		return {result, reason, user, gameRoom};
 	}
 
+	public async getInviteRequestInfo(userid : string, roomid : string) {
+		const repo_user = getCustomRepository(UserRepository);
+
+		const user = await repo_user.findOne(userid);
+		if (!user)
+			return null;
+		return {nickname : user.nickname, requestid : roomid};
+	}
 
 	public async enterGameRoom(socketid: string, user: User, gameRoom: GameRoom, roomOptions: any) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
@@ -129,6 +137,31 @@ export class GameGatewayService {
 		else
 			game.joinAsPlayer(socketid, user, result);
 		return gameRoom.roomid
+	}
+
+	public async checkIfItIsAvailableInvite(userid : string, payload : InviteGameRoomDTO) {
+		let result = false;
+		let reason = "";
+		
+		const repo_blockList = getCustomRepository(BlockedFriendsRepository);
+		if (!await this.isThisMyGameRoom(userid, payload.roomid))
+			reason = "You are not the member of the Game Room";
+		else if (! onlineManager.isOnline(payload.userid))
+			reason = "Friend is not online.";
+		else if (await this.amIinGameRoom(payload.userid))
+			reason = "Friend is already in the Game Room"
+		else if (await repo_blockList.amIBlockedById(userid, payload.userid))
+			reason = "You are blocked."
+		else if (await repo_blockList.didIBlockId(userid, payload.userid))
+			reason = "You blocked."
+		else {
+			const res = await this.checkIfItIsAvailableToJoin(userid, {roomid : payload.roomid, isPlayer : true, password : "*"});
+			if (!res)
+				reason = res.reason;
+			else
+				result = true;
+		}
+		return {result, reason};
 	}
 
 	public async getMyGameRoomInfoWithMemberList(roomid : string) {
@@ -177,8 +210,8 @@ export class GameGatewayService {
 		const res = await Promise.all([
 			repo_blockList.amIBlockedBy(user, theOther),
 			repo_blockList.didIBlock(user, theOther),
-			this.amIinGameRoom(user),
-			this.amIinGameRoom(theOther),	
+			this.amIinGameRoom(userid),
+			this.amIinGameRoom(theOtherId),	
 		]);
 		if (res.findIndex(elem=>elem===true) != -1)
 			return {result : false, reason : "Blocked/Block or Already in ther Game Room", user : null}
@@ -233,7 +266,7 @@ export class GameGatewayService {
 		try {
 			if (!request)
 				reason = "No such request."
-			else if (await this.amIinGameRoom(user))
+			else if (await this.amIinGameRoom(userid))
 				reason = "You are already in the Game Room"
 			else if (!onlineManager.isOnline(request.owner.userid))
 				reason = "Who sent request is not online now.";
@@ -247,11 +280,9 @@ export class GameGatewayService {
 	}
 
 	public async isItrejected(payload : MatchResponseDTO, request : GameRoom) {
-		const rpeo_user = getCustomRepository(UserRepository);
 		if (payload.result === false)
 			return true;
-		let theOther = await rpeo_user.findOne(request.owner.userid);
-		if (await this.amIinGameRoom(theOther))
+		if (await this.amIinGameRoom(request.owner.userid))
 			return true;
 		return false;
 	}
@@ -530,7 +561,7 @@ export class GameGatewayService {
 		let lists = await repo_gameRoom.getWaitingGameRoom();
 		let reason = "";
 		let isEntered = false;
-		if (await this.amIinGameRoom(user)) {
+		if (await this.amIinGameRoom(userid)) {
 			reason = "You are already in the game room";
 		}
 		else if (lists.length) {
@@ -559,13 +590,13 @@ export class GameGatewayService {
 		const repo_user = getCustomRepository(UserRepository);
 		const user = await repo_user.findOne(userid);
 		let isEntered = false;
-		if (await this.amIinGameRoom(user))
+		if (await this.amIinGameRoom(userid))
 			return {reason : "You are already in the Game Room", isEntered};
 		if (!MatchingManager.isThereWaitingUser())
 			return {reason : "", isEntered};
 		const theOtherId = MatchingManager.getOne();
 		const theOther = await repo_user.findOne({userid : theOtherId});
-		if (await this.amIinGameRoom(theOther))
+		if (await this.amIinGameRoom(theOtherId))
 			return {reason : "", isEntered};
 		let gameRoom = this.createEmptyRoom();
 		let enterResult = await this.enterEmptyGameRoom(gameRoom, user, theOther);
