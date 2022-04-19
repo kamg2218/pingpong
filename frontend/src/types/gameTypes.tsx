@@ -25,6 +25,20 @@ export type gameRoomDetail = {
 	players: Array<GameUser>,
 	isPlayer: boolean
 }
+export type playRoomDetail = {
+	title: string,
+	roomid: string,
+	manager: string,
+	speed: number,
+	observer: Array<GameUser>,
+	type: string,
+	status: boolean,
+	players: Array<GameUser>,
+	isPlayer: boolean,
+	score: number,
+	left: GameUser,
+	right: GameUser,
+}
 export type playRoom = {
 	roomid: string,
 	score: number,

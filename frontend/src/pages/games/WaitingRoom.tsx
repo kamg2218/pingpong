@@ -5,12 +5,13 @@ import { useHistory, useParams } from 'react-router-dom';
 import { socket } from '../../socket/socket';
 import { User } from '../../types/userTypes';
 import { BACK_URL } from '../../types/urlTypes';
-import { gameRoomDetail, GameUser } from '../../types/gameTypes';
+import { gameRoomDetail, GameUser, playRoom } from '../../types/gameTypes';
 import { RootState } from '../../redux/rootReducer';
 import { initialize } from '../../redux/userReducer';
 import { updateGameRoom, updatePlayRoom } from '../../redux/gameReducer';
 import Profile from '../../icons/Profile';
 import './WaitingRoom.css';
+import { message } from '../../types/chatTypes';
 
 export default function WaitingRoom(){
 	const history = useHistory();
@@ -72,10 +73,10 @@ export default function WaitingRoom(){
 			setRoom({...tmp});
 			dispatch(updateGameRoom(tmp));
 		});
-		socket.on('startGame', (msg:any) => {
+		socket.on('startGame', (msg:playRoom | message) => {
 			// console.log('start game!');
 			// console.log(msg);
-			if (msg.result) {
+			if ('message' in msg) {
 				alert('failed to play the game!');
 			} else {
 				dispatch(updatePlayRoom(msg));
