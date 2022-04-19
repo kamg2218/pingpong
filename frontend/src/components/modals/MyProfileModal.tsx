@@ -1,14 +1,14 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../../socket/socket';
 import { User, Friend } from '../../types/userTypes';
+import { RootState } from '../../redux/rootReducer';
 import { initialize } from '../../redux/userReducer';
 import MatchHistory from '../games/MatchHistory';
 import Profile from '../../icons/Profile';
 import './profileModal.css';
-import { RootState } from '../../redux/rootReducer';
 
 export default function MyProfileModal() {
 	const history = useHistory();
@@ -17,10 +17,6 @@ export default function MyProfileModal() {
 	const [qrcode, setQrcode] = useState<string>('');
 	const [state, setState] = useState<boolean>(false);
 	const user:User = useSelector((state:RootState)=>state.userReducer.user);
-
-	useEffect(() => {
-		console.log('MyProfileModal');
-	}, [qrcode, state, user]);
 
 	const handleInput = (event:any) => { setNum(event.target.value); }
 	const checkToken = ():boolean => {
@@ -35,31 +31,37 @@ export default function MyProfileModal() {
 			alert('다시 시도해주세요.');
 			return ;
 		}
-		console.log(num);
+		// console.log(num);
 		if(!user.twofactor){
 			axios.post('/2fa/turn-on', {twoFactorAuthenticationCode: num}).then((res:any)=>{
-				console.log(res)
+				// console.log(res)
 				alert('확인되었습니다.');
 				setState(false);
 				socket.emit('userInfo');
-			}).catch((err:any)=>{alert('다시 시도해주세요.');console.log(err)});
+			}).catch((err:any)=>{
+				alert('다시 시도해주세요.');
+				console.log(err);
+			});
 		}else{
 			axios.post('/2fa/turn-off', {twoFactorAuthenticationCode: num}).then((res:any)=>{
-				console.log(res);
+				// console.log(res);
 				alert('확인되었습니다.');
 				setState(false);
 				socket.emit('userInfo');
-			}).catch((err:any)=>{alert('다시 시도해주세요.');console.log(err)});
+			}).catch((err:any)=>{
+				alert('다시 시도해주세요.');
+				console.log(err);
+			});
 		}
 	}
-	const handleQrcode = () => {		
-		if (!state && !user.twofactor){
-			console.log('generate: ' + '/2fa/generate');
+	const handleQrcode = () => {
+		if (!state && !user.twofactor) {
+			// console.log('generate: ' + '/2fa/generate');
 			axios.post('/2fa/generate').then((res:any)=>{
-				console.log(`qrcode = ` + res.data);
-				console.log(typeof res.data);
+				// console.log(`qrcode = ` + res.data);
+				// console.log(typeof res.data);
 				setQrcode(res.data);
-			}).catch((err:any)=>{console.log(err)});
+			}).catch((err:any)=>{ console.log(err); });
 		}
 		setState(!state);
 	}

@@ -13,7 +13,7 @@ export default function GameRoomSlide({search}:{search:string}){
 			socket.emit('gameRoomList');
 		}
 		socket.on('gameRoomList', (msg:Array<gameRoom>)=>{
-			console.log('socket on! gameRoomList in gmaeRoomSlide!');
+			// console.log('socket on! gameRoomList in gmaeRoomSlide!');
 			setRoomList(msg);
 		});
 		return ()=>{socket.off('gameRoomList');}

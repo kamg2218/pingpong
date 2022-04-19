@@ -28,17 +28,17 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 			_history.replace(path.slice(0, id + 4) + path.slice(path.indexOf('/', id + 5)));
 		}
 		socket.on('chatHistory', (data:ChatHistory)=>{
-			console.log('chatHistroy on!', data);
+			// console.log('chatHistroy on!', data);
 			setHistory(data);
 			dispatch(updateHistory(data));
 		});
 		socket.on('chatMessage', (data:any)=>{
 			const hisChat:ChatHistory = chatHistory;
 			if (hisChat.chatid === data.chatid){
-				console.log('got chat message');
-				console.log(data);
+				// console.log('got chat message');
+				// console.log(data);
 				if (data.result){
-					console.log(data.result);
+					// console.log(data.result);
 					return ;
 				}
 				hisChat.list.push({
@@ -61,7 +61,7 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 		if (chat === ''){
 			return ;
 		}
-		console.log('chatMessage emit!');
+		// console.log('chatMessage emit!');
 		socket.emit('chatMessage', {
 			chatid: chatid,
 			contents: chat,

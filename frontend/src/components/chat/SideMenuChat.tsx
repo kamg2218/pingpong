@@ -19,9 +19,9 @@ export default function SideMenuChat(){
 	const chat = useState<ChatData>(chatroom);
 
 	useEffect(()=>{
-		console.log('sideMenuChat');
+		// console.log('sideMenuChat');
 		socket.on('updateChatRoom', (data:InputChatRoom)=>{
-			console.log('update Chat Room!');
+			// console.log('update Chat Room!');
 			// console.log(data, chat[0]);
 			let tmp:ChatData = chatroom;
 			const idx = tmp.order.indexOf(data.chatid);
