@@ -1,3 +1,24 @@
+import {useState, createContext} from 'react';
+
+export const GameContext = createContext<any>(null);
+
+export function GameVariables(){
+	const [gameRoom, setGameRoom] = useState<gameRoomDetail>();
+	const [roomList, setList] = useState<Array<gameRoom>>();
+	const [playRoom, setPlayRoom] = useState<playRoom>();
+	const [winner, setWinner] = useState<string>();
+	const [draw, setDraw] = useState<draw>();
+
+	const variable = {
+		gameroom: [gameRoom, setGameRoom],
+		gameroomlist: [roomList, setList],
+		playroom: [playRoom, setPlayRoom],
+		draw: [draw, setDraw],
+		winner: [winner, setWinner],
+	}
+	return variable;
+}
+
 export type GameUser = {
 	userid: string,
 	nickname: string,
@@ -28,8 +49,8 @@ export type gameRoomDetail = {
 export type playRoom = {
 	roomid: string,
 	score: number,
-	left: GameUser,
-	right: GameUser
+	player1: string,
+	player2: string
 }
 export type move = {
 	roomid: string,
@@ -50,35 +71,18 @@ export type draw = {
 		y: number,
 		width: number,
 		height: number,
+		score: number
 	},
 	left: {
 		x: number,
 		y: number,
 		width: number,
 		height: number,
+		score: number
 	}
 }
-export type score = {
-	left: number,
-	right: number
-}
 export type match = {
-	userid? : string,
+	userid : string,
 	nickname : string,
 	requestid : string
-}
-export type result = {
-	result : boolean
-}
-export type GameRequest = {
-	roomid: string,
-	isPlayer: boolean,
-	password?: string
-}
-export type NewGameRoomRequest = {
-	title: string,
-	speed: number,
-	observer: number,
-	type: string,
-	password?: string
 }

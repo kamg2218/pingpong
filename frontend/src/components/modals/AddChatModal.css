@@ -1,32 +1,3 @@
-.modal-button, .modal-content, .form-control, .form-check-input, #inviteDiv, .form-control-sm, #mangerDiv{
-	border: 1px solid #C9A641;
-	border-radius: 10px;
-}
-.form-control:focus, .form-check-input:focus, .form-check-input:checked{
-	box-shadow: none;
-	background-color: transparent;
-	outline: none;
-}
-.modal-header, .modal-body{
-	border-bottom: 1px solid #C9A641;
-}
-.modal-footer{
-	border: none;
-}
-.modal-button:hover{
-	background-color: #C9A641;
-}
-.form-control:focus{
-	border: 2px solid #C9A641;
-}
-.form-check-input:checked, .form-check-input:hover, .form-check-input:focus{
-	background-color: #C9A641;
-	box-shadow: #C9A641;
-}
-.form-check{
-	display: flex;
-	align-items: center;
-}
 #inviteDiv, #mangerDiv{
 	height: 150px;
 	overflow-y: scroll;

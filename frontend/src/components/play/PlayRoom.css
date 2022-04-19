@@ -1,21 +1,22 @@
 #playRoom{
     height: 100%;
-    max-height: 75vh;
+    max-height: 85vh;
 }
 #canvasInput{
     background-color: #6D6162;
     border: 0px;
-    height: 1%;
+    height: 2.4em;
 }
 #canvasInput:focus{
     color: transparent;
     outline: none;
 }
 #canvas{
-    max-height: 75vh;
+    height: 100%;
 }
 #canvasBorder{
-    max-height: 75vh;
+    height: 95%;
+    min-height: 500px;
     border: 1px solid #C9A641;
     border-radius: 25px;
     background-color: whitesmoke;

@@ -37,3 +37,14 @@ export type ChatHistory = {
 	chatid: string,
 	list: Array<ChatBlock>,
 }
+export type ChatRequest = {
+	chatid: string,
+	password?: string,
+}
+export type message = {
+	message: string,
+};
+export type ChatResult = {
+	chatid: string,
+	result: string,
+}
