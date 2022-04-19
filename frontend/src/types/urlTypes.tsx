@@ -1,5 +1,5 @@
-export const LOCAL_URL = "http://localhost";
-// export const LOCAL_URL = "http://192.168.219.103";
+// export const LOCAL_URL = "http://localhost";
+export const LOCAL_URL = "http://192.168.219.103";
 export const PORT = "4242";
 export const FRONT_PORT = "3000";
 

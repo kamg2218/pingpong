@@ -36,7 +36,7 @@ export default function InputPwdModal({setPwd, handleOk}:{setPwd:Function, handl
 					</div>
 					<div className='modal-body'>
 						<div className='input-group p-2'>
-							<input className='d-none' type='password'/>
+							<input className='d-none' type='password' key='inputPwdModalPwd'/>
 							<input className='form-control' type='password' placeholder='ex)1234' onChange={handlePwd}></input>
 							<button className='btn modal-button' data-dismiss='modal' onClick={handlePwdOK}>확인</button>
 						</div>

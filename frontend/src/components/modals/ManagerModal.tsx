@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { socket } from '../../socket/socket';
 import { chatRoom, ChatUser } from '../../types/chatTypes';
 import ManagerList from './ManagerList';
@@ -8,18 +7,16 @@ export default function ManagerModal({info}:{info:chatRoom}){
 	let deleteManager:Array<string> = [];
 	const failure:string = '다시 시도해주세요.';
 
-	useEffect(()=>{
-		return ()=>{
-			addManager.splice(0, addManager.length);
-			deleteManager.splice(0, deleteManager.length);
-		}
-	});
 	const handleManager = () => {
 		socket.emit('updateChatRoom', { 
 			chatid: info.chatid,
 			addManager: addManager,
 			deleteManager: deleteManager
-		}, (result:boolean)=>{ if (result !== true){ alert(failure); } });
+		}, (result:boolean)=>{
+			if (result !== true) {
+				alert(failure);
+			}
+		});
 	}
 	const handleClick = (id:string, state:boolean) => {
 		let idx:number = -1;
@@ -57,7 +54,7 @@ export default function ManagerModal({info}:{info:chatRoom}){
 					<div className='modal-body'>
 						<div className='rounded m-1' id='managerDiv'>
 							<ul key='memberList'>
-								{info.members.map((member:ChatUser)=>MemberList(member))}
+								{ info?.members?.length && info.members?.map((member:ChatUser)=> MemberList(member)) }
 							</ul>
 						</div>
 					</div>
