@@ -196,7 +196,7 @@ export class GameGateway {
     /* ok */
     @SubscribeMessage('move')
     async move(@ConnectedSocket() socket : AuthSocket, @MessageBody() payload : GameMoveDTO) {
-        this.log({gate : "move", ...payload});
+        // this.log({gate : "move", ...payload});
 
         this.gameGatewayService.movePlayers(socket.userid, payload)
     }
