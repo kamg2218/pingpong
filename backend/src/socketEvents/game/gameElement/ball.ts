@@ -2,9 +2,9 @@ import { canvas } from "./canvas";
 import { DIRECTION } from "./direction";
 import { Pos } from "./pos";
 
-const speedPercent : Array<number> = [1,2,3,4];
+const speedPercent : Array<number> = [1,1.8,2.0,2.3];
 export class Ball extends Pos {
-    constructor(speed : number) {
+    constructor(value : number) {
         const r =  (canvas.heightPercent(1));
         super(
             {x : (canvas.width/2),
@@ -13,8 +13,9 @@ export class Ball extends Pos {
             dirY : DIRECTION.IDLE,
             width : r,
             height : r,
-            speed : (canvas.heightPercent(speedPercent[speed]))});
+            speed : (canvas.heightPercent(speedPercent[value]))});
     }
+
 
     set radius(value : number) {
         this.width = this.height = value;
@@ -23,8 +24,7 @@ export class Ball extends Pos {
     get radius() {
         return this.width;
     }
-
-    public speedUp() {
+   /* public speedUp() {
         this.speed += (canvas.heightPercent(0.1));
     }
 
@@ -35,6 +35,7 @@ export class Ball extends Pos {
         // if (this.speed < canvas.heightPercent(0.5))
             // this.speed = canvas.heightPercent(0.5);
     }
+    */
 
     public doesNeedToResetTurn() {
         // let res = {x : false, winner : "", loser : ""}
@@ -96,7 +97,7 @@ export class Ball extends Pos {
         console.log(`x : ${x}, y : ${y}, w : ${width}, h : ${height}`);
     }
 
-    public reset(speed : number) {
+    public reset(value : number) {
         const r =  (canvas.heightPercent(1));
         this.x = (canvas.width/2);
         this.y = (canvas.height/2);
@@ -104,6 +105,7 @@ export class Ball extends Pos {
         this.dirY = [DIRECTION.UP, DIRECTION.DOWN][Math.round(Math.random())];
         this.width = r;
         this.height = r;
-        this.speed = canvas.heightPercent(speedPercent[speed]);
+        this.speed = canvas.heightPercent(speedPercent[value]);
+        
     }
 }

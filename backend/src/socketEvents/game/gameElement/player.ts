@@ -15,8 +15,8 @@ export class Player extends Pos {
             y : (canvas.height / 2) - canvas.heightPercent(20),
             dirX : DIRECTION.IDLE,
             dirY : DIRECTION.IDLE, 
-            width : canvas.widthPercent(4),
-            height : canvas.heightPercent(20),
+            width : canvas.widthPercent(2),
+            height : canvas.heightPercent(15),
             speed :  0});
         this.id = userid;
         this._onoff = false;
@@ -84,7 +84,7 @@ export class Player extends Pos {
     }
 
     public speedUp(times : number) {
-        this.speed = canvas.heightPercent(1 * times + 3);
+        this.speed = canvas.heightPercent(1.3 + 0.1 * times);
     }
 
     public move({x, y, radius}) {

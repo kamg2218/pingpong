@@ -55,31 +55,31 @@ export class GameGatewayService {
 		return {result, reason, user};
 	}
 
-	public async createAndEnterGameRoom(socketid: string, user: User, roomOptions: any) {
+	public async createAndEnterGameRoom(socketid: string, user: User, roomOptions: CreateGameRoomDTO) {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const repo_gameMembership = getCustomRepository(GameMembershipRepository);
-		let gameRoom
+		let gameRoomDefault
 		let reason : string;
 		let game : Game;
 		try {
-			gameRoom = await repo_gameRoom.createGameRoom(user, roomOptions);
-			game = new Game(gameRoom.roomid, gameRoom.speed);
-			onlineGameMap[gameRoom.roomid] = game;
+			gameRoomDefault = await repo_gameRoom.createGameRoom(user, roomOptions);
+			game = new Game(gameRoomDefault.roomid, Number(roomOptions.speed));
+			onlineGameMap[gameRoomDefault.roomid] = game;
 		}
 		catch (e) {
 			reason = "Failed to create game room";
 			return {result : false, reason};
 		}
 		try {
-			await repo_gameMembership.joinGameRoomAs(user, gameRoom.roomid, 'owner');
-			let result = await this.getGameRoomInfo(gameRoom.roomid);
+			await repo_gameMembership.joinGameRoomAs(user, gameRoomDefault.roomid, 'owner');
+			let result = await this.getGameRoomInfo(gameRoomDefault.roomid);
 			result['isPlayer'] = true;
 			game.joinAsPlayer(socketid, user, result);
 		}
 		catch (e) {
 			reason = "Failed to join room";
-			repo_gameRoom.deleteGameRoom(gameRoom);
-			delete onlineGameMap[gameRoom.roomid];
+			repo_gameRoom.deleteGameRoom(gameRoomDefault);
+			delete onlineGameMap[gameRoomDefault.roomid];
 			return {result : false, reason};
 		}
 		return {result : true, reason};
@@ -222,8 +222,8 @@ export class GameGatewayService {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const roomOptions = MatchingManager.generateGameRoomOptions();
 		roomOptions['roomStatus'] = "creating";
-		const gameRoom = await repo_gameRoom.createGameRoom(user, roomOptions);
-		return {userid : user.userid, nickname : user.nickname, requestid : gameRoom.roomid};
+		const gameRoomDefault = await repo_gameRoom.createGameRoom(user, roomOptions);
+		return {userid : user.userid, nickname : user.nickname, requestid : gameRoomDefault.roomid};
 	}
 
 	public async validateRequestStatus(requestid: string) {

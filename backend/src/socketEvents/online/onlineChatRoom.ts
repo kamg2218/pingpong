@@ -1,5 +1,4 @@
 import { Server } from "socket.io";
-import { User } from "src/db/entity/User/UserEntity";
 import { BlockedFriendsRepository, UserRepository } from "src/db/repository/User/UserCustomRepository";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { getCustomRepository } from "typeorm";
@@ -36,7 +35,7 @@ export class onlineChatRoom {
         this.members.map(async (socketid) => {
             let theOtherId = onlineManager.userIdOf(socketid);
             console.log(`[saytoRoom] Sent to ${theOtherId}`)
-            if (!await repo_blockList.amIBlockedById(user.userid, theOtherId) && !await repo_blockList.didIBlock(user, theOtherId))
+            if (!await repo_blockList.amIBlockedById(user.userid, theOtherId) && !await repo_blockList.didIBlockId(user.userid, theOtherId))
                 this.emitter.emitById(socketid, "chatMessage", {
                     chatid : this.id,
                     userid : socket.userid,
@@ -66,10 +65,9 @@ export class onlineChatRoom {
     }
 
     public join(socketid: string) {
-        console.log(`ONline chatroom joined : ${socketid}`);
+
         if (socketid)
             this.members.push(socketid);
-        console.log("now members : ", this.members );
     }
 
     public leave(socketid : string) {

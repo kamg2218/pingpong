@@ -20,7 +20,7 @@ export class Game {
     private _running : boolean;
     private _score : number;
     private _winner : string;
-    private _loser : string;
+    private _loser : string
     private _over : boolean;
     private _startTime : Date;
     private _endTime : Date;
@@ -39,21 +39,21 @@ export class Game {
             
     }
 
-    constructor(gameid : string, speed : number = 1) {
+    constructor(gameid : string, speed : number) {
         this.roomid = gameid;
         this.running = false;
         this.over = false;
         this.ball = new Ball(speed);
         this._score = 10;
         this.turn = null; 
-        this._speed = 1;/* test */
+        this._speed = speed;/* test */
         this.participants = [];
         this.left = new Player(null, "left");
         this.right = new Player(null, "right");
         this.server = Game._server;
         this.emitter = new Emitter(this);
-        this.left.speedUp(1);/* test */
-        this.right.speedUp(1); /* test */
+        this.left.speedUp(speed);/* test */
+        this.right.speedUp(speed); /* test */
     }
     
 
@@ -363,7 +363,7 @@ export class Game {
     }
 
     private run() {
-        const times = 60 / this.speed / 2;
+        const times = 50;
         const code = setInterval(async ()=>{   
             if (this.over) {
                 this.proxy.over = true;
@@ -592,13 +592,14 @@ export class Game {
         this.left.ready = false;
     }
 
+    /*
     public ballSpeed(type : string) {
         if (type === "up")
             this.ball.speedUp();
         else if (type === "down")
             this.ball.speedDown();
     }
-
+*/
     public print() {
         console.log("left : ", this.leftPlayer.id);
         console.log("right : ", this.rightPlayer.id);
