@@ -23,7 +23,7 @@ export default function InviteList({setMembers, info}:{setMembers:Function, info
 
 		return (
 			<li className='form-check m-2' key={data.userid}>
-				<input className='form-check-input' type='checkbox' value='' onClick={()=>handleClick(data)}></input>
+				<input className='form-check-input' type='checkbox' value='' onClick={()=>handleClick(data)} autoComplete="off"></input>
 				<img src={Profile(data.profile)} className='col-1 mx-1 rounded-circle' alt='...'/>
 				<label className='form-check-label mx-1'>{data.nickname}</label>
 			</li>

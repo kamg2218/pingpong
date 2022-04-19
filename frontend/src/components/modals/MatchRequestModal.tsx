@@ -12,8 +12,9 @@ export default function MatchRequestModal({setIsOpen, matchData, namespace}:{set
 	};
 	
 	useEffect(()=>{
-		if (value < maxValue){ setTimeout(()=>setValue(value + 0.1), 100); }
-		else{ 
+		if (value < maxValue){
+			setTimeout(()=>setValue(value + 0.1), 100);
+		} else { 
 			socket.emit(namespace, { requestid: matchData?.requestid, result: false });
 			setIsOpen(false);
 		}

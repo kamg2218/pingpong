@@ -7,15 +7,19 @@ import { chatRoom, ChatData } from '../../types/chatTypes';
 import MenuChatBox from './MenuChatBox';
 import AddChatModal from '../modals/AddChatModal';
 import PublicChatModal from '../modals/PublicChatModal';
+import PwdModal from '../modals/PwdModal';
+import InviteModal from '../modals/InviteModal';
+import MuteModal from '../modals/MuteModal';
+import ManagerModal from '../modals/ManagerModal';
 
 export default function MenuChat(){
 	const dispatch = useDispatch();
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
 	const [room, setRoom] = useState<ChatData>(chatroom);
+	const [info, setInfo] = useState<chatRoom>(room.chatroom[0]);
 
 	useEffect(()=>{
 		// console.log('MenuChat');
-
 		socket.on('enterChatRoom', (data:chatRoom)=>{
 			// console.log('enter chat room!!');
 			const tmp:ChatData = chatroom;
@@ -37,7 +41,9 @@ export default function MenuChat(){
 		}
 	}, [chatroom, dispatch, room]);
 
-	const handlePublic = () => { socket.emit('publicChatRoom'); }
+	const handlePublic = () => {
+		socket.emit('publicChatRoom');
+	}
 	const handleExit = (id: string) => {
 		// console.log('exitChatRoom');
 		const tmp:ChatData = room;
@@ -55,11 +61,15 @@ export default function MenuChat(){
 			</div>
 			<div id='chatBoxList'>
 				<ul id='chatBoxUl' className='col'>
-					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox info={info} handleExit={handleExit} key={`MenuChatBox_${info.chatid}`}/>)}
+					{room && room.chatroom?.map((info:chatRoom) => <MenuChatBox info={info} handleExit={handleExit} setInfo={setInfo} key={`MenuChatBox_${info.chatid}`}/>)}
 				</ul>
 			</div>
 			<AddChatModal></AddChatModal>
 			<PublicChatModal></PublicChatModal>
+			<PwdModal info={info}></PwdModal>
+			<InviteModal info={info}></InviteModal>
+			<MuteModal info={info}></MuteModal>
+			<ManagerModal info={info}></ManagerModal>
 		</div>
 	);
 }

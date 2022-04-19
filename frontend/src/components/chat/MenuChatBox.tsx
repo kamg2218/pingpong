@@ -19,7 +19,7 @@ function memberlist(member: Array<ChatUser>) : string {
 	return list;
 }
 
-export default function MenuChatBox({info, handleExit}:{info:chatRoom, handleExit:Function}){
+export default function MenuChatBox({info, handleExit, setInfo}:{info:chatRoom, handleExit:Function, setInfo:Function}){
 	const history = useHistory()
 	const size:number = info.members.length;
 	const [check, setChange] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export default function MenuChatBox({info, handleExit}:{info:chatRoom, handleExi
 				{info.type === 'private' ? <i className=']mx-1 px-2 bi bi-lock' key={`lock_${info.chatid}`}/> : <i className='mx-1 px-2 bi bi-unlock' key={`unlock_${info.chatid}`}/>}
 				{info.lock ? <i className='mx-1 px-1 bi bi-key' key={`key_${info.chatid}`}/> : ''}
 			</div>
-			<MenuChatDropdown info={info} changeTitle={changeTitle} handleExit={handleExit} key={`Dropdown_${info.chatid}`}/>
+			<MenuChatDropdown info={info} setInfo={setInfo} changeTitle={changeTitle} handleExit={handleExit} key={`Dropdown_${info.chatid}`}/>
 		</li>
 	);
 }
