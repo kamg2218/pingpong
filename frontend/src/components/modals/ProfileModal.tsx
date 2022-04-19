@@ -85,7 +85,7 @@ export default function ProfileModal({gameroom, setIsOpen}:{gameroom:gameRoomDet
 								<div className='col-4'>
 									<div className='row mb-2 p-0 justify-content-center'><img src={Profile(profile ? profile.profile : 0)} alt='profile' id='modalProfile'/></div>
 									<button className={button} onClick={handleChat} data-dismiss='modal' disabled={disabled || chatDisabled}> 1 : 1 채팅</button>
-									<button className={button} onClick={handleMatch} data-dismiss='modal' disabled={disabled}>{myState ? '초대하기' : '대전 신청'}</button>
+									<button className={button} onClick={handleMatch} data-dismiss='modal' disabled={disabled || profile?.block}>{myState ? '초대하기' : '대전 신청'}</button>
 									<button className={buttonFriend} onClick={handleFriend} data-dismiss='modal' disabled={disabled || profile?.block}>{profile?.friend ? '친구 삭제' : '친구 추가'}</button>
 									<button className={button} onClick={handleBlock} data-dismiss='modal' disabled={disabled}>{profile?.block ? '차단 해제' : '차단'}</button>
 								</div>
