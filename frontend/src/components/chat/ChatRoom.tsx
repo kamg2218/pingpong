@@ -25,7 +25,11 @@ export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 		if (!chatid){
 			const path: string = _history.location.pathname;
 			const id: number = path.search('chat');
-			_history.replace(path.slice(0, id + 4) + path.slice(path.indexOf('/', id + 5)));
+			let tmp: string = path.slice(0, id + 4);
+			if (path.length > id + 5){
+				tmp += path.slice(path.indexOf('/', id + 5));
+			}
+			_history.replace(tmp);
 		}
 		socket.on('chatHistory', (data:ChatHistory)=>{
 			// console.log('chatHistroy on!', data);
