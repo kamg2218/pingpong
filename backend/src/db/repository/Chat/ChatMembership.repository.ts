@@ -68,7 +68,10 @@ export class ChatMembershipRepository extends Repository<ChatMembership> {
     // 내가 속해있는 챗팅방의 chatid를 배열로 return
     async getMyChatRoom(userid : string) {
         let chatList = [];
-        let allChatList = await this.find({member : {userid: userid}});
+        let allChatList = await this.find({
+            where : {member : {userid : userid}},
+            order : {enterDate : "ASC"}
+        });
         for (let index in allChatList) {
             chatList.push(allChatList[index].chatroom);
         };

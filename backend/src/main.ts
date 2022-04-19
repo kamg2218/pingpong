@@ -7,21 +7,24 @@ import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/typeorm';
 import { BlockedFriends, Friends, User } from './db/entity/User/UserEntity';
-import { ChatRoom, ChatHistory } from './db/entity/Chat/ChatEntity';
+import { ChatRoom, ChatHistory, ChatMembership } from './db/entity/Chat/ChatEntity';
 import { GameRoom } from './db/entity/Game/GameRoom.entity';
-
+import { ENV_PATH } from "src/config/url";
+import dotenv from 'dotenv'
+import { GameMembership } from './db/entity/Game/GameMembership.entity';
+const ENV = dotenv.config({path : ENV_PATH});
 const { instrument } = require("@socket.io/admin-ui");
 
 AdminJS.registerAdapter({Database, Resource});
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const adminJs = new AdminJS({
-    resources : [User, Friends, BlockedFriends, ChatRoom, ChatHistory, GameRoom],
+    resources : [User, Friends, BlockedFriends, ChatRoom, ChatHistory, GameRoom, ChatMembership, GameMembership],
     rootPath : '/admin',
   });
   const ADMIN = {
     email : 'admin@aa.com',
-    password : '1234'
+    password : ENV.parsed.ADMINPWD,
   }
   const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
     authenticate : async (email, password) => {
@@ -31,7 +34,7 @@ async function bootstrap() {
       return null;
     },
     cookieName : 'adminJS',
-    cookiePassword : 'testtest'
+    cookiePassword : ENV.parsed.ADMINCOOKIEPWD
   })
   app.use(adminJs.options.rootPath, router);
   setupSwagger(app);
@@ -47,8 +50,6 @@ async function bootstrap() {
     origin : ["https://admin.socket.io"],
     credentials : true,
   });
-
-  // console.log(ENV.parsed);
   await app.listen(4242);
 
 }

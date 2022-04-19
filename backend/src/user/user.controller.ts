@@ -16,6 +16,10 @@ export class UserController {
     @Get('/check')
     async checkState(@Query('url') urlvalue : any, @Cookies('accessToken') at : string) {
         try {
+            if (at)
+                console.log("AT OK")
+            else
+                console.log("AT X")
             const payload = await this.jwtService.verify(at);
             const user = await this.authService.validate2FAJwt(payload);
             let state : string;
@@ -24,18 +28,18 @@ export class UserController {
             else
                 state = await this.userService.findState(user);
             console.log("state : ", state);
+            console.log("url : ", urlvalue);
             return {state};
-            // return state;
         }
         catch (e) {
             if (urlvalue === "main") {
                 console.log("state : logout");
                 return {state : "logout"};
-                // return "logout"
             }
             else {
-                console.log("state : 401");
-                throw new UnauthorizedException();
+                console.log("state : 401, url : ", urlvalue);
+                console.log(e);
+                throw new UnauthorizedException("user state");
             }
                 
         }

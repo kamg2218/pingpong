@@ -194,7 +194,10 @@ export class Game {
     public joinAsObserver(socketid : string, user : User, roomInfo : any ) {
         const repo_user = getCustomRepository(UserRepository);
         this.participants.push(socketid);
-        this.noticeTo(socketid, "enterGameRoom", roomInfo);
+        if (!this.running)
+            this.noticeTo(socketid, "enterGameRoom", roomInfo);
+        else
+            this.noticeTo(socketid, "enterPlayRoom", roomInfo);
         this.changeGameRoom(socketid, {
             addObserver : {...repo_user.getSimpleInfo(user)},
         });

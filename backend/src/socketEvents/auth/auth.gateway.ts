@@ -51,23 +51,20 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			.insert()
 			.into(User)
 			.values([
-			{email : "jikwon@student.42seoul.kr", userid : "jikwon", nickname : "jikwon", status : "logout", profile : 1},
-			{email : "jikwon1@student.42seoul.kr", userid : "jikwon1", nickname : "jikwon1", status : "logout", profile : 1},
-			{email : "jikwon2@student.42seoul.kr", userid : "jikwon2", nickname : "jikwon2", status : "logout", profile : 1},
-			{email : "jikwon3@student.42seoul.kr", userid : "jikwon3", nickname : "jikwon3", status : "logout", profile : 1},
-			{email : "nahkim@student.42seoul.kr", userid : "nahkim", nickname : "nahkim", status : "logout", profile : 2},
-			{email : "nahkim1@student.42seoul.kr", userid : "nahkim1", nickname : "nahkim1", status : "logout", profile : 2},
-			{email : "nahkim2@student.42seoul.kr", userid : "nahkim2", nickname : "nahkim2", status : "logout", profile : 2},
-			{email : "nahkim3@student.42seoul.kr", userid : "nahkim3", nickname : "nahkim3", status : "logout", profile : 2},
-			{email : "hyoon@student.42seoul.kr", userid : "hyoon", nickname : "hyoon", status : "logout", profile : 3},
-			{email : "hyoon1@student.42seoul.kr", userid : "hyoon1", nickname : "hyoon1", status : "logout", profile : 3},
-			{email : "hyoon2@student.42seoul.kr", userid : "hyoon2", nickname : "hyoon2", status : "logout", profile : 3},
-			{email : "hyoon3@student.42seoul.kr", userid : "hyoon3", nickname : "hyoon3", status : "logout", profile : 3},
-			{email : "hyeyoo@student.42seoul.kr", userid : "hyeyoo", nickname : "hyeyoo", status : "logout", profile : 2},
-			{email : "dong@student.42seoul.kr", userid : "dong", nickname : "dong", status : "logout", profile : 2},
-			{email : "pangpang@student.42seoul.kr", userid : "pangpang", nickname : "pangpang", status : "logout", profile : 1},
-			{email : "cat@student.42seoul.kr", userid : "cat", nickname : "cat", status : "logout", profile : 3},
-			{email : "dog@student.42seoul.kr", userid : "dog", nickname : "dog", status : "logout", profile : 4},
+			{email : "jikwon1@student.42seoul.kr", nickname : "jikwon1", status : "logout", profile : 1},
+			{email : "jikwon2@student.42seoul.kr", nickname : "jikwon2", status : "logout", profile : 1},
+			{email : "jikwon3@student.42seoul.kr", nickname : "jikwon3", status : "logout", profile : 1},
+			{email : "nahkim1@student.42seoul.kr", nickname : "nahkim1", status : "logout", profile : 2},
+			{email : "nahkim2@student.42seoul.kr", nickname : "nahkim2", status : "logout", profile : 2},
+			{email : "nahkim3@student.42seoul.kr", nickname : "nahkim3", status : "logout", profile : 2},
+			{email : "hyoon1@student.42seoul.kr", nickname : "hyoon1", status : "logout", profile : 3},
+			{email : "hyoon2@student.42seoul.kr", nickname : "hyoon2", status : "logout", profile : 3},
+			{email : "hyoon3@student.42seoul.kr", nickname : "hyoon3", status : "logout", profile : 3},
+			{email : "hyeyoo@student.42seoul.kr", nickname : "hyeyoo", status : "logout", profile : 2},
+			{email : "dong@student.42seoul.kr", nickname : "dong", status : "logout", profile : 2},
+			{email : "pangpang@student.42seoul.kr", nickname : "pangpang", status : "logout", profile : 1},
+			{email : "cat@student.42seoul.kr", nickname : "cat", status : "logout", profile : 3},
+			{email : "dog@student.42seoul.kr", nickname : "dog", status : "logout", profile : 4},
 			])
 			.execute();
 	}
@@ -129,8 +126,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		/**/
 		if (ormconfig.dropSchema) {
 			await this.initUserDate();
-			await this.initFriend();
-			await this.initGameRoom();
+			// await this.initFriend();
+			// await this.initGameRoom();
 			
 		}
 	}
@@ -199,6 +196,8 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		setTimeout(async ()=>{
 			const userid = socket.userid;
 			const socketid = socket.id;
+			if (!userid)
+				return ;
 			console.log(`${userid} has been disconnected. : 3sec`);
 			const repo_user = getCustomRepository(UserRepository);
 			if (!onlineManager.isOnline(userid)) {

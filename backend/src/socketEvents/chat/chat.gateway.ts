@@ -78,7 +78,10 @@ export class ChatGateway {
     const repo_chatmember = getCustomRepository(ChatMembershipRepository);
     const repo_chatroom = getCustomRepository(ChatRoomRepository);
     const myChatroomList : ChatRoom[] = await repo_chatmember.getMyChatRoom(socket.userid);
-    const publicChatroomList = await repo_chatroom.find({type : "public"});
+    const publicChatroomList = await repo_chatroom.find({
+      where : {type : "public"},
+      order : {title : "ASC"}
+    });
     for (let index in myChatroomList) {
       let chatid = myChatroomList[index].chatid;
       let findResult = publicChatroomList.findIndex(list=>list.chatid === chatid)
