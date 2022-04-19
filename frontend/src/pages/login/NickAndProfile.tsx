@@ -31,7 +31,7 @@ export default function NickAndProfile(){
 
 	useEffect(()=>{
 		axios.get(checkUrl + '?url=nickandprofile').then((res:any)=>{
-			console.log('----->', res.data.state);
+			// console.log('----->', res.data.state);
   		if (res.data.state){
   		  if ((res.data.state === 'playing' || res.data.state === 'waiting') && gameroom.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
@@ -61,7 +61,7 @@ export default function NickAndProfile(){
 		}
 		axios.get(BACK_URL + `/auth/check?nickname=${nickname}`)
 			.then(res=>{
-				console.log(res.data);
+				// console.log(res.data);
 				if (res.data.message === false){
 					setCheckModalText(possible);
 					if (btn){
@@ -81,8 +81,8 @@ export default function NickAndProfile(){
 		}
 		axios.post(BACK_URL + `/auth/signup`, { nickname, profile })
 		.then(res=>{
-			console.log(res);
-			console.log(res.data);
+			// console.log(res);
+			// console.log(res.data);
 			if (res.data){
 				let tmp = user;
 				tmp.profile = profile;
@@ -97,9 +97,13 @@ export default function NickAndProfile(){
 		history.push('/');
 	}
 	const conditionals = (): Boolean => {
-		if (nickname === ''){return false;}
-		else if (checkModalText !== possible){return false;}
-		return true;
+		if (nickname === '') {
+			return false;
+		} else if (checkModalText !== possible) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	return (

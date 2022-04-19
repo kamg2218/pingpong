@@ -17,17 +17,17 @@ export default function MenuPlay(){
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 	
 	useEffect(()=>{
-		console.log('menu play');
+		// console.log('menu play');
 		socket.on('score', (data:score)=>{
-			console.log('score');
-			console.log(data);
+			// console.log('score');
+			// console.log(data);
 			setScore({...data});
 			dispatch(updateScore(data));
 		});
 		socket.on('changeGameRoom', (msg:any) => {
 			const tmp:gameRoomDetail = room;
-			console.log('changeGameRoom - in menuPlay');
-			console.log(msg);
+			// console.log('changeGameRoom - in menuPlay');
+			// console.log(msg);
 			if (msg.manager) {tmp.manager = msg.manager;}
 			if (msg.title) {tmp.title = msg.title;}
 			if (msg.speed) {tmp.speed = msg.speed;}

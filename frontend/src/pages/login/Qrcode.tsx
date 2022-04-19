@@ -18,7 +18,7 @@ export default function Qrcode(){
 
 	useEffect(()=>{
 		axios.get(checkUrl + '?url=qrcode').then((res:any)=>{
-			console.log('----->', res.data.state);
+			// console.log('----->', res.data.state);
   		if (res.data.state){
   		  if ((res.data.state === 'playing' || res.data.state === 'waiting') && gameroom.roomid){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
@@ -48,7 +48,7 @@ export default function Qrcode(){
 		}else {
 			const auth:string = BACK_URL + '/2fa/authenticate';
 			axios.post(auth, { twoFactorAuthenticationCode: token }).then((res:any)=>{
-				console.log(res);
+				// console.log(res);
 				history.push('/game');
 			}).catch((err:any)=>{	setAlert(true);});
 		}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { socket } from '../../socket/socket';
@@ -24,10 +24,6 @@ export default function MenuChatBox({info, handleExit}:{info:chatRoom, handleExi
 	const size:number = info.members.length;
 	const [check, setChange] = useState<boolean>(false);
 	const chatroom:ChatData = useSelector((state:RootState) => state.chatReducer.chatroom, shallowEqual);
-	
-	useEffect(()=>{
-		console.log('MenuChatBox!');
-	}, [check, info]);
 
 	const changeTitle = () => { setChange(!check); }
 	const handleDoubleClick = (chatid: string) => {

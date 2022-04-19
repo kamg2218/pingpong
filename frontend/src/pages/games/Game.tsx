@@ -37,35 +37,35 @@ export default function Game() {
 
 	useEffect(() => {
 		if (!user || user.nickname === '') {
-			console.log('user Info emit!')
+			// console.log('user Info emit!')
 			dispatch(undefinedList());
 			socket.emit('userInfo');
 		}
 		socket.on('userInfo', (data:User) => {
-			console.log('user Info is changed!');
+			// console.log('user Info is changed!');
 			dispatch(updateUser(data));
 			setUser(data);
 		});
 		socket.on('exitGameRoom', () => {
-			console.log('exitGameRoom');
+			// console.log('exitGameRoom');
 			dispatch(updateGameRoom(gameRoomInitialState));
 			setRoom(gameRoomInitialState);
 			history.push('/game');
 		});
 		socket.on('matchResponse', (data:match) => {
-			console.log('matchResponse', data);
+			// console.log('matchResponse', data);
 			setIsOpen(true);
 			setNamespace('matchResponse');
 			setMatch(data);
 		});
 		socket.on('inviteGameRoomResponse', (data:match) => {
-			console.log('inviteGameRoomResponse', data);
+			// console.log('inviteGameRoomResponse', data);
 			setIsOpen(true);
 			setNamespace('inviteGameRoomResponse');
 			setMatch(data);
 		});
 		socket.on('matchRequest', (data:result)=>{
-			console.log('matchRequest', data);
+			// console.log('matchRequest', data);
 			setMatchingOpen(false);
 		})
 		socket.on('updateProfile', (data:any)=>{
@@ -76,7 +76,7 @@ export default function Game() {
 			dispatch(updateUser(tmp));
 		});
 		socket.on('newFriend', (data:Friend)=>{
-			console.log('newFriend', data);
+			// console.log('newFriend', data);
 			const tmp:User = user;
 			const idx:number = tmp.newfriends.findIndex((friend:Friend)=>friend.userid === data.userid);
 			if (idx === -1){
@@ -89,14 +89,14 @@ export default function Game() {
 			const tmp:User = user;
 			const idx:number = tmp.friends.findIndex((friend:Friend)=>friend.userid === data.userid);
 			if (idx === -1){
-				console.log('addFriend', data);
+				// console.log('addFriend', data);
 				tmp.friends.push(data);
 				dispatch(updateUser(tmp));
 				setUser({...tmp});
 			}
 		});
 		socket.on('deleteFriend', (data:Friend)=>{
-			console.log('deleteFriend', data);
+			// console.log('deleteFriend', data);
 			const tmp:User = user;
 			tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
 			dispatch(updateUser(tmp));
@@ -106,7 +106,7 @@ export default function Game() {
 			const tmp:User = user;
 			const idx:number = tmp.blacklist.findIndex((friend:Friend)=>friend.userid === data.userid);
 			if (idx === -1){
-				console.log('blockFriend', data);
+				// console.log('blockFriend', data);
 				tmp.blacklist.push(data);
 				tmp.friends = tmp.friends.filter((friend:Friend)=>friend.userid !== data.userid);
 				dispatch(updateUser(tmp));
