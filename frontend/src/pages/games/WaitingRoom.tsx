@@ -99,7 +99,7 @@ export default function WaitingRoom(){
 		);
 	}
 	const checkStartButton = () => {
-		console.log('checkStartBtn', room);
+		// console.log('checkStartBtn', room);
 		if (room.manager !== user.userid){
 			return true;
 		} else if (room.players.length !== 2){
