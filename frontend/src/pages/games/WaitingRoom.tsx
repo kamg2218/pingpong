@@ -99,12 +99,14 @@ export default function WaitingRoom(){
 		);
 	}
 	const checkStartButton = () => {
+		console.log('checkStartBtn', room);
 		if (room.manager !== user.userid){
 			return true;
-		}else if (room.players.length !== 2){
+		} else if (room.players.length !== 2){
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 	const handleStart = () => { socket.emit('startGame', { roomid: room.roomid }); }
 	const handleExit = () => {
