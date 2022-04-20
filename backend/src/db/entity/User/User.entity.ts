@@ -11,8 +11,8 @@ import {ChatRoomRepository} from 'src/db/repository/Chat/ChatRoom.repository';
 @Entity()
 export class User extends BaseEntity {
     
-    // @PrimaryGeneratedColumn('uuid')
-    @PrimaryColumn()
+    // @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid')
     userid : string;
 
     @Column({ nullable : true})

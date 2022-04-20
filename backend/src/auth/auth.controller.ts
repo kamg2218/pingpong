@@ -99,7 +99,6 @@ export class AuthController {
     @Post('force_login')
     async forceLogin(@Res({passthrough : true}) res : Response, @Body('nickname') nickname : string) {
         const repo_user = getCustomRepository(UserRepository);
-        console.log("nickname : ", nickname);
         let user = await repo_user.findOne({nickname : nickname});
         if (!user)
             throw new UnauthorizedException("no such user");

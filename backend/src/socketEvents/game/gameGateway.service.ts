@@ -132,8 +132,12 @@ export class GameGatewayService {
 		let result = await repo_gameRoom.getRoomInfoWithMemberlist(gameRoom.roomid);
 		result['isPlayer'] = roomOptions.isPlayer;
 		const game = onlineGameMap[gameRoom.roomid];
-		if (position === "observer")
+		if (position === "observer" && !game.running)
 			game.joinAsObserver(socketid, user, result);
+		else if (position === "observer" && game.running) {
+			const startInfo = await game.getInitialInfo();
+			game.joinAsObserver(socketid, user, {...result, ...startInfo});
+		}
 		else
 			game.joinAsPlayer(socketid, user, result);
 		return gameRoom.roomid
@@ -156,7 +160,7 @@ export class GameGatewayService {
 			reason = "You blocked."
 		else {
 			const res = await this.checkIfItIsAvailableToJoin(userid, {roomid : payload.roomid, isPlayer : true, password : "*"});
-			if (!res)
+			if (!res.result)
 				reason = res.reason;
 			else
 				result = true;
@@ -482,7 +486,11 @@ export class GameGatewayService {
 	public async getAllGameRoomList() {
 		const repo_gameRoom = getCustomRepository(GameRoomRepository);
 		const resultlist = [];
-		const rawList = await repo_gameRoom.find();
+		const rawList = await repo_gameRoom.find({
+			order : {
+				createDate : "ASC"
+			}
+		});
 		rawList.map(function (elem) {
 			resultlist.push(repo_gameRoom.getRoomInfo(elem));
 		})

@@ -84,11 +84,11 @@ export class GameGateway {
             this.emitter.emit(socket, "enterGameRoom", {message : "Something wrong"});
             return ;  
         }
-        const game = onlineGameMap[roomid];
-        if (game.running) {
-            const initialInfo = await game.getInitialInfo();
-            this.emitter.emit(socket, "startGame", initialInfo);
-        }
+        // const game = onlineGameMap[roomid];
+        // if (game.running) {
+        //     const initialInfo = await game.getInitialInfo();
+        //     this.emitter.emit(socket, "startGame", initialInfo);
+        // }
     }
     
     /* payload : userid : string, roomid : string */

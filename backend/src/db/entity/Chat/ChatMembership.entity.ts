@@ -1,10 +1,10 @@
-import { BeforeRemove, CreateDateColumn,Column, Entity, getRepository, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { BaseEntity, CreateDateColumn,Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { ChatPosition } from "src/type/MemberPosition.type";
 import { ChatRoom } from "./ChatRoom.entity";
 import { User } from "../User/User.entity";
 
 @Entity()
-export class ChatMembership {
+export class ChatMembership extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     index : number;
