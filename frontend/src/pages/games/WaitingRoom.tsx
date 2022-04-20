@@ -29,7 +29,7 @@ export default function WaitingRoom(){
 		if (path.search('waiting') !== -1){
 			axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
 				if (res.data.state) {
-					console.log(res.data.state);
+					// console.log(res.data.state);
 					if (res.data.state === 'playing' && gameroom.roomid){
 						socket.emit('exitGameRoom', { roomid: gameroom.roomid });
 					}else if (res.data.state === 'waiting' && param.id !== room.roomid){
