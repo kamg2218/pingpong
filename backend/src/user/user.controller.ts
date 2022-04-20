@@ -16,10 +16,6 @@ export class UserController {
     @Get('/check')
     async checkState(@Query('url') urlvalue : any, @Cookies('accessToken') at : string) {
         try {
-            if (at)
-                console.log("AT OK")
-            else
-                console.log("AT X")
             const payload = await this.jwtService.verify(at);
             const user = await this.authService.validate2FAJwt(payload);
             let state : string;
@@ -27,18 +23,16 @@ export class UserController {
                 state = "2fa";
             else
                 state = await this.userService.findState(user);
-            console.log("state : ", state);
-            console.log("url : ", urlvalue);
+            console.log("state : ", state, ", url : ", urlvalue);
             return {state};
         }
         catch (e) {
             if (urlvalue === "main") {
-                console.log("state : logout");
+                console.log("state : logout , url : main");
                 return {state : "logout"};
             }
             else {
                 console.log("state : 401, url : ", urlvalue);
-                console.log(e);
                 throw new UnauthorizedException("user state");
             }
                 

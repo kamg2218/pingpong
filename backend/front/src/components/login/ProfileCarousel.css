@@ -1,0 +1,14 @@
+.profile{
+	text-align: center;
+	background-color: rgba(245, 244, 244, 0.13);
+}
+.img{
+	width: 10em;
+	height: 10em;
+	border-radius: 20%;
+	object-fit: cover;
+	overflow: hidden;
+	margin: 13%;
+	margin-top: 5%;
+	display: inline-block;
+}

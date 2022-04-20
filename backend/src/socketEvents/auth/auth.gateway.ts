@@ -19,6 +19,7 @@ import { GameGatewayService } from '../game/gameGateway.service';
 import { ChatGatewayService } from '../chat/chatGateway.service';
 import { WsGuard } from '../ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
+import { Emitter } from './emitter';
 // import { CHECKER } from './test';
 
 
@@ -43,6 +44,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
   
 	@WebSocketServer() public server:Server;
+	private readonly emitter = new Emitter(this);
 
 	private async initUserDate() {
 		const connection = getConnection();
@@ -147,19 +149,22 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	async handleConnection(@ConnectedSocket() socket: AuthSocket) {
     	this.logger.log(`${socket.id} socket iis trying to connect`, "AuthGateway");
-		const x = socket?.handshake?.headers["authorization"];
-		if (!x) {
+		const token = socket?.handshake?.headers["authorization"];
+		if (!token) {
 			this.logger.log(`${socket.id} socket disconnected - force : No Authorization header`, "AuthGateway");
 			socket.disconnect();
 			return ;
 		}
 		else {
 			try {
-				let tokenValue = this.getAccessToken(x);
+				let tokenValue = this.getAccessToken(token);
 				let res = await this.jwtService.verify(tokenValue);
 				let user = await this.authService.validate2FAJwt(res);
 				if (!user) {
 					throw new UnauthorizedException("no such user");
+				}
+				if (onlineManager.isOnline(user.userid)) {
+					this.emitter.emitById(onlineManager.socketIdOf(user.userid), "requestLogout", {});
 				}
 				socket['userid'] = res.userid;
 				onlineManager.online(socket);
@@ -167,8 +172,6 @@ export class AuthGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				socket.historyIndex = 0;
 				this.chatGatewayService.onlineMyChatRoom(socket);
 				this.gameGatewayService.onlineMyGameRoom(socket);
-				// checker.online(res.userid, new Date);
-				// checker.print();
 			}
 			catch(err) {
 				this.logger.log(`${socket.id} socket disconnected - force : Invalid Token`, "AuthGateway");

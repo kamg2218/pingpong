@@ -30,19 +30,24 @@ export class onlineChatRoom {
 
     public async sayToRoom(socket : AuthSocket, payload : any) {
         const repo_blockList = getCustomRepository(BlockedFriendsRepository);
-        const repo_user = getCustomRepository(UserRepository);
-        let user = await repo_user.findOne(socket.userid);
-        this.members.map(async (socketid) => {
-            let theOtherId = onlineManager.userIdOf(socketid);
-            console.log(`[saytoRoom] Sent to ${theOtherId}`)
-            if (!await repo_blockList.amIBlockedById(user.userid, theOtherId) && !await repo_blockList.didIBlockId(user.userid, theOtherId))
-                this.emitter.emitById(socketid, "chatMessage", {
-                    chatid : this.id,
-                    userid : socket.userid,
-                    contents : payload.contents,
-                    createDate : payload.time
-                });
+        let theOtherSocketId;
+        this.members.map(socketid=>{
+            if (socketid !== socket.id)
+                theOtherSocketId = socketid;
         });
+        let theOtherId = onlineManager.userIdOf(theOtherSocketId);
+        if (!await repo_blockList.amIBlockedById(socket.userid, theOtherId) && !await repo_blockList.didIBlockId(socket.userid, theOtherId)) {
+            let data = {
+                chatid : this.id,
+                userid : socket.userid,
+                contents : payload.contents,
+                createDate : payload.time};
+            this.emitter.emitById(theOtherSocketId, "chatMessage", data);
+            this.emitter.emit(socket, "chatMessage", data);
+        }
+        else
+            return false;
+        return true;
     }
 
     public announceExceptMe(mySocketId : string, event : string, payload : any) {
@@ -50,7 +55,6 @@ export class onlineChatRoom {
         this.members.map((socketid)=>{
             if (socketid !== mySocketId)
                 this.emitter.emitById(socketid, event, payload);
-                // onlineChatRoom.server.to(socketid).emit(event, payload);
         });
     }
 
@@ -60,8 +64,8 @@ export class onlineChatRoom {
             let userid = onlineManager.userIdOf(socketid);
             console.log(`[announce] Sent to ${userid}`);
             this.emitter.emitById(socketid, event, payload);
-            // onlineChatRoom.server.to(socketid).emit(event, payload);
         });
+        return true;
     }
 
     public join(socketid: string) {

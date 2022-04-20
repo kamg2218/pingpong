@@ -1,0 +1,55 @@
+#waitingRoom{
+	height: 100%;
+	min-height: 650px;
+	margin: 0%;
+	padding: 0%;
+	padding-left: 1%;
+	padding-right: 1%;
+}
+#waitingRoomCol{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	height: 100%;
+}
+#waitingRoomTitle{
+	background-color: #C9A641;
+	border-radius: 25px 25px 0px 0px;
+	color: whitesmoke;
+	height: 1.5em;
+	text-align: center;
+}
+#waitingroombox{
+	border-radius: 25px;
+	display: flex;
+	height: 12em;
+	justify-content: center;
+}
+#waitingRoomProfile{
+	border: 3px solid #C9A641;
+	border-radius: 25px;
+	color: whitesmoke;
+}
+#waitingRoomObserver{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	color: whitesmoke;
+	height: 11em;
+}
+#waitingRoomBtn{
+	border: 1px solid #C9A641;
+	border-radius: 15px;
+	color: whitesmoke;
+	height: 3.5em;
+}
+#waitingRoomBtn:hover{
+	background-color: #C9A641;
+}
+.player > img:hover, .observer > img:hover{
+	border: 2px solid #C9A641;
+	box-shadow: #C9A641;
+}
+.player > img, .observer > img {
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	height: 8em;
+}

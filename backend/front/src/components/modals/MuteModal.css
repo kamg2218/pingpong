@@ -1,0 +1,23 @@
+#muteList, #mutePerson{
+    border: 1px solid #C9A641;
+    border-radius: 15px;
+    align-items: center;
+}
+#muteList{
+    overflow-y: scroll;
+    padding-bottom: 2%;
+    margin-top: .2em;
+    margin-bottom: .1em;
+}
+#mutePerson:hover{
+    background-color: #c9a741a9;
+}
+#muteListHeader{
+    margin-bottom: 3%;
+    padding-bottom: 2%;
+    border-bottom: 1px solid #C9A641;
+}
+#muteProfile{
+    width: 2em;
+    height: 2em;
+}

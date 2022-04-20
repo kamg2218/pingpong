@@ -5,6 +5,7 @@ const ENV = dotenv.config({path : ENV_PATH});
 
 export const BACK_DOMAIN = ENV.parsed.BACK_DOMAIN
 const FRONT_URL = ENV.parsed.FRONT_URL
+//const FRONT_URL = ""
 export const CORS_ORIGIN = [];
 
 

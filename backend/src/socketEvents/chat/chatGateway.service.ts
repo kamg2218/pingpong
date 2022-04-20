@@ -67,7 +67,7 @@ export class ChatGatewayService {
 	async enterChatRoom(user: User, chatroom: ChatRoom) {
 		// onlineChatMap[];
 		// chatmembership insert하기
-		console.log("count : ", chatroom.memberCount);
+		// console.log("count : ", chatroom.memberCount);
 		if (chatroom.memberCount === 100)
 			return false;
 		const repo_chatroom = getCustomRepository(ChatRoomRepository);
@@ -208,11 +208,11 @@ export class ChatGatewayService {
 			return true;
 		if (password === undefined)
 			return false;
-		console.log("passwrod : ", password);
-		console.log("room encoded pw : ", chatroom.password);
-		console.log("input endcoded : ", await this.hashing(password));
+		// console.log("passwrod : ", password);
+		// console.log("room encoded pw : ", chatroom.password);
+		// console.log("input endcoded : ", await this.hashing(password));
 		const compareResult = await compare(password, chatroom.password);
-		console.log("compare Result : ", compareResult);
+		// console.log("compare Result : ", compareResult);
 		return compareResult;
 	}
 

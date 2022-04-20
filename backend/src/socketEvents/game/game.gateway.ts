@@ -4,7 +4,6 @@ import { Server } from "socket.io";
 import { AuthSocket } from "src/type/AuthSocket.interface";
 import { GameGatewayService } from "./gameGateway.service";
 import { MatchingManager } from "../online/matchingManager";
-import { onlineGameMap } from "../online/onlineGameMap";
 import { onlineManager } from "../online/onlineManager";
 import { GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchResponseDTO, MatchRequestDTO, InviteGameRoomResponseDTO, InviteGameRoomDTO } from "./dto/game.dto";
 import { ApiTags } from "@nestjs/swagger";
@@ -84,11 +83,6 @@ export class GameGateway {
             this.emitter.emit(socket, "enterGameRoom", {message : "Something wrong"});
             return ;  
         }
-        // const game = onlineGameMap[roomid];
-        // if (game.running) {
-        //     const initialInfo = await game.getInitialInfo();
-        //     this.emitter.emit(socket, "startGame", initialInfo);
-        // }
     }
     
     /* payload : userid : string, roomid : string */
@@ -99,7 +93,6 @@ export class GameGateway {
         const {result, reason} = await this.gameGatewayService.checkIfItIsAvailableInvite(socket.userid, payload);
         if (!result) {
             this.log(`${socket.userid} can't invite. : ${reason}`);
-            // this.emitter.emit(socket, "inviteGameRoom", {result : false});
             return ;
         }
         const requestInfo = await this.gameGatewayService.getInviteRequestInfo(socket.userid, payload.roomid);
