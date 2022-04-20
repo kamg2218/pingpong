@@ -45,7 +45,8 @@ export default function Play(){
 		});
 		socket.on('exitGameRoom', () => {
 			// console.log('exitGameRoom');
-			dispatch(updateGameRoom(gameRoomInitialState));
+			// dispatch(updateGameRoom(gameRoomInitialState));
+			dispatch(initialize());
 			history.push('/game');
 		});
 		return () => { socket.off('exitGameRoom'); }
