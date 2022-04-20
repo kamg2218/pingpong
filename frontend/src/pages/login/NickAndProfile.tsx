@@ -48,6 +48,7 @@ export default function NickAndProfile(){
 			axios.get(logout)
 				.then(res => alert('로그아웃 되었습니다.'))
 				.catch(err => {throw new Error(err)});
+			history.push('/');
 		});
 		return () => { socket.off('requestLogout'); }
 	}, [checkUrl, dispatch, gameroom.roomid, history]);
