@@ -9,7 +9,7 @@ import { BACK_URL } from '../../types/urlTypes';
 import { gameRoomDetail } from '../../types/gameTypes';
 import { RootState } from '../../redux/rootReducer';
 import { initialize } from '../../redux/userReducer';
-import { gameRoomInitialState, updateGameRoom } from '../../redux/gameReducer';
+import { initializeGame } from '../../redux/gameReducer';
 import './Play.css';
 import logo from '../../icons/logo_brown_profile.png';
 
@@ -45,7 +45,7 @@ export default function Play(){
 		});
 		socket.on('exitGameRoom', () => {
 			// console.log('exitGameRoom');
-			dispatch(updateGameRoom(gameRoomInitialState));
+			dispatch(initializeGame());
 			history.push('/game');
 		});
 		return () => { socket.off('exitGameRoom'); }

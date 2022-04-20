@@ -5,9 +5,9 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Friend, User } from '../../types/userTypes';
 import { gameRoomDetail, match, result } from '../../types/gameTypes';
-import {updateUser} from '../../redux/userReducer';
+import {updateUser, userInitial} from '../../redux/userReducer';
 import {RootState} from '../../redux/rootReducer';
-import { gameRoomInitialState, undefinedList, updateGameRoom } from '../../redux/gameReducer';
+import { gameRoomInitialState, initializeGame } from '../../redux/gameReducer';
 import Lobby from './Lobby';
 import WaitingRoom from './WaitingRoom';
 import SideMenuGame from './SideMenuGame';
@@ -36,9 +36,9 @@ export default function Game() {
 	const [userState, setUser] = useState<User>(user);
 
 	useEffect(() => {
-		if (!user || user.nickname === '') {
+		if (!user || user.userid === '') {
 			// console.log('user Info emit!')
-			dispatch(undefinedList());
+			dispatch(updateUser(userInitial));
 			socket.emit('userInfo');
 		}
 		socket.on('userInfo', (data:User) => {
@@ -48,7 +48,7 @@ export default function Game() {
 		});
 		socket.on('exitGameRoom', () => {
 			// console.log('exitGameRoom');
-			dispatch(updateGameRoom(gameRoomInitialState));
+			dispatch(initializeGame());
 			setRoom(gameRoomInitialState);
 			history.push('/game');
 		});
