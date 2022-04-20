@@ -42,7 +42,7 @@ export const gameReducer = (state = gameInitialState, action: any) => {
     case SCOREUPDATE:
       return {...state, score: action.payload};
     case DELETE:
-      return state;
+      return {...state, gameInitialState};
     default:
       return state;
   }
