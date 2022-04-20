@@ -14,6 +14,7 @@ export default function Qrcode(){
 	const [token, setToken] = useState<string>('');
 	const [alertState, setAlert] = useState<boolean>(false);
 	const checkUrl:string = BACK_URL + '/user/check';
+	const logout:string = BACK_URL + '/auth/logout';
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
@@ -31,7 +32,13 @@ export default function Qrcode(){
 		}).catch((err)=>{
 			console.log(err);
 			history.push('/');
-		})
+		});
+		socket.on('requestLogout', () => {
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
+		});
+		return () => { socket.off('requestLogout'); }
 	}, [checkUrl, dispatch, gameroom.roomid, history]);
 	
 	const checkToken = ():boolean => {
