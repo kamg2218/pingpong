@@ -16,6 +16,7 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const checkUrl:string = BACK_URL + '/user/check';
+	const logout:string = BACK_URL + '/auth/logout';
 	const gameroom:gameRoomDetail = useSelector((state:RootState) => state.gameReducer.gameroom, shallowEqual);
 
 	useEffect(()=>{
@@ -35,6 +36,12 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 		}).catch((err)=>{
 			console.log(err);
 			history.replace('/');
+		});
+		socket.on('requestLogout', () => {
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
+			history.push('/');
 		});
 		socket.on('enterGameRoom', (msg: gameRoomDetail | message) => {
 			// console.log('enter game room');
@@ -85,6 +92,7 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 		return ()=>{
 			socket.off('enterGameRoom');
 			socket.off('enterPlayRoom');
+			socket.off('requestLogout');
 		}
 	});
 
