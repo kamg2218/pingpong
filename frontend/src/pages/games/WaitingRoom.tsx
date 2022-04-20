@@ -24,7 +24,7 @@ export default function WaitingRoom(){
 	const logout:string = BACK_URL + '/auth/logout';
 
 	useEffect(()=>{
-		console.log('waitingRoom');
+		// console.log('waitingRoom');
 		const path:string = history.location.pathname;
 		if (path.search('waiting') !== -1){
 			axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
@@ -47,7 +47,7 @@ export default function WaitingRoom(){
 			});
 		}
 		socket.on('requestLogout', () => {
-			console.log(gameroom.roomid);
+			// console.log(gameroom.roomid);
 			if (gameroom.roomid){
 				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
 			}
