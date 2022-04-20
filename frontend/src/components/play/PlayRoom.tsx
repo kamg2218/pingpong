@@ -25,7 +25,7 @@ export default function PlayRoom() {
 		// console.log('PlayRoom');
 		if (start[0] && gameDoing) { gameDoing.current?.focus(); }
 		socket.on('draw', (data: draw) => {
-			console.log('draw', data);
+			// console.log('draw', data);
 			dispatch(updateDraw(data));
 			setDraw(data);
 		});
