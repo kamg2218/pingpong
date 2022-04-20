@@ -10,8 +10,6 @@ import ChatBox from './ChatBox';
 import MyChatBox from './MyChatBox';
 import './ChatRoom.css';
 
-//chat 길이 확인!
-
 export default function ChatRoom({idx, room}:{idx:string, room:ChatData}){
 	const dispatch = useDispatch();
 	const _history = useHistory();

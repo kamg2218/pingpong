@@ -50,15 +50,9 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 			setMatchingOpen(false);
 			if ('message' in msg) {
 				alert('fail to enter the room!');
-				// if (history.location.pathname.search('waiting')){
-				// 	history.replace('/game');
-				// }
 			}else {
 				dispatch(updateGameRoom(msg));
 				history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
-				// if (history.location.pathname.indexOf('waiting') === -1){
-				// 	history.push(`${history.location.pathname}/waiting/${msg.roomid}`);
-				// }
 			}
 		});
 		socket.on('enterPlayRoom', (msg: playRoomDetail | message) => {
