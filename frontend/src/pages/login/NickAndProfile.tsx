@@ -20,6 +20,7 @@ export default function NickAndProfile(){
 	const nicknamePlaceholder:string = '2~12 characters only';
 	const btn = document.querySelector('#okBtn');
 	const checkUrl:string = BACK_URL + '/user/check';
+	const logout:string = BACK_URL + '/auth/logout';
 
 	const dispatch = useDispatch();
 	const user:User = useSelector((state:RootState) => state.userReducer.user, shallowEqual);
@@ -42,7 +43,13 @@ export default function NickAndProfile(){
 		}).catch((err)=>{
 			console.log(err);
 			history.push('/');
-		})
+		});
+		socket.on('requestLogout', () => {
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
+		});
+		return () => { socket.off('requestLogout'); }
 	}, [checkUrl, dispatch, gameroom.roomid, history]);
 	
 	const handleInput = (event: any) => {

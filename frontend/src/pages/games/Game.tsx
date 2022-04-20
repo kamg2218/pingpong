@@ -18,6 +18,8 @@ import ProfileModal from '../../components/modals/ProfileModal';
 import LoadingModal from '../../components/modals/LoadingModal';
 import logo from '../../icons/logo_brown_profile.png';
 import './Game.css';
+import { BACK_URL } from '../../types/urlTypes';
+import axios from 'axios';
 
 Modal.setAppElement('#root');
 export default function Game() {
@@ -34,6 +36,7 @@ export default function Game() {
 	const dispatch = useDispatch();
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 	const [userState, setUser] = useState<User>(user);
+	const logout:string = BACK_URL + '/auth/logout';
 
 	useEffect(() => {
 		if (!user || user.userid === '') {
@@ -41,6 +44,11 @@ export default function Game() {
 			dispatch(updateUser(userInitial));
 			socket.emit('userInfo');
 		}
+		socket.on('requestLogout', () => {
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
+		});
 		socket.on('userInfo', (data:User) => {
 			// console.log('user Info is changed!');
 			dispatch(updateUser(data));
@@ -123,6 +131,7 @@ export default function Game() {
 
 		return ()=>{
 			socket.off('userInfo');
+			socket.off('requestLogout');
 			socket.off('exitGameRoom');
 			socket.off('matchResponse');
 			socket.off('inviteGameRoomResponse');

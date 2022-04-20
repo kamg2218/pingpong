@@ -14,6 +14,7 @@ import './Play.css';
 import logo from '../../icons/logo_brown_profile.png';
 
 export default function Play(){
+	const logout:string = BACK_URL + '/auth/logout';
 	const checkUrl:string = BACK_URL + '/user/check';
 	const history = useHistory();
 	const param:any = useParams();
@@ -42,6 +43,11 @@ export default function Play(){
 		}).catch((err)=>{
 			console.log(err);
 			history.replace('/');
+		});
+		socket.on('requestLogout', () => {
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
 		});
 		socket.on('exitGameRoom', () => {
 			// console.log('exitGameRoom');
