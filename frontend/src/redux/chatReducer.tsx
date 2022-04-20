@@ -23,7 +23,7 @@ export const chatReducer = (state = chatInitialState, action:any) => {
     case PUBLICUPDATE:
       return {...state, publicroom: action.payload};
     case DELETE:
-      return chatInitialState;
+      return state;
     default:
       return state;
   }

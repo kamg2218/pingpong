@@ -83,7 +83,6 @@ export default function PlayRoom() {
 	const drawCanvas = () => {
 		const ctx = canvas?.current?.getContext('2d');
 		if (ctx) {
-			console.log('draw canvas');
 			//clear
 			ctx.clearRect(0, 0, drawState.background.width, drawState.background.height);
 			//center

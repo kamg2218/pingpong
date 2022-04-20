@@ -16,7 +16,7 @@ export const userReducer = (state = userState, action: any) => {
     case UPDATE:
       return {...state, user: action.payload};
     case DELETE:
-      return userState;
+      return state;
     default:
       return state;
   }
