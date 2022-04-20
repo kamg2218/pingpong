@@ -45,12 +45,12 @@ export default function Play(){
 			history.replace('/');
 		});
 		socket.on('requestLogout', () => {
-			axios.get(logout)
-				.then(res => alert('로그아웃 되었습니다.'))
-				.catch(err => {throw new Error(err)});
 			if (gameroom.roomid){
 				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
 			}
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
 			history.push('/');
 		});
 		socket.on('exitGameRoom', () => {
