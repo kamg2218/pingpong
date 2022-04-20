@@ -29,8 +29,9 @@ export default function Main(){
   		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
   		  } else if ( res.data.state === 'login'){
 					axios.get(logout).then(res => console.log('Log out! ' + res)).catch(err => {throw new Error(err)});
+				} else {
+					dispatch(initialize());
 				}
-				dispatch(initialize());
   		}
 		}).catch((err)=>{
 			console.log(err);
