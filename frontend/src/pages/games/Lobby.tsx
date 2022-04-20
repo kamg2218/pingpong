@@ -23,7 +23,7 @@ export default function Lobby({setIsOpen, setLoadingOpen, setMatchingOpen}:{setI
 		axios.get(checkUrl + '?url=lobby').then((res:any) => {
 			const path:string = history.location.pathname;
 			if (res.data.state) {
-				// console.log(res.data.state);
+				console.log(res.data.state);
 				if (res.data.state === 'playing' && path.search('play') === -1 && gameroom.roomid){
 					socket.emit('exitGameRoom', { roomid: gameroom.roomid });
 				} else if (res.data.state === 'waiting' && path.search('waiting') === -1 && gameroom.roomid){
