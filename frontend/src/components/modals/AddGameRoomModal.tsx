@@ -70,9 +70,9 @@ export default function AddGameRoomModal(){
 							<div id='selects' className='m-3'>
 								<label className='col-form-label'>스피드</label>
 								<select className='form-control-sm mx-3' onChange={handleSpeed}>
-									<option value='1'>1</option>
-									<option value='2'>2</option>
-									<option value='3'>3</option>
+									<option value={1}>1</option>
+									<option value={2}>2</option>
+									<option value={3}>3</option>
 								</select>
 								<label className='col-form-label mx-2'>관전자 수</label>
 								<select className='form-control-sm mx-1' defaultValue={5} onChange={handleObserver}>
