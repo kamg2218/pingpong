@@ -25,23 +25,25 @@ export default function WaitingRoom(){
 	useEffect(()=>{
 		// console.log('waitingRoom');
 		const path:string = history.location.pathname;
-		axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
-  		if (res.data.state && path.search('waiting') !== -1){
-  		  if (res.data.state === 'playing' && gameroom.roomid){
-  		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
-  		  }else if (res.data.state === 'waiting' && param.id !== room.roomid){
-  		    socket.emit('exitGameRoom', { roomid: gameroom.roomid });
-  		  }else if (res.data.state === 'login'){
-					dispatch(initialize());
-					history.replace('/game');
-  		  }else if (res.data.state === 'logout'){
-  		    history.replace('/');
-  		  }
-  		}
-		}).catch((err)=>{
-			console.log(err);
-			history.replace('/');
-		});
+		if (path.search('waiting') !== -1){
+			axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
+				if (res.data.state) {
+					if (res.data.state === 'playing' && gameroom.roomid){
+						socket.emit('exitGameRoom', { roomid: gameroom.roomid });
+					}else if (res.data.state === 'waiting' && param.id !== room.roomid){
+						socket.emit('exitGameRoom', { roomid: gameroom.roomid });
+					}else if (res.data.state === 'login'){
+						dispatch(initialize());
+						history.replace('/game');
+					}else if (res.data.state === 'logout'){
+						history.replace('/');
+					}
+				}
+			}).catch((err)=>{
+				console.log(err);
+				history.replace('/');
+			});
+		}
 	
 		socket.on('changeGameRoom', (msg:any) => {
 			const tmp:gameRoomDetail = room;
