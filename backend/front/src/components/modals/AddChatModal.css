@@ -1,0 +1,4 @@
+#inviteDiv, #mangerDiv{
+	height: 150px;
+	overflow-y: scroll;
+}

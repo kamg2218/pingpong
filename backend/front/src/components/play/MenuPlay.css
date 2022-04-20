@@ -1,0 +1,61 @@
+#player1, #player2{
+	border: 1px solid #C9A641;
+	border-radius: 25%;
+	height: 6em;
+	object-fit: fill;
+	overflow: hidden;
+	padding: 0%;
+	width: 6em;
+}
+#observer{
+	border: 1px solid #C9A641;
+	border-radius: 25%;
+	display: flex;
+	height: 3em;
+	justify-content: center;
+	overflow: hidden;
+	padding: 0%;
+	width: 3em;
+}
+#menuPlay{
+	height: 100%;
+	margin: 0%;
+	padding: 0%;
+	text-align: center;
+}
+#menuScore{
+	color: #C9A641;
+	justify-content: center;
+}
+#observerImg{
+	height: 60%;
+}
+#observerFirst, #observerSecond{
+	margin: auto;
+	margin-top: 10%;
+	width: 100%;
+	align-items: center;
+}
+#observerSecond{
+	margin-bottom: 15%;
+}
+#observerFirstContent, #observerSecondContent{
+	display: flex;
+	justify-content: center;
+}
+#exitButton{
+	background-color: #6D6162;
+	border: 1px solid #C9A641;
+	border-radius: 15px;
+	color: whitesmoke;
+	justify-content: center;
+	margin: auto;
+}
+#exitButton:hover{
+	background-color: #C9A641;
+}
+#profileLabel{
+	margin: 0%;
+	width: 100%;
+	word-break: break-all;
+}

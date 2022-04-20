@@ -1,0 +1,26 @@
+#nickandprofile{
+	padding: 3%;
+	text-align: center;
+}
+#nickandprofile > form{
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	display: inline-block;
+	margin-top: 10%;
+	padding: 1%;
+}
+#checkBtn, #okBtn, #cancelBtn{
+	border: 1px solid #C9A641;
+	border-radius: 5px;
+	color: whitesmoke;
+}
+#checkBtn:hover, #okBtn:hover, #cancelBtn:hover{
+	background-color: #C9A641;
+}
+#nickLabel{
+	color: whitesmoke;
+}
+#nickInput:focus{
+	outline: none;
+	border: 2px solid #C9A641;
+}

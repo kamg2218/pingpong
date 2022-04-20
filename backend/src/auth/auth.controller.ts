@@ -35,6 +35,7 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     @ApiOperation({ summary: '로그인', description: '42 intra 로그인 화면 요청'})
     test() {
+        console.log("42 TEST")
 
     }
 
@@ -45,6 +46,7 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     @ApiOperation({ summary: '42인트라 콜백주소', description: '프론트에서 호출 X'})
     async login( @Res({passthrough : true}) res : Response, @UserDeco() email: string) {
+        console.log("42 CALL")
         let user = await this.authService.findUser(email);
         if (!user)
             user = await this.authService.createUser(email);

@@ -253,6 +253,8 @@ export class Game {
     };
 
     public announce(event : string, data : any) {
+        if (event === "draw")
+            console.log("members : ", this.participants);
         this.participants.map(socketid=>{
             this.emitter.emitById(socketid, event, data);
         })

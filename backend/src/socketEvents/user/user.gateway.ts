@@ -1,5 +1,4 @@
-
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards} from "@nestjs/common";
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { UserRepository } from 'src/db/repository/User/UserCustomRepository';
@@ -20,6 +19,7 @@ const options = {
 }
 @WebSocketGateway(options)
 @UseGuards(WsGuard)
+
 export class UserGateway{
   
     constructor(
@@ -39,10 +39,6 @@ export class UserGateway{
       	this.logger.log(msg, "UserGateway");
   	}
 
-	//private over(gateway : string) {
-    //   // console.log(`[${gateway} is over]---------\n`)
-    // }
-
     @SubscribeMessage('userInfo') 
     async sendUserInfo(@ConnectedSocket() socket : AuthSocket) {
 			this.log({gate : "userInfo"});
@@ -58,7 +54,6 @@ export class UserGateway{
 				this.userGatewayService.getBlocklist(user),
 			]);
 			this.emitter.emit(socket, "userInfo", this.userGatewayService.arrOfObjToObj(all));
-			// return this.over("userInfo");
     }
 
     @SubscribeMessage('opponentProfile')
@@ -75,7 +70,6 @@ export class UserGateway{
 				this.userGatewayService.getGamehistory(theOther)
 			]);
 			this.emitter.emit(socket, "opponentProfile", this.userGatewayService.arrOfObjToObj(all));
-			// return this.over("opponentProfile");
     }
 
     @SubscribeMessage('addFriend')
@@ -90,8 +84,6 @@ export class UserGateway{
 			await this.userGatewayService.sendFriendRequest(user, payload.userid);
 			const sok_friend = onlineManager.socketIdOf(payload.userid);
 			this.emitter.emitById(sok_friend, "newFriend", repo_user.getSimpleInfo(user))
-			// this.server.to(sok_friend).emit("newFriend", repo_user.getSimpleInfo(user));
-			// return this.over("addFriend");
 	}
 
     @SubscribeMessage('deleteFriend')
@@ -106,7 +98,6 @@ export class UserGateway{
 			this.emitter.emit(socket, "deleteFriend", {userid : friend.userid});
 			if (friendScoketID)
 				this.emitter.emitById(friendScoketID, "deleteFriend", {userid : user.userid});
-			// return this.over("deleteFriend");
     }
 
     @SubscribeMessage('blockFriend')
@@ -122,7 +113,6 @@ export class UserGateway{
 			this.emitter.emit(socket, "blockFriend", repo_user.getSimpleInfo(theOther));
 			if (theOtherScoketID)
 				this.emitter.emitById(theOtherScoketID, "deleteFriend", {userid : user.userid});
-			// return this.over("blockFriend");
     }
 
     @SubscribeMessage('unblockFriend')
@@ -131,7 +121,6 @@ export class UserGateway{
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			const theOther = await this.userGatewayService.checkValidateUnblockFriend(user, payload.userid);
 			await this.userGatewayService.unblock(user, theOther);
-			// return this.over("unblockFriend");
     }
 
     @SubscribeMessage('newFriend')
@@ -143,10 +132,7 @@ export class UserGateway{
 				const sok_friend = onlineManager.socketIdOf(payload.userid);
 				this.emitter.emit(socket, 'addFriend', theOtherInfo);
 				this.emitter.emitById(sok_friend, "addFriend", myInfo);
-				// socket.emit('addFriend', theOtherInfo);
-				// this.server.to(sok_friend).emit("addFriend", myInfo);
 			}
-			// return this.over("newFriend");
     }
 
     @SubscribeMessage('updateProfile')
@@ -155,7 +141,5 @@ export class UserGateway{
 			const user = await getCustomRepository(UserRepository).findOne(onlineManager.userIdOf(socket.id));
 			const updateResult = await this.userGatewayService.update(user, payload);
 			this.emitter.emit(socket, "updateProfile", {...updateResult});
-			// this.server.to(socket.id).emit("updateProfile", {...updateResult});
-			// return this.over("updateProfile");
 	}
 }

@@ -1,0 +1,73 @@
+#menuGame{
+	text-align: center;
+	border-style: none;
+	height: 100%;
+}
+#friendList{
+	align-items: start;
+	border: 1px solid #C9A641;
+	border-radius: 25px;
+	height: 40%;
+	margin: auto;
+	overflow-y: scroll;
+	padding: .5em;
+}
+#oldfriend, #newfriend{
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	margin: none;
+	padding: .5em;
+}
+#oldfriend:hover, #newfriend:hover{
+	box-shadow: 1px 1px 2px 1px #C9A641 inset;
+	border-radius: 15px;
+}
+#newfriend{
+	box-shadow: 1px 1px 2px 1px #C9A641;
+	border-radius: 15px;
+	padding: 1em;
+}
+#crossMark{
+	color: red;
+}
+#menuNick{
+	box-shadow: 1px 1px 1px 1px #C9A641;
+	border-radius: 25px;
+	justify-content: center;
+	margin-left: 1em;
+	margin-right: 1em;
+	padding: 0.25em;
+	word-break: break-all;
+}
+#menuNick:hover{
+	box-shadow: 1px 1px 1px 1px #C9A641 inset;
+	border-radius: 25px;
+}
+#menuRecord{
+	justify-content: center;
+	margin-top: 1.5em;
+	margin-bottom: .25em;
+}
+#menuGameProfile{
+	width: 8em;
+	height: 8em;
+	border: .5px solid #C9A641;
+	border-radius: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	object-fit: cover;
+	overflow: hidden;
+}
+#winLose{
+	margin-bottom: .5em;
+	justify-content: center;
+}
+#friendNick{
+	text-align: start;
+}
+.circle{
+	box-shadow: .5px 1px 1px .2px gray;
+}

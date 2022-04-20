@@ -108,6 +108,8 @@ export class AuthService {
     const user = await repoUser.findOne({userid : payload.userid});
     if (!user)
       throw new BadRequestException("No such user");
+    if (user.status === "logout")
+      throw new UnauthorizedException("logout");
     if (!user.isTwoFactorAuthenticationEnabled)
       return user;
     if (payload.isSecondFactorAuthenticated)
@@ -121,6 +123,8 @@ export class AuthService {
     const user = await repoUser.findOne({userid : payload.userid});
     if (!user)
       throw new BadRequestException("No such user");
+    if (user.status === "logout")
+      throw new UnauthorizedException("logout");
     return user;
   }
 }

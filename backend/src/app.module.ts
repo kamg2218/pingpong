@@ -16,7 +16,7 @@ import { join } from 'path';
               TwoFactorAuthenticationModule,
               EventsModule, UserModule,
               ServeStaticModule.forRoot({
-                rootPath : join(__dirname, '..', 'src/views')
+                rootPath : join(__dirname, '..', 'views')
               })
             ],
   controllers: [AppController],

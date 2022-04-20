@@ -98,6 +98,8 @@ export class GameGatewayService {
 				reason = "No such user";
 			else if (!gameRoom)
 				reason = "No such Game Room";
+			else if (await this.amIinGameRoom(userid))
+				reason = "You are already in the Game Room.";
 			else if (! await repo_gameRoom.isAvaliableToJoinAs(gameRoom, position, roomOptions.password))
 				reason = await repo_gameRoom.whyItIsntAvailableJoin(gameRoom, position, roomOptions.password);
 			else
@@ -152,14 +154,12 @@ export class GameGatewayService {
 			reason = "You are not the member of the Game Room";
 		else if (! onlineManager.isOnline(payload.userid))
 			reason = "Friend is not online.";
-		else if (await this.amIinGameRoom(payload.userid))
-			reason = "Friend is already in the Game Room"
 		else if (await repo_blockList.amIBlockedById(userid, payload.userid))
 			reason = "You are blocked."
 		else if (await repo_blockList.didIBlockId(userid, payload.userid))
 			reason = "You blocked."
 		else {
-			const res = await this.checkIfItIsAvailableToJoin(userid, {roomid : payload.roomid, isPlayer : true, password : "*"});
+			const res = await this.checkIfItIsAvailableToJoin(payload.userid, {roomid : payload.roomid, isPlayer : true, password : "*"});
 			if (!res.result)
 				reason = res.reason;
 			else
