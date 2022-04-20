@@ -45,8 +45,8 @@ export default function Game() {
 			socket.emit('userInfo');
 		}
 		socket.on('requestLogout', () => {
+			console.log(gameroom.roomid);
 			if (gameroom.roomid){
-				console.log(gameroom.roomid);
 				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
 			}
 			axios.get(logout)
