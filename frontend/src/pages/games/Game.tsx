@@ -38,7 +38,6 @@ export default function Game() {
 	useEffect(() => {
 		if (!user || user.userid === '') {
 			// console.log('user Info emit!')
-			// dispatch(undefinedList());
 			dispatch(updateUser(userInitial));
 			socket.emit('userInfo');
 		}
