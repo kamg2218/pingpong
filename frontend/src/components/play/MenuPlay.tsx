@@ -64,7 +64,6 @@ export default function MenuPlay(){
 	const handleExit = () => {
 		socket.emit('exitGameRoom', { roomid: room.roomid });
 		dispatch(updateUser(userInitial));
-		// socket.emit('userInfo');
 	}
 	
 	return (
