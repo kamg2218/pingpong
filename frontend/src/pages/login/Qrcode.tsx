@@ -34,9 +34,6 @@ export default function Qrcode(){
 			history.push('/');
 		});
 		socket.on('requestLogout', () => {
-			axios.get(logout)
-				.then(res => alert('로그아웃 되었습니다.'))
-				.catch(err => {throw new Error(err)});
 			history.push('/');
 		});
 		return () => { socket.off('requestLogout'); }

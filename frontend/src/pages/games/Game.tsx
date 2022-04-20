@@ -36,7 +36,6 @@ export default function Game() {
 	const dispatch = useDispatch();
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 	const [userState, setUser] = useState<User>(user);
-	const logout:string = BACK_URL + '/auth/logout';
 
 	useEffect(() => {
 		if (!user || user.userid === '') {
@@ -44,15 +43,6 @@ export default function Game() {
 			dispatch(updateUser(userInitial));
 			socket.emit('userInfo');
 		}
-		socket.on('requestLogout', () => {
-			axios.get(logout)
-				.then(res => alert('로그아웃 되었습니다.'))
-				.catch(err => {throw new Error(err)});
-			if (gameroom.roomid){
-				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
-			}
-			history.push('/');
-		});
 		socket.on('userInfo', (data:User) => {
 			// console.log('user Info is changed!');
 			dispatch(updateUser(data));
@@ -135,7 +125,6 @@ export default function Game() {
 
 		return ()=>{
 			socket.off('userInfo');
-			socket.off('requestLogout');
 			socket.off('exitGameRoom');
 			socket.off('matchResponse');
 			socket.off('inviteGameRoomResponse');

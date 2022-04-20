@@ -21,13 +21,15 @@ export default function WaitingRoom(){
 	const gameroom:gameRoomDetail = useSelector((state:RootState)=>state.gameReducer.gameroom);
 	const [room, setRoom] = useState<gameRoomDetail>(gameroom);
 	const checkUrl:string = BACK_URL + '/user/check';
+	const logout:string = BACK_URL + '/auth/logout';
 
 	useEffect(()=>{
-		// console.log('waitingRoom');
+		console.log('waitingRoom');
 		const path:string = history.location.pathname;
 		if (path.search('waiting') !== -1){
 			axios.get(checkUrl + '?url=waitingroom').then((res:any)=>{
 				if (res.data.state) {
+					// console.log(res.data.state);
 					if (res.data.state === 'playing' && gameroom.roomid){
 						socket.emit('exitGameRoom', { roomid: gameroom.roomid });
 					}else if (res.data.state === 'waiting' && param.id !== room.roomid){
@@ -44,7 +46,16 @@ export default function WaitingRoom(){
 				history.replace('/');
 			});
 		}
-	
+		socket.on('requestLogout', () => {
+			console.log(gameroom.roomid);
+			if (gameroom.roomid){
+				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
+			}
+			axios.get(logout)
+				.then(res => alert('로그아웃 되었습니다.'))
+				.catch(err => {throw new Error(err)});
+			history.push('/');
+		});
 		socket.on('changeGameRoom', (msg:any) => {
 			const tmp:gameRoomDetail = room;
 			// console.log('changeGameRoom');
@@ -88,6 +99,7 @@ export default function WaitingRoom(){
 		return ()=>{
 			socket.off('changeGameRoom');
 			socket.off('startGame');
+			socket.off('requestLogout');
 		}
 	}, [dispatch, gameroom, room, history, param, checkUrl]);
 

@@ -25,7 +25,7 @@ export default function Play(){
 		const path: string = history.location.pathname;
 		axios.get(checkUrl + '?url=play').then((res:any)=>{
   		if (res.data.state && path.search('play') !== -1){
-				console.log('userCheck', res.data.state);
+				// console.log('userCheck', res.data.state);
 				if (res.data.state === 'playing' && gameroom.roomid !== param.id){
 					console.log('playing -  but roomid is different.');
 					socket.emit('exitGameRoom', {roomid: gameroom.roomid});
@@ -45,12 +45,14 @@ export default function Play(){
 			history.replace('/');
 		});
 		socket.on('requestLogout', () => {
+			if (gameroom.roomid){
+				console.log(gameroom.roomid);
+				console.log(param.id);
+				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
+			}
 			axios.get(logout)
 				.then(res => alert('로그아웃 되었습니다.'))
 				.catch(err => {throw new Error(err)});
-			if (gameroom.roomid){
-				socket.emit('exitGameRoom', {roomid: gameroom.roomid});
-			}
 			history.push('/');
 		});
 		socket.on('exitGameRoom', () => {
