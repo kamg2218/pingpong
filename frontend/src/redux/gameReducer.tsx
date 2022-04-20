@@ -21,6 +21,7 @@ const DRAWUPDATE:string = 'game/draw';
 const SCOREUPDATE:string = 'game/score';
 const DELETE:string = 'DELETE';
 const UNDEFINED:string = 'UNDEFINED';
+const DELETEGAME:string = 'DELETEGAME';
 
 export const updateGameRoom = (data:gameRoomDetail) => ({type: GAMEROOMUPDATE, payload: data});
 export const updatePlayRoom = (data:playRoom) => ({type: PLAYROOMUPDATE, payload: data});
@@ -28,6 +29,7 @@ export const updateGameResult = (data:string) => ({type: GAMERESULTUPDATE, paylo
 export const updateDraw = (data:draw) => ({type: DRAWUPDATE, payload: data});
 export const updateScore = (data:score) => ({type: SCOREUPDATE, payload: data});
 export const undefinedList = () => ({type: UNDEFINED});
+export const initializeGame = () => ({type: DELETEGAME, payload: gameInitialState});
 
 export const gameReducer = (state = gameInitialState, action: any) => {
   switch (action.type){
@@ -41,6 +43,8 @@ export const gameReducer = (state = gameInitialState, action: any) => {
       return {...state, draw: action.payload};
     case SCOREUPDATE:
       return {...state, score: action.payload};
+    case DELETEGAME:
+      return gameInitialState;
     case DELETE:
       return gameInitialState;
     default:

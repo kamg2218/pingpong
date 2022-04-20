@@ -5,9 +5,9 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Friend, User } from '../../types/userTypes';
 import { gameRoomDetail, match, result } from '../../types/gameTypes';
-import {initialize, updateUser} from '../../redux/userReducer';
+import {updateUser} from '../../redux/userReducer';
 import {RootState} from '../../redux/rootReducer';
-import { gameRoomInitialState, undefinedList, updateGameRoom } from '../../redux/gameReducer';
+import { gameRoomInitialState, initializeGame, undefinedList, updateGameRoom } from '../../redux/gameReducer';
 import Lobby from './Lobby';
 import WaitingRoom from './WaitingRoom';
 import SideMenuGame from './SideMenuGame';
@@ -48,8 +48,7 @@ export default function Game() {
 		});
 		socket.on('exitGameRoom', () => {
 			// console.log('exitGameRoom');
-			// dispatch(updateGameRoom(gameRoomInitialState));
-			dispatch(initialize());
+			dispatch(initializeGame());
 			setRoom(gameRoomInitialState);
 			history.push('/game');
 		});
