@@ -7,6 +7,7 @@ import { updateScore, updateGameRoom } from '../../redux/gameReducer';
 import ObserverProfileBox from './ObserverProfileBox';
 import Profile from '../../icons/Profile';
 import './MenuPlay.css';
+import { updateUser, userInitial } from '../../redux/userReducer';
 
 export default function MenuPlay(){
 	const dispatch = useDispatch();
@@ -62,7 +63,8 @@ export default function MenuPlay(){
 
 	const handleExit = () => {
 		socket.emit('exitGameRoom', { roomid: room.roomid });
-		socket.emit('userInfo');
+		dispatch(updateUser(userInitial));
+		// socket.emit('userInfo');
 	}
 	
 	return (
