@@ -25,6 +25,7 @@ export default function PlayRoom() {
 		// console.log('PlayRoom');
 		if (start[0] && gameDoing) { gameDoing.current?.focus(); }
 		socket.on('draw', (data: draw) => {
+			console.log('draw', data);
 			dispatch(updateDraw(data));
 			setDraw(data);
 		});
@@ -82,6 +83,7 @@ export default function PlayRoom() {
 	const drawCanvas = () => {
 		const ctx = canvas?.current?.getContext('2d');
 		if (ctx) {
+			console.log('draw canvas');
 			//clear
 			ctx.clearRect(0, 0, drawState.background.width, drawState.background.height);
 			//center
