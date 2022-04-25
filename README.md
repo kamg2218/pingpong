@@ -2,7 +2,7 @@
 <img src="https://img.shields.io/badge/-FFFFFF?style=for-the-badge&logo=42&logoColor=black" style="width: 30vw; min-width: 140px;" />
 </div>
 
-# ft_transcendence 🏓
+# <img src="https://img.shields.io/badge/-FFFFFF?style=for-the-badge&logo=42&logoColor=black" /> ft_transcendence 🏓
 this is  mighty pong contest.
 
 # 1. ❔ 실행 방법
