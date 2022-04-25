@@ -2,6 +2,17 @@
 this is  mighty pong contest.
 
 # 1. ❔ 실행 방법
+
+```
+cd backend
+
+docker-compose up --build
+
+```
+
+http://localhost:4242 에서 확인 ✅
+
+
 # 2. 📹 실행 영상
 ## 2-0. 🧑‍💻 로그인
 ## 2-1. ⌨️ 채팅
