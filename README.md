@@ -7,10 +7,9 @@ this is  mighty pong contest.
 cd backend
 
 docker-compose up --build
-
 ```
 
-http://localhost:4242 에서 확인 ✅
+✅ [localhost](http://localhost:4242) 에서 확인 가능
 
 
 # 2. 📹 실행 영상
