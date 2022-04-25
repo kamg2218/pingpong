@@ -38,5 +38,6 @@ this is  mighty pong contest.
 # 5. 📓 노션 링크
 
 🗒️ [Notion](https://www.notion.so/ft_transcendence-39e4dc40bfb1406b90dc92d2d1e4596c)
+
 📜 [Scenario](https://www.icloud.com/numbers/08Ic1cEcI1hVdwJCo_0EntIRA)
 
