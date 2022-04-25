@@ -22,10 +22,7 @@ docker-compose up --build
 ### frontend
 
 ```
-├── tsconfig.json
-├── package.json
-├── package-lock.json
-└──  src
+ ──  src
       ├── components
       │    ├── chat
       │    ├── games
@@ -43,6 +40,32 @@ docker-compose up --build
       ├── images.d.ts
       ├── App.tsx
       └── index.tsx 
+```
+
+### backend
+
+```
+src
+ |-- auth
+ |    |-- strategy
+ |-- config
+ |-- db
+ |    |-- entity
+ |    |-- repository
+ |-- filter
+ |-- socketEvents
+ |    |-- auth
+ |    |-- chat
+ |    |-- game
+ |    |    |-- gameElement
+ |    |-- user
+ |-- two-factor-authentication
+ |-- type
+ |-- user
+ |-- app.modules.ts
+ |-- main.ts
+ |-- .env
+ |-- ...
 ```
 
 # 5. 📓 문서
