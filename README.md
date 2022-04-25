@@ -1,11 +1,7 @@
-<div align=center>
-<img src="https://img.shields.io/badge/-FFFFFF?style=for-the-badge&logo=42&logoColor=black" style="width: 30vw; min-width: 140px;" />
-</div>
-
-# <img src="https://img.shields.io/badge/-FFFFFF?style=for-the-badge&logo=42&logoColor=black" style="width: 10vw;" /> ft_transcendence 🏓
+# ft_transcendence 🏓
 this is  mighty pong contest.
 
-# 1. ❔ 실행 방법
+## 1. ❔ 실행 방법
 
 ```
 cd backend
@@ -16,11 +12,11 @@ docker-compose up --build
 ✅ [localhost](http://localhost:4242) 에서 확인 가능
 
 
-# 2. 📹 실행 영상
-## 2-0. 🧑‍💻 로그인
-## 2-1. ⌨️ 채팅
-## 2-2. 🏓 게임
-# 3. 🕵️‍♀️ 기술 스택
+## 2. 📹 실행 영상
+### 2-0. 🧑‍💻 로그인
+### 2-1. ⌨️ 채팅
+### 2-2. 🏓 게임
+## 3. 🕵️‍♀️ 기술 스택
 
 
 <div align=center><h2>📚 Front-end 📚</h2></div>
@@ -48,7 +44,7 @@ docker-compose up --build
 </div>
 
 
-# 4. 📁 디렉토리
+## 4. 📁 디렉토리
 
 ### frontend
 
@@ -99,7 +95,7 @@ src
  |-- ...
 ```
 
-# 5. 📓 문서
+## 5. 📓 문서
 
 🗒️ [Notion](https://www.notion.so/ft_transcendence-39e4dc40bfb1406b90dc92d2d1e4596c)
 
