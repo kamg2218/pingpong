@@ -2,18 +2,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser'
-import { setupSwagger } from 'src/config/SetupSwagger'
+// import { setupSwagger } from 'src/config/SetupSwagger'
 import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/typeorm';
 import { BlockedFriends, Friends, User } from './db/entity/User/UserEntity';
 import { ChatRoom, ChatHistory, ChatMembership } from './db/entity/Chat/ChatEntity';
-import { GameRoom } from './db/entity/Game/GameRoom.entity';
+import { GameRoom, GameMembership } from './db/entity/Game/GameEntity';
 import { ENV_PATH } from "src/config/url";
 import dotenv from 'dotenv'
-import { GameMembership } from './db/entity/Game/GameMembership.entity';
 const ENV = dotenv.config({path : ENV_PATH});
-const { instrument } = require("@socket.io/admin-ui");
 
 AdminJS.registerAdapter({Database, Resource});
 async function bootstrap() {
@@ -37,7 +35,7 @@ async function bootstrap() {
     cookiePassword : ENV.parsed.ADMINCOOKIEPWD
   })
   app.use(adminJs.options.rootPath, router);
-  setupSwagger(app);
+  // setupSwagger(app);
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({

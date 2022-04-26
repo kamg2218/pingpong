@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from 'src/restRequests/auth/auth.module';
 import { AuthGateway } from './auth/auth.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { GameGateway } from './game/game.gateway';

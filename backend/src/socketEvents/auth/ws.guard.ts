@@ -1,5 +1,5 @@
 import {CanActivate, Injectable} from '@nestjs/common';
-import { onlineManager } from './online/onlineManager';
+import { onlineManager } from '../online/onlineManager';
 
 
 @Injectable()

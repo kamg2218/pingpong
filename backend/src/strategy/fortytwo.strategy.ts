@@ -1,6 +1,6 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from 'passport-42'
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import {FortyTwoOAuthConfig} from 'src/config/forty.api';
 
 @Injectable()

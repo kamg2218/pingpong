@@ -5,7 +5,7 @@ import { UserDeco } from 'src/type/user.decorator';
 import { User } from 'src/db/entity/User/User.entity';
 import { Body, Controller, HttpCode, Logger, Post, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/restRequests/auth/auth.service';
 
 @Controller('2fa')
 @ApiTags('2FA API')
