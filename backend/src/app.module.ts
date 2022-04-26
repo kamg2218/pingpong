@@ -3,10 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule} from '@nestjs/typeorm';
 import { ormconfig } from 'src/config/ormconfig'
-import { AuthModule } from './auth/auth.module';
-import { TwoFactorAuthenticationModule } from './two-factor-authentication/twoFactorAuthentication.module';
+import { AuthModule } from './restRequests/auth/auth.module';
+import { TwoFactorAuthenticationModule } from './restRequests/two-factor-authentication/twoFactorAuthentication.module';
 import { EventsModule } from './socketEvents/events.module';
-import { UserModule } from './user/user.module';
+import { UserModule } from './restRequests/user/user.module';
 import {ServeStaticModule} from '@nestjs/serve-static';
 import { join } from 'path';
 

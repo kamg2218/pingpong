@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "src/db/entity/User/UserEntity";
 import { authenticator } from 'otplib'
-import { Response } from "express";
-import { toDataURL, toString } from 'qrcode'
+import { toDataURL } from 'qrcode'
 import { getCustomRepository } from "typeorm";
 import { UserRepository } from "src/db/repository/User/UserCustomRepository";
 

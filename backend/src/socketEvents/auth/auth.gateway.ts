@@ -14,16 +14,13 @@ import { onlineGameMap } from '../online/onlineGameMap';
 import { onlineManager } from '../online/onlineManager';
 import { MatchingManager } from '../online/matchingManager';
 import { JwtService } from '@nestjs/jwt';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/restRequests/auth/auth.service';
 import { GameGatewayService } from '../game/gameGateway.service';
 import { ChatGatewayService } from '../chat/chatGateway.service';
-import { WsGuard } from '../ws.guard';
+import { WsGuard } from './ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
 import { Emitter } from './emitter';
-// import { CHECKER } from './test';
 
-
-// const checker = new CHECKER();
 const options = {
     cors : {
         origin : ["https://admin.socket.io"],

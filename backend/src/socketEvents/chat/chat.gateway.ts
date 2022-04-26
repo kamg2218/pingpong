@@ -11,7 +11,7 @@ import { ChatGatewayService } from './chatGateway.service';
 import { onlineChatRoom } from '../online/onlineChatRoom';
 import { onlineChatRoomManager } from '../online/onlineChatRoomManager';
 import { ChatHistoryDTO, ChatHistoryUpdateDTO, ChatMessageDTO, ChatMuteDTO, CreateChatRoomDTO, EnterChatRoomDTO, ExitChatRoomDTO, InviteChatRoomDTO, KickChatRoomDTO, UpdateChatRoomDTO } from './dto/chat.dto';
-import { WsGuard } from '../ws.guard';
+import { WsGuard } from '../auth/ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
 import { Emitter } from '../auth/emitter';
 

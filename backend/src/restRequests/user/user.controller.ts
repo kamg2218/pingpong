@@ -1,8 +1,8 @@
 import { Controller, Get, Query, UnauthorizedException } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt";
-import { AuthService } from "src/auth/auth.service";
+import { AuthService } from 'src/restRequests/auth/auth.service';
 import { UserService } from "./user.service";
-import { Cookies } from "src/auth/cookies.decorator";
+import { Cookies } from "src/type/cookies.decorator";
 
 @Controller('user')
 export class UserController {

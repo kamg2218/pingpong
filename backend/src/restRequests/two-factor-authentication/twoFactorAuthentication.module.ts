@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from 'src/auth/auth.module';
-import { TwoFactorAuthenticationController } from 'src/two-factor-authentication/twoFactorAuthentication.controller';
+import { AuthModule } from 'src/restRequests/auth/auth.module';
+import { TwoFactorAuthenticationController } from './twoFactorAuthentication.controller';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
-import { JwtStrategy } from 'src/auth/strategy/jwt.strategy';
+import { JwtStrategy } from 'src/strategy/jwt.strategy';
 @Module({
     imports: [AuthModule],
     controllers: [TwoFactorAuthenticationController],

@@ -7,7 +7,7 @@ import { MatchingManager } from "../online/matchingManager";
 import { onlineManager } from "../online/onlineManager";
 import { GameMoveDTO, EnterGameRoomDTO, ChangeGameRoomDTO, CreateGameRoomDTO, GameRoomInfoDTO, MatchResponseDTO, MatchRequestDTO, InviteGameRoomResponseDTO, InviteGameRoomDTO } from "./dto/game.dto";
 import { ApiTags } from "@nestjs/swagger";
-import { WsGuard } from "../ws.guard";
+import { WsGuard } from "../auth/ws.guard";
 import { CORS_ORIGIN } from "src/config/url";
 import { instrument } from "@socket.io/admin-ui";
 import { Emitter } from "../auth/emitter";

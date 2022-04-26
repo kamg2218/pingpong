@@ -7,7 +7,7 @@ import { getCustomRepository } from 'typeorm';
 import { onlineManager } from '../online/onlineManager';
 import { UserGatewayService } from './userGateway.service';
 import { UserInfoDTO, NewFriendDTO, UpdateProfileDTO } from './dto/user.dto';
-import { WsGuard } from '../ws.guard';
+import { WsGuard } from '../auth/ws.guard';
 import { CORS_ORIGIN } from 'src/config/url';
 import { Emitter } from '../auth/emitter';
 
@@ -19,7 +19,6 @@ const options = {
 }
 @WebSocketGateway(options)
 @UseGuards(WsGuard)
-
 export class UserGateway{
   
     constructor(
