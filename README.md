@@ -1,4 +1,4 @@
-# ft_transcendence 🏓
+# 🏓 pingpong
 this is  mighty pong contest.
 
 ## 1. ❔ 실행 방법
