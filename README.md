@@ -11,11 +11,14 @@ docker-compose up --build
 
 ✅ [localhost](http://localhost:4242) 에서 확인 가능
 
+<br/>
 
 ## 2. 📹 실행 영상
-### 2-0. 🧑‍💻 로그인
-### 2-1. ⌨️ 채팅
-### 2-2. 🏓 게임
+
+### [📺 실행 영상_Notion](https://www.notion.so/96b5d729195c410cb90c12141e6f6a9a)
+
+<br/>
+
 ## 3. 🕵️‍♀️ 기술 스택
 
 
@@ -42,7 +45,7 @@ docker-compose up --build
   
 <br>
 </div>
-
+<br/>
 
 ## 4. 📁 디렉토리
 
@@ -94,6 +97,7 @@ src
  |-- .env
  |-- ...
 ```
+<br/>
 
 ## 5. 📓 문서
 
